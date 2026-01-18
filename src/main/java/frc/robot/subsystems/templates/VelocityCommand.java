@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class VelocityCommand extends Command {
     private double goal;
     private double secondaryGoal;
+
     private TemplateSubsystem templateSubsystem;
     private boolean updateVelocity;
 
@@ -59,6 +60,12 @@ public class VelocityCommand extends Command {
     }
 
     public void setSecondaryGoal(double secondaryGoal) {
+        this.secondaryGoal = secondaryGoal;
+        updateVelocity = true;
+    }
+
+    public void setBothGoals(double goal, double secondaryGoal) {
+        this.goal = goal;
         this.secondaryGoal = secondaryGoal;
         updateVelocity = true;
     }
