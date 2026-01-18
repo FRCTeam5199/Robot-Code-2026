@@ -15,20 +15,21 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.templates.VelocityCommand;
 
 
 public class RobotContainer {
   CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
   IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
   IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
-//  CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+  CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
 
-//  public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
-//  public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
-//
-//  public final static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
-//          .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
-//          .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
+  public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
+  public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
+
+  public final static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
+          .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
+          .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
 
   public RobotContainer() {
     configureBindings();
@@ -36,15 +37,18 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-//    commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-//            commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-//                    .withVelocityY(-commandXboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-//                    .withRotationalRate(-commandXboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-//            ));
-//
-//    commandXboxController.button(8).onTrue(commandSwerveDrivetrain
-//            .runOnce(commandSwerveDrivetrain::seedFieldCentric)
-//            .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
+    commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+            commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-commandXboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-commandXboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            ));
+
+    commandXboxController.button(8).onTrue(commandSwerveDrivetrain
+            .runOnce(commandSwerveDrivetrain::seedFieldCentric)
+            .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
+
+    commandXboxController.rightTrigger().onTrue(new VelocityCommand(intakeRollerSubsystem, 60))
+            .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
   }
 
   public Command getAutonomousCommand() {

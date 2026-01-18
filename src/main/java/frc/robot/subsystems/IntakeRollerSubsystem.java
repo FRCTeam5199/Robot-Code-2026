@@ -30,5 +30,6 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        System.out.println("Velocity: " + getMotorVelocity());
     }
 }
