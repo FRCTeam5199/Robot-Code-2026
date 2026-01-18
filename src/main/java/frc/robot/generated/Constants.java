@@ -1,5 +1,5 @@
 package frc.robot.generated;
 
 public class Constants {
-    public static final int xbox = 0;
+    public static final int XBOX_PORT = 0;
 }
