@@ -32,5 +32,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        System.out.println("Degrees: " + getDegrees());
+        //-1.2, -9.35
     }
 }

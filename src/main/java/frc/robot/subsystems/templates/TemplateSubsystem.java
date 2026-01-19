@@ -138,9 +138,9 @@ public class TemplateSubsystem extends SubsystemBase {
 
     }
 
-    public void configurePivot(double motorMinRotation, double motorMaxRotation) {
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = motorMinRotation;
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = motorMaxRotation;
+    public void configurePivot(double motorMinDegrees, double motorMaxDegrees) {
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);;
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     }

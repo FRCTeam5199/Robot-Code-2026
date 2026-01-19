@@ -15,7 +15,10 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+
+import javax.crypto.CipherSpi;
 
 
 public class RobotContainer {
@@ -47,8 +50,11 @@ public class RobotContainer {
             .runOnce(commandSwerveDrivetrain::seedFieldCentric)
             .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
-    commandXboxController.rightTrigger().onTrue(new VelocityCommand(intakeRollerSubsystem, 60))
-            .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
+    commandXboxController.rightTrigger()
+            .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT)
+                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 60)))
+            .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN)
+                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
   }
 
   public Command getAutonomousCommand() {
