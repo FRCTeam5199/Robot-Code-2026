@@ -34,6 +34,8 @@ public class RobotContainer {
           .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
           .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
 
+  public static Telemetry logger = new Telemetry(MaxSpeed);
+
   public RobotContainer() {
     configureBindings();
   }

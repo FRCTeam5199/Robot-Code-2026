@@ -25,14 +25,13 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
                 IntakePivotConstants.INTAKE_PIVOT_STATOR_CURRENT_LIMIT,
                 IntakePivotConstants.INTAKE_PIVOT_SLOT0_CONFIGS);
 
-        configurePivot(IntakePivotConstants.INTAKE_PIVOT_MIN_ROTATIONS,
-                IntakePivotConstants.INTAKE_PIVOT_MAX_ROTATIONS);
+        configurePivot(IntakePivotConstants.INTAKE_PIVOT_MIN,
+                IntakePivotConstants.INTAKE_PIVOT_MAX);
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        System.out.println("Degrees: " + getDegrees());
-        //-1.2, -9.35
+//        System.out.println("Degrees: " + getDegrees());
     }
 }
