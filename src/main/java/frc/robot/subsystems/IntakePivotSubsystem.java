@@ -18,7 +18,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
                 IntakePivotConstants.INTAKE_PIVOT_ACCELERATION, IntakePivotConstants.INTAKE_PIVOT_JERK,
                 IntakePivotConstants.INTAKE_PIVOT_LOWER_TOLERANCE,
                 IntakePivotConstants.INTAKE_PIVOT_UPPER_TOLERANCE,
-                IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIO, "INTAKE_PIVOT");
+                IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIOA, "INTAKE_PIVOT");
 
         configureMotor(IntakePivotConstants.INTAKE_PIVOT_INVERTED, IntakePivotConstants.INTAKE_PIVOT_BRAKE,
                 IntakePivotConstants.INTAKE_PIVOT_SUPPLY_CURRENT_LIMIT,
@@ -27,11 +27,13 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
 
         configurePivot(IntakePivotConstants.INTAKE_PIVOT_MIN,
                 IntakePivotConstants.INTAKE_PIVOT_MAX);
+
+        configureEncoder(IntakePivotConstants.INTAKE_PIVOT_ENCODER_ID, "rio", getOffset(), IntakePivotConstants.INTAKE_SENSOR_MECH_RATIO, IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIO);
     }
 
     @Override
     public void periodic() {
         super.periodic();
-//        System.out.println("Degrees: " + getDegrees());
+       System.out.println("Degrees: " + getDegrees());
     }
 }

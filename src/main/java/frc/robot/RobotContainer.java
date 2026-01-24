@@ -54,7 +54,7 @@ public class RobotContainer {
 
     commandXboxController.rightTrigger()
             .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT)
-                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 60)))
+                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 30)))
             .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN)
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
   }

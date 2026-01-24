@@ -6,6 +6,8 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class IntakePivotConstants {
     public static final int INTAKE_PIVOT_MOTOR_ID = 14;
+    public static final int INTAKE_PIVOT_ENCODER_ID = 16;
+
     public static final double INTAKE_PIVOT_STATOR_CURRENT_LIMIT = 60;
     public static final double INTAKE_PIVOT_SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean INTAKE_PIVOT_INVERTED = false;
@@ -36,5 +38,7 @@ public class IntakePivotConstants {
     public static final double INTAKE_PIVOT_MIN = 17;
     public static final double INTAKE_PIVOT_MAX = 169;
 
-    public static final double[][] INTAKE_PIVOT_GEAR_RATIO = {{20, 1}};
+    public static final double INTAKE_PIVOT_GEAR_RATIO = 20d;
+    public static final double[][] INTAKE_PIVOT_GEAR_RATIOA = {{20,1}};
+    public static final double INTAKE_SENSOR_MECH_RATIO = 1d;
 }
