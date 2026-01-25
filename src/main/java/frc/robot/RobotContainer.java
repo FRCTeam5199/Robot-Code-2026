@@ -9,10 +9,12 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.Constants;
+import frc.robot.generated.HopperConstants;
 import frc.robot.generated.IntakePivotConstants;
 import frc.robot.generated.IntakeRollerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
@@ -25,6 +27,7 @@ public class RobotContainer {
   CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
   IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
   IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
+  HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
   CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
 
   public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
@@ -55,6 +58,10 @@ public class RobotContainer {
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 60)))
             .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN)
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+
+    commandXboxController.leftTrigger()
+            .onTrue(new VelocityCommand(hopperSubsystem, 80))
+            .onFalse(new VelocityCommand(hopperSubsystem, 0));
   }
 
   public Command getAutonomousCommand() {
