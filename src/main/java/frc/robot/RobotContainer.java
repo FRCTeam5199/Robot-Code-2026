@@ -57,6 +57,7 @@ public class RobotContainer {
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 30)))
             .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN)
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+
   }
 
   public Command getAutonomousCommand() {

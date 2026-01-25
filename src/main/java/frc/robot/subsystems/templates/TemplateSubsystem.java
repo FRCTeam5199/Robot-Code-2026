@@ -180,12 +180,13 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configureEncoder(int encoderId, String canbus, double magnetOffset,
-                                 double sensorToMechRatio, double motorToSensorRatio) {
+                                 double sensorToMechRatio, double motorToSensorRatio, boolean sensorDirection) {
         encoder = new CANcoder(encoderId, canbus);
         encoderConfig = new CANcoderConfiguration();
 
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        encoderConfig.MagnetSensor.SensorDirection = sensorDirection ? SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
+
         encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
 
         encoder.getConfigurator().apply(encoderConfig);

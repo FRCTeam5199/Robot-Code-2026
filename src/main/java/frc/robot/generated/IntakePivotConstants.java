@@ -13,11 +13,11 @@ public class IntakePivotConstants {
     public static final boolean INTAKE_PIVOT_INVERTED = false;
     public static final boolean INTAKE_PIVOT_BRAKE = true;
 
-    public static final double INTAKE_OUT = 167;
-    public static final double INTAKE_IN = 30;
+    public static final double INTAKE_OUT = 85;
+    public static final double INTAKE_IN = 0;
 
     public static final Slot0Configs INTAKE_PIVOT_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(10)
+            .withKP(1)
             .withKI(0)
             .withKD(0)
             .withKS(0.19)
@@ -28,15 +28,18 @@ public class IntakePivotConstants {
             .withGravityType(GravityTypeValue.Arm_Cosine)
             .withGravityArmPositionOffset(0); //figure out how to use this
 
-    public static final double INTAKE_PIVOT_VELOCITY = 20;
-    public static final double INTAKE_PIVOT_ACCELERATION = 400;
-    public static final double INTAKE_PIVOT_JERK = 1600;
+    public static final double INTAKE_PIVOT_VELOCITY = 5;
+    public static final double INTAKE_PIVOT_ACCELERATION = 5;
+    public static final double INTAKE_PIVOT_JERK = 5;
 
     public static final double INTAKE_PIVOT_LOWER_TOLERANCE = 2;
     public static final double INTAKE_PIVOT_UPPER_TOLERANCE = 2;
 
-    public static final double INTAKE_PIVOT_MIN = 17;
-    public static final double INTAKE_PIVOT_MAX = 169;
+    public static final double INTAKE_PIVOT_MAGNET_OFFSET = -0.34716796875;
+    public static final boolean INTAKE_PIVOT_ENCODER_DIRECTION = false;
+
+    public static final double INTAKE_PIVOT_MIN = 355;
+    public static final double INTAKE_PIVOT_MAX = 85;
 
     public static final double INTAKE_PIVOT_GEAR_RATIO = 20d;
     public static final double[][] INTAKE_PIVOT_GEAR_RATIOA = {{20,1}};
