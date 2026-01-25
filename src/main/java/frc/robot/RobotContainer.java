@@ -13,12 +13,12 @@ import frc.robot.generated.IntakePivotConstants;
 import frc.robot.generated.IntakeRollerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 
-import javax.crypto.CipherSpi;
 
 
 public class RobotContainer {
@@ -26,6 +26,7 @@ public class RobotContainer {
   IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
   IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
   CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+  HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
 
   public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
   public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
@@ -48,7 +49,7 @@ public class RobotContainer {
                     .withRotationalRate(-commandXboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
-    commandXboxController.button(8).onTrue(commandSwerveDrivetrain
+        commandXboxController.button(8).onTrue(commandSwerveDrivetrain
             .runOnce(commandSwerveDrivetrain::seedFieldCentric)
             .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
