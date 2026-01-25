@@ -13,12 +13,12 @@ import frc.robot.generated.IntakePivotConstants;
 import frc.robot.generated.IntakeRollerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 
-import javax.crypto.CipherSpi;
 
 
 public class RobotContainer {
@@ -26,6 +26,7 @@ public class RobotContainer {
   IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
   IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
   CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+  HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
 
   public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
   public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
@@ -48,15 +49,24 @@ public class RobotContainer {
                     .withRotationalRate(-commandXboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
-    commandXboxController.button(8).onTrue(commandSwerveDrivetrain
+        commandXboxController.button(8).onTrue(commandSwerveDrivetrain
             .runOnce(commandSwerveDrivetrain::seedFieldCentric)
             .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
-    commandXboxController.rightTrigger()
-            .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT)
-                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 30)))
-            .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN)
-                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+        commandXboxController.a()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT));
+        commandXboxController.b()        
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN));
+        commandXboxController.rightTrigger()
+                .onTrue(new VelocityCommand(intakeRollerSubsystem, 80))
+                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
+
+        commandXboxController.leftTrigger()
+                .onTrue(new VelocityCommand(hopperSubsystem, 60))                
+                .onFalse(new VelocityCommand(hopperSubsystem, -5));
+        commandXboxController.x()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_MID))
+                .onFalse(new PositionCommand(intakePivotSubsystem ,IntakePivotConstants.INTAKE_OUT));
   }
 
   public Command getAutonomousCommand() {

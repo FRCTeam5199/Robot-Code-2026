@@ -28,7 +28,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
         configurePivot(IntakePivotConstants.INTAKE_PIVOT_MIN,
                 IntakePivotConstants.INTAKE_PIVOT_MAX);
 
-        configureEncoder(IntakePivotConstants.INTAKE_PIVOT_ENCODER_ID, "rio", getOffset(), IntakePivotConstants.INTAKE_SENSOR_MECH_RATIO, IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIO);
+        // configureEncoder(IntakePivotConstants.INTAKE_PIVOT_ENCODER_ID, "rio", getOffset(), IntakePivotConstants.INTAKE_SENSOR_MECH_RATIO, IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIO);
     }
 
     @Override
