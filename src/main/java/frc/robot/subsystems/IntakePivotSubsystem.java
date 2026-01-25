@@ -14,8 +14,8 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
     }
 
     private IntakePivotSubsystem() {
-        super(Type.PIVOT, IntakePivotConstants.INTAKE_PIVOT_MOTOR_ID, IntakePivotConstants.INTAKE_PIVOT_VELOCITY,
-                IntakePivotConstants.INTAKE_PIVOT_ACCELERATION, IntakePivotConstants.INTAKE_PIVOT_JERK,
+        super(Type.PIVOT, IntakePivotConstants.INTAKE_PIVOT_MOTOR_ID, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT,
+                IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT,
                 IntakePivotConstants.INTAKE_PIVOT_LOWER_TOLERANCE,
                 IntakePivotConstants.INTAKE_PIVOT_UPPER_TOLERANCE,
                 IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIOA, "INTAKE_PIVOT");
@@ -31,10 +31,10 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
         configureEncoder(IntakePivotConstants.INTAKE_PIVOT_ENCODER_ID, "rio", IntakePivotConstants.INTAKE_PIVOT_MAGNET_OFFSET, IntakePivotConstants.INTAKE_SENSOR_MECH_RATIO, IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIO, IntakePivotConstants.INTAKE_PIVOT_ENCODER_DIRECTION);
     }
 
-    @Override
     public void periodic() {
         super.periodic();
        System.out.println("Degrees: " + getDegrees());
        System.out.println(getGoal());
+       System.out.println(getEncoderRot());
     }
 }

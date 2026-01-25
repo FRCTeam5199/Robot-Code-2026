@@ -139,10 +139,10 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configurePivot(double motorMinDegrees, double motorMaxDegrees) {
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);;
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        // motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMaxDegrees);
+        // motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);;
+        // motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        // motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     }
 
     public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection) {

@@ -54,9 +54,9 @@ public class RobotContainer {
             .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
     commandXboxController.rightTrigger()
-            .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT)
+            .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 30)))
-            .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN)
+            .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
 
   }
