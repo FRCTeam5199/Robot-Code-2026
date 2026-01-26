@@ -5,6 +5,7 @@ import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
 public class IntakePivotSubsystem extends TemplateSubsystem {
+    public double goal=70;
     private static IntakePivotSubsystem intakePivotSubsystem;
     public static IntakePivotSubsystem getInstance() {
         if (intakePivotSubsystem == null) {
@@ -33,8 +34,6 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-       System.out.println("Degrees: " + getDegrees());
-       System.out.println(getGoal());
-       System.out.println(getEncoderRot());
-    }
+        System.out.println("Degrees: " + getDegrees());
+       }
 }

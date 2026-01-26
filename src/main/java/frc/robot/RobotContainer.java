@@ -53,11 +53,23 @@ public class RobotContainer {
             .runOnce(commandSwerveDrivetrain::seedFieldCentric)
             .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
-    commandXboxController.rightTrigger()
-            .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
-                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 30)))
-            .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
+        commandXboxController.rightTrigger()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
+                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 60)))
+                .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+        commandXboxController.a()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT));
+        commandXboxController.x().whileTrue(
+                new SequentialCommandGroup(
+                        new PositionCommand(intakePivotSubsystem, 70),
+                        new WaitCommand(.9),
+                        new PositionCommand(intakePivotSubsystem, 108)
+                )
+        );
+        commandXboxController.leftTrigger()
+                .onTrue(new VelocityCommand(hopperSubsystem, 30))
+                .onFalse(new VelocityCommand(hopperSubsystem, -5));
 
   }
 
