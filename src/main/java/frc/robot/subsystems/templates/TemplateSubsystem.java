@@ -22,46 +22,7 @@ import frc.robot.utility.Type;
 import java.util.function.DoubleSupplier;
 
 public class TemplateSubsystem extends SubsystemBase {
-    private TalonFX motor;
-    private TalonFXConfiguration motorConfig;
-
-    private TalonFX followerMotor;
-    private Follower follower;
-
-    private TalonFX secondaryMotor;
-    private TalonFXConfiguration secondaryMotorConfig;
-
-    private CANcoder encoder;
-    private CANcoderConfiguration encoderConfig;
-
-    private double goal;
-    private boolean followLastMechProfile = false;
-
-    private boolean isCommandRunning = false;
-
-    private DynamicMotionMagicVoltage dynamicMotionMagicVoltage;
-    private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
-    private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
-
-    private double velocity;
-    private double acceleration;
-    private double jerk;
-
-    private SimpleMotorFeedforward secondarySimpleMotorFF;
-
-    private double lowerTolerance;
-    private double upperTolerance;
-    private double sensorToMechRatio;
-    private double offset;
-    private boolean changedOffset = false;
-
-    private double gearRatio = 1d;
-    private double drumCircumference;
-    private Type type;
-    private String name;
-
     NetworkTableInstance inst;
-
     NetworkTable systemStateTable;
     DoublePublisher systemPose;
     DoublePublisher systemSpeeds;
@@ -69,6 +30,33 @@ public class TemplateSubsystem extends SubsystemBase {
     DoublePublisher systemStatorCurrent;
     DoublePublisher systemVoltage;
     DoublePublisher systemStatorVoltage;
+    private TalonFX motor;
+    private TalonFXConfiguration motorConfig;
+    private TalonFX followerMotor;
+    private Follower follower;
+    private TalonFX secondaryMotor;
+    private TalonFXConfiguration secondaryMotorConfig;
+    private CANcoder encoder;
+    private CANcoderConfiguration encoderConfig;
+    private double goal;
+    private boolean followLastMechProfile = false;
+    private boolean isCommandRunning = false;
+    private DynamicMotionMagicVoltage dynamicMotionMagicVoltage;
+    private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
+    private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
+    private double velocity;
+    private double acceleration;
+    private double jerk;
+    private SimpleMotorFeedforward secondarySimpleMotorFF;
+    private double lowerTolerance;
+    private double upperTolerance;
+    private double sensorToMechRatio;
+    private double offset;
+    private boolean changedOffset = false;
+    private double gearRatio = 1d;
+    private double drumCircumference;
+    private Type type;
+    private String name;
 
     public TemplateSubsystem(Type type, int id, double velocity, double acceleration, double jerk,
                              double lowerTolerance, double upperTolerance,
@@ -136,13 +124,17 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
+        motor.getConfigurator().apply(motorConfig);
     }
 
     public void configurePivot(double motorMinDegrees, double motorMaxDegrees) {
-        // motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMaxDegrees);
-        // motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);;
-        // motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        // motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getEncoderRotFromDegrees(motorMaxDegrees);
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getEncoderRotFromDegrees(motorMinDegrees);
+
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        motor.getConfigurator().apply(motorConfig);
     }
 
     public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection) {
@@ -171,9 +163,9 @@ public class TemplateSubsystem extends SubsystemBase {
         secondaryMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         secondaryMotorConfig.Slot0 = slot0Configs;
 
-        secondaryMotorConfig.MotionMagic.MotionMagicCruiseVelocity = secondaryVelocity;
-        secondaryMotorConfig.MotionMagic.MotionMagicAcceleration = secondaryAcceleration;
-        secondaryMotorConfig.MotionMagic.MotionMagicJerk = secondaryJerk;
+//        secondaryMotorConfig.MotionMagic.MotionMagicCruiseVelocity = secondaryVelocity;
+//        secondaryMotorConfig.MotionMagic.MotionMagicAcceleration = secondaryAcceleration;
+//        secondaryMotorConfig.MotionMagic.MotionMagicJerk = secondaryJerk;
 
         secondaryMotor.getConfigurator().apply(secondaryMotorConfig);
         secondaryMotor.setPosition(0);
@@ -251,12 +243,12 @@ public class TemplateSubsystem extends SubsystemBase {
             default -> goalRotations = getMotorRotFromMechRot(goal);
         }
 
-        dynamicMotionMagicVoltage.Velocity = this.velocity;
-        dynamicMotionMagicVoltage.Acceleration = this.acceleration;
-        dynamicMotionMagicVoltage.Jerk = this.jerk;
-
         this.goal = goal;
         motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations));
+
+//        dynamicMotionMagicVoltage.Velocity = this.velocity;
+//        dynamicMotionMagicVoltage.Acceleration = this.acceleration;
+//        dynamicMotionMagicVoltage.Jerk = this.jerk;
     }
 
     //Used if velocity/acceleration/jerk constraint needs to be changed
@@ -272,11 +264,9 @@ public class TemplateSubsystem extends SubsystemBase {
             default -> goalRotations = getMotorRotFromMechRot(goal);
         }
 
-        dynamicMotionMagicVoltage.Velocity = velocity;
-        dynamicMotionMagicVoltage.Acceleration = acceleration;
-        dynamicMotionMagicVoltage.Jerk = jerk;
-
         this.goal = goal;
+
+
         motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations));
     }
 
@@ -322,11 +312,6 @@ public class TemplateSubsystem extends SubsystemBase {
         return getMechVelocity() > goal - lowerTolerance;
     }
 
-    public void setOffset(double offset) {
-        this.offset = offset;
-        changedOffset = true;
-    }
-
     public void setOffset(double offset, boolean changedOffset) {
         this.offset = offset;
         this.changedOffset = changedOffset;
@@ -334,6 +319,11 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public double getOffset() {
         return offset;
+    }
+
+    public void setOffset(double offset) {
+        this.offset = offset;
+        changedOffset = true;
     }
 
     public double getGoal() {

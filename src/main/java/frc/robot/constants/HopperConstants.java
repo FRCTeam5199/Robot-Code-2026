@@ -1,10 +1,7 @@
-package frc.robot.generated;
+package frc.robot.constants;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 
 public class HopperConstants {
     public static final int HOPPER_MOTOR_ID = 17;
