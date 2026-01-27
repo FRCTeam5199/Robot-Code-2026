@@ -25,9 +25,14 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+    public void robotInit() {
+        UserInterface.init();
+    }
+
+    @Override
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
-        CommandScheduler.getInstance().run(); 
+        CommandScheduler.getInstance().run();
     }
 
     @Override
@@ -55,13 +60,23 @@ public class Robot extends TimedRobot {
     public void autonomousExit() {}
 
     @Override
-    public void teleopInit() {}
+    public void teleopInit() {
+        if (m_autonomousCommand != null) {
+            CommandScheduler.getInstance().cancel(m_autonomousCommand);
+        }
+    }
 
     @Override
     public void teleopPeriodic() {
-        if (m_autonomousCommand != null) {
-            CommandScheduler.getInstance().cancel(m_autonomousCommand);
-            m_autonomousCommand = null;
+        if (!UserInterface.controlComponents.get("Edit Button").getBoolean(false)) {
+            UserInterface.controlComponents.get("Actuator Percent").setDouble(/*motor.get()*/0.0);
+            UserInterface.controlComponents.get("Actuator Voltage").setDouble(/*motor.get()*/0.0);
+            UserInterface.controlComponents.get("Actuator Velocity").setDouble(/*motor.get()*/0.0);
+            UserInterface.controlComponents.get("Actuator Position").setDouble(/*motor.get()*/0.0);
+        } else {
+            while (UserInterface.controlComponents.get("Edit Button").getBoolean(false)) {}
+
+            //motor.set(UserInterface.controlComponents.get("ActuatorPercent").getDouble(motor.get());
         }
     }
 
