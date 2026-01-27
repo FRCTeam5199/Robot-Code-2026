@@ -36,8 +36,8 @@ public class IntakePivotConstants {
     public static final double INTAKE_PIVOT_ACCELERATION_IN = 200;
     public static final double INTAKE_PIVOT_JERK_IN = 800;
 
-    public static final double INTAKE_PIVOT_LOWER_TOLERANCE = 2;
-    public static final double INTAKE_PIVOT_UPPER_TOLERANCE = 2;
+    public static final double INTAKE_PIVOT_LOWER_TOLERANCE = 7;
+    public static final double INTAKE_PIVOT_UPPER_TOLERANCE = 7;
 
     public static final double INTAKE_PIVOT_MAGNET_OFFSET = -0.3239746;
     public static final boolean INTAKE_PIVOT_ENCODER_DIRECTION = false;

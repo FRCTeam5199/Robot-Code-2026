@@ -60,13 +60,13 @@ public class RobotContainer {
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
         commandXboxController.a()
                 .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT));
-        commandXboxController.x().whileTrue(
+        commandXboxController.x().onTrue(
                 new SequentialCommandGroup(
                         new PositionCommand(intakePivotSubsystem, 70),
-                        new WaitCommand(.9),
-                        new PositionCommand(intakePivotSubsystem, 108)
-                )
-        );
+                        new PositionCommand(intakePivotSubsystem, 107)
+                ).repeatedly()
+        )
+                .onFalse(new PositionCommand(intakePivotSubsystem, 0));
         commandXboxController.leftTrigger()
                 .onTrue(new VelocityCommand(hopperSubsystem, 30))
                 .onFalse(new VelocityCommand(hopperSubsystem, -5));
