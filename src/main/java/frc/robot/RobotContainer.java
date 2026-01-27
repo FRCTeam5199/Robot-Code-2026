@@ -60,7 +60,7 @@ public class RobotContainer {
                     .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
 
     commandXboxController.leftTrigger()
-            .onTrue(new VelocityCommand(hopperSubsystem, 80))
+            .onTrue(new VelocityCommand(hopperSubsystem, 40))
             .onFalse(new VelocityCommand(hopperSubsystem, 0));
   }
 
