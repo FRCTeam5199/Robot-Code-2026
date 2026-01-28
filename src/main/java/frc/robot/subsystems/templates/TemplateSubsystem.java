@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Type;
 
+import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
 public class TemplateSubsystem extends SubsystemBase {
@@ -232,15 +233,13 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void setPosition(double goal) {
-        if (type == Type.ROLLER) return;
-
         double goalRotations;
 
-        switch (type) {
-            case LINEAR -> goalRotations = getMotorRotFromMechM(goal + offset);
-            case PIVOT -> goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
+        if (type == Type.LINEAR) {
+            goalRotations = getMotorRotFromMechM(goal + offset);
+        } else {
+            goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
                     : getEncoderRotFromDegrees(goal + offset);
-            default -> goalRotations = getMotorRotFromMechRot(goal);
         }
 
         this.goal = goal;
@@ -253,15 +252,13 @@ public class TemplateSubsystem extends SubsystemBase {
 
     //Used if velocity/acceleration/jerk constraint needs to be changed
     public void setPosition(double goal, double velocity, double acceleration, double jerk) {
-        if (type == Type.ROLLER) return;
-
         double goalRotations;
 
-        switch (type) {
-            case LINEAR -> goalRotations = getMotorRotFromMechM(goal + offset);
-            case PIVOT -> goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
+        if (type == Type.LINEAR) {
+            goalRotations = getMotorRotFromMechM(goal + offset);
+        } else {
+            goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
                     : getEncoderRotFromDegrees(goal + offset);
-            default -> goalRotations = getMotorRotFromMechRot(goal);
         }
 
         this.goal = goal;
@@ -287,8 +284,8 @@ public class TemplateSubsystem extends SubsystemBase {
             default -> {
                 if (isVelocity) return getMechVelocity() >= goal - lowerTolerance
                         && getMechVelocity() <= goal - upperTolerance;
-                else return getMechRot() >= goal - lowerTolerance
-                        && getMechRot() <= goal + upperTolerance;
+                else return getDegrees() >= goal - lowerTolerance
+                        && getDegrees() <= goal + upperTolerance;
             }
         }
     }
@@ -338,7 +335,7 @@ public class TemplateSubsystem extends SubsystemBase {
     //Unit Conversions
     public double getDegrees() {
         return encoder == null ? motor.getRotorPosition().getValueAsDouble() * gearRatio * 360d
-                : getEncoderRot() * sensorToMechRatio * 360d;
+                : getEncoderDegrees();
     }
 
     /**
