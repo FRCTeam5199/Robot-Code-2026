@@ -4,7 +4,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class KickerConstants {
-    public static final int KICKER_MOTOR_ID = 15;
+    public static final int KICKER_MOTOR_ID = 0;
     public static final double KICKER_STATOR_CURRENT_LIMIT = 60;
     public static final double KICKER_SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean KICKER_INVERTED = true;
