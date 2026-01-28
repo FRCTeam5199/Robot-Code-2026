@@ -5,8 +5,11 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class TurretConstants {
     public static final int TURRET_MOTOR_ID = 0;
+    public static final int TURRET_ENCODER_ID = 0;
+
     public static final double TURRET_STATOR_CURRENT_LIMIT = 60;
     public static final double TURRET_SUPPLY_CURRENT_LIMIT = 60;
+
     public static final boolean TURRET_INVERTED = true;
     public static final boolean TURRET_BRAKE = true;
 
@@ -27,4 +30,12 @@ public class TurretConstants {
     public static final double TURRET_UPPER_TOLERANCE = 2;
 
     public static final double[][] TURRET_GEAR_RATIO = {{1, 1}};
+
+    public static final double TURRET_ENCODER_MAGNET_OFFSET = 0;
+    public static final double TURRET_SENSOR_TO_MECH_GEAR_RATIO = 0;
+    public static final double TURRET_MOTOR_TO_SENSOR_GEAR_RATIO = 0;
+    public static final boolean TURRET_CCW_POSITIVE = true;
+
+    public static final double TURRET_MIN = 0;
+    public static final double TURRET_MAX = 0;
 }

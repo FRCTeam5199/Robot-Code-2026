@@ -19,6 +19,14 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.TURRET_SUPPLY_CURRENT_LIMIT,
                 TurretConstants.TURRET_STATOR_CURRENT_LIMIT,
                 TurretConstants.TURRET_SLOT0_CONFIGS);
+
+        configureEncoder(TurretConstants.TURRET_ENCODER_ID,
+                "rio", TurretConstants.TURRET_ENCODER_MAGNET_OFFSET,
+                TurretConstants.TURRET_SENSOR_TO_MECH_GEAR_RATIO,
+                TurretConstants.TURRET_MOTOR_TO_SENSOR_GEAR_RATIO,
+                TurretConstants.TURRET_CCW_POSITIVE);
+
+        configureRoller(TurretConstants.TURRET_MIN, TurretConstants.TURRET_MAX);
     }
 
     public static TurretSubsystem getInstance() {

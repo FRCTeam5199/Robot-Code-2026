@@ -122,6 +122,7 @@ public class TemplateSubsystem extends SubsystemBase {
         this.drumCircumference = drumCircumference;
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = motorMinRotation;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = motorMaxRotation;
+
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
@@ -129,6 +130,16 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configurePivot(double motorMinDegrees, double motorMaxDegrees) {
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getEncoderRotFromDegrees(motorMaxDegrees);
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getEncoderRotFromDegrees(motorMinDegrees);
+
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        motor.getConfigurator().apply(motorConfig);
+    }
+
+    public void configureRoller(double motorMinDegrees, double motorMaxDegrees) {
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getEncoderRotFromDegrees(motorMaxDegrees);
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getEncoderRotFromDegrees(motorMinDegrees);
 
@@ -173,12 +184,13 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configureEncoder(int encoderId, String canbus, double magnetOffset,
-                                 double sensorToMechRatio, double motorToSensorRatio, boolean sensorDirection) {
+                                 double sensorToMechRatio, double motorToSensorRatio, boolean isCCWPositive) {
         encoder = new CANcoder(encoderId, canbus);
         encoderConfig = new CANcoderConfiguration();
 
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-        encoderConfig.MagnetSensor.SensorDirection = sensorDirection ? SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
+        encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
+                : SensorDirectionValue.Clockwise_Positive;
 
         encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
 
