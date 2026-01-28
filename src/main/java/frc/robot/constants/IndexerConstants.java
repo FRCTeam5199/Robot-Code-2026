@@ -4,7 +4,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class IndexerConstants {
-    public static final int INDEXER_MOTOR_ID = 15;
+    public static final int INDEXER_MOTOR_ID = 0;
     public static final double INDEXER_STATOR_CURRENT_LIMIT = 60;
     public static final double INDEXER_SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean INDEXER_INVERTED = true;
