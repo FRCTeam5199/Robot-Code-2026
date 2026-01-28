@@ -1,10 +1,7 @@
-package frc.robot.generated;
+package frc.robot.constants;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 
 public class IntakeRollerConstants {
     public static final int INTAKE_ROLLER_MOTOR_ID = 15;

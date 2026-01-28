@@ -8,19 +8,15 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.generated.Constants;
-import frc.robot.generated.HopperConstants;
-import frc.robot.generated.IntakePivotConstants;
-import frc.robot.generated.IntakeRollerConstants;
-import frc.robot.generated.TunerConstants;
+import frc.robot.constants.Constants;
+import frc.robot.constants.IntakePivotConstants;
+import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
-
-import javax.crypto.CipherSpi;
 
 
 public class RobotContainer {
@@ -36,6 +32,7 @@ public class RobotContainer {
   public final static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
           .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
           .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
+  public static Telemetry logger = new Telemetry(MaxSpeed);
 
   public RobotContainer() {
     configureBindings();
@@ -53,18 +50,26 @@ public class RobotContainer {
             .runOnce(commandSwerveDrivetrain::seedFieldCentric)
             .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
-    commandXboxController.rightTrigger()
-            .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT)
-                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 60)))
-            .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN)
-                    .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+        commandXboxController.rightTrigger()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
+                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 60)))
+                .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
+                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+        commandXboxController.a()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT));
+        commandXboxController.x().onTrue(
+                        new SequentialCommandGroup(
+                                new PositionCommand(intakePivotSubsystem, 70),
+                                new PositionCommand(intakePivotSubsystem, 107)
+                        ).repeatedly()
+                ).onFalse(new PositionCommand(intakePivotSubsystem, 0));
+        commandXboxController.leftTrigger()
+                .onTrue(new VelocityCommand(hopperSubsystem, 40))
+                .onFalse(new VelocityCommand(hopperSubsystem, 0));
 
-    commandXboxController.leftTrigger()
-            .onTrue(new VelocityCommand(hopperSubsystem, 40))
-            .onFalse(new VelocityCommand(hopperSubsystem, 0));
-  }
+    }
 
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
-  }
+    public Command getAutonomousCommand() {
+        return Commands.print("No autonomous command configured");
+    }
 }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
-import frc.robot.generated.HopperConstants;
-import frc.robot.generated.IntakeRollerConstants;
+import frc.robot.constants.HopperConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 

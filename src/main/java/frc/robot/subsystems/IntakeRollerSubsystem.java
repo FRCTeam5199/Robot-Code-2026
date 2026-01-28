@@ -1,17 +1,11 @@
 package frc.robot.subsystems;
 
-import frc.robot.generated.IntakeRollerConstants;
+import frc.robot.constants.IntakeRollerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
 public class IntakeRollerSubsystem extends TemplateSubsystem {
     private static IntakeRollerSubsystem intakeRollerSubsystem;
-    public static IntakeRollerSubsystem getInstance() {
-        if (intakeRollerSubsystem == null) {
-            intakeRollerSubsystem = new IntakeRollerSubsystem();
-        }
-        return intakeRollerSubsystem;
-    }
 
     private IntakeRollerSubsystem() {
         super(Type.ROLLER, IntakeRollerConstants.INTAKE_ROLLER_MOTOR_ID,
@@ -25,6 +19,13 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
                 IntakeRollerConstants.INTAKE_ROLLER_SUPPLY_CURRENT_LIMIT,
                 IntakeRollerConstants.INTAKE_ROLLER_STATOR_CURRENT_LIMIT,
                 IntakeRollerConstants.INTAKE_ROLLER_SLOT0_CONFIGS);
+    }
+
+    public static IntakeRollerSubsystem getInstance() {
+        if (intakeRollerSubsystem == null) {
+            intakeRollerSubsystem = new IntakeRollerSubsystem();
+        }
+        return intakeRollerSubsystem;
     }
 
     @Override
