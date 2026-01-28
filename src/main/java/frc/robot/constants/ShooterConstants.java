@@ -4,7 +4,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class ShooterConstants {
-    public static final int SHOOTER_MOTOR_ID = 15;
+    public static final int SHOOTER_MOTOR_ID = 0;
     public static final double SHOOTER_STATOR_CURRENT_LIMIT = 60;
     public static final double SHOOTER_SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean SHOOTER_INVERTED = true;
