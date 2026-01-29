@@ -9,13 +9,16 @@ public class PositionCommand extends Command {
     private double goal;
     private TemplateSubsystem templateSubsystem;
     private boolean updateGoalPosition;
-    private boolean changeConstraint;
+    private boolean changeConstraints;
+    private boolean uniqueConstraints;
+
 
     public PositionCommand(TemplateSubsystem templateSubsystem, double goal) {
         this.templateSubsystem = templateSubsystem;
         this.goal = goal;
         updateGoalPosition = false;
-        changeConstraint = false;
+        changeConstraints = false;
+        uniqueConstraints = false;
 
         addRequirements(templateSubsystem);
     }
@@ -30,16 +33,17 @@ public class PositionCommand extends Command {
         this.acceleration = acceleration;
         this.jerk = jerk;
 
-        changeConstraint = true;
+        changeConstraints = true;
+        uniqueConstraints = true;
 
         addRequirements(templateSubsystem);
     }
 
     @Override
     public void initialize() {
-        if (changeConstraint) {
+        if (changeConstraints) {
             templateSubsystem.setPosition(goal, velocity, acceleration, jerk);
-            changeConstraint = false;
+            changeConstraints = false;
         } else {
             templateSubsystem.setPosition(goal);
         }
@@ -52,9 +56,9 @@ public class PositionCommand extends Command {
             templateSubsystem.setPosition(goal);
             updateGoalPosition = false;
         }
-        if (changeConstraint){
+        if (changeConstraints) {
             templateSubsystem.setConstraints(velocity, acceleration, jerk);
-            changeConstraint = false;
+            changeConstraints = false;
         }
     }
 
@@ -68,6 +72,7 @@ public class PositionCommand extends Command {
     public void end(boolean interrupted) {
         templateSubsystem.setFollowLastMechProfile(true);
         templateSubsystem.setCommandRunning(false);
+        if (uniqueConstraints) changeConstraints = true;
     }
 
     public void setGoal(double goal) {
@@ -80,6 +85,6 @@ public class PositionCommand extends Command {
         this.acceleration = acceleration;
         this.jerk = jerk;
 
-        this.changeConstraint = true;
+        this.changeConstraints = true;
     }
 }
