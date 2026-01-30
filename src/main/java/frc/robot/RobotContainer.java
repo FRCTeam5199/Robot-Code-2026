@@ -15,6 +15,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 
@@ -25,6 +26,7 @@ public class RobotContainer {
   IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
   HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
   CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+  TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
 
   public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
   public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI

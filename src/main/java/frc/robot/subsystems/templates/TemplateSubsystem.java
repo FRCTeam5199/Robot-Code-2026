@@ -1,6 +1,7 @@
 package frc.robot.subsystems.templates;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CustomParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
@@ -139,9 +140,9 @@ public class TemplateSubsystem extends SubsystemBase {
         motor.getConfigurator().apply(motorConfig);
     }
 
-    public void configureRoller(double motorMinDegrees, double motorMaxDegrees) {
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getEncoderRotFromDegrees(motorMaxDegrees);
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getEncoderRotFromDegrees(motorMinDegrees);
+    public void configureRoller(double motorMinRot, double motorMaxRot) {
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = motorMaxRot;
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = motorMinRot;
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
@@ -205,7 +206,23 @@ public class TemplateSubsystem extends SubsystemBase {
         this.sensorToMechRatio = sensorToMechRatio;
 
         motor.getConfigurator().apply(motorConfig);
-        gearRatio = motorToSensorRatio;
+        gearRatio = motorToSensorRatio * sensorToMechRatio;
+    }
+
+    public void halfConfigureEncoder(int encoderId, String canbus, double magnetOffset,
+                                 double sensorToMechRatio, double motorToSensorRatio, boolean isCCWPositive) {
+        encoder = new CANcoder(encoderId, canbus);
+        encoderConfig = new CANcoderConfiguration();
+
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+        encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
+                : SensorDirectionValue.Clockwise_Positive;
+
+        encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
+        encoder.getConfigurator().apply(encoderConfig);
+
+        motor.setPosition(encoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
+        encoder = null;
     }
 
     public void setPercent(double percent) {
@@ -472,7 +489,7 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public double getEncoderDegrees() {
-        return encoder.getAbsolutePosition().getValueAsDouble() * 360 * sensorToMechRatio;
+        return encoder.getAbsolutePosition().getValueAsDouble() * 360d * sensorToMechRatio;
     }
 
     @Override
@@ -485,6 +502,8 @@ public class TemplateSubsystem extends SubsystemBase {
         systemPose.set(getMotorRot());
         systemSpeeds.set(getMotorVelocity());
         systemTimestamp.set(Timer.getFPGATimestamp());
+
+
     }
 
     public void setControl(ControlRequest control) {
