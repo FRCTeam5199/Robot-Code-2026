@@ -245,29 +245,6 @@ public class TemplateSubsystem extends SubsystemBase {
 
         this.goal = goal;
         motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations));
-
-//        dynamicMotionMagicVoltage.Velocity = this.velocity;
-//        dynamicMotionMagicVoltage.Acceleration = this.acceleration;
-//        dynamicMotionMagicVoltage.Jerk = this.jerk;
-    }
-
-    //Used if velocity/acceleration/jerk constraint needs to be changed
-    public void setPosition(double goal, double velocity, double acceleration, double jerk) {
-        if (type == Type.ROLLER) return;
-
-        double goalRotations;
-
-        switch (type) {
-            case LINEAR -> goalRotations = getMotorRotFromMechM(goal + offset);
-            case PIVOT -> goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
-                    : getEncoderRotFromDegrees(goal + offset);
-            default -> goalRotations = getMotorRotFromMechRot(goal);
-        }
-
-        this.goal = goal;
-
-
-        motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations));
     }
 
     public void setConstraints(double velocity, double acceleration, double jerk) {

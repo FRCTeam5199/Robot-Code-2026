@@ -39,7 +39,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-        System.out.println("Degrees: " + getDegrees());
-        System.out.println("Goal: " + getGoal());
+        // System.out.println("Degrees: " + getDegrees());
+        // System.out.println("Goal: " + getGoal());
     }
 }
