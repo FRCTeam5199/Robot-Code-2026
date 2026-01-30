@@ -11,10 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IntakePivotConstants;
 import frc.robot.constants.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
-import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.*;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 
@@ -25,6 +22,7 @@ public class RobotContainer {
   IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
   HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
   CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+  KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
 
   public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
   public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
@@ -66,6 +64,9 @@ public class RobotContainer {
         commandXboxController.leftTrigger()
                 .onTrue(new VelocityCommand(hopperSubsystem, 40))
                 .onFalse(new VelocityCommand(hopperSubsystem, 0));
+        commandXboxController.b()
+                .onTrue(new VelocityCommand(kickerSubsystem, 20))
+                .onFalse(new VelocityCommand(kickerSubsystem, 0));
 
     }
 
