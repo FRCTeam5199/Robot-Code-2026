@@ -23,7 +23,8 @@ public class HoodSubsystem extends TemplateSubsystem {
                 "rio", HoodConstants.HOOD_MAGNET_OFFSET,
                 HoodConstants.HOOD_SENSOR_TO_MECH_GEAR_RATIO,
                 HoodConstants.HOOD_MOTOR_TO_SENSOR_GEAR_RATIO,
-                HoodConstants.HOOD_IS_CCW_POS);
+                HoodConstants.HOOD_IS_CCW_POS,
+                HoodConstants.HOOD_ABSOLUTE_DISCONTINUITY_POINT);
 
         configurePivot(HoodConstants.HOOD_MIN,
                 HoodConstants.HOOD_MAX);

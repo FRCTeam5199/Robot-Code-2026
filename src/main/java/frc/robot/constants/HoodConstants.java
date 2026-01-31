@@ -41,6 +41,8 @@ public class HoodConstants {
     public static final double HOOD_MOTOR_TO_SENSOR_GEAR_RATIO = 8d;
     public static final double[][] HOOD_GEAR_RATIO = {{48, 12}, {30, 15}, {180, 10}};
     public static final double HOOD_SENSOR_TO_MECH_GEAR_RATIO = 18d;
+
+    public static final double HOOD_ABSOLUTE_DISCONTINUITY_POINT = 1;
 }
 
 
