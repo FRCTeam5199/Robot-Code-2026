@@ -31,6 +31,6 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        System.out.println("Shooter Velocity: " + getMotorVelocity());
+        // System.out.println("Shooter Velocity: " + getMotorVelocity());
     }
 }

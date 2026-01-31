@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
-import org.w3c.dom.ls.LSOutput;
 
 public class TurretSubsystem extends TemplateSubsystem {
     private static TurretSubsystem turretSubsystem;
@@ -62,7 +61,7 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        }
 //        System.out.println(encoderRotationsContinuous * TurretConstants.TURRET_SENSOR_TO_MECH_GEAR_RATIO * 360d);
 //        System.out.println("Degrees " + getDegrees());
-        System.out.println("Turret Angle: " + getDegrees());
+        // System.out.println("Turret Angle: " + getDegrees());
 
     }
 }

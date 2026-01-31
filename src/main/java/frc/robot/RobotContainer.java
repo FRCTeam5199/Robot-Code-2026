@@ -5,22 +5,31 @@
 package frc.robot;
 
 
+import java.util.Map;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IntakePivotConstants;
 import frc.robot.constants.TunerConstants;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
-
-import java.util.Map;
 
 public class RobotContainer {
     public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
@@ -64,13 +73,13 @@ public class RobotContainer {
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric)
                 .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
-        commandXboxController.rightTrigger()
-                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
-                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 60))
-                        .alongWith(new VelocityCommand(hopperSubsystem, -10)))
-                .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
-                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 0))
-                        .alongWith(new VelocityCommand(hopperSubsystem, 0)));
+        // commandXboxController.rightTrigger()
+        //         .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
+        //                 .alongWith(new VelocityCommand(intakeRollerSubsystem, 60))
+        //                 .alongWith(new VelocityCommand(hopperSubsystem, -10)))
+        //         .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
+        //                 .alongWith(new VelocityCommand(intakeRollerSubsystem, 0))
+        //                 .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
         commandXboxController.leftTrigger().onTrue(
                 new SelectCommand<>(Map.ofEntries(
@@ -109,8 +118,8 @@ public class RobotContainer {
                 .onFalse(new VelocityCommand(kickerSubsystem, 0)
                         .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
-        commandXboxController.leftBumper().onTrue(
-                new PositionCommand(intakePivotSubsystem, 107));
+        // commandXboxController.leftBumper().onTrue(
+        //         new PositionCommand(intakePivotSubsystem, 107));
 
         commandXboxController.y().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB)));
         commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));
