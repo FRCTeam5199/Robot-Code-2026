@@ -1,6 +1,7 @@
 package frc.robot.subsystems.templates;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CustomParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Type;
 
+import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
 public class TemplateSubsystem extends SubsystemBase {
@@ -121,6 +123,7 @@ public class TemplateSubsystem extends SubsystemBase {
         this.drumCircumference = drumCircumference;
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = motorMinRotation;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = motorMaxRotation;
+
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
@@ -130,6 +133,16 @@ public class TemplateSubsystem extends SubsystemBase {
     public void configurePivot(double motorMinDegrees, double motorMaxDegrees) {
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getEncoderRotFromDegrees(motorMaxDegrees);
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getEncoderRotFromDegrees(motorMinDegrees);
+
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        motor.getConfigurator().apply(motorConfig);
+    }
+
+    public void configureRoller(double motorMinDegrees, double motorMaxDegrees) {
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMaxDegrees);
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
@@ -172,12 +185,13 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configureEncoder(int encoderId, String canbus, double magnetOffset,
-                                 double sensorToMechRatio, double motorToSensorRatio, boolean sensorDirection) {
+                                 double sensorToMechRatio, double motorToSensorRatio, boolean isCCWPositive) {
         encoder = new CANcoder(encoderId, canbus);
         encoderConfig = new CANcoderConfiguration();
 
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-        encoderConfig.MagnetSensor.SensorDirection = sensorDirection ? SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
+        encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
+                : SensorDirectionValue.Clockwise_Positive;
 
         encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
 
@@ -192,7 +206,24 @@ public class TemplateSubsystem extends SubsystemBase {
         this.sensorToMechRatio = sensorToMechRatio;
 
         motor.getConfigurator().apply(motorConfig);
-        gearRatio = motorToSensorRatio;
+        gearRatio = motorToSensorRatio * sensorToMechRatio;
+    }
+
+    public void halfConfigureEncoder(int encoderId, String canbus, double magnetOffset,
+                                     double sensorToMechRatio, double motorToSensorRatio,
+                                     boolean isCCWPositive, double absoluteDiscontinuityPoint) {
+        encoder = new CANcoder(encoderId, canbus);
+        encoderConfig = new CANcoderConfiguration();
+
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = absoluteDiscontinuityPoint;
+        encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
+                : SensorDirectionValue.Clockwise_Positive;
+
+        encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
+        encoder.getConfigurator().apply(encoderConfig);
+
+        motor.setPosition(encoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
+        encoder = null;
     }
 
     public void halfConfigureEncoder(int encoderId, String canbus, double magnetOffset,
@@ -248,15 +279,13 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void setPosition(double goal) {
-        if (type == Type.ROLLER) return;
-
         double goalRotations;
 
-        switch (type) {
-            case LINEAR -> goalRotations = getMotorRotFromMechM(goal + offset);
-            case PIVOT -> goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
+        if (type == Type.LINEAR) {
+            goalRotations = getMotorRotFromMechM(goal + offset);
+        } else {
+            goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
                     : getEncoderRotFromDegrees(goal + offset);
-            default -> goalRotations = getMotorRotFromMechRot(goal);
         }
 
         this.goal = goal;
@@ -269,15 +298,13 @@ public class TemplateSubsystem extends SubsystemBase {
 
     //Used if velocity/acceleration/jerk constraint needs to be changed
     public void setPosition(double goal, double velocity, double acceleration, double jerk) {
-        if (type == Type.ROLLER) return;
-
         double goalRotations;
 
-        switch (type) {
-            case LINEAR -> goalRotations = getMotorRotFromMechM(goal + offset);
-            case PIVOT -> goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
+        if (type == Type.LINEAR) {
+            goalRotations = getMotorRotFromMechM(goal + offset);
+        } else {
+            goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
                     : getEncoderRotFromDegrees(goal + offset);
-            default -> goalRotations = getMotorRotFromMechRot(goal);
         }
 
         this.goal = goal;
@@ -303,8 +330,8 @@ public class TemplateSubsystem extends SubsystemBase {
             default -> {
                 if (isVelocity) return getMechVelocity() >= goal - lowerTolerance
                         && getMechVelocity() <= goal - upperTolerance;
-                else return getMechRot() >= goal - lowerTolerance
-                        && getMechRot() <= goal + upperTolerance;
+                else return getDegrees() >= goal - lowerTolerance
+                        && getDegrees() <= goal + upperTolerance;
             }
         }
     }
@@ -354,7 +381,7 @@ public class TemplateSubsystem extends SubsystemBase {
     //Unit Conversions
     public double getDegrees() {
         return encoder == null ? motor.getRotorPosition().getValueAsDouble() * gearRatio * 360d
-                : getEncoderRot() * sensorToMechRatio * 360d;
+                : getEncoderDegrees();
     }
 
     /**
@@ -479,7 +506,7 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public double getEncoderDegrees() {
-        return encoder.getAbsolutePosition().getValueAsDouble() * 360 * sensorToMechRatio;
+        return encoder.getAbsolutePosition().getValueAsDouble() * 360d * sensorToMechRatio;
     }
 
     @Override
@@ -492,6 +519,8 @@ public class TemplateSubsystem extends SubsystemBase {
         systemPose.set(getMotorRot());
         systemSpeeds.set(getMotorVelocity());
         systemTimestamp.set(Timer.getFPGATimestamp());
+
+
     }
 
     public void setControl(ControlRequest control) {

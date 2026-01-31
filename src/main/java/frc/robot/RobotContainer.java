@@ -30,6 +30,7 @@ public class RobotContainer {
     ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
 
     public RobotContainer() {
@@ -64,10 +65,6 @@ public class RobotContainer {
         commandXboxController.leftTrigger()
                 .onTrue(new VelocityCommand(hopperSubsystem, 40))
                 .onFalse(new VelocityCommand(hopperSubsystem, 0));
-
-        commandXboxController.b()
-                .onTrue(new PositionCommand(hoodSubsystem, 20))
-                .onFalse(new PositionCommand(hoodSubsystem, 1));
 
     }
 
