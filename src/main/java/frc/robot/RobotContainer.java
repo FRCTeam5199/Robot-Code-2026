@@ -14,6 +14,9 @@ import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.Setpoint;
+
+import java.util.Map;
 
 
 public class RobotContainer {
@@ -23,6 +26,8 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     public static Telemetry logger = new Telemetry(MaxSpeed);
+
+    private static Setpoint currentSetpoint = Setpoint.HUB;
     CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
     IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
@@ -37,6 +42,13 @@ public class RobotContainer {
         configureBindings();
     }
 
+    public static Setpoint getCurrentSetpoint() {
+        return currentSetpoint;
+    }
+
+    public static void setCurrentSetpoint(Setpoint currentSetpoint) {
+        RobotContainer.currentSetpoint = currentSetpoint;
+    }
 
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -51,21 +63,56 @@ public class RobotContainer {
 
         commandXboxController.rightTrigger()
                 .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
-                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 60)))
+                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 60))
+                        .alongWith(new VelocityCommand(hopperSubsystem, -10)))
                 .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
-                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
-        commandXboxController.a()
-                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT));
-        commandXboxController.x().onTrue(
-                new SequentialCommandGroup(
-                        new PositionCommand(intakePivotSubsystem, 70),
-                        new PositionCommand(intakePivotSubsystem, 107)
-                ).repeatedly()
-        ).onFalse(new PositionCommand(intakePivotSubsystem, 0));
-        commandXboxController.leftTrigger()
-                .onTrue(new VelocityCommand(hopperSubsystem, 40))
-                .onFalse(new VelocityCommand(hopperSubsystem, 0));
+                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 0))
+                        .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
+        commandXboxController.leftTrigger().onTrue(
+                new SelectCommand<>(Map.ofEntries(
+                        Map.entry(Setpoint.HUB, new ParallelCommandGroup(
+                                new PositionCommand(turretSubsystem, Setpoint.HUB.getTurretAngle()),
+                                new PositionCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle()),
+                                new VelocityCommand(shooterSubsystem, Setpoint.HUB.getShooterSpeed())
+                        )),
+                        Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
+                                new PositionCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle()),
+                                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
+                                new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed())
+                        )),
+                        Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
+                                new PositionCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle()),
+                                new PositionCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle()),
+                                new VelocityCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed())
+                        )),
+                        Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
+                                new PositionCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle()),
+                                new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
+                                new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed())
+                        ))
+                ), RobotContainer::getCurrentSetpoint)
+        ).onFalse(
+                new ParallelCommandGroup(
+                        new PositionCommand(turretSubsystem, 0),
+                        new PositionCommand(hoodSubsystem, 0),
+                        new VelocityCommand(shooterSubsystem, 0)
+                )
+        );
+
+        commandXboxController.rightBumper().onTrue(new VelocityCommand(kickerSubsystem, 50)
+                        .alongWith(new WaitUntilCommand(() -> kickerSubsystem.isMechAtGoal(true))
+                                .andThen(new VelocityCommand(hopperSubsystem, 25)))) //25
+                .onFalse(new VelocityCommand(kickerSubsystem, 0)
+                        .alongWith(new VelocityCommand(hopperSubsystem, 0)));
+
+        commandXboxController.leftBumper().onTrue(
+                new PositionCommand(intakePivotSubsystem, 107));
+
+        commandXboxController.y().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB)));
+        commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));
+        commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
+        commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
     }
 
     public Command getAutonomousCommand() {

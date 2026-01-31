@@ -312,8 +312,8 @@ public class TemplateSubsystem extends SubsystemBase {
                 return getDegrees() >= goal - lowerTolerance && getDegrees() <= goal + upperTolerance;
             }
             default -> {
-                if (isVelocity) return getMechVelocity() >= goal - lowerTolerance
-                        && getMechVelocity() <= goal - upperTolerance;
+                if (isVelocity) return getMotorVelocity() >= goal - lowerTolerance
+                        && getMotorVelocity() <= goal + upperTolerance;
                 else return getDegrees() >= goal - lowerTolerance
                         && getDegrees() <= goal + upperTolerance;
             }

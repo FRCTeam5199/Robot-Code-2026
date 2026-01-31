@@ -8,7 +8,7 @@ public class KickerConstants {
     public static final double KICKER_STATOR_CURRENT_LIMIT = 60;
     public static final double KICKER_SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean KICKER_INVERTED = true;
-    public static final boolean KICKER_BRAKE = true;
+    public static final boolean KICKER_BRAKE = false;
 
     public static final Slot0Configs KICKER_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(2)
@@ -20,11 +20,11 @@ public class KickerConstants {
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
-    public static final double KICKER_ACCELERATION = 400;
-    public static final double KICKER_JERK = 4000;
+    public static final double KICKER_ACCELERATION = 800;
+    public static final double KICKER_JERK = 8000;
 
-    public static final double KICKER_LOWER_TOLERANCE = 2;
-    public static final double KICKER_UPPER_TOLERANCE = 2;
+    public static final double KICKER_LOWER_TOLERANCE = 4;
+    public static final double KICKER_UPPER_TOLERANCE = 4;
 
     public static final double[][] KICKER_GEAR_RATIO = {{1, 1}};
 }

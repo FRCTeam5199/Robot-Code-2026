@@ -7,8 +7,8 @@ public class ShooterConstants {
     public static final int SHOOTER_MOTOR_ID = 21;
     public static final double SHOOTER_STATOR_CURRENT_LIMIT = 60;
     public static final double SHOOTER_SUPPLY_CURRENT_LIMIT = 60;
-    public static final boolean SHOOTER_INVERTED = true;
-    public static final boolean SHOOTER_BRAKE = true;
+    public static final boolean SHOOTER_INVERTED = false;
+    public static final boolean SHOOTER_BRAKE = false;
 
     public static final Slot0Configs SHOOTER_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(1.5)
@@ -20,7 +20,7 @@ public class ShooterConstants {
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
-    public static final double SHOOTER_ACCELERATION = 1000;
+    public static final double SHOOTER_ACCELERATION = 400;
     public static final double SHOOTER_JERK = 4000;
 
     public static final double SHOOTER_LOWER_TOLERANCE = 2;

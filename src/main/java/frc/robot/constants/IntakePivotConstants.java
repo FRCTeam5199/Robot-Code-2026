@@ -13,8 +13,8 @@ public class IntakePivotConstants {
     public static final boolean INTAKE_PIVOT_INVERTED = false;
     public static final boolean INTAKE_PIVOT_BRAKE = true;
 
-    public static final double INTAKE_OUT = 100;
-    public static final double INTAKE_IN = 10;
+    public static final double INTAKE_OUT = 105;
+    public static final double INTAKE_IN = 5;
 
     public static final Slot0Configs INTAKE_PIVOT_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(25)
