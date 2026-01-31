@@ -7,16 +7,23 @@ package frc.robot;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private final RobotContainer m_robotContainer;
     private final UserInterface userInterface = UserInterface.getInstance();
+    public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
+
+    public static LimelightHelpers.PoseEstimate limelightRightData;
+    public static LimelightHelpers.PoseEstimate limelightLeftData;
 
     private static TalonFX motorLeader;
     private static TalonFX motorFollower;
@@ -71,6 +78,13 @@ public class Robot extends TimedRobot {
         userInterface.setTab("Control");
         
         System.out.println("Set Components");
+
+        
+        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
+                .33, .28, .25, 0, 5, 25);
+        LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
+                .33, -.28, .25, 0, 5, -25);
+        commandSwerveDrivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.1, .1, 9999999.0));
     }
 
     @Override
@@ -168,18 +182,49 @@ public class Robot extends TimedRobot {
             userInterface.setComponentData("Reset Voltage (F)", false);
             motorFollower.setVoltage(0);
         }
+        
+        if(LimelightHelpers.getTV("limelight-right")) {
+            LimelightHelpers.SetRobotOrientation("limelight-right",
+                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(),
+                    0, 0, 0, 0, 0);
+            limelightRightData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+
+            if (limelightRightData.pose != null) {
+//            commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
+//                    limelightRightData.timestampSeconds, VecBuilder.fill(.3,.3,9999999).times(limelightRightData.avgTagDist));
+            }
+        }
+
+        if (LimelightHelpers.getTV("limelight-left")) {
+            LimelightHelpers.SetRobotOrientation("limelight-left",
+                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(),
+                    0, 0, 0, 0, 0);
+            limelightLeftData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+
+            if (limelightLeftData.pose != null) {
+                commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
+                        limelightLeftData.timestampSeconds);
+//                System.out.println("Left Cam Tag Distance: " + limelightLeftData.avgTagDist);
+            }
+        }
 
         CommandScheduler.getInstance().run();
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        LimelightHelpers.SetThrottle("limelight-right", 200);
+        LimelightHelpers.SetThrottle("limelight-left", 200);
+    }
 
     @Override
     public void disabledPeriodic() {}
 
     @Override
-    public void disabledExit() {}
+    public void disabledExit() {
+        LimelightHelpers.SetThrottle("limelight-right", 0);
+        LimelightHelpers.SetThrottle("limelight-left", 0);
+    }
 
     @Override
     public void autonomousInit() {

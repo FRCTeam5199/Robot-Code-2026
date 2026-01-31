@@ -40,15 +40,15 @@ public class RobotContainer {
     public static Telemetry logger = new Telemetry(MaxSpeed);
 
     private static Setpoint currentSetpoint = Setpoint.HUB;
-    CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
-    IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
-    HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
-    ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-    KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
-    HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-    TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
-    CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+    public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
+    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
+    public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
+    public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
+    public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
+    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
+    public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
 
     public RobotContainer() {
         configureBindings();
