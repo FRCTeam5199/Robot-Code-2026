@@ -195,6 +195,22 @@ public class TemplateSubsystem extends SubsystemBase {
         gearRatio = motorToSensorRatio;
     }
 
+    public void halfConfigureEncoder(int encoderId, String canbus, double magnetOffset,
+                                     double sensorToMechRatio, double motorToSensorRatio, boolean isCCWPositive) {
+        encoder = new CANcoder(encoderId, canbus);
+        encoderConfig = new CANcoderConfiguration();
+
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+        encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
+                : SensorDirectionValue.Clockwise_Positive;
+
+        encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
+        encoder.getConfigurator().apply(encoderConfig);
+
+        motor.setPosition(encoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
+        encoder = null;
+    }
+
     public void setPercent(double percent) {
         followLastMechProfile = false;
         if (percent > 1) percent /= 100;
