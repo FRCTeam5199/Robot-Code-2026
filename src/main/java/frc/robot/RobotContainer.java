@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
@@ -73,13 +74,13 @@ public class RobotContainer {
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric)
                 .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
-        // commandXboxController.rightTrigger()
-        //         .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
-        //                 .alongWith(new VelocityCommand(intakeRollerSubsystem, 60))
-        //                 .alongWith(new VelocityCommand(hopperSubsystem, -10)))
-        //         .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
-        //                 .alongWith(new VelocityCommand(intakeRollerSubsystem, 0))
-        //                 .alongWith(new VelocityCommand(hopperSubsystem, 0)));
+        commandXboxController.rightTrigger()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
+                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 60))
+                        .alongWith(new VelocityCommand(hopperSubsystem, -10)))
+                .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
+                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 0))
+                        .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
         commandXboxController.leftTrigger().onTrue(
                 new SelectCommand<>(Map.ofEntries(
@@ -118,9 +119,12 @@ public class RobotContainer {
                 .onFalse(new VelocityCommand(kickerSubsystem, 0)
                         .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
-        // commandXboxController.leftBumper().onTrue(
-        //         new PositionCommand(intakePivotSubsystem, 107));
-
+        commandXboxController.leftBumper().onTrue(
+                        new SequentialCommandGroup(
+                                new PositionCommand(intakePivotSubsystem, 70),
+                                new PositionCommand(intakePivotSubsystem, 107)
+                        ).repeatedly())
+                        .onFalse(new PositionCommand(intakePivotSubsystem, 0));
         commandXboxController.y().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB)));
         commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));
         commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
