@@ -30,10 +30,10 @@ public class TurretConstants {
     public static final double TURRET_LOWER_TOLERANCE = 2;
     public static final double TURRET_UPPER_TOLERANCE = 2;
 
-    public static final double[][] TURRET_GEAR_RATIO = {{50, 12}, {102, 10}};
+    public static final double[][] TURRET_GEAR_RATIO = {{50, 12}, {100, 10}};
 
     public static final double TURRET_ENCODER_MAGNET_OFFSET = 0.177734375;
-    public static final double TURRET_SENSOR_TO_MECH_GEAR_RATIO = 102d / 10d;
+    public static final double TURRET_SENSOR_TO_MECH_GEAR_RATIO = 100d / 10d;
     public static final double TURRET_MOTOR_TO_SENSOR_GEAR_RATIO = 50d / 12d;
     public static final boolean TURRET_CCW_POSITIVE = true;
     public static final double TURRET_ABSOLUTE_DISCONTINUITY_POINT = .5;
