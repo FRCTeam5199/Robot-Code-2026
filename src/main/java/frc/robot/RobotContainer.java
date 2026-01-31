@@ -11,44 +11,40 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IntakePivotConstants;
 import frc.robot.constants.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
-import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.*;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 
 
 public class RobotContainer {
-  CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
-  IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-  IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
-  HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
-  CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+    public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
+    public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
+    public final static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
+            .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
+            .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
+    public static Telemetry logger = new Telemetry(MaxSpeed);
+    CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
+    IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
+    IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
+    HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
+    CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
 
-  public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
-  public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
-
-  public final static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
-          .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
-          .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
-  public static Telemetry logger = new Telemetry(MaxSpeed);
-
-  public RobotContainer() {
-    configureBindings();
-  }
+    public RobotContainer() {
+        configureBindings();
+    }
 
 
-  private void configureBindings() {
-    commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-            commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-commandXboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-commandXboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            ));
+    private void configureBindings() {
+        commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                        .withVelocityY(-commandXboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                        .withRotationalRate(-commandXboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                ));
 
-    commandXboxController.button(8).onTrue(commandSwerveDrivetrain
-            .runOnce(commandSwerveDrivetrain::seedFieldCentric)
-            .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
+        commandXboxController.button(8).onTrue(commandSwerveDrivetrain
+                .runOnce(commandSwerveDrivetrain::seedFieldCentric)
+                .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
         commandXboxController.rightTrigger()
                 .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
@@ -58,14 +54,17 @@ public class RobotContainer {
         commandXboxController.a()
                 .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT));
         commandXboxController.x().onTrue(
-                        new SequentialCommandGroup(
-                                new PositionCommand(intakePivotSubsystem, 70),
-                                new PositionCommand(intakePivotSubsystem, 107)
-                        ).repeatedly()
-                ).onFalse(new PositionCommand(intakePivotSubsystem, 0));
+                new SequentialCommandGroup(
+                        new PositionCommand(intakePivotSubsystem, 70),
+                        new PositionCommand(intakePivotSubsystem, 107)
+                ).repeatedly()
+        ).onFalse(new PositionCommand(intakePivotSubsystem, 0));
         commandXboxController.leftTrigger()
                 .onTrue(new VelocityCommand(hopperSubsystem, 40))
                 .onFalse(new VelocityCommand(hopperSubsystem, 0));
+
+        commandXboxController.b().onTrue(new VelocityCommand(shooterSubsystem, 60))
+                .onFalse(new VelocityCommand(shooterSubsystem, 0));
 
     }
 
