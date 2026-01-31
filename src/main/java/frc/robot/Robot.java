@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.IntakePivotSubsystem;
@@ -14,21 +15,15 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private final RobotContainer m_robotContainer;
-    // private final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    // private final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
+    private final UserInterface userInterface = UserInterface.getInstance();
 
-    // /* log and replay timestamp and joystick data */
-    // private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
-    //     .withTimestampReplay()
-    //     .withJoystickReplay();
+    /* log and replay timestamp and joystick data */
+    private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
+        .withTimestampReplay()
+        .withJoystickReplay();
 
     public Robot() {
         m_robotContainer = new RobotContainer();
-    }
-
-    @Override
-    public void robotInit() {
-        UserInterface.init();
     }
 
     @Override

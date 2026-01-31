@@ -1,8 +1,10 @@
 package frc.robot.subsystems.templates;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.UserInterface;
 
 public class PositionCommand extends Command {
+    private UserInterface userInterface = UserInterface.getInstance();
     private double velocity;
     private double acceleration;
     private double jerk;
@@ -11,7 +13,6 @@ public class PositionCommand extends Command {
     private boolean updateGoalPosition;
     private boolean changeConstraints;
     private boolean uniqueConstraints;
-
 
     public PositionCommand(TemplateSubsystem templateSubsystem, double goal) {
         this.templateSubsystem = templateSubsystem;
@@ -41,10 +42,13 @@ public class PositionCommand extends Command {
 
     @Override
     public void initialize() {
+        userInterface.addOutputStream(this.getName());
         if (changeConstraints) {
-            templateSubsystem.setPosition(goal, velocity, acceleration, jerk);
+            templateSubsystem.setPosition(goal);
+            templateSubsystem.setConstraints(velocity, acceleration, jerk);
             changeConstraints = false;
         } else {
+            userInterface.printOutput(this.getName(), "");
             templateSubsystem.setPosition(goal);
         }
         templateSubsystem.setCommandRunning(true);
@@ -61,7 +65,6 @@ public class PositionCommand extends Command {
             changeConstraints = false;
         }
     }
-
 
     @Override
     public boolean isFinished() {
