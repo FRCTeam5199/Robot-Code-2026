@@ -42,13 +42,11 @@ public class PositionCommand extends Command {
 
     @Override
     public void initialize() {
-        userInterface.addOutputStream(this.getName());
         if (changeConstraints) {
             templateSubsystem.setPosition(goal);
             templateSubsystem.setConstraints(velocity, acceleration, jerk);
             changeConstraints = false;
         } else {
-            userInterface.printOutput(this.getName(), "");
             templateSubsystem.setPosition(goal);
         }
         templateSubsystem.setCommandRunning(true);

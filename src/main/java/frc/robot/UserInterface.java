@@ -5,7 +5,6 @@ import java.util.Map;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -16,7 +15,6 @@ public class UserInterface {
     private static UserInterface self;
 
     public static Map<String, SimpleWidget> components = new HashMap<String, SimpleWidget>();
-    public static Map<String, SimpleWidget> outputComponents = new HashMap<String, SimpleWidget>();
 
     private UserInterface() {}
 
@@ -53,23 +51,6 @@ public class UserInterface {
     public void deleteComponent(String name) {
         components.get(name).close();
         components.remove(name);
-    }
-
-    public SimpleWidget addOutputStream(String origin) {
-        return outputComponents.putIfAbsent(origin, Shuffleboard.getTab("Output")
-            .add(origin, "")
-            .withWidget(BuiltInWidgets.kTextView)
-            .withPosition(10, outputComponents.size())
-            .withSize(1, 1));
-    }
-
-    public void deleteOutputStream(String origin) {
-        outputComponents.get(origin).close();
-        outputComponents.remove(origin);
-    }
-
-    public void printOutput(String origin, String print) {
-        outputComponents.get(origin).getEntry().setString(print);
     }
 
     public static void putData(String key, Sendable data) {
