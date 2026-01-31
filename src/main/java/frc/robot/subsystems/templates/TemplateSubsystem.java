@@ -140,9 +140,9 @@ public class TemplateSubsystem extends SubsystemBase {
         motor.getConfigurator().apply(motorConfig);
     }
 
-    public void configureRoller(double motorMinRot, double motorMaxRot) {
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = motorMaxRot;
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = motorMinRot;
+    public void configureRoller(double motorMinDegrees, double motorMaxDegrees) {
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMaxDegrees);
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
@@ -210,11 +210,12 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void halfConfigureEncoder(int encoderId, String canbus, double magnetOffset,
-                                 double sensorToMechRatio, double motorToSensorRatio, boolean isCCWPositive) {
+                                     double sensorToMechRatio, double motorToSensorRatio,
+                                     boolean isCCWPositive, double absoluteDiscontinuityPoint) {
         encoder = new CANcoder(encoderId, canbus);
         encoderConfig = new CANcoderConfiguration();
 
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = absoluteDiscontinuityPoint;
         encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
                 : SensorDirectionValue.Clockwise_Positive;
 
