@@ -31,17 +31,19 @@ import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
+import frc.robot.utility.ShotCalculator;
 
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
+    public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
-    public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
     public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
     public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
     public final static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
@@ -49,6 +51,7 @@ public class RobotContainer {
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     public static Telemetry logger = new Telemetry(MaxSpeed);
     private static Setpoint currentSetpoint = Setpoint.HUB;
+    private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true);
 
     public RobotContainer() {
         configureBindings();
@@ -62,6 +65,10 @@ public class RobotContainer {
         RobotContainer.currentSetpoint = currentSetpoint;
     }
 
+    public static void periodic() {
+        turretControl.setGoal(shotCalculator.getTurretAngle());
+    }
+
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
@@ -70,8 +77,9 @@ public class RobotContainer {
                 ));
 
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
-                .runOnce(commandSwerveDrivetrain::seedFieldCentric)
-                .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
+                .runOnce(commandSwerveDrivetrain::seedFieldCentric));
+        commandXboxController.button(7)
+                .onTrue(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)));
 
         commandXboxController.rightTrigger()
                 .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
@@ -128,6 +136,8 @@ public class RobotContainer {
         commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));
         commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
         commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
+
+        commandXboxController.povUp().onTrue(turretControl);
 
         commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }

@@ -13,6 +13,7 @@ public class PositionCommand extends Command {
     private boolean updateGoalPosition;
     private boolean changeConstraints;
     private boolean uniqueConstraints;
+    private boolean shouldNotEnd;
 
     public PositionCommand(TemplateSubsystem templateSubsystem, double goal) {
         this.templateSubsystem = templateSubsystem;
@@ -20,6 +21,17 @@ public class PositionCommand extends Command {
         updateGoalPosition = false;
         changeConstraints = false;
         uniqueConstraints = false;
+
+        addRequirements(templateSubsystem);
+    }
+
+    public PositionCommand(TemplateSubsystem templateSubsystem, double goal, boolean shouldNotEnd) {
+        this.templateSubsystem = templateSubsystem;
+        this.goal = goal;
+        updateGoalPosition = false;
+        changeConstraints = false;
+        uniqueConstraints = false;
+        this.shouldNotEnd = shouldNotEnd;
 
         addRequirements(templateSubsystem);
     }
@@ -66,7 +78,7 @@ public class PositionCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return templateSubsystem.isMechAtGoal(false);
+        return templateSubsystem.isMechAtGoal(false) && !shouldNotEnd;
     }
 
     @Override

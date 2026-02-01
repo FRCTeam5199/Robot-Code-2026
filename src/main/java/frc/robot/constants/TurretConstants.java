@@ -10,8 +10,8 @@ public class TurretConstants {
     public static final double TURRET_STATOR_CURRENT_LIMIT = 60;
     public static final double TURRET_SUPPLY_CURRENT_LIMIT = 60;
 
-    public static final boolean TURRET_INVERTED = true;
-    public static final boolean TURRET_BRAKE = false;
+    public static final boolean TURRET_INVERTED = false;
+    public static final boolean TURRET_BRAKE = true;
 
     public static final Slot0Configs TURRET_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(50)
@@ -23,9 +23,9 @@ public class TurretConstants {
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
-    public static final double TURRET_VELOCITY = 150;
-    public static final double TURRET_ACCELERATION = 400;
-    public static final double TURRET_JERK = 4000;
+    public static final double TURRET_VELOCITY = 75;
+    public static final double TURRET_ACCELERATION = 200;
+    public static final double TURRET_JERK = 2000;
 
     public static final double TURRET_LOWER_TOLERANCE = 2;
     public static final double TURRET_UPPER_TOLERANCE = 2;

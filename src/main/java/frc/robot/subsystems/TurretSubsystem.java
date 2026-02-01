@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
@@ -16,7 +17,7 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.TURRET_JERK,
                 TurretConstants.TURRET_LOWER_TOLERANCE,
                 TurretConstants.TURRET_UPPER_TOLERANCE,
-                TurretConstants.TURRET_GEAR_RATIO, "TURRET");
+                TurretConstants.TURRET_GEAR_RATIO, "ROBOT_TO_TURRET");
 
         configureMotor(TurretConstants.TURRET_INVERTED, TurretConstants.TURRET_BRAKE,
                 TurretConstants.TURRET_SUPPLY_CURRENT_LIMIT,
@@ -61,7 +62,5 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        }
 //        System.out.println(encoderRotationsContinuous * TurretConstants.TURRET_SENSOR_TO_MECH_GEAR_RATIO * 360d);
 //        System.out.println("Degrees " + getDegrees());
-        // System.out.println("Turret Angle: " + getDegrees());
-
     }
 }

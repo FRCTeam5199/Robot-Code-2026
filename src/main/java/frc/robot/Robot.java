@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -87,6 +88,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        RobotContainer.periodic();
         if (userInterface.getComponentData("Set (L)").getBoolean(false)) {
             userInterface.setComponentData("Set (L)", false);
             motorLeader = new TalonFX((int) userInterface.getComponentData("Motor ID (L)").getInteger(0));
@@ -191,27 +193,24 @@ public class Robot extends TimedRobot {
 //                    0, 0, 0, 0, 0);
 //            limelightRightData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
 //
-//            if (limelightRightData.pose != null) {
+//            if (limelightRightData != null) {
 //            commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
 //                    limelightRightData.timestampSeconds, VecBuilder.fill(.3,.3,9999999).times(limelightRightData.avgTagDist));
 //            }
 //        }
 
         if (LimelightHelpers.getTV("limelight-left")) {
-            double robotYaw = commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble();
-            if (DriverStation.getAlliance().isPresent() &&
-                    DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-                robotYaw += 180;
-            }
             LimelightHelpers.SetRobotOrientation("limelight-left",
-                    robotYaw, 0, 0, 0, 0, 0);
+                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
             limelightLeftData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
-            if (limelightLeftData.pose != null) {
+            if (limelightLeftData != null) {
+//                if (commandSwerveDrivetrain.getPose().equals(new Pose2d())
+//                        || limelightLeftData.pose.getTranslation()
+//                        .getDistance(commandSwerveDrivetrain.getPose().getTranslation()) < 1)
                 commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
                         limelightLeftData.timestampSeconds);
 //                System.out.println("Left Cam Tag Distance: " + limelightLeftData.avgTagDist);
-                System.out.println("Limelight Pose: " + limelightLeftData.avgTagDist);
             }
         }
 

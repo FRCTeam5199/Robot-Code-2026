@@ -11,7 +11,7 @@ public class HoodConstants {
     public static final double HOOD_STATOR_CURRENT_LIMIT = 60;
     public static final double HOOD_SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean HOOD_INVERTED = true;
-    public static final boolean HOOD_BRAKE = false;
+    public static final boolean HOOD_BRAKE = true;
 
     public static final Slot0Configs HOOD_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(5)
