@@ -73,13 +73,19 @@ public class RobotContainer {
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric)
                 .alongWith(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))));
 
+        commandXboxController.povDown()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT));
+
+        commandXboxController.povUp()
+                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN));
+
         commandXboxController.rightTrigger()
-                .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
-                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 60))
-                        .alongWith(new VelocityCommand(hopperSubsystem, -10)))
-                .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
-                        .alongWith(new VelocityCommand(intakeRollerSubsystem, 0))
-                        .alongWith(new VelocityCommand(hopperSubsystem, 0)));
+                // .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
+                        .onTrue(new VelocityCommand(intakeRollerSubsystem, 60))
+                        // .alongWith(new VelocityCommand(hopperSubsystem, -10)))
+                // .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
+                        .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
+                        // .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
         commandXboxController.leftTrigger().onTrue(
                 new SelectCommand<>(Map.ofEntries(
@@ -130,6 +136,11 @@ public class RobotContainer {
         commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
 
         commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+        commandXboxController.povRight().onTrue(
+                new SequentialCommandGroup(
+                new PositionCommand(intakePivotSubsystem, 30),
+                new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT))
+                .repeatedly());
     }
 
     public Command getAutonomousCommand() {
