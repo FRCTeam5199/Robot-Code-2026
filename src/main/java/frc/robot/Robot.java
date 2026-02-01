@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,17 +17,14 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
-    private Command m_autonomousCommand;
-
-    private final RobotContainer m_robotContainer;
-    private final UserInterface userInterface = UserInterface.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
-
     public static LimelightHelpers.PoseEstimate limelightRightData;
     public static LimelightHelpers.PoseEstimate limelightLeftData;
-
     private static TalonFX motorLeader;
     private static TalonFX motorFollower;
+    private final RobotContainer m_robotContainer;
+    private final UserInterface userInterface = UserInterface.getInstance();
+    private Command m_autonomousCommand;
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -76,14 +74,14 @@ public class Robot extends TimedRobot {
         userInterface.createComponent("Reset Voltage (F)", "Control", BuiltInWidgets.kToggleButton, 8, 3, 1, 1, false);
 
         userInterface.setTab("Control");
-        
-        System.out.println("Set Components");
 
-        
-        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
-                .33, .28, .25, 0, 5, 25);
+//        System.out.println("Set Components");
+
+
+//        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
+//                .33, .28, .25, 0, 5, 25);
         LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
-                .33, -.28, .25, 0, 5, -25);
+                -.325, -.341, .406, 0, 5, 135.218);
         commandSwerveDrivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.1, .1, 9999999.0));
     }
 
@@ -91,15 +89,17 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         if (userInterface.getComponentData("Set (L)").getBoolean(false)) {
             userInterface.setComponentData("Set (L)", false);
-            motorLeader = new TalonFX((int)userInterface.getComponentData("Motor ID (L)").getInteger(0));
+            motorLeader = new TalonFX((int) userInterface.getComponentData("Motor ID (L)").getInteger(0));
         }
 
-        if (motorLeader != null) { if (motorLeader.isAlive()) {
-            userInterface.setComponentData("Motor Percent (L)", motorLeader.get());
-            userInterface.setComponentData("Motor Position (L)", motorLeader.getPosition().getValueAsDouble());
-            userInterface.setComponentData("Motor Velocity (L)", motorLeader.getVelocity().getValueAsDouble());
-            userInterface.setComponentData("Motor Voltage (L)", motorLeader.getMotorVoltage().getValueAsDouble());
-        }}
+        if (motorLeader != null) {
+            if (motorLeader.isAlive()) {
+                userInterface.setComponentData("Motor Percent (L)", motorLeader.get());
+                userInterface.setComponentData("Motor Position (L)", motorLeader.getPosition().getValueAsDouble());
+                userInterface.setComponentData("Motor Velocity (L)", motorLeader.getVelocity().getValueAsDouble());
+                userInterface.setComponentData("Motor Voltage (L)", motorLeader.getMotorVoltage().getValueAsDouble());
+            }
+        }
 
         if (userInterface.getComponentData("Apply Percent (L)").getBoolean(false)) {
             userInterface.setComponentData("Apply Percent (L)", false);
@@ -138,15 +138,17 @@ public class Robot extends TimedRobot {
 
         if (userInterface.getComponentData("Set (F)").getBoolean(false)) {
             userInterface.setComponentData("Set (F)", false);
-            motorFollower = new TalonFX((int)userInterface.getComponentData("Motor ID (F)").getInteger(0));
+            motorFollower = new TalonFX((int) userInterface.getComponentData("Motor ID (F)").getInteger(0));
         }
-        
-        if (motorFollower != null) { if (motorFollower.isAlive()) {
-            userInterface.setComponentData("Motor Percent (F)", motorFollower.get());
-            userInterface.setComponentData("Motor Position (F)", motorFollower.getPosition().getValueAsDouble());
-            userInterface.setComponentData("Motor Velocity (F)", motorFollower.getVelocity().getValueAsDouble());
-            userInterface.setComponentData("Motor Voltage (F)", motorFollower.getMotorVoltage().getValueAsDouble());
-        }}
+
+        if (motorFollower != null) {
+            if (motorFollower.isAlive()) {
+                userInterface.setComponentData("Motor Percent (F)", motorFollower.get());
+                userInterface.setComponentData("Motor Position (F)", motorFollower.getPosition().getValueAsDouble());
+                userInterface.setComponentData("Motor Velocity (F)", motorFollower.getVelocity().getValueAsDouble());
+                userInterface.setComponentData("Motor Voltage (F)", motorFollower.getMotorVoltage().getValueAsDouble());
+            }
+        }
 
         if (userInterface.getComponentData("Apply Percent (F)").getBoolean(false)) {
             userInterface.setComponentData("Apply Percent (F)", false);
@@ -182,29 +184,34 @@ public class Robot extends TimedRobot {
             userInterface.setComponentData("Reset Voltage (F)", false);
             motorFollower.setVoltage(0);
         }
-        
-        if(LimelightHelpers.getTV("limelight-right")) {
-            LimelightHelpers.SetRobotOrientation("limelight-right",
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(),
-                    0, 0, 0, 0, 0);
-            limelightRightData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
 
-            if (limelightRightData.pose != null) {
+//        if (LimelightHelpers.getTV("limelight-right")) {
+//            LimelightHelpers.SetRobotOrientation("limelight-right",
+//                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(),
+//                    0, 0, 0, 0, 0);
+//            limelightRightData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+//
+//            if (limelightRightData.pose != null) {
 //            commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
 //                    limelightRightData.timestampSeconds, VecBuilder.fill(.3,.3,9999999).times(limelightRightData.avgTagDist));
-            }
-        }
+//            }
+//        }
 
         if (LimelightHelpers.getTV("limelight-left")) {
+            double robotYaw = commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble();
+            if (DriverStation.getAlliance().isPresent() &&
+                    DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+                robotYaw += 180;
+            }
             LimelightHelpers.SetRobotOrientation("limelight-left",
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(),
-                    0, 0, 0, 0, 0);
+                    robotYaw, 0, 0, 0, 0, 0);
             limelightLeftData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
             if (limelightLeftData.pose != null) {
                 commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
                         limelightLeftData.timestampSeconds);
 //                System.out.println("Left Cam Tag Distance: " + limelightLeftData.avgTagDist);
+                System.out.println("Limelight Pose: " + limelightLeftData.avgTagDist);
             }
         }
 
@@ -218,7 +225,8 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+    }
 
     @Override
     public void disabledExit() {
@@ -236,10 +244,12 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+    }
 
     @Override
-    public void autonomousExit() {}
+    public void autonomousExit() {
+    }
 
     @Override
     public void teleopInit() {
@@ -250,11 +260,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        
+
     }
 
     @Override
-    public void teleopExit() {}
+    public void teleopExit() {
+    }
 
     @Override
     public void testInit() {
@@ -262,11 +273,14 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+    }
 
     @Override
-    public void testExit() {}
+    public void testExit() {
+    }
 
     @Override
-    public void simulationPeriodic() {}
+    public void simulationPeriodic() {
+    }
 }

@@ -33,14 +33,6 @@ import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
 
 public class RobotContainer {
-    public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
-    public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
-    public final static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
-            .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
-            .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
-    public static Telemetry logger = new Telemetry(MaxSpeed);
-
-    private static Setpoint currentSetpoint = Setpoint.HUB;
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
@@ -50,6 +42,13 @@ public class RobotContainer {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+    public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
+    public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
+    public final static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
+            .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
+            .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
+    public static Telemetry logger = new Telemetry(MaxSpeed);
+    private static Setpoint currentSetpoint = Setpoint.HUB;
 
     public RobotContainer() {
         configureBindings();
@@ -124,11 +123,13 @@ public class RobotContainer {
                                 new PositionCommand(intakePivotSubsystem, 70),
                                 new PositionCommand(intakePivotSubsystem, 107)
                         ).repeatedly())
-                        .onFalse(new PositionCommand(intakePivotSubsystem, 0));
+                .onFalse(new PositionCommand(intakePivotSubsystem, 0));
         commandXboxController.y().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB)));
         commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));
         commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
         commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
+
+        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
