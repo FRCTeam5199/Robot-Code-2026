@@ -14,7 +14,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
@@ -26,6 +30,10 @@ public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
     private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
+    private final static HoodSubsystem hoodSubystem = HoodSubsystem.getInstance();
+    private final static IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
+    private static VelocityCommand indexerControl = new VelocityCommand(indexerSubsystem, -20);
+
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -83,7 +91,7 @@ public class Robot extends TimedRobot {
 //                .33, .28, .25, 0, 5, 25);
         LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
                 -.325, -.341, .406, 0, 5, 135.218);
-        commandSwerveDrivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.1, .1, 9999999.0));
+        commandSwerveDrivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999.0));
     }
 
     @Override
@@ -205,11 +213,8 @@ public class Robot extends TimedRobot {
             limelightLeftData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
             if (limelightLeftData != null) {
-//                if (commandSwerveDrivetrain.getPose().equals(new Pose2d())
-//                        || limelightLeftData.pose.getTranslation()
-//                        .getDistance(commandSwerveDrivetrain.getPose().getTranslation()) < 1)
-                commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                        limelightLeftData.timestampSeconds);
+                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
+                            limelightLeftData.timestampSeconds);
 //                System.out.println("Left Cam Tag Distance: " + limelightLeftData.avgTagDist);
             }
         }
@@ -255,6 +260,8 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
+
+        CommandScheduler.getInstance().schedule(indexerControl);
     }
 
     @Override

@@ -23,9 +23,9 @@ public class TurretConstants {
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
-    public static final double TURRET_VELOCITY = 75;
-    public static final double TURRET_ACCELERATION = 200;
-    public static final double TURRET_JERK = 2000;
+    public static final double TURRET_VELOCITY = 150;
+    public static final double TURRET_ACCELERATION = 400;
+    public static final double TURRET_JERK = 4000;
 
     public static final double TURRET_LOWER_TOLERANCE = 2;
     public static final double TURRET_UPPER_TOLERANCE = 2;

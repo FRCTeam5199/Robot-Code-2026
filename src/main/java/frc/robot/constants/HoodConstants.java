@@ -32,11 +32,11 @@ public class HoodConstants {
     public static final double HOOD_LOWER_TOLERANCE = 0;
     public static final double HOOD_UPPER_TOLERANCE = 0;
 
-    public static final double HOOD_MAGNET_OFFSET = -0.476806640625;
+    public static final double HOOD_MAGNET_OFFSET = -0.377197265625;
     public static final boolean HOOD_IS_CCW_POS = false;
 
-    public static final double HOOD_MIN = 2;
-    public static final double HOOD_MAX = 29;
+    public static final double HOOD_MIN = 2; //2
+    public static final double HOOD_MAX = 29;  //29
 
     public static final double HOOD_MOTOR_TO_SENSOR_GEAR_RATIO = 8d;
     public static final double[][] HOOD_GEAR_RATIO = {{48, 12}, {30, 15}, {180, 10}};

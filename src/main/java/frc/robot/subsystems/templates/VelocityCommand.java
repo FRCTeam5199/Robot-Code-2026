@@ -45,13 +45,12 @@ public class VelocityCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return templateSubsystem.isMechAtGoal(true);
     }
 
     @Override
     public void end(boolean interrupted) {
-        templateSubsystem.setPercent(0);
-        if (templateSubsystem.hasSecondaryMotor()) templateSubsystem.setSecondaryPercent(0);
+        System.out.println("Finished");
     }
 
     public void setGoal(double goal) {

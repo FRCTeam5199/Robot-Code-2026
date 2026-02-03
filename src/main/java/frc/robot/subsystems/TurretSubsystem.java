@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
@@ -61,6 +61,6 @@ public class TurretSubsystem extends TemplateSubsystem {
 //            lastEncoderRotation = currentEncoderRotation;
 //        }
 //        System.out.println(encoderRotationsContinuous * TurretConstants.TURRET_SENSOR_TO_MECH_GEAR_RATIO * 360d);
-//        System.out.println("Degrees " + getDegrees());
+    //    System.out.println("Degrees " + getDegrees());
     }
 }
