@@ -11,7 +11,7 @@ public class KickerConstants {
     public static final boolean KICKER_BRAKE = false;
 
     public static final Slot0Configs KICKER_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(2)
+            .withKP(15)
             .withKI(0)
             .withKD(0)
             .withKS(.29)
@@ -23,8 +23,8 @@ public class KickerConstants {
     public static final double KICKER_ACCELERATION = 800;
     public static final double KICKER_JERK = 8000;
 
-    public static final double KICKER_LOWER_TOLERANCE = 4;
-    public static final double KICKER_UPPER_TOLERANCE = 4;
+    public static final double KICKER_LOWER_TOLERANCE = 5;
+    public static final double KICKER_UPPER_TOLERANCE = 5;
 
     public static final double[][] KICKER_GEAR_RATIO = {{1, 1}};
 }

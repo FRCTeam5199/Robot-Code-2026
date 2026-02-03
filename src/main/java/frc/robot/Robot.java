@@ -8,20 +8,23 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
+    private final static HoodSubsystem hoodSubystem = HoodSubsystem.getInstance();
+    private final static IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
+    private final static HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static LimelightHelpers.PoseEstimate limelightRightData;
     public static LimelightHelpers.PoseEstimate limelightLeftData;
@@ -30,10 +33,6 @@ public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
     private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
-    private final static HoodSubsystem hoodSubystem = HoodSubsystem.getInstance();
-    private final static IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
-    private static VelocityCommand indexerControl = new VelocityCommand(indexerSubsystem, -20);
-
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -213,10 +212,26 @@ public class Robot extends TimedRobot {
             limelightLeftData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
             if (limelightLeftData != null) {
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                            limelightLeftData.timestampSeconds);
+                commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
+                        limelightLeftData.timestampSeconds);
 //                System.out.println("Left Cam Tag Distance: " + limelightLeftData.avgTagDist);
             }
+        }
+
+//        System.out.println("Mechanism at goal: " + RobotContainer.areMechanismsAtGoals());
+
+        if (RobotContainer.areMechanismsAtGoals() && indexerSubsystem.getGoal() != 15) {
+//            new ParallelCommandGroup(
+            indexerSubsystem.setVelocity(15);
+            hopperSubsystem.setVelocity(25);
+//                    new VelocityCommand(indexerSubsystem, 15),
+//                    new VelocityCommand(hopperSubsystem, 25));
+        } else if (indexerSubsystem.getGoal() != -15) {
+//            new ParallelCommandGroup(
+//                    new VelocityCommand(indexerSubsystem, -15),
+//                    new VelocityCommand(hopperSubsystem, 0));
+            indexerSubsystem.setVelocity(-15);
+            hopperSubsystem.setVelocity(0);
         }
 
         CommandScheduler.getInstance().run();
@@ -260,8 +275,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-
-        CommandScheduler.getInstance().schedule(indexerControl);
     }
 
     @Override

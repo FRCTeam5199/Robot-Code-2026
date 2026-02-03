@@ -10,14 +10,10 @@ import java.util.Map;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IntakePivotConstants;
@@ -58,7 +54,7 @@ public class RobotContainer {
     private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true);
     private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true);
     private static VelocityCommand shooterSpeed = new VelocityCommand(shooterSubsystem, 0);
-    private static boolean readyToShoot = false;
+//    private static VelocityCommand indexerSpeed = new VelocityCommand(indexerSubsystem, -15);
 
     public RobotContainer() {
         configureBindings();
@@ -72,12 +68,14 @@ public class RobotContainer {
         RobotContainer.currentSetpoint = currentSetpoint;
     }
 
-    public static boolean isReadyToShoot() {
-        return readyToShoot;
-    }
-
     public static void periodic() {
         turretControl.setGoal(shotCalculator.getTurretAngle());
+    }
+
+    public static boolean areMechanismsAtGoals() {
+        return turretSubsystem.isMechAtGoal(false) && hoodSubsystem.isMechAtGoal(false)
+                && shooterSubsystem.isMechAtGoal(true)
+                && kickerSubsystem.isMechAtGoal(true);
     }
 
     private void configureBindings() {
@@ -104,15 +102,15 @@ public class RobotContainer {
 
         commandXboxController.povUp()
                 .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN));
-        
+
 
         commandXboxController.rightTrigger()
                 // .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
-                        .onTrue(new VelocityCommand(intakeRollerSubsystem, 80))
-                        // .alongWith(new VelocityCommand(hopperSubsystem, -10)))
+                .onTrue(new VelocityCommand(intakeRollerSubsystem, 80))
+                // .alongWith(new VelocityCommand(hopperSubsystem, -10)))
                 // .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
-                        .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
-                        // .alongWith(new VelocityCommand(hopperSubsystem, 0)));
+                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
+        // .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
 
         commandXboxController.leftTrigger().onTrue(
@@ -137,26 +135,16 @@ public class RobotContainer {
                                 new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed())
                         ))
-                ), RobotContainer::getCurrentSetpoint)
+                ), RobotContainer::getCurrentSetpoint).alongWith(new VelocityCommand(kickerSubsystem, 30))//.andThen(new VelocityCommand(indexerSubsystem,15).alongWith(new VelocityCommand(hopperSubsystem, 25))
         ).onFalse(
                 new ParallelCommandGroup(
                         new PositionCommand(turretSubsystem, 0),
                         new PositionCommand(hoodSubsystem, 0),
-                        new VelocityCommand(shooterSubsystem, 0)
+                        new VelocityCommand(shooterSubsystem, 0),
+                        new VelocityCommand(kickerSubsystem, 0)
+//                      //new VelocityCommand(indexerSubsystem, -15)
                 )
         );
-
-        commandXboxController.rightBumper().onTrue(
-                new SequentialCommandGroup(
-                        new VelocityCommand(kickerSubsystem, 50)
-                                .alongWith(new VelocityCommand(indexerSubsystem, -20)),
-                        new VelocityCommand(indexerSubsystem, 20)
-                                .alongWith(new VelocityCommand(hopperSubsystem, 25))
-                                .alongWith(new InstantCommand(() -> readyToShoot = true))))
-                .onFalse(new VelocityCommand(kickerSubsystem, 0)
-                        .alongWith(new VelocityCommand(indexerSubsystem, -20))
-                        .alongWith(new VelocityCommand(hopperSubsystem, 0))
-                        .alongWith(new InstantCommand(() -> readyToShoot = false)));
 
         commandXboxController.y().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB)));
         commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));

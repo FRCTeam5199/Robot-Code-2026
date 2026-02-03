@@ -2,6 +2,7 @@ package frc.robot.subsystems.templates;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CustomParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -192,7 +193,7 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public void configureEncoder(int encoderId, String canbus, double magnetOffset,
                                  double sensorToMechRatio, double motorToSensorRatio, boolean isCCWPositive) {
-        encoder = new CANcoder(encoderId, canbus);
+        encoder = new CANcoder(encoderId);
         encoderConfig = new CANcoderConfiguration();
 
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
@@ -218,7 +219,7 @@ public class TemplateSubsystem extends SubsystemBase {
     public void halfConfigureEncoder(int encoderId, String canbus, double magnetOffset,
                                      double sensorToMechRatio, double motorToSensorRatio,
                                      boolean isCCWPositive, double absoluteDiscontinuityPoint) {
-        encoder = new CANcoder(encoderId, canbus);
+        encoder = new CANcoder(encoderId);
         encoderConfig = new CANcoderConfiguration();
 
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = absoluteDiscontinuityPoint;
