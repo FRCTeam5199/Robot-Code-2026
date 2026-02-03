@@ -3,7 +3,6 @@ package frc.robot.subsystems.templates;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CustomParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -22,19 +21,14 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Type;
-
-import java.util.Objects;
-import java.util.function.DoubleSupplier;
 
 public class TemplateSubsystem extends SubsystemBase {
     NetworkTableInstance inst;
     NetworkTable systemStateTable;
     DoublePublisher systemPose;
     DoublePublisher systemSpeeds;
-    DoublePublisher systemTimestamp;
     DoublePublisher systemStatorCurrent;
     DoublePublisher systemVoltage;
     DoublePublisher systemStatorVoltage;
@@ -95,7 +89,7 @@ public class TemplateSubsystem extends SubsystemBase {
         systemStateTable = inst.getTable(SubsystemName);
         systemPose = systemStateTable.getDoubleTopic("Position").publish();
         systemSpeeds = systemStateTable.getDoubleTopic("Speeds").publish();
-        systemTimestamp = systemStateTable.getDoubleTopic("Timestamp").publish();
+        // systemTimestamp = systemStateTable.getDoubleTopic("Timestamp").publish();
         this.name = SubsystemName;
     }
 
@@ -508,9 +502,6 @@ public class TemplateSubsystem extends SubsystemBase {
 
         systemPose.set(getMotorRot());
         systemSpeeds.set(getMotorVelocity());
-        systemTimestamp.set(Timer.getFPGATimestamp());
-
-
     }
 
     public void setControl(ControlRequest control) {
