@@ -14,9 +14,9 @@ public class KickerConstants {
             .withKP(15)
             .withKI(0)
             .withKD(0)
-            .withKS(.29)
+            .withKS(.71)
             .withKG(0)
-            .withKV(.2570694087403599)
+            .withKV(0.303030303030303)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 

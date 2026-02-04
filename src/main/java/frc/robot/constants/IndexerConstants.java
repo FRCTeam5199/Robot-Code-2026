@@ -23,8 +23,8 @@ public class IndexerConstants {
     public static final double INDEXER_ACCELERATION = 400;
     public static final double INDEXER_JERK = 4000;
 
-    public static final double INDEXER_LOWER_TOLERANCE = 4;
-    public static final double INDEXER_UPPER_TOLERANCE = 4;
+    public static final double INDEXER_LOWER_TOLERANCE = 5;
+    public static final double INDEXER_UPPER_TOLERANCE = 5;
 
     public static final double[][] INDEXER_GEAR_RATIO = {{1, 1}};
 }

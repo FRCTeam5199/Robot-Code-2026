@@ -40,7 +40,7 @@ public class RobotContainer {
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
-    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+//     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
@@ -52,9 +52,9 @@ public class RobotContainer {
     public static Telemetry logger = new Telemetry(MaxSpeed);
     private static Setpoint currentSetpoint = Setpoint.HUB;
     private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true);
-    private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true);
+//     private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true);
     private static VelocityCommand shooterSpeed = new VelocityCommand(shooterSubsystem, 0);
-//    private static VelocityCommand indexerSpeed = new VelocityCommand(indexerSubsystem, -15);
+//     private static VelocityCommand indexerSpeed = new VelocityCommand(indexerSubsystem, 0);
 
     public RobotContainer() {
         configureBindings();
@@ -70,10 +70,10 @@ public class RobotContainer {
 
     public static void periodic() {
         turretControl.setGoal(shotCalculator.getTurretAngle());
-    }
+}
 
     public static boolean areMechanismsAtGoals() {
-        return turretSubsystem.isMechAtGoal(false) && hoodSubsystem.isMechAtGoal(false)
+        return turretSubsystem.isMechAtGoal(false) //&& hoodSubsystem.isMechAtGoal(false)
                 && shooterSubsystem.isMechAtGoal(true)
                 && kickerSubsystem.isMechAtGoal(true);
     }
@@ -117,34 +117,36 @@ public class RobotContainer {
                 new SelectCommand<>(Map.ofEntries(
                         Map.entry(Setpoint.HUB, new ParallelCommandGroup(
                                 new PositionCommand(turretSubsystem, Setpoint.HUB.getTurretAngle()),
-                                new PositionCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle()),
+                                //new PositionCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.HUB.getShooterSpeed())
                         )),
                         Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
                                 new PositionCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle()),
-                                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
+                                //new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed())
                         )),
                         Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
                                 new PositionCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle()),
-                                new PositionCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle()),
+                                //new PositionCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed())
                         )),
                         Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
                                 new PositionCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle()),
-                                new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
+                                //new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed())
                         ))
-                ), RobotContainer::getCurrentSetpoint).alongWith(new VelocityCommand(kickerSubsystem, 30))//.andThen(new VelocityCommand(indexerSubsystem,15).alongWith(new VelocityCommand(hopperSubsystem, 25))
+                ), RobotContainer::getCurrentSetpoint).alongWith(new VelocityCommand(kickerSubsystem, 30))
         ).onFalse(
                 new ParallelCommandGroup(
                         new PositionCommand(turretSubsystem, 0),
-                        new PositionCommand(hoodSubsystem, 0),
+                        //new PositionCommand(hoodSubsystem, 0),
                         new VelocityCommand(shooterSubsystem, 0),
                         new VelocityCommand(kickerSubsystem, 0)
-//                      //new VelocityCommand(indexerSubsystem, -15)
                 )
         );
+
+        commandXboxController.rightBumper().onTrue(new VelocityCommand(indexerSubsystem, 15).alongWith(new VelocityCommand(hopperSubsystem, 35))
+        ).onFalse(new VelocityCommand(indexerSubsystem, -15).alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
         commandXboxController.y().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB)));
         commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));

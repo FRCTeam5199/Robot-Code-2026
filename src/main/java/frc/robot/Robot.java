@@ -31,6 +31,8 @@ public class Robot extends LoggedRobot {
     private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
     private final UserInterface userInterface = UserInterface.getInstance();
+    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
+
     private Command m_autonomousCommand;
 
     public Robot() {
@@ -217,19 +219,16 @@ public class Robot extends LoggedRobot {
 
 //        System.out.println("Mechanism at goal: " + RobotContainer.areMechanismsAtGoals());
 
-        if (RobotContainer.areMechanismsAtGoals() && indexerSubsystem.getGoal() != 15) {
-//            new ParallelCommandGroup(
-            indexerSubsystem.setVelocity(15);
-            hopperSubsystem.setVelocity(25);
-//                    new VelocityCommand(indexerSubsystem, 15),
-//                    new VelocityCommand(hopperSubsystem, 25));
-        } else if (indexerSubsystem.getGoal() != -15) {
-//            new ParallelCommandGroup(
-//                    new VelocityCommand(indexerSubsystem, -15),
-//                    new VelocityCommand(hopperSubsystem, 0));
-            indexerSubsystem.setVelocity(-15);
-            hopperSubsystem.setVelocity(0);
-        }
+//         if (RobotContainer.areMechanismsAtGoals() && indexerSubsystem.getGoal() != 15) {
+// // // //          
+//             indexerSubsystem.setVelocity(15);
+//             hopperSubsystem.setVelocity(25);
+// // //                  
+//         } else if (indexerSubsystem.getGoal() != -15) {
+// //        
+//             indexerSubsystem.setVelocity(-15);
+//             hopperSubsystem.setVelocity(0);
+//         }
 
         CommandScheduler.getInstance().run();
     }
@@ -272,6 +271,7 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
+    // CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, -15));
     }
 
     @Override
