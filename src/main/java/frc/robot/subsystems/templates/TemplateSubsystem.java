@@ -4,7 +4,6 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CustomParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -23,22 +22,14 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Type;
 
-import java.util.Objects;
-import java.util.function.DoubleSupplier;
-
 public class TemplateSubsystem extends SubsystemBase {
-    NetworkTableInstance inst;
-    NetworkTable systemStateTable;
-    DoublePublisher systemPose;
-    DoublePublisher systemSpeeds;
-    DoublePublisher systemTimestamp;
-    DoublePublisher systemStatorCurrent;
-    DoublePublisher systemVoltage;
-    DoublePublisher systemStatorVoltage;
+    private NetworkTable networkTable;
+    private DoublePublisher poseData;
+    private DoublePublisher velocityData;
+    private DoublePublisher voltageData;
     private TalonFX motor;
     private TalonFXConfiguration motorConfig;
     private TalonFX followerMotor;
@@ -90,13 +81,13 @@ public class TemplateSubsystem extends SubsystemBase {
             this.gearRatio *= (ratio[1] / ratio[0]);
         }
 
-        inst = NetworkTableInstance.getDefault();
+        /* Subsystem Logging on AdvantageKit */
+        networkTable = NetworkTableInstance.getDefault().getTable(SubsystemName);
 
-        /* Robot swerve drive state */
-        systemStateTable = inst.getTable(SubsystemName);
-        systemPose = systemStateTable.getDoubleTopic("Position").publish();
-        systemSpeeds = systemStateTable.getDoubleTopic("Speeds").publish();
-        systemTimestamp = systemStateTable.getDoubleTopic("Timestamp").publish();
+        poseData = networkTable.getDoubleTopic("Position").publish();
+        velocityData = networkTable.getDoubleTopic("Velocity").publish();
+        voltageData = networkTable.getDoubleTopic("Voltage").publish();
+        
         this.name = SubsystemName;
     }
 
@@ -507,11 +498,9 @@ public class TemplateSubsystem extends SubsystemBase {
             changedOffset = false;
         }
 
-        systemPose.set(getMotorRot());
-        systemSpeeds.set(getMotorVelocity());
-        systemTimestamp.set(Timer.getFPGATimestamp());
-
-
+        poseData.set(getMotorRot());
+        velocityData.set(getMotorVelocity());
+        voltageData.set(getMotorVoltage());
     }
 
     public void setControl(ControlRequest control) {
