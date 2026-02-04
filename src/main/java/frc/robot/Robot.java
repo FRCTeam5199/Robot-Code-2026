@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
@@ -24,6 +25,8 @@ import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends LoggedRobot {
+    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static LimelightHelpers.PoseEstimate limelightRightData;
     public static LimelightHelpers.PoseEstimate limelightLeftData;
@@ -31,9 +34,8 @@ public class Robot extends LoggedRobot {
     private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
     private final UserInterface userInterface = UserInterface.getInstance();
-    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
-
     private Command m_autonomousCommand;
+
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -271,7 +273,9 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-    // CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, -15));
+        CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
+        CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, -15));
+
     }
 
     @Override

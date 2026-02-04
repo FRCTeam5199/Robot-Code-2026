@@ -13,7 +13,7 @@ public class IntakePivotConstants {
     public static final boolean INTAKE_PIVOT_INVERTED = false;
     public static final boolean INTAKE_PIVOT_BRAKE = true;
 
-    public static final double INTAKE_OUT = 105;
+    public static final double INTAKE_OUT = 108;
     public static final double INTAKE_IN = 5;
 
     public static final Slot0Configs INTAKE_PIVOT_SLOT0_CONFIGS = new Slot0Configs()
@@ -43,7 +43,7 @@ public class IntakePivotConstants {
     public static final boolean INTAKE_PIVOT_ENCODER_DIRECTION = false;
 
     public static final double INTAKE_PIVOT_MIN = 3;
-    public static final double INTAKE_PIVOT_MAX = 106;
+    public static final double INTAKE_PIVOT_MAX = 109;
 
     public static final double INTAKE_PIVOT_GEAR_RATIO = 20d;
     public static final double[][] INTAKE_PIVOT_GEAR_RATIOA = {{20, 1}};

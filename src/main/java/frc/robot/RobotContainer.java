@@ -40,7 +40,7 @@ public class RobotContainer {
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
-//     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
@@ -52,9 +52,8 @@ public class RobotContainer {
     public static Telemetry logger = new Telemetry(MaxSpeed);
     private static Setpoint currentSetpoint = Setpoint.HUB;
     private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true);
-//     private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true);
+    private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true);
     private static VelocityCommand shooterSpeed = new VelocityCommand(shooterSubsystem, 0);
-//     private static VelocityCommand indexerSpeed = new VelocityCommand(indexerSubsystem, 0);
 
     public RobotContainer() {
         configureBindings();
@@ -70,10 +69,10 @@ public class RobotContainer {
 
     public static void periodic() {
         turretControl.setGoal(shotCalculator.getTurretAngle());
-}
+    }
 
     public static boolean areMechanismsAtGoals() {
-        return turretSubsystem.isMechAtGoal(false) //&& hoodSubsystem.isMechAtGoal(false)
+        return turretSubsystem.isMechAtGoal(false) && hoodSubsystem.isMechAtGoal(false)
                 && shooterSubsystem.isMechAtGoal(true)
                 && kickerSubsystem.isMechAtGoal(true);
     }
@@ -90,11 +89,11 @@ public class RobotContainer {
         commandXboxController.button(7)
                 .onTrue(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)));
 
-        // commandXboxController.povRight().onTrue(new PositionCommand(turretSubsystem, 0)
-        //         .andThen(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()))
-        //         .andThen(new WaitCommand(.5))
-        //         .andThen(new InstantCommand(() -> turretSubsystem.resetMotorOnSometimesEncoder()))
-        //         .andThen(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())));
+//         commandXboxController.povRight().onTrue(new PositionCommand(turretSubsystem, 0)
+//                 .andThen(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()))
+//                 .andThen(new WaitCommand(.5))
+//                 .andThen(new InstantCommand(() -> turretSubsystem.resetMotorOnSometimesEncoder()))
+//                 .andThen(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())));
 
 
         commandXboxController.povDown()
@@ -103,10 +102,9 @@ public class RobotContainer {
         commandXboxController.povUp()
                 .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN));
 
-
         commandXboxController.rightTrigger()
                 // .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
-                .onTrue(new VelocityCommand(intakeRollerSubsystem, 80))
+                .onTrue(new VelocityCommand(intakeRollerSubsystem, 50))
                 // .alongWith(new VelocityCommand(hopperSubsystem, -10)))
                 // .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
@@ -117,29 +115,29 @@ public class RobotContainer {
                 new SelectCommand<>(Map.ofEntries(
                         Map.entry(Setpoint.HUB, new ParallelCommandGroup(
                                 new PositionCommand(turretSubsystem, Setpoint.HUB.getTurretAngle()),
-                                //new PositionCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle()),
+                                new PositionCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.HUB.getShooterSpeed())
                         )),
                         Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
                                 new PositionCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle()),
-                                //new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
+                                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed())
                         )),
                         Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
                                 new PositionCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle()),
-                                //new PositionCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle()),
+                                new PositionCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed())
                         )),
                         Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
                                 new PositionCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle()),
-                                //new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
+                                new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed())
                         ))
                 ), RobotContainer::getCurrentSetpoint).alongWith(new VelocityCommand(kickerSubsystem, 30))
         ).onFalse(
                 new ParallelCommandGroup(
                         new PositionCommand(turretSubsystem, 0),
-                        //new PositionCommand(hoodSubsystem, 0),
+                        new PositionCommand(hoodSubsystem, 0),
                         new VelocityCommand(shooterSubsystem, 0),
                         new VelocityCommand(kickerSubsystem, 0)
                 )
@@ -153,12 +151,11 @@ public class RobotContainer {
         commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
         commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
 
-        commandXboxController.leftBumper().onTrue(turretControl);
+        commandXboxController.rightBumper().onTrue(turretControl);
 
         commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
 
-        commandXboxController.povLeft().onTrue(new VelocityCommand(indexerSubsystem, 75))
-                .onFalse(new VelocityCommand(indexerSubsystem, 0));
+
     }
 
     public Command getAutonomousCommand() {
