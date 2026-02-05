@@ -12,7 +12,7 @@ public class HoodSubsystem extends TemplateSubsystem {
                 HoodConstants.HOOD_ACCELERATION, HoodConstants.HOOD_JERK,
                 HoodConstants.HOOD_LOWER_TOLERANCE,
                 HoodConstants.HOOD_UPPER_TOLERANCE,
-                HoodConstants.HOOD_GEAR_RATIO, "HOOD");
+                HoodConstants.HOOD_GEAR_RATIO, "Hood");
 
         configureMotor(HoodConstants.HOOD_INVERTED, HoodConstants.HOOD_BRAKE,
                 HoodConstants.HOOD_SUPPLY_CURRENT_LIMIT,

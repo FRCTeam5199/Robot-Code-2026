@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.UserInterface;
 
 public class PositionCommand extends Command {
-    private UserInterface userInterface = UserInterface.getInstance();
     private double velocity;
     private double acceleration;
     private double jerk;

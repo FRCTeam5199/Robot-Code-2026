@@ -4,95 +4,89 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static LimelightHelpers.PoseEstimate limelightRightData;
     public static LimelightHelpers.PoseEstimate limelightLeftData;
-    private static TalonFX motorLeader;
-    private static TalonFX motorFollower;
+    // private static TalonFX motorLeader;
+    // private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
-    private final UserInterface userInterface = UserInterface.getInstance();
+    // private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
 
 
     public Robot() {
         m_robotContainer = new RobotContainer();
 
-        userInterface.createComponent("Motor ID (L)", "Control", BuiltInWidgets.kTextView, 0, 0, 1, 1, 0);
-        userInterface.createComponent("Set (L)", "Control", BuiltInWidgets.kToggleButton, 0, 1, 1, 1, false);
+        // userInterface.createComponent("Motor ID (L)", "Control", BuiltInWidgets.kTextView, 0, 0, 1, 1, 0);
+        // userInterface.createComponent("Set (L)", "Control", BuiltInWidgets.kToggleButton, 0, 1, 1, 1, false);
 
-        userInterface.createComponent("Motor Percent (L)", "Control", BuiltInWidgets.kTextView, 1, 0, 1, 1, 0);
-        userInterface.createComponent("Motor Position (L)", "Control", BuiltInWidgets.kTextView, 1, 1, 1, 1, 0);
-        userInterface.createComponent("Motor Velocity (L)", "Control", BuiltInWidgets.kTextView, 1, 2, 1, 1, 0);
-        userInterface.createComponent("Motor Voltage (L)", "Control", BuiltInWidgets.kTextView, 1, 3, 1, 1, 0);
+        // userInterface.createComponent("Motor Percent (L)", "Control", BuiltInWidgets.kTextView, 1, 0, 1, 1, 0);
+        // userInterface.createComponent("Motor Position (L)", "Control", BuiltInWidgets.kTextView, 1, 1, 1, 1, 0);
+        // userInterface.createComponent("Motor Velocity (L)", "Control", BuiltInWidgets.kTextView, 1, 2, 1, 1, 0);
+        // userInterface.createComponent("Motor Voltage (L)", "Control", BuiltInWidgets.kTextView, 1, 3, 1, 1, 0);
 
-        userInterface.createComponent("Set Percent (L)", "Control", BuiltInWidgets.kTextView, 2, 0, 1, 1, 0);
-        userInterface.createComponent("Set Position (L)", "Control", BuiltInWidgets.kTextView, 2, 1, 1, 1, 0);
-        userInterface.createComponent("Set Velocity (L)", "Control", BuiltInWidgets.kTextView, 2, 2, 1, 1, 0);
-        userInterface.createComponent("Set Voltage (L)", "Control", BuiltInWidgets.kTextView, 2, 3, 1, 1, 0);
+        // userInterface.createComponent("Set Percent (L)", "Control", BuiltInWidgets.kTextView, 2, 0, 1, 1, 0);
+        // userInterface.createComponent("Set Position (L)", "Control", BuiltInWidgets.kTextView, 2, 1, 1, 1, 0);
+        // userInterface.createComponent("Set Velocity (L)", "Control", BuiltInWidgets.kTextView, 2, 2, 1, 1, 0);
+        // userInterface.createComponent("Set Voltage (L)", "Control", BuiltInWidgets.kTextView, 2, 3, 1, 1, 0);
 
-        userInterface.createComponent("Apply Percent (L)", "Control", BuiltInWidgets.kToggleButton, 3, 0, 1, 1, false);
-        userInterface.createComponent("Apply Position (L)", "Control", BuiltInWidgets.kToggleButton, 3, 1, 1, 1, false);
-        userInterface.createComponent("Apply Velocity (L)", "Control", BuiltInWidgets.kToggleButton, 3, 2, 1, 1, false);
-        userInterface.createComponent("Apply Voltage (L)", "Control", BuiltInWidgets.kToggleButton, 3, 3, 1, 1, false);
+        // userInterface.createComponent("Apply Percent (L)", "Control", BuiltInWidgets.kToggleButton, 3, 0, 1, 1, false);
+        // userInterface.createComponent("Apply Position (L)", "Control", BuiltInWidgets.kToggleButton, 3, 1, 1, 1, false);
+        // userInterface.createComponent("Apply Velocity (L)", "Control", BuiltInWidgets.kToggleButton, 3, 2, 1, 1, false);
+        // userInterface.createComponent("Apply Voltage (L)", "Control", BuiltInWidgets.kToggleButton, 3, 3, 1, 1, false);
 
-        userInterface.createComponent("Reset Percent (L)", "Control", BuiltInWidgets.kToggleButton, 4, 0, 1, 1, false);
-        userInterface.createComponent("Reset Velocity (L)", "Control", BuiltInWidgets.kToggleButton, 4, 2, 1, 1, false);
-        userInterface.createComponent("Reset Voltage (L)", "Control", BuiltInWidgets.kToggleButton, 4, 3, 1, 1, false);
+        // userInterface.createComponent("Reset Percent (L)", "Control", BuiltInWidgets.kToggleButton, 4, 0, 1, 1, false);
+        // userInterface.createComponent("Reset Velocity (L)", "Control", BuiltInWidgets.kToggleButton, 4, 2, 1, 1, false);
+        // userInterface.createComponent("Reset Voltage (L)", "Control", BuiltInWidgets.kToggleButton, 4, 3, 1, 1, false);
 
-        userInterface.createComponent("Motor ID (F)", "Control", BuiltInWidgets.kTextView, 0, 2, 1, 1, 0);
-        userInterface.createComponent("Set (F)", "Control", BuiltInWidgets.kToggleButton, 0, 3, 1, 1, false);
+        // userInterface.createComponent("Motor ID (F)", "Control", BuiltInWidgets.kTextView, 0, 2, 1, 1, 0);
+        // userInterface.createComponent("Set (F)", "Control", BuiltInWidgets.kToggleButton, 0, 3, 1, 1, false);
 
-        userInterface.createComponent("Motor Percent (F)", "Control", BuiltInWidgets.kTextView, 5, 0, 1, 1, 0);
-        userInterface.createComponent("Motor Position (F)", "Control", BuiltInWidgets.kTextView, 5, 1, 1, 1, 0);
-        userInterface.createComponent("Motor Velocity (F)", "Control", BuiltInWidgets.kTextView, 5, 2, 1, 1, 0);
-        userInterface.createComponent("Motor Voltage (F)", "Control", BuiltInWidgets.kTextView, 5, 3, 1, 1, 0);
+        // userInterface.createComponent("Motor Percent (F)", "Control", BuiltInWidgets.kTextView, 5, 0, 1, 1, 0);
+        // userInterface.createComponent("Motor Position (F)", "Control", BuiltInWidgets.kTextView, 5, 1, 1, 1, 0);
+        // userInterface.createComponent("Motor Velocity (F)", "Control", BuiltInWidgets.kTextView, 5, 2, 1, 1, 0);
+        // userInterface.createComponent("Motor Voltage (F)", "Control", BuiltInWidgets.kTextView, 5, 3, 1, 1, 0);
 
-        userInterface.createComponent("Set Percent (F)", "Control", BuiltInWidgets.kTextView, 6, 0, 1, 1, 0);
-        userInterface.createComponent("Set Position (F)", "Control", BuiltInWidgets.kTextView, 6, 1, 1, 1, 0);
-        userInterface.createComponent("Set Velocity (F)", "Control", BuiltInWidgets.kTextView, 6, 2, 1, 1, 0);
-        userInterface.createComponent("Set Voltage (F)", "Control", BuiltInWidgets.kTextView, 6, 3, 1, 1, 0);
+        // userInterface.createComponent("Set Percent (F)", "Control", BuiltInWidgets.kTextView, 6, 0, 1, 1, 0);
+        // userInterface.createComponent("Set Position (F)", "Control", BuiltInWidgets.kTextView, 6, 1, 1, 1, 0);
+        // userInterface.createComponent("Set Velocity (F)", "Control", BuiltInWidgets.kTextView, 6, 2, 1, 1, 0);
+        // userInterface.createComponent("Set Voltage (F)", "Control", BuiltInWidgets.kTextView, 6, 3, 1, 1, 0);
 
-        userInterface.createComponent("Apply Percent (F)", "Control", BuiltInWidgets.kToggleButton, 7, 0, 1, 1, false);
-        userInterface.createComponent("Apply Position (F)", "Control", BuiltInWidgets.kToggleButton, 7, 1, 1, 1, false);
-        userInterface.createComponent("Apply Velocity (F)", "Control", BuiltInWidgets.kToggleButton, 7, 2, 1, 1, false);
-        userInterface.createComponent("Apply Voltage (F)", "Control", BuiltInWidgets.kToggleButton, 7, 3, 1, 1, false);
+        // userInterface.createComponent("Apply Percent (F)", "Control", BuiltInWidgets.kToggleButton, 7, 0, 1, 1, false);
+        // userInterface.createComponent("Apply Position (F)", "Control", BuiltInWidgets.kToggleButton, 7, 1, 1, 1, false);
+        // userInterface.createComponent("Apply Velocity (F)", "Control", BuiltInWidgets.kToggleButton, 7, 2, 1, 1, false);
+        // userInterface.createComponent("Apply Voltage (F)", "Control", BuiltInWidgets.kToggleButton, 7, 3, 1, 1, false);
 
-        userInterface.createComponent("Reset Percent (F)", "Control", BuiltInWidgets.kToggleButton, 8, 0, 1, 1, false);
-        userInterface.createComponent("Reset Velocity (F)", "Control", BuiltInWidgets.kToggleButton, 8, 2, 1, 1, false);
-        userInterface.createComponent("Reset Voltage (F)", "Control", BuiltInWidgets.kToggleButton, 8, 3, 1, 1, false);
+        // userInterface.createComponent("Reset Percent (F)", "Control", BuiltInWidgets.kToggleButton, 8, 0, 1, 1, false);
+        // userInterface.createComponent("Reset Velocity (F)", "Control", BuiltInWidgets.kToggleButton, 8, 2, 1, 1, false);
+        // userInterface.createComponent("Reset Voltage (F)", "Control", BuiltInWidgets.kToggleButton, 8, 3, 1, 1, false);
 
-        userInterface.setTab("Control");
-
-        Logger.start();
+        // userInterface.setTab("Control");
 
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
 //                .33, .28, .25, 0, 5, 25);
         LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
                 -.325, -.341, .406, 0, 5, 135.218);
         commandSwerveDrivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999.0));
+
+        Logger.addDataReceiver(new WPILOGWriter());
     }
 
     @Override
