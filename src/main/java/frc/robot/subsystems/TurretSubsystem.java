@@ -16,7 +16,7 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.TURRET_JERK,
                 TurretConstants.TURRET_LOWER_TOLERANCE,
                 TurretConstants.TURRET_UPPER_TOLERANCE,
-                TurretConstants.TURRET_GEAR_RATIO, "TURRET");
+                TurretConstants.TURRET_GEAR_RATIO, "Turret");
 
         configureMotor(TurretConstants.TURRET_INVERTED, TurretConstants.TURRET_BRAKE,
                 TurretConstants.TURRET_SUPPLY_CURRENT_LIMIT,

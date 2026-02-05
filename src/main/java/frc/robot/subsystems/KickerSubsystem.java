@@ -13,7 +13,7 @@ public class KickerSubsystem extends TemplateSubsystem {
                 KickerConstants.KICKER_JERK,
                 KickerConstants.KICKER_LOWER_TOLERANCE,
                 KickerConstants.KICKER_UPPER_TOLERANCE,
-                KickerConstants.KICKER_GEAR_RATIO, "KICKER");
+                KickerConstants.KICKER_GEAR_RATIO, "Kicker");
 
         configureMotor(KickerConstants.KICKER_INVERTED, KickerConstants.KICKER_BRAKE,
                 KickerConstants.KICKER_SUPPLY_CURRENT_LIMIT,

@@ -29,6 +29,9 @@ public class TemplateSubsystem extends SubsystemBase {
     private DoublePublisher poseData;
     private DoublePublisher velocityData;
     private DoublePublisher voltageData;
+    private DoublePublisher supplyCurrentData;
+    private DoublePublisher statorCurrentData;
+    private DoublePublisher tempData;
     private TalonFX motor;
     private TalonFXConfiguration motorConfig;
     private TalonFX followerMotor;
@@ -81,11 +84,14 @@ public class TemplateSubsystem extends SubsystemBase {
         }
 
         /* Subsystem Logging on AdvantageKit */
-        networkTable = NetworkTableInstance.getDefault().getTable(SubsystemName);
+        networkTable = NetworkTableInstance.getDefault().getTable("Subsystems/" + SubsystemName);
 
         poseData = networkTable.getDoubleTopic("Position").publish();
         velocityData = networkTable.getDoubleTopic("Velocity").publish();
         voltageData = networkTable.getDoubleTopic("Voltage").publish();
+        supplyCurrentData = networkTable.getDoubleTopic("SupplyCurrent").publish();
+        statorCurrentData = networkTable.getDoubleTopic("StatorCurrent").publish();
+        tempData = networkTable.getDoubleTopic("Temp").publish();
         
         this.name = SubsystemName;
     }
@@ -443,6 +449,10 @@ public class TemplateSubsystem extends SubsystemBase {
         return motor.getMotorVoltage().getValueAsDouble();
     }
 
+    public double getMotorTemp() {
+        return motor.getDeviceTemp().getValueAsDouble();
+    }
+
     public TalonFX getMotor() {
         return motor;
     }
@@ -462,7 +472,6 @@ public class TemplateSubsystem extends SubsystemBase {
     public double getStatorCurrent() {
         return motor.getStatorCurrent().getValueAsDouble();
     }
-
 
     public double getMechVelocity() {
         return getMechRotFromMotorRot(motor.getVelocity().getValueAsDouble());
@@ -500,6 +509,9 @@ public class TemplateSubsystem extends SubsystemBase {
         poseData.set(getMotorRot());
         velocityData.set(getMotorVelocity());
         voltageData.set(getMotorVoltage());
+        supplyCurrentData.set(getSupplyCurrent());
+        statorCurrentData.set(getStatorCurrent());
+        tempData.set(getMotorTemp());
     }
 
     public void setControl(ControlRequest control) {

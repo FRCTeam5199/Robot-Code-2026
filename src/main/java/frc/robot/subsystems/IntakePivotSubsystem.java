@@ -13,7 +13,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
                 IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT,
                 IntakePivotConstants.INTAKE_PIVOT_LOWER_TOLERANCE,
                 IntakePivotConstants.INTAKE_PIVOT_UPPER_TOLERANCE,
-                IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIOA, "INTAKE_PIVOT");
+                IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIOA, "Intake Pivot");
 
         configureMotor(IntakePivotConstants.INTAKE_PIVOT_INVERTED, IntakePivotConstants.INTAKE_PIVOT_BRAKE,
                 IntakePivotConstants.INTAKE_PIVOT_SUPPLY_CURRENT_LIMIT,
