@@ -4,21 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
@@ -84,13 +80,13 @@ public class Robot extends TimedRobot {
 
         // userInterface.setTab("Control");
 
-        Logger.start();
-
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
 //                .33, .28, .25, 0, 5, 25);
         LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
                 -.325, -.341, .406, 0, 5, 135.218);
         commandSwerveDrivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999.0));
+
+        Logger.addDataReceiver(new WPILOGWriter());
     }
 
     @Override

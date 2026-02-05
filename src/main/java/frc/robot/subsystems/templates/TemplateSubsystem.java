@@ -510,8 +510,8 @@ public class TemplateSubsystem extends SubsystemBase {
         poseData.set(getMotorRot());
         velocityData.set(getMotorVelocity());
         voltageData.set(getMotorVoltage());
-        supplyCurrentData.set(getSupplyCurrent());
-        statorCurrentData.set(getStatorCurrent());
+        supplyCurrentData.set(-getSupplyCurrent());
+        statorCurrentData.set(-getStatorCurrent());
         tempData.set(getMotorTemp());
     }
 

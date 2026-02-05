@@ -13,7 +13,7 @@ public class IndexerSubsystem extends TemplateSubsystem {
                 IndexerConstants.INDEXER_JERK,
                 IndexerConstants.INDEXER_LOWER_TOLERANCE,
                 IndexerConstants.INDEXER_UPPER_TOLERANCE,
-                IndexerConstants.INDEXER_GEAR_RATIO, "INDEXER");
+                IndexerConstants.INDEXER_GEAR_RATIO, "Indexer");
 
         configureMotor(IndexerConstants.INDEXER_INVERTED, IndexerConstants.INDEXER_BRAKE,
                 IndexerConstants.INDEXER_SUPPLY_CURRENT_LIMIT,
