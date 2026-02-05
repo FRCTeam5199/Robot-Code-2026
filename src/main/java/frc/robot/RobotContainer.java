@@ -104,7 +104,7 @@ public class RobotContainer {
 
         commandXboxController.rightTrigger()
                 // .onTrue(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT)
-                .onTrue(new VelocityCommand(intakeRollerSubsystem, 50))
+                .onTrue(new VelocityCommand(intakeRollerSubsystem, 90))
                 // .alongWith(new VelocityCommand(hopperSubsystem, -10)))
                 // .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_IN, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_IN, IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_IN, IntakePivotConstants.INTAKE_PIVOT_JERK_IN)
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
@@ -143,8 +143,10 @@ public class RobotContainer {
                 )
         );
 
-        commandXboxController.rightBumper().onTrue(new VelocityCommand(indexerSubsystem, 15).alongWith(new VelocityCommand(hopperSubsystem, 35))
-        ).onFalse(new VelocityCommand(indexerSubsystem, -15).alongWith(new VelocityCommand(hopperSubsystem, 0)));
+        commandXboxController.rightBumper().onTrue(new VelocityCommand(indexerSubsystem, 15)
+                        .alongWith(new VelocityCommand(hopperSubsystem, 15)))
+                .onFalse(new VelocityCommand(indexerSubsystem, -15)
+                        .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
         commandXboxController.y().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB)));
         commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));

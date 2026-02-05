@@ -61,7 +61,7 @@ public class TurretSubsystem extends TemplateSubsystem {
 //            lastEncoderRotation = currentEncoderRotation;
 //        }
 //        System.out.println(encoderRotationsContinuous * TurretConstants.TURRET_SENSOR_TO_MECH_GEAR_RATIO * 360d);
-        System.out.println("Degrees " + getDegrees());
+//        System.out.println("Degrees " + getDegrees());
 //        System.out.println("Turret is at goal: " + isMechAtGoal(false));
     }
 }

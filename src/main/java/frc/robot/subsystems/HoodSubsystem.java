@@ -39,7 +39,7 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-        System.out.println("Hood: " + getDegrees());
+//        System.out.println("Hood Degrees: " + getDegrees());
     }
 }
 
