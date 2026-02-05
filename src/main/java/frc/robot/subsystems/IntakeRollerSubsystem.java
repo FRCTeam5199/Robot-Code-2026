@@ -13,7 +13,7 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
                 IntakeRollerConstants.INTAKE_ROLLER_JERK,
                 IntakeRollerConstants.INTAKE_ROLLER_LOWER_TOLERANCE,
                 IntakeRollerConstants.INTAKE_ROLLER_UPPER_TOLERANCE,
-                IntakeRollerConstants.INTAKE_ROLLER_GEAR_RATIO, "INTAKE_ROLLER");
+                IntakeRollerConstants.INTAKE_ROLLER_GEAR_RATIO, "Intake Roller");
 
         configureMotor(IntakeRollerConstants.INTAKE_ROLLER_INVERTED, IntakeRollerConstants.INTAKE_ROLLER_BRAKE,
                 IntakeRollerConstants.INTAKE_ROLLER_SUPPLY_CURRENT_LIMIT,
