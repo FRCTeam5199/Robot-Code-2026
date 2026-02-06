@@ -133,14 +133,14 @@ public class RobotContainer {
                                 new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
                                 new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed())
                         ))
-                ), RobotContainer::getCurrentSetpoint).alongWith(new VelocityCommand(kickerSubsystem, 30)
+                ), RobotContainer::getCurrentSetpoint).alongWith(new VelocityCommand(kickerSubsystem, 30))
                 .andThen(
                         new ParallelCommandGroup(
                                 new VelocityCommand(indexerSubsystem, 15),
                                 new VelocityCommand(hopperSubsystem, 15)
                         )
                 )
-        )).onFalse(
+        ).onFalse(
                 new ParallelCommandGroup(
                         new PositionCommand(turretSubsystem, 0),
                         new PositionCommand(hoodSubsystem, 0),
