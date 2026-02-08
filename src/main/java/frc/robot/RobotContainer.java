@@ -144,7 +144,7 @@ public class RobotContainer {
         );
 
         commandXboxController.rightBumper().onTrue(new VelocityCommand(indexerSubsystem, 15)
-                        .alongWith(new VelocityCommand(hopperSubsystem, 15)))
+                        .alongWith(new VelocityCommand(hopperSubsystem, 20)))
                 .onFalse(new VelocityCommand(indexerSubsystem, -15)
                         .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
@@ -153,8 +153,8 @@ public class RobotContainer {
         commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
         commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
 
-        commandXboxController.rightBumper().onTrue(turretControl);
-
+//        commandXboxController.povRight().onTrue(turretControl);
+        commandXboxController.povLeft().onTrue(new PositionCommand(hoodSubsystem, 0));
         commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
 
 
