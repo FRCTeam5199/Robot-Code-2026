@@ -23,8 +23,8 @@ public class KickerConstants {
     public static final double KICKER_ACCELERATION = 800;
     public static final double KICKER_JERK = 8000;
 
-    public static final double KICKER_LOWER_TOLERANCE = 5;
-    public static final double KICKER_UPPER_TOLERANCE = 5;
+    public static final double KICKER_LOWER_TOLERANCE = 2;
+    public static final double KICKER_UPPER_TOLERANCE = 2;
 
     public static final double[][] KICKER_GEAR_RATIO = {{1, 1}};
 }

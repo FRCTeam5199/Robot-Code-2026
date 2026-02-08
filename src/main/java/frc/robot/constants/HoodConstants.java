@@ -29,8 +29,8 @@ public class HoodConstants {
     public static final double HOOD_ACCELERATION = 800;
     public static final double HOOD_JERK = 8000;
 
-    public static final double HOOD_LOWER_TOLERANCE = 0;
-    public static final double HOOD_UPPER_TOLERANCE = 0;
+    public static final double HOOD_LOWER_TOLERANCE = 2;
+    public static final double HOOD_UPPER_TOLERANCE = 2;
 
     public static final double HOOD_MAGNET_OFFSET = -0.377197265625;// -0.58203125;
     public static final boolean HOOD_IS_CCW_POS = false;

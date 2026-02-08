@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.KickerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
@@ -31,7 +32,7 @@ public class KickerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        System.out.println("Kicker Velocity: " + getMotorVelocity());
+//        System.out.println("Kicker Velocity: " + getMotorVelocity());
         // System.out.println("Kicker is at goal: " + isMechAtGoal(true));
     }
 }
