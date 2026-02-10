@@ -1,18 +1,19 @@
 package frc.robot.subsystems.templates;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.UserInterface;
 
 public class PositionCommand extends Command {
     private double velocity;
     private double acceleration;
     private double jerk;
     private double goal;
+    private double goalVelocity;
     private TemplateSubsystem templateSubsystem;
     private boolean updateGoalPosition;
     private boolean changeConstraints;
     private boolean uniqueConstraints;
     private boolean shouldNotEnd;
+    private boolean useCustomFF;
 
     public PositionCommand(TemplateSubsystem templateSubsystem, double goal) {
         this.templateSubsystem = templateSubsystem;
@@ -24,15 +25,12 @@ public class PositionCommand extends Command {
         addRequirements(templateSubsystem);
     }
 
-    public PositionCommand(TemplateSubsystem templateSubsystem, double goal, boolean shouldNotEnd) {
-        this.templateSubsystem = templateSubsystem;
-        this.goal = goal;
-        updateGoalPosition = false;
-        changeConstraints = false;
-        uniqueConstraints = false;
+    public PositionCommand(TemplateSubsystem templateSubsystem, double goal, boolean shouldNotEnd,
+                           boolean useCustomFF, double goalVelocity) {
+        this(templateSubsystem, goal);
         this.shouldNotEnd = shouldNotEnd;
-
-        addRequirements(templateSubsystem);
+        this.useCustomFF = useCustomFF;
+        this.goalVelocity = goalVelocity;
     }
 
     public PositionCommand(TemplateSubsystem templateSubsystem, double goal,
@@ -54,11 +52,15 @@ public class PositionCommand extends Command {
     @Override
     public void initialize() {
         if (changeConstraints) {
-            templateSubsystem.setPosition(goal);
+            if (useCustomFF) templateSubsystem.setPosition(goal,
+                    templateSubsystem.getFeedForward(goalVelocity));
+            else templateSubsystem.setPosition(goal);
             templateSubsystem.setConstraints(velocity, acceleration, jerk);
             changeConstraints = false;
         } else {
-            templateSubsystem.setPosition(goal);
+            if (useCustomFF) templateSubsystem.setPosition(goal,
+                    templateSubsystem.getFeedForward(goalVelocity));
+            else templateSubsystem.setPosition(goal);
         }
         templateSubsystem.setCommandRunning(true);
     }
@@ -66,7 +68,9 @@ public class PositionCommand extends Command {
     @Override
     public void execute() {
         if (updateGoalPosition) {
-            templateSubsystem.setPosition(goal);
+            if (useCustomFF) templateSubsystem.setPosition(goal,
+                    templateSubsystem.getFeedForward(goalVelocity));
+            else templateSubsystem.setPosition(goal);
             updateGoalPosition = false;
         }
         if (changeConstraints) {
@@ -90,6 +94,11 @@ public class PositionCommand extends Command {
     public void setGoal(double goal) {
         this.goal = goal;
         this.updateGoalPosition = true;
+    }
+
+    public void setGoal(double goal, double velocity) {
+        this.goalVelocity = velocity;
+        setGoal(goal);
     }
 
     public void setConstraints(double velocity, double acceleration, double jerk) {

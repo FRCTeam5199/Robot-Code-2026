@@ -14,12 +14,12 @@ public class TurretConstants {
     public static final boolean TURRET_BRAKE = true;
 
     public static final Slot0Configs TURRET_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(50)
+            .withKP(1)
             .withKI(0)
             .withKD(0)
             .withKS(0.25)
             .withKG(0)
-            .withKV(.08064516129032258064516129032258)
+            .withKV(.10067114093959731543624161073826)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 

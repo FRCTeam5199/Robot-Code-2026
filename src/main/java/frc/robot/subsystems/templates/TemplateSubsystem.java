@@ -6,10 +6,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -47,6 +44,9 @@ public class TemplateSubsystem extends SubsystemBase {
     private DynamicMotionMagicVoltage dynamicMotionMagicVoltage;
     private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
     private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
+    private PositionVoltage positionVoltage;
+    private SimpleMotorFeedforward simpleMotorFeedforward;
+    private Slot0Configs slot0Configs;
     private double velocity;
     private double acceleration;
     private double jerk;
@@ -75,7 +75,10 @@ public class TemplateSubsystem extends SubsystemBase {
 
         dynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, this.velocity, this.acceleration)
                 .withJerk(this.jerk).withSlot(0).withEnableFOC(true);
-        motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0).withEnableFOC(true);
+        motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0)
+                .withEnableFOC(true);
+        positionVoltage = new PositionVoltage(0).withSlot(0)
+                .withEnableFOC(true);
 
         this.lowerTolerance = lowerTolerance;
         this.upperTolerance = upperTolerance;
@@ -93,7 +96,7 @@ public class TemplateSubsystem extends SubsystemBase {
         supplyCurrentData = networkTable.getDoubleTopic("SupplyCurrent").publish();
         statorCurrentData = networkTable.getDoubleTopic("StatorCurrent").publish();
         tempData = networkTable.getDoubleTopic("Temp").publish();
-        
+
         this.name = SubsystemName;
     }
 
@@ -113,6 +116,7 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         motorConfig.Slot0 = slot0Configs;
+        this.slot0Configs = slot0Configs;
 
         motorConfig.MotionMagic.MotionMagicCruiseVelocity = velocity;
         motorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
@@ -230,6 +234,14 @@ public class TemplateSubsystem extends SubsystemBase {
         encoder = null;
     }
 
+    public void configureCustomFF() {
+        simpleMotorFeedforward = new SimpleMotorFeedforward(slot0Configs.kS, slot0Configs.kV);
+    }
+
+    public double getFeedForward(double velocity) {
+        return simpleMotorFeedforward.calculate(velocity);
+    }
+
     public void setPercent(double percent) {
         followLastMechProfile = false;
         if (percent > 1) percent /= 100;
@@ -278,6 +290,25 @@ public class TemplateSubsystem extends SubsystemBase {
 
         this.goal = goal;
         motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations));
+
+//        dynamicMotionMagicVoltage.Velocity = this.velocity;
+//        dynamicMotionMagicVoltage.Acceleration = this.acceleration;
+//        dynamicMotionMagicVoltage.Jerk = this.jerk;
+    }
+
+    public void setPosition(double goal, double feedforward) {
+        double goalRotations;
+
+        if (type == Type.LINEAR) {
+            goalRotations = getMotorRotFromMechM(goal + offset);
+        } else {
+            goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset)
+                    : getEncoderRotFromDegrees(goal + offset);
+        }
+
+        this.goal = goal;
+        motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations)
+                .withFeedForward(feedforward));
 
 //        dynamicMotionMagicVoltage.Velocity = this.velocity;
 //        dynamicMotionMagicVoltage.Acceleration = this.acceleration;

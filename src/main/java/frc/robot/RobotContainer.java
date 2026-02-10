@@ -52,8 +52,8 @@ public class RobotContainer {
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     public static Telemetry logger = new Telemetry(MaxSpeed);
     private static Setpoint currentSetpoint = Setpoint.HUB;
-    private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true);
-    private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true);
+    private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true, true, 0);
+    private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true, false, 0);
     private static VelocityCommand shooterSpeed = new VelocityCommand(shooterSubsystem, 0);
 
     public RobotContainer() {
@@ -69,7 +69,8 @@ public class RobotContainer {
     }
 
     public static void periodic() {
-        turretControl.setGoal(shotCalculator.getTurretAngle());
+        turretControl.setGoal(shotCalculator.getTurretAngle(),
+                turretSubsystem.getMotorRotFromDegrees(shotCalculator.getTurretVelocity()));
     }
 
     public static boolean areMechanismsAtGoals() {

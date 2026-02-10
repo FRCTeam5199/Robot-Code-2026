@@ -226,6 +226,7 @@ public class Robot extends TimedRobot {
 //             hopperSubsystem.setVelocity(0);
 //         }
 
+        RobotContainer.periodic();
         CommandScheduler.getInstance().run();
     }
 
