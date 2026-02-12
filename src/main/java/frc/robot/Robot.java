@@ -269,7 +269,9 @@ public class Robot extends TimedRobot {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
         CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
-        CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, -15));
+        CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
+//        CommandScheduler.getInstance().schedule(RobotContainer.turretControl);
+
 
     }
 

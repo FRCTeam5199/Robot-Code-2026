@@ -242,6 +242,10 @@ public class TemplateSubsystem extends SubsystemBase {
         return simpleMotorFeedforward.calculate(velocity);
     }
 
+    public double getFeedForward(double currentVelocity, double nextVelocity) {
+        return simpleMotorFeedforward.calculateWithVelocities(currentVelocity, nextVelocity);
+    }
+
     public void setPercent(double percent) {
         followLastMechProfile = false;
         if (percent > 1) percent /= 100;
@@ -313,6 +317,10 @@ public class TemplateSubsystem extends SubsystemBase {
 //        dynamicMotionMagicVoltage.Velocity = this.velocity;
 //        dynamicMotionMagicVoltage.Acceleration = this.acceleration;
 //        dynamicMotionMagicVoltage.Jerk = this.jerk;
+    }
+
+    public void setPositionVoltage(double motorRotations, double feedforward) {
+        motor.setControl(positionVoltage.withPosition(motorRotations).withFeedForward(feedforward));
     }
 
     //Used if velocity/acceleration/jerk constraint needs to be changed
@@ -470,7 +478,7 @@ public class TemplateSubsystem extends SubsystemBase {
 
     //Motor Values
     public double getMotorVelocity() {
-        return motor.getVelocity().getValueAsDouble();
+        return motor.getRotorVelocity().getValueAsDouble();
     }
 
     public double getSecondaryMotorVelocity() {
@@ -538,7 +546,7 @@ public class TemplateSubsystem extends SubsystemBase {
             changedOffset = false;
         }
 
-        poseData.set(getMotorRot());
+        poseData.set(getDegrees());
         velocityData.set(getMotorVelocity());
         voltageData.set(getMotorVoltage());
         supplyCurrentData.set(-getSupplyCurrent());

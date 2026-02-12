@@ -3,10 +3,8 @@ package frc.robot.utility;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -18,8 +16,9 @@ public class ShotCalculator extends SubsystemBase {
             LinearFilter.movingAverage((int) (0.1 / 0.02));
     private Pose2d turretPosition;
     private CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
+    private Rotation2d turretRotation;
     private double turretAngle;
-    private double lastTurretAngle;
+    private Rotation2d lastTurretRotation;
     private double turretVelocity;
     private InterpolatingDoubleTreeMap hoodLookupTable;
     private InterpolatingDoubleTreeMap shooterSpeedLookupTable;
@@ -45,23 +44,26 @@ public class ShotCalculator extends SubsystemBase {
     public void periodic() {
         if (commandSwerveDrivetrain.getPose() != null) {
             turretPosition = commandSwerveDrivetrain.getPose().transformBy(Constants.ROBOT_TO_TURRET);
-            turretAngle = Constants.RED_HUB_CENTER.minus(turretPosition.getTranslation()).getAngle().getDegrees();
-            if (turretAngle < -180) turretAngle += 360;
+//            double turretToTargetDistance = Constants.RED_HUB_CENTER.getDistance(turretPosition.getTranslation());
 
+            turretRotation = Constants.RED_HUB_CENTER
+                    .minus(turretPosition.getTranslation()).getAngle();
+
+            if (lastTurretRotation == null) lastTurretRotation = turretRotation;
+            turretVelocity = turretRotation.minus(lastTurretRotation).getDegrees() / .02;
+
+            turretAngle = turretRotation.getDegrees();
             turretAngle -= commandSwerveDrivetrain.getPose().getRotation().getDegrees();
-            if (turretAngle <= -180) turretAngle += 360;
-            if (turretAngle >= 180) turretAngle -= 360;
+            while (turretAngle <= -180) turretAngle += 360;
+            while (turretAngle >= 180) turretAngle -= 360;
 
-            turretVelocity = turretAngleFilter.calculate((turretAngle - lastTurretAngle) / .02);
-            turretVelocity -= commandSwerveDrivetrain.getState().Speeds.omegaRadiansPerSecond / Math.PI * 180d; //maybe plus?
-            System.out.println("Calculated Turret Angle: " + turretAngle);
-            System.out.println("Calculated Turret Velocity: " + turretSubsystem.getMotorRotFromDegrees(turretVelocity));
+            turretVelocity -= commandSwerveDrivetrain.getState().Speeds.omegaRadiansPerSecond / Math.PI * 180d;
         }
 
-        hoodAngle = hoodLookupTable.get(Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation()));
-        shooterSpeed = shooterSpeedLookupTable.get(Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation()));
+//        hoodAngle = hoodLookupTable.get(Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation()));
+//        shooterSpeed = shooterSpeedLookupTable.get(Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation()));
 
-        lastTurretAngle = turretAngle;
+        lastTurretRotation = turretRotation;
     }
 
     public double getHoodAngle() {

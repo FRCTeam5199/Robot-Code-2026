@@ -29,6 +29,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.ShooterCommand;
+import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
@@ -51,8 +52,8 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     public static Telemetry logger = new Telemetry(MaxSpeed);
+    public static TurretCommand turretControl = new TurretCommand(turretSubsystem, 0, 0);
     private static Setpoint currentSetpoint = Setpoint.HUB;
-    private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true, true, 0);
     private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true, false, 0);
     private static VelocityCommand shooterSpeed = new VelocityCommand(shooterSubsystem, 0);
 
@@ -69,8 +70,9 @@ public class RobotContainer {
     }
 
     public static void periodic() {
-        turretControl.setGoal(shotCalculator.getTurretAngle(),
-                turretSubsystem.getMotorRotFromDegrees(shotCalculator.getTurretVelocity()));
+        System.out.println("Calculated Angle: " + shotCalculator.getTurretAngle());
+//        System.out.println("Calculated Velocity: " + shotCalculator.getTurretVelocity());
+        turretControl.setGoal(shotCalculator.getTurretAngle(), shotCalculator.getTurretVelocity());
     }
 
     public static boolean areMechanismsAtGoals() {
@@ -161,8 +163,8 @@ public class RobotContainer {
         commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
         commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
 
-        commandXboxController.y().onTrue(new ShooterCommand(shooterSubsystem, 50))
-                .onFalse(new ShooterCommand(shooterSubsystem, 0));
+        commandXboxController.y().onTrue(new InstantCommand(() -> turretSubsystem.setPositionProfiling(180, 0)))
+                .onFalse(new InstantCommand(() -> turretSubsystem.setPositionProfiling(0, 0)));
 
         commandXboxController.povRight().onTrue(turretControl);
         commandXboxController.povLeft().onTrue(new PositionCommand(hoodSubsystem, 0));
