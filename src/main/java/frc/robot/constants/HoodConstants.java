@@ -5,8 +5,8 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class HoodConstants {
-    public static final int HOOD_MOTOR_ID = 23;
-    public static final int HOOD_ENCODER_ID = 22;
+    public static final int HOOD_MOTOR_ID = 0;
+    public static final int HOOD_ENCODER_ID = 0;
 
     public static final double HOOD_STATOR_CURRENT_LIMIT = 60;
     public static final double HOOD_SUPPLY_CURRENT_LIMIT = 60;

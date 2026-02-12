@@ -4,8 +4,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class TurretConstants {
-    public static final int TURRET_MOTOR_ID = 19;
-    public static final int TURRET_ENCODER_ID = 20;
+    public static final int TURRET_MOTOR_ID = 0;
+    public static final int TURRET_ENCODER_ID = 0;
 
     public static final double TURRET_STATOR_CURRENT_LIMIT = 60;
     public static final double TURRET_SUPPLY_CURRENT_LIMIT = 60;

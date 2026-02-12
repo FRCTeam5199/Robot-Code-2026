@@ -54,8 +54,8 @@ public class ShotCalculator extends SubsystemBase {
 
             turretVelocity = turretAngleFilter.calculate((turretAngle - lastTurretAngle) / .02);
             turretVelocity -= commandSwerveDrivetrain.getState().Speeds.omegaRadiansPerSecond / Math.PI * 180d; //maybe plus?
-            System.out.println("Calculated Turret Angle: " + turretAngle);
-            System.out.println("Calculated Turret Velocity: " + turretSubsystem.getMotorRotFromDegrees(turretVelocity));
+//            System.out.println("Calculated Turret Angle: " + turretAngle);
+//            System.out.println("Calculated Turret Velocity: " + turretSubsystem.getMotorRotFromDegrees(turretVelocity));
         }
 
         hoodAngle = hoodLookupTable.get(Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation()));

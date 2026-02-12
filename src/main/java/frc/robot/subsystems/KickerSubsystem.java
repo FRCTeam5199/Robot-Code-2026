@@ -9,17 +9,22 @@ public class KickerSubsystem extends TemplateSubsystem {
     private static KickerSubsystem kickerSubsystem;
 
     private KickerSubsystem() {
-        super(Type.ROLLER, KickerConstants.KICKER_MOTOR_ID,
+        super(Type.ROLLER, KickerConstants.KICKER_LOWER_MOTOR_ID,
                 0, KickerConstants.KICKER_ACCELERATION,
                 KickerConstants.KICKER_JERK,
                 KickerConstants.KICKER_LOWER_TOLERANCE,
                 KickerConstants.KICKER_UPPER_TOLERANCE,
                 KickerConstants.KICKER_GEAR_RATIO, "Kicker");
 
-        configureMotor(KickerConstants.KICKER_INVERTED, KickerConstants.KICKER_BRAKE,
+        configureMotor(KickerConstants.KICKER_LOWER_INVERTED, KickerConstants.KICKER_BRAKE,
                 KickerConstants.KICKER_SUPPLY_CURRENT_LIMIT,
                 KickerConstants.KICKER_STATOR_CURRENT_LIMIT,
                 KickerConstants.KICKER_SLOT0_CONFIGS);
+
+        configureFollowerMotor(
+                KickerConstants.KICKER_UPPER_MOTOR_ID,
+                KickerConstants.KICKER_UPPER_INVERTED
+        );
     }
 
     public static KickerSubsystem getInstance() {
@@ -32,7 +37,8 @@ public class KickerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-//        System.out.println("Kicker Velocity: " + getMotorVelocity());
+        System.out.println("Kicker Velocity: " + getMotorVelocity());
+        System.out.println("Goal" + getGoal());
         // System.out.println("Kicker is at goal: " + isMechAtGoal(true));
     }
 }

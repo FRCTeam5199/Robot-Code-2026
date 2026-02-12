@@ -112,44 +112,48 @@ public class RobotContainer {
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
         // .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
-
         commandXboxController.leftTrigger().onTrue(
-                new SelectCommand<>(Map.ofEntries(
-                        Map.entry(Setpoint.HUB, new ParallelCommandGroup(
-                                new PositionCommand(turretSubsystem, Setpoint.HUB.getTurretAngle()),
-                                new PositionCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle()),
-                                new ShooterCommand(shooterSubsystem, Setpoint.HUB.getShooterSpeed())
-                        )),
-                        Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
-                                new PositionCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle()),
-                                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
-                                new ShooterCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed())
-                        )),
-                        Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
-                                new PositionCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle()),
-                                new PositionCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle()),
-                                new ShooterCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed())
-                        )),
-                        Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
-                                new PositionCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle()),
-                                new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
-                                new ShooterCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed())
-                        ))
-                ), RobotContainer::getCurrentSetpoint).alongWith(new VelocityCommand(kickerSubsystem, 30))
-                        .andThen(
-                                new ParallelCommandGroup(
-                                        new VelocityCommand(indexerSubsystem, 15)
-//                                        new VelocityCommand(hopperSubsystem, 15)
-                                )
-                        )
+                new VelocityCommand(kickerSubsystem, 30)
         ).onFalse(
-                new ParallelCommandGroup(
-                        new PositionCommand(turretSubsystem, 0),
-                        new PositionCommand(hoodSubsystem, 0),
-                        new ShooterCommand(shooterSubsystem, 0),
-                        new VelocityCommand(kickerSubsystem, 0)
-                )
+                new VelocityCommand(kickerSubsystem, 0)
         );
+//        commandXboxController.leftTrigger().onTrue(
+//                new SelectCommand<>(Map.ofEntries(
+//                        Map.entry(Setpoint.HUB, new ParallelCommandGroup(
+//                                new PositionCommand(turretSubsystem, Setpoint.HUB.getTurretAngle()),
+//                                new PositionCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle()),
+//                                new ShooterCommand(shooterSubsystem, Setpoint.HUB.getShooterSpeed())
+//                        )),
+//                        Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
+//                                new PositionCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle()),
+//                                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
+//                                new ShooterCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed())
+//                        )),
+//                        Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
+//                                new PositionCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle()),
+//                                new PositionCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle()),
+//                                new ShooterCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed())
+//                        )),
+//                        Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
+//                                new PositionCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle()),
+//                                new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle()),
+//                                new ShooterCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed())
+//                        ))
+//                ), RobotContainer::getCurrentSetpoint).alongWith(new VelocityCommand(kickerSubsystem, 30))
+//                        .andThen(
+//                                new ParallelCommandGroup(
+//                                        new VelocityCommand(indexerSubsystem, 15)
+////                                        new VelocityCommand(hopperSubsystem, 15)
+//                                )
+//                        )
+//        ).onFalse(
+//                new ParallelCommandGroup(
+//                        new PositionCommand(turretSubsystem, 0),
+//                        new PositionCommand(hoodSubsystem, 0),
+//                        new ShooterCommand(shooterSubsystem, 0),
+//                        new VelocityCommand(kickerSubsystem, 0)
+//                )
+//        );
 
         commandXboxController.rightBumper().onTrue(new VelocityCommand(indexerSubsystem, 15)
                         .alongWith(new VelocityCommand(hopperSubsystem, 20)))
