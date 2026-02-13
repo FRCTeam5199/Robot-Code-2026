@@ -323,6 +323,10 @@ public class TemplateSubsystem extends SubsystemBase {
         motor.setControl(positionVoltage.withPosition(motorRotations).withFeedForward(feedforward));
     }
 
+    public void setPositionVoltage(double motorRotations) {
+        motor.setControl(positionVoltage.withPosition(motorRotations));
+    }
+
     //Used if velocity/acceleration/jerk constraint needs to be changed
     public void setPosition(double goal, double velocity, double acceleration, double jerk) {
         double goalRotations;

@@ -49,14 +49,14 @@ public class ShooterSubsystem extends TemplateSubsystem {
 //        System.out.println("Shooter Velocity: " + getMotorVelocity());
 //        System.out.println("Current Control Request: " + getMotor().getControlMode(true).getValue().name());
 //     System.out.println("Shooter is at goal: " + isMechAtGoal(true));
-        if (goalVelocity == 0) shooterSubsystem.setPercent(0);
-        else {
-            if (isMechAtGoal()) {
-                setSpeedTorqueCurrent(goalVelocity);
-            } else {
-                setVelocityBangBang(goalVelocity);
-            }
-        }
+//        if (goalVelocity == 0) shooterSubsystem.setPercent(0);
+//        else {
+//            if (isMechAtGoal()) {
+//                setSpeedTorqueCurrent(goalVelocity);
+//            } else {
+//                setVelocityBangBang(goalVelocity);
+//            }
+//        }
     }
 
     public void setVelocityBangBang(double velocity) {

@@ -20,6 +20,8 @@ public class TurretSubsystem extends TemplateSubsystem {
     private NetworkTable networkTable;
     private DoublePublisher goalPositionLogging;
     private DoublePublisher currentPositionLogging;
+    private DoublePublisher goalVelocityLogging;
+    private DoublePublisher currentVelocityLogging;
 
     private TurretSubsystem() {
         super(Type.ROLLER, TurretConstants.TURRET_MOTOR_ID,
@@ -53,6 +55,8 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
         currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
+        goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
+        currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
     }
 
     public static TurretSubsystem getInstance() {
@@ -67,6 +71,9 @@ public class TurretSubsystem extends TemplateSubsystem {
         super.periodic();
         goalPositionLogging.set(currentState.position);
         currentPositionLogging.set(getMotorRot());
+
+        goalVelocityLogging.set(currentState.velocity);
+        currentVelocityLogging.set(getMotorVelocity());
 
         followLastProfile();
 //        System.out.println("---------Current Turret Angle " + getDegrees());
@@ -89,7 +96,7 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     public void followLastProfile() {
         TrapezoidProfile.State nextState = profile.calculate(0.02, currentState, goalState);
-        setPositionVoltage(nextState.position, getFeedForward(currentState.velocity, nextState.velocity));
+        setPositionVoltage(nextState.position);
         currentState = nextState;
 //        System.out.println("Current State: " + currentState.position);
 //        System.out.println("Goal State: " + goalState.position);
