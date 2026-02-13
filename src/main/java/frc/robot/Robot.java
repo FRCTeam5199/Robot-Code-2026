@@ -19,7 +19,7 @@ import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
-    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    //    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static LimelightHelpers.PoseEstimate limelightRightData;
@@ -268,8 +268,8 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
-        CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
+//        CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
+//        CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
 //        CommandScheduler.getInstance().schedule(RobotContainer.turretControl);
 
 

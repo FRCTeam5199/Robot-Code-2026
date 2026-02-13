@@ -3,10 +3,13 @@ package frc.robot.utility;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.TurretSubsystem;
 
@@ -43,8 +46,16 @@ public class ShotCalculator extends SubsystemBase {
     @Override
     public void periodic() {
         if (commandSwerveDrivetrain.getPose() != null) {
-            turretPosition = commandSwerveDrivetrain.getPose().transformBy(Constants.ROBOT_TO_TURRET);
+            Pose2d estimatedPose = commandSwerveDrivetrain.getPose();
+            ChassisSpeeds robotRelativeVelocity = commandSwerveDrivetrain.getState().Speeds;
+            estimatedPose =
+                    estimatedPose.exp(
+                            new Twist2d(
+                                    robotRelativeVelocity.vxMetersPerSecond * TurretConstants.PHASE_DELAY,
+                                    robotRelativeVelocity.vyMetersPerSecond * TurretConstants.PHASE_DELAY,
+                                    robotRelativeVelocity.omegaRadiansPerSecond * TurretConstants.PHASE_DELAY));
 //            double turretToTargetDistance = Constants.RED_HUB_CENTER.getDistance(turretPosition.getTranslation());
+            turretPosition = estimatedPose.transformBy(Constants.ROBOT_TO_TURRET);
 
             turretRotation = Constants.RED_HUB_CENTER
                     .minus(turretPosition.getTranslation()).getAngle();

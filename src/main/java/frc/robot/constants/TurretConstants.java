@@ -41,5 +41,5 @@ public class TurretConstants {
     public static final double TURRET_MIN = -185d;
     public static final double TURRET_MAX = 185d;
 
-    public static final double PHASE_DELAY = .25;
+    public static final double PHASE_DELAY = .025;
 }
