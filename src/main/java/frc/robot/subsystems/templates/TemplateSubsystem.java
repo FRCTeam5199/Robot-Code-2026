@@ -45,6 +45,7 @@ public class TemplateSubsystem extends SubsystemBase {
     private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
     private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
     private PositionVoltage positionVoltage;
+    private VelocityVoltage velocityVoltage;
     private SimpleMotorFeedforward simpleMotorFeedforward;
     private Slot0Configs slot0Configs;
     private double velocity;
@@ -78,6 +79,8 @@ public class TemplateSubsystem extends SubsystemBase {
         motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0)
                 .withEnableFOC(true);
         positionVoltage = new PositionVoltage(0).withSlot(0)
+                .withEnableFOC(true);
+        velocityVoltage = new VelocityVoltage(0).withSlot(0)
                 .withEnableFOC(true);
 
         this.lowerTolerance = lowerTolerance;
@@ -275,7 +278,7 @@ public class TemplateSubsystem extends SubsystemBase {
         this.goal = rps;
         followLastMechProfile = false;
         if (rps == 0) setPercent(0);
-        else motor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps));
+        else secondaryMotor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps));
     }
 
     public void setPosition(double goal) {

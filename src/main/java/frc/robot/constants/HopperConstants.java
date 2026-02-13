@@ -11,12 +11,12 @@ public class HopperConstants {
     public static final boolean HOPPER_BRAKE = true;
 
     public static final Slot0Configs HOPPER_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0.3)
+            .withKP(0.2)
             .withKI(0)
             .withKD(0)
-            .withKS(0.27)
+            .withKS(0.23)
             .withKG(0)
-            .withKV(0.11948657574)
+            .withKV(0.1031991744066047)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
@@ -26,5 +26,5 @@ public class HopperConstants {
     public static final double HOPPER_LOWER_TOLERANCE = 2;
     public static final double HOPPER_UPPER_TOLERANCE = 2;
 
-    public static final double[][] HOPPER_GEAR_RATIO = {{1, 1}};
+    public static final double[][] HOPPER_GEAR_RATIO = {{4.7, 1}};
 }

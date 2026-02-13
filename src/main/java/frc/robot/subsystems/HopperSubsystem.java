@@ -6,6 +6,7 @@ import frc.robot.utility.Type;
 
 public class HopperSubsystem extends TemplateSubsystem {
     private static HopperSubsystem hopperSubsystem;
+
     public static HopperSubsystem getInstance() {
         if (hopperSubsystem == null) {
             hopperSubsystem = new HopperSubsystem();
