@@ -28,7 +28,7 @@ import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
-import frc.robot.subsystems.templates.ShooterCommand;
+// import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
@@ -150,7 +150,7 @@ public class RobotContainer {
 //                        new ShooterCommand(shooterSubsystem, 0),
                         new VelocityCommand(indexerSubsystem, -15),
                         new VelocityCommand(kickerSubsystem, 0),
-                        new VelocityCommand(hopperSubsystem, -5)
+                        new VelocityCommand(hopperSubsystem, 0)
                 )
         );
 
@@ -166,8 +166,8 @@ public class RobotContainer {
         commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
         commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
 
-        commandXboxController.y().onTrue(new ShooterCommand(shooterSubsystem, 50))
-                .onFalse(new ShooterCommand(shooterSubsystem, 0));
+        // commandXboxController.y().onTrue(new ShooterCommand(shooterSubsystem, 50))
+        //         .onFalse(new ShooterCommand(shooterSubsystem, 0));
 
         commandXboxController.povRight().onTrue(turretControl);
         commandXboxController.povLeft().onTrue(new PositionCommand(hoodSubsystem, 0));

@@ -13,19 +13,19 @@ public class KickerConstants {
     public static final boolean KICKER_UPPER_INVERTED = false;
     public static final boolean KICKER_BRAKE = false;
 
-//    public static final Slot0Configs KICKER_SLOT0_CONFIGS = new Slot0Configs()
-//            .withKP(99999999999999999999d)
-//            .withKI(0)
-//            .withKD(0)
-//            .withKS(.26)
-//            .withKG(0)
-//            .withKV(1 / 4.9)
-//            .withKA(0)
-//            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
+   public static final Slot1Configs KICKER_SLOT1_CONFIGS = new Slot1Configs()
+           .withKP(0)
+           .withKI(0)
+           .withKD(0)
+           .withKS(.26)
+           .withKG(0)
+           .withKV(1 / 4.9)
+           .withKA(0)
+           .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
 
     public static final Slot0Configs KICKER_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(2)
+            .withKP(999999999999999999d)
             .withKI(0)
             .withKD(0)
             .withKS(.26)
