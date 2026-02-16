@@ -89,8 +89,6 @@ public class Robot extends TimedRobot {
 //                .33, .28, .25, 0, 5, 25);
         LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
                 -.325, -.341, .406, 0, 5, 135.218);
-        commandSwerveDrivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999.0));
-
         Logger.addDataReceiver(new WPILOGWriter());
     }
 
@@ -212,9 +210,16 @@ public class Robot extends TimedRobot {
             limelightLeftData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
             if (limelightLeftData != null) {
+                double xyStdev = .3;
+
+                if (limelightLeftData.tagCount < 2) {
+                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
+                } else {
+                    xyStdev *= limelightLeftData.avgTagDist;
+                }
+
                 commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                        limelightLeftData.timestampSeconds);
-//                System.out.println("Left Cam Tag Distance: " + limelightLeftData.avgTagDist);
+                        limelightLeftData.timestampSeconds, VecBuilder.fill(xyStdev, xyStdev, 9999999999d));
             }
         }
 
