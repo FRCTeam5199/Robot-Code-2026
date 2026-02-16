@@ -5,19 +5,19 @@ import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class ShooterConstants {
-    public static final int SHOOTER_MOTOR_ID = 0;
+    public static final int SHOOTER_MOTOR_ID = 22;
     public static final double SHOOTER_STATOR_CURRENT_LIMIT = 60;
     public static final double SHOOTER_SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean SHOOTER_INVERTED = false;
     public static final boolean SHOOTER_BRAKE = false;
 
     public static final Slot0Configs SHOOTER_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(99999999999999999999d)
+            .withKP(.5)
             .withKI(0)
             .withKD(0)
-            .withKS(.37)
+            .withKS(.5)
             .withKG(0)
-            .withKV(.12195121951219512195121951219512)
+            .withKV(.13333333333333333333333333333333)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 

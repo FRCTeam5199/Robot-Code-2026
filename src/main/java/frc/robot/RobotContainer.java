@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IntakePivotConstants;
+import frc.robot.constants.KickerConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 // import frc.robot.subsystems.templates.ShooterCommand;
+//import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
@@ -41,9 +43,9 @@ public class RobotContainer {
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
-    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    //    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
-    public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
+    //    public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
     public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
@@ -52,8 +54,8 @@ public class RobotContainer {
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     public static Telemetry logger = new Telemetry(MaxSpeed);
     private static Setpoint currentSetpoint = Setpoint.HUB;
-    private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true, true, 0);
-    private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true, false, 0);
+    //    private static PositionCommand turretControl = new PositionCommand(turretSubsystem, 0, true, true, 0);
+//    private static PositionCommand hoodControl = new PositionCommand(hoodSubsystem, 0, true, false, 0);
     private static VelocityCommand shooterSpeed = new VelocityCommand(shooterSubsystem, 0);
 
     public RobotContainer() {
@@ -69,14 +71,15 @@ public class RobotContainer {
     }
 
     public static void periodic() {
-        turretControl.setGoal(shotCalculator.getTurretAngle(),
-                turretSubsystem.getMotorRotFromDegrees(shotCalculator.getTurretVelocity()));
+//        turretControl.setGoal(shotCalculator.getTurretAngle(),
+//                turretSubsystem.getMotorRotFromDegrees(shotCalculator.getTurretVelocity()));
     }
 
     public static boolean areMechanismsAtGoals() {
-        return turretSubsystem.isMechAtGoal(false) && hoodSubsystem.isMechAtGoal(false)
-                && shooterSubsystem.isMechAtGoal(true)
-                && kickerSubsystem.isMechAtGoal(true);
+//        return turretSubsystem.isMechAtGoal(false) && hoodSubsystem.isMechAtGoal(false)
+//                && shooterSubsystem.isMechAtGoal(true)
+//                && kickerSubsystem.isMechAtGoal(true);
+        return false;
     }
 
     private void configureBindings() {
@@ -136,7 +139,7 @@ public class RobotContainer {
 ////                                new ShooterCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed())
 //                        ))
 //                ), RobotContainer::getCurrentSetpoint).alongWith
-                (new VelocityCommand(kickerSubsystem, 45))
+                (new VelocityCommand(kickerSubsystem, 30).alongWith(new VelocityCommand(shooterSubsystem, 30)))
                         .andThen(
                                 new ParallelCommandGroup(
                                         new VelocityCommand(indexerSubsystem, 15),
@@ -147,10 +150,10 @@ public class RobotContainer {
                 new ParallelCommandGroup(
 //                        new PositionCommand(turretSubsystem, 0),
 //                        new PositionCommand(hoodSubsystem, 0),
-//                        new ShooterCommand(shooterSubsystem, 0),
+                        new VelocityCommand(shooterSubsystem, 0),
                         new VelocityCommand(indexerSubsystem, -15),
                         new VelocityCommand(kickerSubsystem, 0),
-                        new VelocityCommand(hopperSubsystem, 0)
+                        new VelocityCommand(hopperSubsystem, -5)
                 )
         );
 
@@ -166,11 +169,17 @@ public class RobotContainer {
         commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
         commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
 
-        // commandXboxController.y().onTrue(new ShooterCommand(shooterSubsystem, 50))
-        //         .onFalse(new ShooterCommand(shooterSubsystem, 0));
+        commandXboxController.y().onTrue(new VelocityCommand(shooterSubsystem, 33)
+                        .alongWith(new VelocityCommand(kickerSubsystem, 33))
+                        .alongWith(new VelocityCommand(indexerSubsystem, 30))
+                        .alongWith(new VelocityCommand(hopperSubsystem, 30)))
+                .onFalse(new VelocityCommand(shooterSubsystem, 0)
+                        .alongWith(new VelocityCommand(kickerSubsystem, 0))
+                        .alongWith(new VelocityCommand(indexerSubsystem, -15))
+                        .alongWith(new VelocityCommand(hopperSubsystem, -5)));
 
-        commandXboxController.povRight().onTrue(turretControl);
-        commandXboxController.povLeft().onTrue(new PositionCommand(hoodSubsystem, 0));
+//        commandXboxController.povRight().onTrue(turretControl);
+//        commandXboxController.povLeft().onTrue(new PositionCommand(hoodSubsystem, 0));
         commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
 
 

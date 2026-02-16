@@ -27,13 +27,13 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.SHOOTER_STATOR_CURRENT_LIMIT,
                 ShooterConstants.SHOOTER_SLOT0_CONFIGS);
 
-        getMotor().getConfigurator().apply(ShooterConstants.SHOOTER_SLOT1_CONFIGS);
-        getMotor().getConfigurator().apply(
-                new TorqueCurrentConfigs().withPeakForwardTorqueCurrent(60));
+//        getMotor().getConfigurator().apply(ShooterConstants.SHOOTER_SLOT1_CONFIGS);
+//        getMotor().getConfigurator().apply(
+//                new TorqueCurrentConfigs().withPeakForwardTorqueCurrent(60));
 
-        bangBangController = new VelocityDutyCycle(0)
-                .withSlot(0).withEnableFOC(true);
-        torqueCurrentFOC = new VelocityTorqueCurrentFOC(0).withSlot(1);
+//        bangBangController = new VelocityDutyCycle(0)
+//                .withSlot(0).withEnableFOC(true);
+//        torqueCurrentFOC = new VelocityTorqueCurrentFOC(0).withSlot(1);
     }
 
     public static ShooterSubsystem getInstance() {
@@ -49,28 +49,28 @@ public class ShooterSubsystem extends TemplateSubsystem {
 //        System.out.println("Shooter Velocity: " + getMotorVelocity());
 //        System.out.println("Current Control Request: " + getMotor().getControlMode(true).getValue().name());
 //     System.out.println("Shooter is at goal: " + isMechAtGoal(true));
-        if (goalVelocity == 0) shooterSubsystem.setPercent(0);
-        else {
-            if (isMechAtGoal()) {
-                setSpeedTorqueCurrent(goalVelocity);
-            } else {
-                setVelocityBangBang(goalVelocity);
-            }
-        }
+//        if (goalVelocity == 0) shooterSubsystem.setPercent(0);
+//        else {
+//            if (isMechAtGoal()) {
+//                setSpeedTorqueCurrent(goalVelocity);
+//            } else {
+//                setVelocityBangBang(goalVelocity);
+//            }
+//        }
     }
 
-    public void setVelocityBangBang(double velocity) {
-        goalVelocity = velocity;
-        getMotor().setControl(bangBangController.withVelocity(velocity));
-    }
-
-    public void setSpeedTorqueCurrent(double velocity) {
-        goalVelocity = velocity;
-        getMotor().setControl(torqueCurrentFOC.withVelocity(velocity));
-    }
-
-    public boolean isMechAtGoal() {
-        return getMotorVelocity() >= goalVelocity - ShooterConstants.SHOOTER_LOWER_TOLERANCE
-                && getMotorVelocity() <= goalVelocity + ShooterConstants.SHOOTER_UPPER_TOLERANCE;
-    }
+//    public void setVelocityBangBang(double velocity) {
+//        goalVelocity = velocity;
+//        getMotor().setControl(bangBangController.withVelocity(velocity));
+//    }
+//
+//    public void setSpeedTorqueCurrent(double velocity) {
+//        goalVelocity = velocity;
+//        getMotor().setControl(torqueCurrentFOC.withVelocity(velocity));
+//    }
+//
+//    public boolean isMechAtGoal() {
+//        return getMotorVelocity() >= goalVelocity - ShooterConstants.SHOOTER_LOWER_TOLERANCE
+//                && getMotorVelocity() <= goalVelocity + ShooterConstants.SHOOTER_UPPER_TOLERANCE;
+//    }
 }
