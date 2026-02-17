@@ -13,8 +13,8 @@ public class KickerConstants {
     public static final boolean KICKER_UPPER_INVERTED = false;
     public static final boolean KICKER_BRAKE = false;
 
-    public static final Slot1Configs KICKER_SLOT1_CONFIGS = new Slot1Configs()
-            .withKP(0)
+    public static final Slot1Configs KICKER_SLOT1_CONFIGS = new Slot1Configs() //bang-bang control
+            .withKP(999999999999d)
             .withKI(0)
             .withKD(0)
             .withKS(.26)
