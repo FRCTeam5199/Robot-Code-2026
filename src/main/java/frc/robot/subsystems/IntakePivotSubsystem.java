@@ -41,5 +41,6 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
         super.periodic();
     //    System.out.println("Degrees: " + getDegrees());
     //    System.out.println("Goal: " + getGoal());
+            // System.out.println("Is at Goal: "+ isMechAtGoal(false));
     }
 }

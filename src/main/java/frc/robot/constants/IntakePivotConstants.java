@@ -13,28 +13,28 @@ public class IntakePivotConstants {
     public static final boolean INTAKE_PIVOT_INVERTED = false;
     public static final boolean INTAKE_PIVOT_BRAKE = true;
 
-    public static final double INTAKE_OUT = 87;
+    public static final double INTAKE_OUT = 92;
     public static final double INTAKE_IN = 5;
 
     public static final Slot0Configs INTAKE_PIVOT_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(15)
+            .withKP(7)
             .withKI(0)
             .withKD(0)
             .withKS(.19)
-            .withKG(.16)
-            .withKV(1.5950158943)
+            .withKG(0)
+            .withKV(1.59)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
             .withGravityType(GravityTypeValue.Arm_Cosine)
-            .withGravityArmPositionOffset(.055555555555555555); //figure out how to use this
+            .withGravityArmPositionOffset(.0);
 
     public static final double INTAKE_PIVOT_VELOCITY_OUT = 5;
     public static final double INTAKE_PIVOT_ACCELERATION_OUT = 7;
     public static final double INTAKE_PIVOT_JERK_OUT = 70;
 
-    public static final double INTAKE_PIVOT_VELOCITY_IN = .5;
-    public static final double INTAKE_PIVOT_ACCELERATION_IN = 4;
-    public static final double INTAKE_PIVOT_JERK_IN = 10;
+    public static final double INTAKE_PIVOT_VELOCITY_IN = 5;
+    public static final double INTAKE_PIVOT_ACCELERATION_IN = 7;
+    public static final double INTAKE_PIVOT_JERK_IN = 70;
 
     public static final double INTAKE_PIVOT_LOWER_TOLERANCE = 4;
     public static final double INTAKE_PIVOT_UPPER_TOLERANCE = 4;
@@ -42,8 +42,8 @@ public class IntakePivotConstants {
     public static final double INTAKE_PIVOT_MAGNET_OFFSET = -.6611328125;
     public static final boolean INTAKE_PIVOT_ENCODER_DIRECTION = false;
 
-    public static final double INTAKE_PIVOT_MIN = 3;
-    public static final double INTAKE_PIVOT_MAX = 87;
+    public static final double INTAKE_PIVOT_MIN = 0;
+    public static final double INTAKE_PIVOT_MAX = 94;
 
     public static final double INTAKE_PIVOT_GEAR_RATIO = 20d;
     public static final double[][] INTAKE_PIVOT_GEAR_RATIOA = {{20, 1}};

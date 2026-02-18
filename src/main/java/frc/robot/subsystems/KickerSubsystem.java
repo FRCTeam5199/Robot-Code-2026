@@ -3,43 +3,38 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.fasterxml.jackson.databind.EnumNamingStrategies.KebabCaseStrategy;
+
 import frc.robot.constants.KickerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
 public class KickerSubsystem extends TemplateSubsystem {
     private static KickerSubsystem kickerSubsystem;
-    private VelocityDutyCycle bangBangController;
-    private VelocityTorqueCurrentFOC torqueCurrentFOC;
-    private boolean isUsingBangBangControl = true;
-    private double goalVelocity = 0;
 
     private KickerSubsystem() {
-        super(Type.ROLLER, KickerConstants.KICKER_LOWER_MOTOR_ID,
+        super(Type.ROLLER, KickerConstants.KICKER_UPPER_MOTOR_ID,
                 0, KickerConstants.KICKER_ACCELERATION,
                 KickerConstants.KICKER_JERK,
                 KickerConstants.KICKER_LOWER_TOLERANCE,
                 KickerConstants.KICKER_UPPER_TOLERANCE,
                 KickerConstants.KICKER_GEAR_RATIO, "Kicker");
 
-        configureMotor(KickerConstants.KICKER_LOWER_INVERTED, KickerConstants.KICKER_BRAKE,
+        configureMotor(KickerConstants.KICKER_UPPER_INVERTED, KickerConstants.KICKER_UPPER_BRAKE,
                 KickerConstants.KICKER_SUPPLY_CURRENT_LIMIT,
                 KickerConstants.KICKER_STATOR_CURRENT_LIMIT,
-                KickerConstants.KICKER_SLOT0_CONFIGS);
+                KickerConstants.KICKER_UPPER_SLOT0_CONFIGS);
 
-        configureFollowerMotor(
-                KickerConstants.KICKER_UPPER_MOTOR_ID,
-                KickerConstants.KICKER_UPPER_INVERTED
-        );
+        // configureSecondaryMotor(KickerConstants.KICKER_LOWER_MOTOR_ID,
+        // 0, KickerConstants.KICKER_ACCELERATION,
+        //     KickerConstants.KICKER_JERK,
+        //     KickerConstants.KICKER_LOWER_INVERTED,
+        //     KickerConstants.KICKER_LOWER_BRAKE,
+        //     KickerConstants.KICKER_SUPPLY_CURRENT_LIMIT,
+        //     KickerConstants.KICKER_STATOR_CURRENT_LIMIT,
+        //     KickerConstants.KICKER_LOWER_SLOT0_CONFIGS);
 
-//        getMotor().getConfigurator().apply(KickerConstants.KICKER_SLOT0_CONFIGS);
-        getMotor().getConfigurator().apply(KickerConstants.KICKER_SLOT1_CONFIGS);
-        getMotor().getConfigurator().apply(
-                new TorqueCurrentConfigs().withPeakForwardTorqueCurrent(60));
-
-        bangBangController = new VelocityDutyCycle(0)
-                .withSlot(1).withEnableFOC(true);
-        torqueCurrentFOC = new VelocityTorqueCurrentFOC(0).withSlot(0);
+        configureFollowerMotor(KickerConstants.KICKER_LOWER_MOTOR_ID, KickerConstants.KICKER_LOWER_INVERTED);
     }
 
     public static KickerSubsystem getInstance() {
@@ -54,9 +49,10 @@ public class KickerSubsystem extends TemplateSubsystem {
         super.periodic();
 
 //        goalVelocity = getGoal();
-//        System.out.println("Kicker Velocity: " + getMotorVelocity());
-        // System.out.println("Goal: " + goalVelocity);
-//        System.out.println("Kicker is at goal: " + isMechAtGoal());
+    //    System.out.println("Kicker Velocity: " + getMotorVelocity());
+        // System.out.println("Upper Goal: " + getGoal());
+        // System.out.println("Lower Goal: " + getSecondaryGoal());
+    //    System.out.println("Kicker is at goal: " + isMechAtGoal(true));
 
 //        if (goalVelocity == 0) kickerSubsystem.setPercent(0);
 //        else {
@@ -68,24 +64,7 @@ public class KickerSubsystem extends TemplateSubsystem {
 //        }
     }
 
-    public void setVelocityBangBang(double velocity) {
-        goalVelocity = velocity;
-        isUsingBangBangControl = true;
-        getMotor().setControl(bangBangController.withVelocity(velocity));
-    }
-
-    public void setVelocityTorqueCurrent(double velocity) {
-        goalVelocity = velocity;
-        isUsingBangBangControl = false;
-        getMotor().setControl(torqueCurrentFOC.withVelocity(velocity));
-    }
-
-    public boolean isMechAtGoal() {
-        return getMotorVelocity() >= goalVelocity - KickerConstants.KICKER_LOWER_TOLERANCE
-                && getMotorVelocity() <= goalVelocity + KickerConstants.KICKER_UPPER_TOLERANCE;
-    }
-
-    public boolean isUsingBangBangControl() {
-        return isUsingBangBangControl;
+    public double getKickerLowerSpeedFromUpperSpeed(double upperKickerSpeed) {
+        return upperKickerSpeed * KickerConstants.KICKER_SCALE_FACTOR;
     }
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IntakePivotConstants;
@@ -142,7 +143,7 @@ public class RobotContainer {
                 (new VelocityCommand(kickerSubsystem, 30).alongWith(new VelocityCommand(shooterSubsystem, 30)))
                         .andThen(
                                 new ParallelCommandGroup(
-                                        new VelocityCommand(indexerSubsystem, 15),
+                                        new VelocityCommand(indexerSubsystem, 30),
                                         new VelocityCommand(hopperSubsystem, 60)
                                 )
                         )
@@ -152,7 +153,7 @@ public class RobotContainer {
 //                        new PositionCommand(hoodSubsystem, 0),
                         new VelocityCommand(shooterSubsystem, 0),
                         new VelocityCommand(indexerSubsystem, -15),
-                        new VelocityCommand(kickerSubsystem, 0),
+                        new VelocityCommand(kickerSubsystem, 0, 0),
                         new VelocityCommand(hopperSubsystem, -5)
                 )
         );
@@ -165,10 +166,16 @@ public class RobotContainer {
 //                        .alongWith(new VelocityCommand(hopperSubsystem, 0)));
 
 //        commandXboxController.y().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB)));
-        commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));
-        commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
-        commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
+        // commandXboxController.x().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER)));
+        // commandXboxController.b().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST)));
+        // commandXboxController.a().onTrue(new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER)));
 
+        // commandXboxController.a().onTrue(
+        //         new SequentialCommandGroup(
+        //                 new PositionCommand(intakePivotSubsystem, IntakePivotConstants.INTAKE_OUT),
+        //                 new PositionCommand(intakePivotSubsystem, 80)
+        //         ).repeatedly()
+        // );
         commandXboxController.y().onTrue(new VelocityCommand(shooterSubsystem, 33)
                         .alongWith(new VelocityCommand(kickerSubsystem, 33))
                         .alongWith(new VelocityCommand(indexerSubsystem, 30))

@@ -39,6 +39,7 @@ public class TemplateSubsystem extends SubsystemBase {
     private CANcoder encoder;
     private CANcoderConfiguration encoderConfig;
     private double goal;
+    private double secondaryGoal;
     private boolean followLastMechProfile = false;
     private boolean isCommandRunning = false;
     private DynamicMotionMagicVoltage dynamicMotionMagicVoltage;
@@ -275,7 +276,7 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void setSecondaryVelocity(double rps) {
-        this.goal = rps;
+        this.secondaryGoal = rps;
         followLastMechProfile = false;
         if (rps == 0) setPercent(0);
         else secondaryMotor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps));
@@ -395,6 +396,10 @@ public class TemplateSubsystem extends SubsystemBase {
         return goal;
     }
 
+    public double getSecondaryGoal() {
+        return secondaryGoal;
+    }
+
     public void setFollowLastMechProfile(boolean followLastMechProfile) {
         this.followLastMechProfile = followLastMechProfile;
     }
@@ -473,11 +478,11 @@ public class TemplateSubsystem extends SubsystemBase {
 
     //Motor Values
     public double getMotorVelocity() {
-        return motor.getVelocity().getValueAsDouble();
+        return motor.getRotorVelocity().getValueAsDouble();
     }
 
     public double getSecondaryMotorVelocity() {
-        return secondaryMotor.getVelocity().getValueAsDouble();
+        return secondaryMotor.getRotorVelocity().getValueAsDouble();
     }
 
     public double getMotorVoltage() {

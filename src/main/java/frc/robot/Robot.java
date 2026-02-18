@@ -281,7 +281,6 @@ public class Robot extends TimedRobot {
         // CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
         CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, -15));
         CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, -5));
-        // CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, -5));
         // CommandScheduler.getInstance().schedule(new VelocityCommand(intakerollersubsystem, 90));
 
     }

@@ -27,6 +27,10 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.SHOOTER_STATOR_CURRENT_LIMIT,
                 ShooterConstants.SHOOTER_SLOT0_CONFIGS);
 
+        configureFollowerMotor(ShooterConstants.SECOND_SHOOTER_MOTOR_ID,
+                ShooterConstants.SECOND_SHOOTER_INVERTED
+        );
+
 //        getMotor().getConfigurator().apply(ShooterConstants.SHOOTER_SLOT1_CONFIGS);
 //        getMotor().getConfigurator().apply(
 //                new TorqueCurrentConfigs().withPeakForwardTorqueCurrent(60));
@@ -46,9 +50,9 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-//        System.out.println("Shooter Velocity: " + getMotorVelocity());
+    //    System.out.println("Shooter Velocity: " + getMotorVelocity());
 //        System.out.println("Current Control Request: " + getMotor().getControlMode(true).getValue().name());
-//     System.out.println("Shooter is at goal: " + isMechAtGoal(true));
+    // System.out.println("Shooter is at goal: " + isMechAtGoal(true));
 //        if (goalVelocity == 0) shooterSubsystem.setPercent(0);
 //        else {
 //            if (isMechAtGoal()) {
