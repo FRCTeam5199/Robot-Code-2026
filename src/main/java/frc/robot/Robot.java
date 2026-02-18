@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
@@ -26,6 +28,7 @@ public class Robot extends TimedRobot {
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakerollersubsystem = IntakeRollerSubsystem.getInstance();
+    public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static LimelightHelpers.PoseEstimate limelightRightData;
     public static LimelightHelpers.PoseEstimate limelightLeftData;

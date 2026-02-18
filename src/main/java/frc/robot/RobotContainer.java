@@ -46,7 +46,7 @@ public class RobotContainer {
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     //    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
-    //    public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
+       public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
     public static double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
@@ -176,6 +176,9 @@ public class RobotContainer {
         //                 new PositionCommand(intakePivotSubsystem, 80)
         //         ).repeatedly()
         // );
+        commandXboxController.x().onTrue(new PositionCommand(turretSubsystem, 300))
+                                .onFalse(new PositionCommand(turretSubsystem, 0));
+
         commandXboxController.y().onTrue(new VelocityCommand(shooterSubsystem, 33)
                         .alongWith(new VelocityCommand(kickerSubsystem, 33))
                         .alongWith(new VelocityCommand(indexerSubsystem, 30))
