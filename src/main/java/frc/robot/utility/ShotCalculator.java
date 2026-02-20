@@ -55,9 +55,9 @@ public class ShotCalculator extends SubsystemBase {
 //            estimatedPose =
 //                    estimatedPose.exp(
 //                            new Twist2d(
-//                                    robotRelativeVelocity.vxMetersPerSecond * TurretConstants.PHASE_DELAY,
-//                                    robotRelativeVelocity.vyMetersPerSecond * TurretConstants.PHASE_DELAY,
-//                                    robotRelativeVelocity.omegaRadiansPerSecond * TurretConstants.PHASE_DELAY));
+//                                    robotRelativeVelocity.vxMetersPerSecond * Constants.PHASE_DELAY,
+//                                    robotRelativeVelocity.vyMetersPerSecond * Constants.PHASE_DELAY,
+//                                    robotRelativeVelocity.omegaRadiansPerSecond * Constants.PHASE_DELAY));
 
             //Turrets current position
             turretPosition = estimatedPose.transformBy(Constants.ROBOT_TO_TURRET);
@@ -108,8 +108,10 @@ public class ShotCalculator extends SubsystemBase {
 
             turretAngle = turretRotation.getDegrees();
             turretAngle -= commandSwerveDrivetrain.getPose().getRotation().getDegrees();
-            while (turretAngle <= -180) turretAngle += 360;
-            while (turretAngle >= 180) turretAngle -= 360;
+
+            //Wraps to within bounds
+            while (turretAngle <= -140) turretAngle += 360;
+            while (turretAngle >= 220) turretAngle -= 360;
 
             turretVelocity -= commandSwerveDrivetrain.getState().Speeds.omegaRadiansPerSecond / Math.PI * 180d;
 

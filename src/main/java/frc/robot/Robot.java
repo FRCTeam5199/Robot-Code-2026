@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -32,6 +34,7 @@ public class Robot extends TimedRobot {
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static LimelightHelpers.PoseEstimate limelightRightData;
     public static LimelightHelpers.PoseEstimate limelightLeftData;
+    public static Timer originTimer = new Timer();
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
@@ -221,8 +224,19 @@ public class Robot extends TimedRobot {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
 
-                commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                        limelightLeftData.timestampSeconds, VecBuilder.fill(xyStdev, xyStdev, 9999999999d));
+                if (commandSwerveDrivetrain.getPose().getTranslation()
+                        .getDistance(new Translation2d(0, 0)) < .25)
+                    originTimer.restart();
+
+                //Only adds pose when it is less than 1m different from our current location
+                //or when we're at the origin (haven't gotten vision data yet)
+                if (commandSwerveDrivetrain.getPose().getTranslation()
+                        .getDistance(limelightLeftData.pose.getTranslation()) < 1d
+                        || originTimer.get() < 5) {
+
+                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
+                            limelightLeftData.timestampSeconds, VecBuilder.fill(xyStdev, xyStdev, 9999999999d));
+                }
             }
         }
 

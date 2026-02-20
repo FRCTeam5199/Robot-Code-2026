@@ -126,6 +126,9 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
         motorConfig.MotionMagic.MotionMagicJerk = jerk;
 
+        motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
+        motor.optimizeBusUtilization(50);
+        
         motor.getConfigurator().apply(motorConfig);
         motor.setPosition(0);
     }
@@ -317,6 +320,14 @@ public class TemplateSubsystem extends SubsystemBase {
 //        dynamicMotionMagicVoltage.Velocity = this.velocity;
 //        dynamicMotionMagicVoltage.Acceleration = this.acceleration;
 //        dynamicMotionMagicVoltage.Jerk = this.jerk;
+    }
+
+    public void setPositionVoltage(double motorRotations, double feedforward) {
+        motor.setControl(positionVoltage.withPosition(motorRotations).withFeedForward(feedforward));
+    }
+
+    public void setPositionVoltage(double motorRotations) {
+        motor.setControl(positionVoltage.withPosition(motorRotations));
     }
 
     //Used if velocity/acceleration/jerk constraint needs to be changed
@@ -546,7 +557,9 @@ public class TemplateSubsystem extends SubsystemBase {
             changedOffset = false;
         }
 
-        poseData.set(getMotorRot());
+
+        if (type == Type.LINEAR) poseData.set(getMechM());
+        else poseData.set(getDegrees());
         velocityData.set(getMotorVelocity());
         voltageData.set(getMotorVoltage());
         supplyCurrentData.set(-getSupplyCurrent());

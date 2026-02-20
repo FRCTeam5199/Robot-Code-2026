@@ -14,12 +14,12 @@ public class HoodConstants {
     public static final boolean HOOD_BRAKE = true;
 
     public static final Slot0Configs HOOD_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(5)
+            .withKP(10)
             .withKI(0)
             .withKD(0)
-            .withKS(0.28)
+            .withKS(0.26)
             .withKG(0)
-            .withKV(.08064516129032258064516129032258)
+            .withKV(.09025270758122743682310469314079)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
             .withGravityType(GravityTypeValue.Arm_Cosine)
@@ -32,11 +32,11 @@ public class HoodConstants {
     public static final double HOOD_LOWER_TOLERANCE = 2;
     public static final double HOOD_UPPER_TOLERANCE = 2;
 
-    public static final double HOOD_MAGNET_OFFSET = -0.377197265625;// -0.58203125;
+    public static final double HOOD_MAGNET_OFFSET = -.6416015625;
     public static final boolean HOOD_IS_CCW_POS = false;
 
-    public static final double HOOD_MIN = 2; //2
-    public static final double HOOD_MAX = 29;  //29
+    public static final double HOOD_MIN = 0;
+    public static final double HOOD_MAX = 29;
 
     public static final double HOOD_MOTOR_TO_SENSOR_GEAR_RATIO = 8d;
     public static final double[][] HOOD_GEAR_RATIO = {{48, 12}, {30, 15}, {180, 10}};
