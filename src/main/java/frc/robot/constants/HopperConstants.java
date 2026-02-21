@@ -26,5 +26,8 @@ public class HopperConstants {
     public static final double HOPPER_LOWER_TOLERANCE = 2;
     public static final double HOPPER_UPPER_TOLERANCE = 2;
 
-    public static final double[][] HOPPER_GEAR_RATIO = {{4.7, 1}};
+    public static final double[][] HOPPER_GEAR_RATIO = {{1, 1}};
+
+    public static final double INDEXING_SPEED = 60;
+    public static final double IDLING_SPEED = -5;
 }

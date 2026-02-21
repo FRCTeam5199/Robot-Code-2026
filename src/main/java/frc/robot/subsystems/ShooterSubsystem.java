@@ -9,10 +9,6 @@ import frc.robot.utility.Type;
 
 public class ShooterSubsystem extends TemplateSubsystem {
     private static ShooterSubsystem shooterSubsystem;
-    private VelocityDutyCycle bangBangController;
-    private VelocityTorqueCurrentFOC torqueCurrentFOC;
-    private boolean isUsingBangBangControl = true;
-    private double goalVelocity = 0;
 
     private ShooterSubsystem() {
         super(Type.ROLLER, ShooterConstants.SHOOTER_MOTOR_ID,
@@ -50,31 +46,5 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-    //    System.out.println("Shooter Velocity: " + getMotorVelocity());
-//        System.out.println("Current Control Request: " + getMotor().getControlMode(true).getValue().name());
-    // System.out.println("Shooter is at goal: " + isMechAtGoal(true));
-//        if (goalVelocity == 0) shooterSubsystem.setPercent(0);
-//        else {
-//            if (isMechAtGoal()) {
-//                setSpeedTorqueCurrent(goalVelocity);
-//            } else {
-//                setVelocityBangBang(goalVelocity);
-//            }
-//        }
     }
-
-//    public void setVelocityBangBang(double velocity) {
-//        goalVelocity = velocity;
-//        getMotor().setControl(bangBangController.withVelocity(velocity));
-//    }
-//
-//    public void setSpeedTorqueCurrent(double velocity) {
-//        goalVelocity = velocity;
-//        getMotor().setControl(torqueCurrentFOC.withVelocity(velocity));
-//    }
-//
-//    public boolean isMechAtGoal() {
-//        return getMotorVelocity() >= goalVelocity - ShooterConstants.SHOOTER_LOWER_TOLERANCE
-//                && getMotorVelocity() <= goalVelocity + ShooterConstants.SHOOTER_UPPER_TOLERANCE;
-//    }
 }

@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.constants.HopperConstants;
+import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -26,7 +28,7 @@ import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
-    //    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakerollersubsystem = IntakeRollerSubsystem.getInstance();
@@ -94,7 +96,9 @@ public class Robot extends TimedRobot {
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
 //                .33, .28, .25, 0, 5, 25);
         LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
-                -.325, -.341, .406, 0, 5, 135.218);
+                -.316, -.316, .453, 0, 5, 135.218);
+        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
+                -.317, .317, .436, 180, 5, -135.218);
         Logger.addDataReceiver(new WPILOGWriter());
     }
 
@@ -240,6 +244,36 @@ public class Robot extends TimedRobot {
             }
         }
 
+        if (LimelightHelpers.getTV("limelight-right")) {
+            LimelightHelpers.SetRobotOrientation("limelight-right",
+                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
+            limelightRightData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+
+            if (limelightRightData != null) {
+                double xyStdev = .3;
+
+                if (limelightRightData.tagCount < 2) {
+                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
+                } else {
+                    xyStdev *= limelightRightData.avgTagDist;
+                }
+
+                if (commandSwerveDrivetrain.getPose().getTranslation()
+                        .getDistance(new Translation2d(0, 0)) < .25)
+                    originTimer.restart();
+
+                //Only adds pose when it is less than 1m different from our current location
+                //or when we're at the origin (haven't gotten vision data yet)
+                if (commandSwerveDrivetrain.getPose().getTranslation()
+                        .getDistance(limelightRightData.pose.getTranslation()) < 1d
+                        || originTimer.get() < 5) {
+
+                    commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
+                            limelightRightData.timestampSeconds, VecBuilder.fill(xyStdev, xyStdev, 9999999999d));
+                }
+            }
+        }
+
 //        System.out.println("Mechanism at goal: " + RobotContainer.areMechanismsAtGoals());
 
 //         if (RobotContainer.areMechanismsAtGoals() && indexerSubsystem.getGoal() != 15) {
@@ -296,8 +330,8 @@ public class Robot extends TimedRobot {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
         // CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
-        CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, -15));
-        CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, -5));
+        CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED));
+        CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED));
         // CommandScheduler.getInstance().schedule(new VelocityCommand(intakerollersubsystem, 90));
 
     }

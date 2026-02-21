@@ -38,6 +38,8 @@ public class KickerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+//        System.out.println(isMechAtGoal(true));
+
     }
 
     public double getKickerLowerSpeedFromUpperSpeed(double upperKickerSpeed) {

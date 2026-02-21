@@ -32,7 +32,7 @@ public class HoodConstants {
     public static final double HOOD_LOWER_TOLERANCE = 2;
     public static final double HOOD_UPPER_TOLERANCE = 2;
 
-    public static final double HOOD_MAGNET_OFFSET = -.6416015625;
+    public static final double HOOD_MAGNET_OFFSET = -.847900390625;
     public static final boolean HOOD_IS_CCW_POS = false;
 
     public static final double HOOD_MIN = 0;
@@ -42,7 +42,7 @@ public class HoodConstants {
     public static final double[][] HOOD_GEAR_RATIO = {{48, 12}, {30, 15}, {180, 10}};
     public static final double HOOD_SENSOR_TO_MECH_GEAR_RATIO = 18d;
 
-    public static final double HOOD_ABSOLUTE_DISCONTINUITY_POINT = 1;
+    public static final double HOOD_ABSOLUTE_DISCONTINUITY_POINT = .5;
 }
 
 

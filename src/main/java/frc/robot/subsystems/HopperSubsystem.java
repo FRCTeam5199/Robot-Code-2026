@@ -7,13 +7,6 @@ import frc.robot.utility.Type;
 public class HopperSubsystem extends TemplateSubsystem {
     private static HopperSubsystem hopperSubsystem;
 
-    public static HopperSubsystem getInstance() {
-        if (hopperSubsystem == null) {
-            hopperSubsystem = new HopperSubsystem();
-        }
-        return hopperSubsystem;
-    }
-
     private HopperSubsystem() {
         super(Type.ROLLER, HopperConstants.HOPPER_MOTOR_ID,
                 0, HopperConstants.HOPPER_ACCELERATION,
@@ -28,9 +21,17 @@ public class HopperSubsystem extends TemplateSubsystem {
                 HopperConstants.HOPPER_SLOT0_CONFIGS);
     }
 
+    public static HopperSubsystem getInstance() {
+        if (hopperSubsystem == null) {
+            hopperSubsystem = new HopperSubsystem();
+        }
+        return hopperSubsystem;
+    }
+
     @Override
     public void periodic() {
         super.periodic();
-    //    System.out.println("Velocity: " + getMotorVelocity());
+        //    System.out.println("Velocity: " + getMotorVelocity());
+        System.out.println(isMechAtGoal(true));
     }
 }

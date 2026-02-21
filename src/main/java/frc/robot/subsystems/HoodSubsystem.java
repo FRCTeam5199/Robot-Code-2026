@@ -19,7 +19,7 @@ public class HoodSubsystem extends TemplateSubsystem {
                 HoodConstants.HOOD_STATOR_CURRENT_LIMIT,
                 HoodConstants.HOOD_SLOT0_CONFIGS);
 
-        halfConfigureEncoder(HoodConstants.HOOD_ENCODER_ID,
+        configureSometimesEncoder(HoodConstants.HOOD_ENCODER_ID,
                 "rio", HoodConstants.HOOD_MAGNET_OFFSET,
                 HoodConstants.HOOD_SENSOR_TO_MECH_GEAR_RATIO,
                 HoodConstants.HOOD_MOTOR_TO_SENSOR_GEAR_RATIO,
@@ -41,6 +41,10 @@ public class HoodSubsystem extends TemplateSubsystem {
         super.periodic();
 //        System.out.println("Hood Degrees: " + getDegrees());
 //        System.out.println("Hood is at goal: " + isMechAtGoal(false));
+//        System.out.println(getGearRatio());
+
+        //Motor Rotations = degrees / 360 / .00694444444444
+        //Degrees = motorRot * 360 * .00694444444444
     }
 }
 

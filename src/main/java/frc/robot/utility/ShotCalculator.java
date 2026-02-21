@@ -27,19 +27,34 @@ public class ShotCalculator extends SubsystemBase {
     private InterpolatingDoubleTreeMap hoodLookupTable;
     private InterpolatingDoubleTreeMap shooterSpeedLookupTable;
     private InterpolatingDoubleTreeMap timeOfFlightLookupTable;
+    private InterpolatingDoubleTreeMap kickerSpeedLookupTable;
     private double hoodAngle, lastHoodAngle, hoodVelocity;
     private double shooterSpeed;
+    private double kickerSpeed;
     private TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
+    private double turretToTargetDistance = 0;
 
     private ShotCalculator() {
         hoodLookupTable = new InterpolatingDoubleTreeMap();
         shooterSpeedLookupTable = new InterpolatingDoubleTreeMap();
+        kickerSpeedLookupTable = new InterpolatingDoubleTreeMap();
         timeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
         //key - distance to front center hub
-        hoodLookupTable.put(1.0, 1.0);
-        shooterSpeedLookupTable.put(1.0, 1.0);
-        timeOfFlightLookupTable.put(1d, 1d);
+        hoodLookupTable.put(1.499, 0d);
+        hoodLookupTable.put(2.501, 0d);
+        hoodLookupTable.put(3.507, 0d);
+
+        shooterSpeedLookupTable.put(1.499, 30d);
+        shooterSpeedLookupTable.put(2.501, 33d);
+        shooterSpeedLookupTable.put(3.507, 37.5);
+
+        kickerSpeedLookupTable.put(1.499, 15d);
+        kickerSpeedLookupTable.put(2.501, 16.5);
+        kickerSpeedLookupTable.put(3.507, 18.75);
+
+
+//        timeOfFlightLookupTable.put(1d, 1d);
     }
 
     public static ShotCalculator getInstance() {
@@ -61,7 +76,7 @@ public class ShotCalculator extends SubsystemBase {
 
             //Turrets current position
             turretPosition = estimatedPose.transformBy(Constants.ROBOT_TO_TURRET);
-            double turretToTargetDistance = Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation());
+            this.turretToTargetDistance = Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation());
 
             //Turrets current velocity
             ChassisSpeeds fieldRelativeVelocity = ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -116,6 +131,7 @@ public class ShotCalculator extends SubsystemBase {
             turretVelocity -= commandSwerveDrivetrain.getState().Speeds.omegaRadiansPerSecond / Math.PI * 180d;
 
             shooterSpeed = shooterSpeedLookupTable.get(lookaheadTurretToTargetDistance);
+            kickerSpeed = kickerSpeedLookupTable.get(lookaheadTurretToTargetDistance);
         }
 
 //        hoodAngle = hoodLookupTable.get(Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation()));
@@ -137,6 +153,11 @@ public class ShotCalculator extends SubsystemBase {
         return shooterSpeed;
     }
 
+    public double getKickerSpeed() {
+        return kickerSpeed;
+    }
+
+
     public double getTurretAngle() {
         return turretAngle;
     }
@@ -144,4 +165,13 @@ public class ShotCalculator extends SubsystemBase {
     public double getTurretVelocity() {
         return turretVelocity;
     }
+
+    public double getTurretToTargetDistance() {
+        return turretToTargetDistance;
+    }
+
+    public Pose2d getTurretPosition() {
+        return turretPosition;
+    }
 }
+

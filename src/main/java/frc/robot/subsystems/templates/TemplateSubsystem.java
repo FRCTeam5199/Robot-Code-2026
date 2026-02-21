@@ -2,7 +2,6 @@ package frc.robot.subsystems.templates;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -38,6 +37,8 @@ public class TemplateSubsystem extends SubsystemBase {
     private TalonFXConfiguration secondaryMotorConfig;
     private CANcoder encoder;
     private CANcoderConfiguration encoderConfig;
+    private CANcoder sometimesEncoder;
+    private CANcoderConfiguration sometimesEncoderConfig;
     private double goal;
     private double secondaryGoal;
     private boolean followLastMechProfile = false;
@@ -59,6 +60,7 @@ public class TemplateSubsystem extends SubsystemBase {
     private double offset;
     private boolean changedOffset = false;
     private double gearRatio = 1d;
+    private double motorToSensorRatio = 1d;
     private double drumCircumference;
     private Type type;
     private String name;
@@ -128,7 +130,7 @@ public class TemplateSubsystem extends SubsystemBase {
 
         motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
         motor.optimizeBusUtilization(50);
-        
+
         motor.getConfigurator().apply(motorConfig);
         motor.setPosition(0);
     }
@@ -224,21 +226,22 @@ public class TemplateSubsystem extends SubsystemBase {
         gearRatio = motorToSensorRatio * sensorToMechRatio;
     }
 
-    public void halfConfigureEncoder(int encoderId, String canbus, double magnetOffset,
-                                     double sensorToMechRatio, double motorToSensorRatio,
-                                     boolean isCCWPositive, double absoluteDiscontinuityPoint) {
-        encoder = new CANcoder(encoderId);
-        encoderConfig = new CANcoderConfiguration();
+    public void configureSometimesEncoder(int encoderId, String canbus, double magnetOffset,
+                                          double sensorToMechRatio, double motorToSensorRatio,
+                                          boolean isCCWPositive, double absoluteDiscontinuityPoint) {
+        sometimesEncoder = new CANcoder(encoderId);
+        sometimesEncoderConfig = new CANcoderConfiguration();
 
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = absoluteDiscontinuityPoint;
-        encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
+        sometimesEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = absoluteDiscontinuityPoint;
+        sometimesEncoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
                 : SensorDirectionValue.Clockwise_Positive;
 
-        encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
-        encoder.getConfigurator().apply(encoderConfig);
+        sometimesEncoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
+        sometimesEncoder.getConfigurator().apply(sometimesEncoderConfig);
 
-        motor.setPosition(encoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
-        encoder = null;
+        this.motorToSensorRatio = motorToSensorRatio;
+
+        motor.setPosition(sometimesEncoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
     }
 
     public void configureCustomFF() {
@@ -550,6 +553,16 @@ public class TemplateSubsystem extends SubsystemBase {
         return encoder.getAbsolutePosition().getValueAsDouble() * 360d * sensorToMechRatio;
     }
 
+    public double getSometimesEncoderRot() {
+        if (sometimesEncoder == null) return 0;
+        return sometimesEncoder.getAbsolutePosition().getValueAsDouble();
+    }
+
+    public void zeroMotor() {
+        if (sometimesEncoder == null) motor.setPosition(0);
+        else motor.setPosition(sometimesEncoder.getAbsolutePosition().getValueAsDouble() * this.motorToSensorRatio);
+    }
+
     @Override
     public void periodic() {
         if (changedOffset) {
@@ -581,5 +594,9 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public void setCommandRunning(boolean commandRunning) {
         isCommandRunning = commandRunning;
+    }
+
+    public double getGearRatio() {
+        return gearRatio;
     }
 }

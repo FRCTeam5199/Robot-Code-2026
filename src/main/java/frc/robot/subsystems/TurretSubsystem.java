@@ -1,12 +1,14 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.networktables.StructPublisher;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
+import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.Type;
 
 public class TurretSubsystem extends TemplateSubsystem {
@@ -18,11 +20,15 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     private double goalRotations;
 
+    private boolean stopMoving = false;
+
     private NetworkTable networkTable;
     private DoublePublisher goalPositionLogging;
     private DoublePublisher currentPositionLogging;
     private DoublePublisher goalVelocityLogging;
     private DoublePublisher currentVelocityLogging;
+    private DoublePublisher turretToTargetDistance;
+    private StructPublisher<Pose2d> turretPose;
 
     private TurretSubsystem() {
         super(Type.ROLLER, TurretConstants.TURRET_MOTOR_ID,
@@ -37,7 +43,7 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.TURRET_STATOR_CURRENT_LIMIT,
                 TurretConstants.TURRET_SLOT0_CONFIGS);
 
-        halfConfigureEncoder(TurretConstants.TURRET_ENCODER_ID,
+        configureSometimesEncoder(TurretConstants.TURRET_ENCODER_ID,
                 "rio", TurretConstants.TURRET_ENCODER_MAGNET_OFFSET,
                 TurretConstants.TURRET_SENSOR_TO_MECH_GEAR_RATIO,
                 TurretConstants.TURRET_MOTOR_TO_SENSOR_GEAR_RATIO,
@@ -58,6 +64,8 @@ public class TurretSubsystem extends TemplateSubsystem {
         currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
         goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
         currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
+        turretToTargetDistance = networkTable.getDoubleTopic("Distance").publish();
+        turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
     }
 
     public static TurretSubsystem getInstance() {
@@ -77,7 +85,10 @@ public class TurretSubsystem extends TemplateSubsystem {
         goalVelocityLogging.set(currentState.velocity);
         currentVelocityLogging.set(getMotorVelocity());
 
-        followLastProfile();
+        turretToTargetDistance.set(ShotCalculator.getInstance().getTurretToTargetDistance());
+        turretPose.set(ShotCalculator.getInstance().getTurretPosition());
+
+        if (!stopMoving) followLastProfile();
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {
@@ -104,5 +115,9 @@ public class TurretSubsystem extends TemplateSubsystem {
     public boolean isMechAtGoal() {
         return getMotorRot() >= goalRotations - getMotorRotFromDegrees(TurretConstants.TURRET_LOWER_TOLERANCE)
                 && getMotorRot() <= goalRotations + getMotorRotFromDegrees(TurretConstants.TURRET_UPPER_TOLERANCE);
+    }
+
+    public void setStopMoving(boolean stopMoving) {
+        this.stopMoving = stopMoving;
     }
 }

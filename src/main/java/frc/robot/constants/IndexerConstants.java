@@ -27,4 +27,7 @@ public class IndexerConstants {
     public static final double INDEXER_UPPER_TOLERANCE = 5;
 
     public static final double[][] INDEXER_GEAR_RATIO = {{1, 1}};
+
+    public static final double INDEXING_SPEED = 30;
+    public static final double IDLING_SPEED = -15;
 }
