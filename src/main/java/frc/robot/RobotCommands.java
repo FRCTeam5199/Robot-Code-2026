@@ -6,6 +6,7 @@ import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.TurretCommand;
+import frc.robot.subsystems.templates.VelocityCommand;
 
 public class RobotCommands {
     private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
@@ -49,11 +50,17 @@ public class RobotCommands {
         );
     }
 
+    public static Command idleIndexerHopper() {
+        return new ParallelCommandGroup(
+                new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED),
+                new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED)
+        );
+    }
+
     public static Command zeroTurret() {
         return new SequentialCommandGroup(
-                new TurretCommand(turretSubsystem, 0, 0)
-                        .until(turretSubsystem::isMechAtGoal),
                 new InstantCommand(() -> turretSubsystem.setStopMoving(true)),
+                new PositionCommand(turretSubsystem, 0),
                 new FunctionalCommand(
                         () -> {
                             if (turretSubsystem.getSometimesEncoderRot() < 0)
@@ -64,11 +71,19 @@ public class RobotCommands {
                         () -> {
                         },
                         (interrupted) -> turretSubsystem.setVoltage(0),
-                        () -> Math.abs(turretSubsystem.getSometimesEncoderRot()) < .01,
+                        () -> Math.abs(turretSubsystem.getSometimesEncoderRot()) < .1,
                         turretSubsystem
                 ),
                 new InstantCommand(turretSubsystem::zeroMotor),
-                new InstantCommand(() -> turretSubsystem.setStopMoving(false))
+                new InstantCommand(() -> turretSubsystem.setStopMoving(false)),
+                new InstantCommand(() -> turretSubsystem.setPositionProfiling(0, 0))
+        );
+    }
+
+    public static Command moveTurret(double degrees) {
+        return new SequentialCommandGroup(
+//                new InstantCommand(() -> turretSubsystem.setStopMoving(true)),
+                new TurretCommand(turretSubsystem, degrees, 0)
         );
     }
 }

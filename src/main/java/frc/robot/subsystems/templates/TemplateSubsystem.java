@@ -2,6 +2,8 @@ package frc.robot.subsystems.templates;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -18,6 +20,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Type;
 
@@ -129,6 +133,7 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.MotionMagic.MotionMagicJerk = jerk;
 
         motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
+
         motor.optimizeBusUtilization(50);
 
         motor.getConfigurator().apply(motorConfig);
@@ -245,7 +250,8 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configureCustomFF() {
-        simpleMotorFeedforward = new SimpleMotorFeedforward(slot0Configs.kS, slot0Configs.kV);
+        simpleMotorFeedforward = new SimpleMotorFeedforward(slot0Configs.kS,
+                slot0Configs.kV, slot0Configs.kA);
     }
 
     public double getFeedForward(double velocity) {
@@ -571,13 +577,13 @@ public class TemplateSubsystem extends SubsystemBase {
         }
 
 
-        if (type == Type.LINEAR) poseData.set(getMechM());
-        else poseData.set(getDegrees());
-        velocityData.set(getMotorVelocity());
-        voltageData.set(getMotorVoltage());
-        supplyCurrentData.set(-getSupplyCurrent());
-        statorCurrentData.set(-getStatorCurrent());
-        tempData.set(getMotorTemp());
+//        if (type == Type.LINEAR) poseData.set(getMechM());
+//        else poseData.set(getDegrees());
+//        velocityData.set(getMotorVelocity());
+//        voltageData.set(getMotorVoltage());
+//        supplyCurrentData.set(-getSupplyCurrent());
+//        statorCurrentData.set(-getStatorCurrent());
+//        tempData.set(getMotorTemp());
     }
 
     public void setControl(ControlRequest control) {

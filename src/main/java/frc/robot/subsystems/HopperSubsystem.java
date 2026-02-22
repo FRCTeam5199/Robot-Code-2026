@@ -32,6 +32,6 @@ public class HopperSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
         //    System.out.println("Velocity: " + getMotorVelocity());
-        System.out.println(isMechAtGoal(true));
+//        System.out.println(isMechAtGoal(true));
     }
 }

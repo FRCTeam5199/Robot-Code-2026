@@ -19,9 +19,10 @@ public class ShotCalculator extends SubsystemBase {
     private static ShotCalculator shotCalculator;
     //    private final LinearFilter turretAngleFilter =
 //            LinearFilter.movingAverage((int) (0.1 / 0.02));
-    private Pose2d turretPosition;
+    private Pose2d turretPosition, futureTurretPosition;
     private CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     private double turretAngle;
+    private double turretAngleWithoutPhaseDelay;
     private Rotation2d lastTurretRotation, turretRotation;
     private double turretVelocity;
     private InterpolatingDoubleTreeMap hoodLookupTable;
@@ -45,16 +46,19 @@ public class ShotCalculator extends SubsystemBase {
         hoodLookupTable.put(2.501, 0d);
         hoodLookupTable.put(3.507, 0d);
 
-        shooterSpeedLookupTable.put(1.499, 30d);
-        shooterSpeedLookupTable.put(2.501, 33d);
-        shooterSpeedLookupTable.put(3.507, 37.5);
+        shooterSpeedLookupTable.put(1.499, 32d);
+        shooterSpeedLookupTable.put(2.501, 35d);
+        shooterSpeedLookupTable.put(3.507, 39.5);
 
-        kickerSpeedLookupTable.put(1.499, 15d);
-        kickerSpeedLookupTable.put(2.501, 16.5);
-        kickerSpeedLookupTable.put(3.507, 18.75);
+        kickerSpeedLookupTable.put(1.499, 17d);
+        kickerSpeedLookupTable.put(2.501, 18.5);
+        kickerSpeedLookupTable.put(3.507, 20.75);
 
 
-//        timeOfFlightLookupTable.put(1d, 1d);
+        timeOfFlightLookupTable.put(1.49, (1.14 + 1.10) / 2d);
+        timeOfFlightLookupTable.put(2.51, (1.26 + 1.22) / 2d);
+        timeOfFlightLookupTable.put(3.52, (1.4 + 1.48) / 2d);
+
     }
 
     public static ShotCalculator getInstance() {
@@ -64,9 +68,11 @@ public class ShotCalculator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (commandSwerveDrivetrain.getPose() != null) {
-            Pose2d estimatedPose = commandSwerveDrivetrain.getPose();
-//            ChassisSpeeds robotRelativeVelocity = commandSwerveDrivetrain.getState().Speeds;
+        if (RobotContainer.getPose() != null) {
+            Pose2d estimatedPose = RobotContainer.getPose();
+            ChassisSpeeds robotRelativeVelocity = RobotContainer.getSpeeds();
+
+            //phase delay is 0 so this isn't being used right now
 //            estimatedPose =
 //                    estimatedPose.exp(
 //                            new Twist2d(
@@ -74,13 +80,13 @@ public class ShotCalculator extends SubsystemBase {
 //                                    robotRelativeVelocity.vyMetersPerSecond * Constants.PHASE_DELAY,
 //                                    robotRelativeVelocity.omegaRadiansPerSecond * Constants.PHASE_DELAY));
 
-            //Turrets current position
+            //Shifts robot pose to turret pose
             turretPosition = estimatedPose.transformBy(Constants.ROBOT_TO_TURRET);
             this.turretToTargetDistance = Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation());
 
             //Turrets current velocity
             ChassisSpeeds fieldRelativeVelocity = ChassisSpeeds.fromRobotRelativeSpeeds(
-                    commandSwerveDrivetrain.getState().Speeds, estimatedPose.getRotation());
+                    RobotContainer.getSpeeds(), estimatedPose.getRotation());
             double robotAngleRadians = estimatedPose.getRotation().getRadians();
             double turretVelocityX =
                     fieldRelativeVelocity.vxMetersPerSecond
@@ -95,47 +101,43 @@ public class ShotCalculator extends SubsystemBase {
 
             //Account for velocity
             double timeOfFlight;
-            Pose2d lookaheadTurretPose = turretPosition;
+            futureTurretPosition = turretPosition;
             double lookaheadTurretToTargetDistance = turretToTargetDistance;
 
-            //Commented out so we can test stationary
-//            for (int i = 0; i < 20; i++) {
-//                timeOfFlight = timeOfFlightLookupTable.get(lookaheadTurretToTargetDistance);
-//                double offsetX = turretVelocityX * timeOfFlight;
-//                double offsetY = turretVelocityY * timeOfFlight;
-//                lookaheadTurretPose =
-//                        new Pose2d(
-//                                turretPosition.getTranslation().plus(new Translation2d(offsetX, offsetY)),
-//                                turretPosition.getRotation());
-//                lookaheadTurretToTargetDistance = Constants.RED_HUB_FRONT_CENTER.getDistance(lookaheadTurretPose.getTranslation());
-//            }
+            for (int i = 0; i < 10; i++) {
+                timeOfFlight = timeOfFlightLookupTable.get(lookaheadTurretToTargetDistance);
+                double offsetX = turretVelocityX * timeOfFlight;
+                double offsetY = turretVelocityY * timeOfFlight;
+                futureTurretPosition =
+                        new Pose2d(
+                                turretPosition.getTranslation().plus(new Translation2d(offsetX, offsetY)),
+                                turretPosition.getRotation());
+                lookaheadTurretToTargetDistance = Constants.RED_HUB_FRONT_CENTER.getDistance(futureTurretPosition.getTranslation());
+            }
 
             turretRotation = Constants.RED_HUB_CENTER
-                    .minus(lookaheadTurretPose.getTranslation()).getAngle();
+                    .minus(futureTurretPosition.getTranslation()).getAngle();
+
             hoodAngle = hoodLookupTable.get(lookaheadTurretToTargetDistance);
 
             if (lastTurretRotation == null) lastTurretRotation = turretRotation;
             if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
 
-
             turretVelocity = turretRotation.minus(lastTurretRotation).getDegrees() / .02;
             hoodVelocity = (hoodAngle - lastHoodAngle) / .02;
 
             turretAngle = turretRotation.getDegrees();
-            turretAngle -= commandSwerveDrivetrain.getPose().getRotation().getDegrees();
+            turretAngle -= RobotContainer.getPose().getRotation().getDegrees();
 
             //Wraps to within bounds
-            while (turretAngle <= -140) turretAngle += 360;
-            while (turretAngle >= 220) turretAngle -= 360;
+            while (turretAngle <= TurretConstants.TURRET_MIN) turretAngle += 360;
+            while (turretAngle >= TurretConstants.TURRET_MAX) turretAngle -= 360;
 
-            turretVelocity -= commandSwerveDrivetrain.getState().Speeds.omegaRadiansPerSecond / Math.PI * 180d;
+            turretVelocity -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d);
 
             shooterSpeed = shooterSpeedLookupTable.get(lookaheadTurretToTargetDistance);
             kickerSpeed = kickerSpeedLookupTable.get(lookaheadTurretToTargetDistance);
         }
-
-//        hoodAngle = hoodLookupTable.get(Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation()));
-//        shooterSpeed = shooterSpeedLookupTable.get(Constants.RED_HUB_FRONT_CENTER.getDistance(turretPosition.getTranslation()));
 
         lastTurretRotation = turretRotation;
         lastHoodAngle = hoodAngle;
@@ -172,6 +174,14 @@ public class ShotCalculator extends SubsystemBase {
 
     public Pose2d getTurretPosition() {
         return turretPosition;
+    }
+
+    public Pose2d getFutureTurretPosition() {
+        return futureTurretPosition;
+    }
+
+    public double getTurretAngleWithoutPhaseDelay() {
+        return turretAngleWithoutPhaseDelay;
     }
 }
 

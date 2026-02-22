@@ -14,6 +14,7 @@ public class TurretCommand extends Command {
         this.goal = goal;
         this.goalVelocity = goalVelocity;
         updateGoalPosition = false;
+        turretSubsystem.setContinuousMotion(false);
 
         addRequirements(turretSubsystem);
     }
@@ -22,6 +23,7 @@ public class TurretCommand extends Command {
     public void initialize() {
         turretSubsystem.setPositionProfiling(goal, goalVelocity);
         turretSubsystem.setCommandRunning(true);
+        turretSubsystem.setStopMoving(false);
     }
 
     @Override

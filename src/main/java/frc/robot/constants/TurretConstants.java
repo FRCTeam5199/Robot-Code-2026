@@ -16,15 +16,15 @@ public class TurretConstants {
     public static final Slot0Configs TURRET_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(10)
             .withKI(0)
-            .withKD(0.1)
+            .withKD(.01)
             .withKS(0.28)
             .withKG(0)
-            .withKV(.091840014694)
+            .withKV(.09078529278256922378574670903314)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double TURRET_VELOCITY = 100;
-    public static final double TURRET_ACCELERATION = 400;
+    public static final double TURRET_ACCELERATION = 300;
     public static final double TURRET_JERK = 3000;
 
     public static final double TURRET_LOWER_TOLERANCE = 1;
@@ -38,6 +38,6 @@ public class TurretConstants {
     public static final boolean TURRET_CCW_POSITIVE = false;
     public static final double TURRET_ABSOLUTE_DISCONTINUITY_POINT = .5;
 
-    public static final double TURRET_MIN = -140d;
-    public static final double TURRET_MAX = 220d;
+    public static final double TURRET_MIN = -120d;
+    public static final double TURRET_MAX = 240d;
 }

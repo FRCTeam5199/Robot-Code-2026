@@ -93,12 +93,10 @@ public class Robot extends TimedRobot {
 
         // userInterface.setTab("Control");
 
+//        LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
+//                -.316, -.316, .453, 0, 5, 135.218);
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
-//                .33, .28, .25, 0, 5, 25);
-        LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
-                -.316, -.316, .453, 0, 5, 135.218);
-        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
-                -.317, .317, .436, 180, 5, -135.218);
+//                -.317, .317, .436, 180, 5, -135.218);
         Logger.addDataReceiver(new WPILOGWriter());
     }
 
@@ -202,93 +200,12 @@ public class Robot extends TimedRobot {
         //     motorFollower.setVoltage(0);
         // }
 
-//        if (LimelightHelpers.getTV("limelight-right")) {
-//            LimelightHelpers.SetRobotOrientation("limelight-right",
-//                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(),
-//                    0, 0, 0, 0, 0);
-//            limelightRightData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-//
-//            if (limelightRightData != null) {
-//            commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-//                    limelightRightData.timestampSeconds, VecBuilder.fill(.3,.3,9999999).times(limelightRightData.avgTagDist));
-//            }
-//        }
-
-        if (LimelightHelpers.getTV("limelight-left")) {
-            LimelightHelpers.SetRobotOrientation("limelight-left",
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-            limelightLeftData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-
-            if (limelightLeftData != null) {
-                double xyStdev = .3;
-
-                if (limelightLeftData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
-                } else {
-                    xyStdev *= limelightLeftData.avgTagDist;
-                }
-
-                if (commandSwerveDrivetrain.getPose().getTranslation()
-                        .getDistance(new Translation2d(0, 0)) < .25)
-                    originTimer.restart();
-
-                //Only adds pose when it is less than 1m different from our current location
-                //or when we're at the origin (haven't gotten vision data yet)
-                if (commandSwerveDrivetrain.getPose().getTranslation()
-                        .getDistance(limelightLeftData.pose.getTranslation()) < 1d
-                        || originTimer.get() < 5) {
-
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                            limelightLeftData.timestampSeconds, VecBuilder.fill(xyStdev, xyStdev, 9999999999d));
-                }
-            }
-        }
-
-        if (LimelightHelpers.getTV("limelight-right")) {
-            LimelightHelpers.SetRobotOrientation("limelight-right",
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-            limelightRightData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-
-            if (limelightRightData != null) {
-                double xyStdev = .3;
-
-                if (limelightRightData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
-                } else {
-                    xyStdev *= limelightRightData.avgTagDist;
-                }
-
-                if (commandSwerveDrivetrain.getPose().getTranslation()
-                        .getDistance(new Translation2d(0, 0)) < .25)
-                    originTimer.restart();
-
-                //Only adds pose when it is less than 1m different from our current location
-                //or when we're at the origin (haven't gotten vision data yet)
-                if (commandSwerveDrivetrain.getPose().getTranslation()
-                        .getDistance(limelightRightData.pose.getTranslation()) < 1d
-                        || originTimer.get() < 5) {
-
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-                            limelightRightData.timestampSeconds, VecBuilder.fill(xyStdev, xyStdev, 9999999999d));
-                }
-            }
-        }
-
-//        System.out.println("Mechanism at goal: " + RobotContainer.areMechanismsAtGoals());
-
-//         if (RobotContainer.areMechanismsAtGoals() && indexerSubsystem.getGoal() != 15) {
-// // // //          
-//             indexerSubsystem.setVelocity(15);
-//             hopperSubsystem.setVelocity(25);
-// // //                  
-//         } else if (indexerSubsystem.getGoal() != -15) {
-// //        
-//             indexerSubsystem.setVelocity(-15);
-//             hopperSubsystem.setVelocity(0);
-//         }
-
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
+
+//        Runtime runtime = Runtime.getRuntime();
+//        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+//        System.out.println("Used memory: " + usedMemory / 1024 / 1024 + "MB / " + runtime.totalMemory() / 1024 / 1024 + "MB");
     }
 
     @Override

@@ -3,12 +3,17 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
 public class ShooterSubsystem extends TemplateSubsystem {
     private static ShooterSubsystem shooterSubsystem;
+    private static BooleanPublisher isMechAtGoal;
+    private static NetworkTable shooterNetworkTable;
 
     private ShooterSubsystem() {
         super(Type.ROLLER, ShooterConstants.SHOOTER_MOTOR_ID,
@@ -27,13 +32,8 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.SECOND_SHOOTER_INVERTED
         );
 
-//        getMotor().getConfigurator().apply(ShooterConstants.SHOOTER_SLOT1_CONFIGS);
-//        getMotor().getConfigurator().apply(
-//                new TorqueCurrentConfigs().withPeakForwardTorqueCurrent(60));
-
-//        bangBangController = new VelocityDutyCycle(0)
-//                .withSlot(0).withEnableFOC(true);
-//        torqueCurrentFOC = new VelocityTorqueCurrentFOC(0).withSlot(1);
+        shooterNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Shooter/");
+        isMechAtGoal = shooterNetworkTable.getBooleanTopic("Is Mech At Goal").publish();
     }
 
     public static ShooterSubsystem getInstance() {
@@ -46,5 +46,6 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        isMechAtGoal.set(isMechAtGoal(true));
     }
 }
