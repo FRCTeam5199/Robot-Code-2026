@@ -64,12 +64,12 @@ public class ShotCalculator extends SubsystemBase {
             ChassisSpeeds robotRelativeVelocity = RobotContainer.getSpeeds();
 
             //phase delay is 0 so this isn't being used right now
-//            estimatedPose =
-//                    estimatedPose.exp(
-//                            new Twist2d(
-//                                    robotRelativeVelocity.vxMetersPerSecond * Constants.PHASE_DELAY,
-//                                    robotRelativeVelocity.vyMetersPerSecond * Constants.PHASE_DELAY,
-//                                    robotRelativeVelocity.omegaRadiansPerSecond * Constants.PHASE_DELAY));
+            estimatedPose =
+                    estimatedPose.exp(
+                            new Twist2d(
+                                    robotRelativeVelocity.vxMetersPerSecond * Constants.PHASE_DELAY,
+                                    robotRelativeVelocity.vyMetersPerSecond * Constants.PHASE_DELAY,
+                                    robotRelativeVelocity.omegaRadiansPerSecond * Constants.PHASE_DELAY));
 
             //Shifts robot pose to turret pose
             turretPosition = estimatedPose.transformBy(Constants.ROBOT_TO_TURRET);

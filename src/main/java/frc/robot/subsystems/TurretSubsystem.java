@@ -104,6 +104,8 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         if (!stopMoving) followLastProfile();
 
+//        System.out.println("Turret Degrees: " + getDegrees());
+
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {

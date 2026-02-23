@@ -1,11 +1,23 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.constants.HoodConstants;
+import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
 public class HoodSubsystem extends TemplateSubsystem {
     private static HoodSubsystem hoodSubsystem;
+
+    private TrapezoidProfile profile;
+    private TrapezoidProfile.State currentState;
+    private TrapezoidProfile.State goalState;
+
+    private double goalRotations;
+    private double goalVelocityRotPerSec;
+    private boolean continuousMotion = false;
+
+    private boolean stopMoving = false;
 
     private HoodSubsystem() {
         super(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
@@ -28,6 +40,13 @@ public class HoodSubsystem extends TemplateSubsystem {
 
         configurePivot(HoodConstants.MIN,
                 HoodConstants.MAX);
+
+        configureCustomFF();
+
+        profile = new TrapezoidProfile(new TrapezoidProfile
+                .Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
+        currentState = new TrapezoidProfile.State(0, 0);
+        goalState = new TrapezoidProfile.State(0, 0);
     }
 
     public static HoodSubsystem getInstance() {
@@ -45,6 +64,42 @@ public class HoodSubsystem extends TemplateSubsystem {
 
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444
+
+        if (!stopMoving) followLastProfile();
     }
+
+    public void setPositionProfiling(double degrees, double degreePerSec) {
+        goalRotations = getMotorRotFromDegrees(degrees);
+        goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
+
+        goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
+        currentState = new TrapezoidProfile.State(getMotorRot(), getMotorVelocity());
+    }
+
+    public void updateGoalPosition(double degrees, double degreePerSec) {
+        goalRotations = getMotorRotFromDegrees(degrees);
+        goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
+
+        goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
+    }
+
+    public void followLastProfile() {
+        currentState = profile.calculate(0.02, currentState, goalState);
+        setPositionVoltage(goalState.position, getFeedForward(goalState.position, goalState.velocity));
+    }
+
+    public boolean isMechAtGoal() {
+        return getMotorRot() >= goalRotations - getMotorRotFromDegrees(HoodConstants.LOWER_TOLERANCE)
+                && getMotorRot() <= goalRotations + getMotorRotFromDegrees(HoodConstants.UPPER_TOLERANCE);
+    }
+
+    public void setStopMoving(boolean stopMoving) {
+        this.stopMoving = stopMoving;
+    }
+
+    public void setContinuousMotion(boolean continuousMotion) {
+        this.continuousMotion = continuousMotion;
+    }
+
 }
 

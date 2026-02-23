@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -53,6 +54,7 @@ public class TemplateSubsystem extends SubsystemBase {
     private PositionVoltage positionVoltage;
     private VelocityVoltage velocityVoltage;
     private SimpleMotorFeedforward simpleMotorFeedforward;
+    private ArmFeedforward armFeedforward;
     private Slot0Configs slot0Configs;
     private double velocity;
     private double acceleration;
@@ -250,23 +252,31 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configureCustomFF() {
-        simpleMotorFeedforward = new SimpleMotorFeedforward(slot0Configs.kS,
-                slot0Configs.kV, slot0Configs.kA);
+        if (type == Type.PIVOT) armFeedforward = new ArmFeedforward(slot0Configs.kS,
+                slot0Configs.kG, slot0Configs.kV / (2d * Math.PI));
+        else if (type == Type.ROLLER)
+            simpleMotorFeedforward = new SimpleMotorFeedforward(slot0Configs.kS,
+                    slot0Configs.kV, slot0Configs.kA);
     }
 
-    public double getFeedForward(double velocity) {
-        return simpleMotorFeedforward.calculate(velocity);
+    public double getFeedForward(double velocityRot) {
+        return simpleMotorFeedforward.calculate(velocityRot);
+    }
+
+    public double getFeedForward(double currentRot, double velocityRot) {
+        return armFeedforward.calculate(getDegreesFromMotorRot(currentRot)
+                * Math.PI / 180d, velocityRot);
     }
 
     public void setPercent(double percent) {
         followLastMechProfile = false;
-        if (percent > 1) percent /= 100;
+        if (percent > 1) percent /= 100d;
         motor.set(percent);
     }
 
     public void setSecondaryPercent(double percent) {
         followLastMechProfile = false;
-        if (percent > 1) percent /= 100;
+        if (percent > 1) percent /= 100d;
         secondaryMotor.set(percent);
     }
 

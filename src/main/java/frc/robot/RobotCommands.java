@@ -4,9 +4,12 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.HopperConstants;
 import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.templates.HoodCommand;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+
+import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 
 public class RobotCommands {
     private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
@@ -71,6 +74,17 @@ public class RobotCommands {
                 new InstantCommand(turretSubsystem::zeroMotor),
                 new InstantCommand(() -> turretSubsystem.setStopMoving(false)),
                 new InstantCommand(() -> turretSubsystem.setPositionProfiling(0, 0))
+        );
+    }
+
+    public static Command idleState() {
+        return new ParallelCommandGroup(
+                zeroTurret(),
+                new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED),
+                new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
+                new HoodCommand(hoodSubsystem, 0),
+                new VelocityCommand(shooterSubsystem, 0),
+                new VelocityCommand(kickerSubsystem, 0)
         );
     }
 }

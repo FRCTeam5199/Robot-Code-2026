@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.templates.HoodCommand;
 import frc.robot.subsystems.templates.PositionCommand;
 // import frc.robot.subsystems.templates.ShooterCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
@@ -54,12 +55,13 @@ public class RobotContainer {
     private static final TurretCommand turretLeftCorner = new TurretCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
     private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
     //Hood Commands
-//        private static PositionCommand hoodControlAuto = new PositionCommand(hoodSubsystem, 0, true, false, 0);
-    private static final PositionCommand hoodZero = new PositionCommand(hoodSubsystem, 0);
-    private static final PositionCommand hoodHub = new PositionCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle());
-    private static final PositionCommand hoodTower = new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle());
-    private static final PositionCommand hoodLeftCorner = new PositionCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle());
-    private static final PositionCommand hoodOutpost = new PositionCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle());
+    private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
+    //        private static PositionCommand hoodControlAuto = new PositionCommand(hoodSubsystem, 0, true, false, 0);
+    private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
+    private static final HoodCommand hoodHub = new HoodCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle());
+    private static final HoodCommand hoodTower = new HoodCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle());
+    private static final HoodCommand hoodLeftCorner = new HoodCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle());
+    private static final HoodCommand hoodOutpost = new HoodCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle());
 
     //Shooter Commands
     private static final VelocityCommand shooterAuto = new VelocityCommand(shooterSubsystem, 0);
@@ -122,13 +124,9 @@ public class RobotContainer {
     public static final Telemetry logger = new Telemetry(MaxSpeed);
 
     public RobotContainer() {
-        configureBindings();
-
         leftTriggerPressed = RobotCommands.indexBalls().alongWith(
                 new ParallelCommandGroup(shooterAuto, kickerAuto, turretControlAuto));
-        leftTriggerReleased = new ParallelCommandGroup(RobotCommands.zeroTurret(),
-                shooterStop, kickerZero,
-                indexerIdle, hopperIdle);
+        leftTriggerReleased = RobotCommands.idleState();
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
@@ -144,11 +142,9 @@ public class RobotContainer {
                         turretLeftCorner, hoodLeftCorner, shooterLeftCorner, kickerLeftCorner
                 ))
         ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
-        leftBumperReleased = new ParallelCommandGroup(
-                RobotCommands.zeroTurret(),
-                hoodZero, shooterStop, kickerZero,
-                indexerIdle, hopperIdle
-        );
+        leftBumperReleased = RobotCommands.idleState();
+
+        configureBindings();
     }
 
     public static void updateRobotCorners() {
@@ -262,6 +258,10 @@ public class RobotContainer {
 
     public static TurretCommand getTurretControlAuto() {
         return turretControlAuto;
+    }
+
+    public static HoodCommand getHoodControlAuto() {
+        return hoodControlAuto;
     }
 
     public static VelocityCommand getShooterControlAuto() {
