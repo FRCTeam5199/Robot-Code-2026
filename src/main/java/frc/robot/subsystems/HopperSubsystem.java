@@ -8,17 +8,17 @@ public class HopperSubsystem extends TemplateSubsystem {
     private static HopperSubsystem hopperSubsystem;
 
     private HopperSubsystem() {
-        super(Type.ROLLER, HopperConstants.HOPPER_MOTOR_ID,
-                0, HopperConstants.HOPPER_ACCELERATION,
-                HopperConstants.HOPPER_JERK,
-                HopperConstants.HOPPER_LOWER_TOLERANCE,
-                HopperConstants.HOPPER_UPPER_TOLERANCE,
-                HopperConstants.HOPPER_GEAR_RATIO, "Hopper");
+        super(Type.ROLLER, HopperConstants.MOTOR_ID,
+                0, HopperConstants.ACCELERATION,
+                HopperConstants.JERK,
+                HopperConstants.LOWER_TOLERANCE,
+                HopperConstants.UPPER_TOLERANCE,
+                HopperConstants.GEAR_RATIO, "Hopper");
 
-        configureMotor(HopperConstants.HOPPER_INVERTED, HopperConstants.HOPPER_BRAKE,
-                HopperConstants.HOPPER_SUPPLY_CURRENT_LIMIT,
-                HopperConstants.HOPPER_STATOR_CURRENT_LIMIT,
-                HopperConstants.HOPPER_SLOT0_CONFIGS);
+        configureMotor(HopperConstants.INVERTED, HopperConstants.BRAKE,
+                HopperConstants.SUPPLY_CURRENT_LIMIT,
+                HopperConstants.STATOR_CURRENT_LIMIT,
+                HopperConstants.SLOT0_CONFIGS);
     }
 
     public static HopperSubsystem getInstance() {

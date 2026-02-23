@@ -37,30 +37,30 @@ public class TurretSubsystem extends TemplateSubsystem {
     private StructPublisher<Pose2d> futureTurretPose;
 
     private TurretSubsystem() {
-        super(Type.ROLLER, TurretConstants.TURRET_MOTOR_ID,
-                TurretConstants.TURRET_VELOCITY, TurretConstants.TURRET_ACCELERATION,
-                TurretConstants.TURRET_JERK,
-                TurretConstants.TURRET_LOWER_TOLERANCE,
-                TurretConstants.TURRET_UPPER_TOLERANCE,
-                TurretConstants.TURRET_GEAR_RATIO, "Turret");
+        super(Type.ROLLER, TurretConstants.MOTOR_ID,
+                TurretConstants.VELOCITY, TurretConstants.ACCELERATION,
+                TurretConstants.JERK,
+                TurretConstants.LOWER_TOLERANCE,
+                TurretConstants.UPPER_TOLERANCE,
+                TurretConstants.GEAR_RATIO, "Turret");
 
-        configureMotor(TurretConstants.TURRET_INVERTED, TurretConstants.TURRET_BRAKE,
-                TurretConstants.TURRET_SUPPLY_CURRENT_LIMIT,
-                TurretConstants.TURRET_STATOR_CURRENT_LIMIT,
-                TurretConstants.TURRET_SLOT0_CONFIGS);
+        configureMotor(TurretConstants.INVERTED, TurretConstants.BRAKE,
+                TurretConstants.SUPPLY_CURRENT_LIMIT,
+                TurretConstants.STATOR_CURRENT_LIMIT,
+                TurretConstants.SLOT0_CONFIGS);
 
-        configureSometimesEncoder(TurretConstants.TURRET_ENCODER_ID,
-                "rio", TurretConstants.TURRET_ENCODER_MAGNET_OFFSET,
-                TurretConstants.TURRET_SENSOR_TO_MECH_GEAR_RATIO,
-                TurretConstants.TURRET_MOTOR_TO_SENSOR_GEAR_RATIO,
-                TurretConstants.TURRET_CCW_POSITIVE, TurretConstants.TURRET_ABSOLUTE_DISCONTINUITY_POINT);
+        configureSometimesEncoder(TurretConstants.ENCODER_ID,
+                "rio", TurretConstants.ENCODER_MAGNET_OFFSET,
+                TurretConstants.SENSOR_TO_MECH_GEAR_RATIO,
+                TurretConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
+                TurretConstants.CCW_POSITIVE, TurretConstants.ABSOLUTE_DISCONTINUITY_POINT);
 
-        configureRoller(TurretConstants.TURRET_MIN, TurretConstants.TURRET_MAX);
+        configureRoller(TurretConstants.MIN, TurretConstants.MAX);
 
         configureCustomFF();
 
         profile = new TrapezoidProfile(new TrapezoidProfile
-                .Constraints(TurretConstants.TURRET_VELOCITY, TurretConstants.TURRET_ACCELERATION));
+                .Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
         currentState = new TrapezoidProfile.State(0, 0);
         goalState = new TrapezoidProfile.State(0, 0);
 
@@ -96,12 +96,9 @@ public class TurretSubsystem extends TemplateSubsystem {
         currentVelocityLogging.set(getMotorVelocity());
 
         turretToTargetDistance.set(shotCalculator.getTurretToTargetDistance());
+
         turretPose.set(shotCalculator.getTurretPosition());
         futureTurretPose.set(shotCalculator.getFutureTurretPosition());
-        goalPositionWithoutPhaseDelayLogging.set(
-                getMotorRotFromDegrees(shotCalculator.getTurretAngleWithoutPhaseDelay()));
-
-        goalDegreesWithoutPhaseDelay = shotCalculator.getTurretAngleWithoutPhaseDelay();
 
         isMechAtGoal.set(isMechAtGoal());
 
@@ -114,7 +111,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
 
         goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
-        currentState = new TrapezoidProfile.State(getMotorRot(), getMotorVelocity())
+        currentState = new TrapezoidProfile.State(getMotorRot(), getMotorVelocity());
     }
 
     public void updateGoalPosition(double degrees, double degreePerSec) {
@@ -130,8 +127,8 @@ public class TurretSubsystem extends TemplateSubsystem {
     }
 
     public boolean isMechAtGoal() {
-        return getMotorRot() >= goalRotations - getMotorRotFromDegrees(TurretConstants.TURRET_LOWER_TOLERANCE)
-                && getMotorRot() <= goalRotations + getMotorRotFromDegrees(TurretConstants.TURRET_UPPER_TOLERANCE);
+        return getMotorRot() >= goalRotations - getMotorRotFromDegrees(TurretConstants.LOWER_TOLERANCE)
+                && getMotorRot() <= goalRotations + getMotorRotFromDegrees(TurretConstants.UPPER_TOLERANCE);
     }
 
     public void setStopMoving(boolean stopMoving) {

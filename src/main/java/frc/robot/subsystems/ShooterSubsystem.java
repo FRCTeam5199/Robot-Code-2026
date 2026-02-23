@@ -16,20 +16,20 @@ public class ShooterSubsystem extends TemplateSubsystem {
     private static NetworkTable shooterNetworkTable;
 
     private ShooterSubsystem() {
-        super(Type.ROLLER, ShooterConstants.SHOOTER_MOTOR_ID,
-                0, ShooterConstants.SHOOTER_ACCELERATION,
-                ShooterConstants.SHOOTER_JERK,
-                ShooterConstants.SHOOTER_LOWER_TOLERANCE,
-                ShooterConstants.SHOOTER_UPPER_TOLERANCE,
-                ShooterConstants.SHOOTER_GEAR_RATIO, "Shooter");
+        super(Type.ROLLER, ShooterConstants.MOTOR_ID,
+                0, ShooterConstants.ACCELERATION,
+                ShooterConstants.JERK,
+                ShooterConstants.LOWER_TOLERANCE,
+                ShooterConstants.UPPER_TOLERANCE,
+                ShooterConstants.GEAR_RATIO, "Shooter");
 
-        configureMotor(ShooterConstants.SHOOTER_INVERTED, ShooterConstants.SHOOTER_BRAKE,
-                ShooterConstants.SHOOTER_SUPPLY_CURRENT_LIMIT,
-                ShooterConstants.SHOOTER_STATOR_CURRENT_LIMIT,
-                ShooterConstants.SHOOTER_SLOT0_CONFIGS);
+        configureMotor(ShooterConstants.INVERTED, ShooterConstants.BRAKE,
+                ShooterConstants.SUPPLY_CURRENT_LIMIT,
+                ShooterConstants.STATOR_CURRENT_LIMIT,
+                ShooterConstants.SLOT0_CONFIGS);
 
-        configureFollowerMotor(ShooterConstants.SECOND_SHOOTER_MOTOR_ID,
-                ShooterConstants.SECOND_SHOOTER_INVERTED
+        configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID,
+                ShooterConstants.SECOND_INVERTED
         );
 
         shooterNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Shooter/");

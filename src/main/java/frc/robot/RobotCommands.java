@@ -17,6 +17,7 @@ public class RobotCommands {
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     private static boolean isIdling = false;
 
+    // Runs Hopper and Indexer the way for shooting
     public static Command indexBalls() {
         return new FunctionalCommand(
                 () -> {
@@ -50,13 +51,6 @@ public class RobotCommands {
         );
     }
 
-    public static Command idleIndexerHopper() {
-        return new ParallelCommandGroup(
-                new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED),
-                new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED)
-        );
-    }
-
     public static Command zeroTurret() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> turretSubsystem.setStopMoving(true)),
@@ -77,13 +71,6 @@ public class RobotCommands {
                 new InstantCommand(turretSubsystem::zeroMotor),
                 new InstantCommand(() -> turretSubsystem.setStopMoving(false)),
                 new InstantCommand(() -> turretSubsystem.setPositionProfiling(0, 0))
-        );
-    }
-
-    public static Command moveTurret(double degrees) {
-        return new SequentialCommandGroup(
-//                new InstantCommand(() -> turretSubsystem.setStopMoving(true)),
-                new TurretCommand(turretSubsystem, degrees, 0)
         );
     }
 }

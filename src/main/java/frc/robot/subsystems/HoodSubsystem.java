@@ -8,26 +8,26 @@ public class HoodSubsystem extends TemplateSubsystem {
     private static HoodSubsystem hoodSubsystem;
 
     private HoodSubsystem() {
-        super(Type.PIVOT, HoodConstants.HOOD_MOTOR_ID, HoodConstants.HOOD_VELOCITY,
-                HoodConstants.HOOD_ACCELERATION, HoodConstants.HOOD_JERK,
-                HoodConstants.HOOD_LOWER_TOLERANCE,
-                HoodConstants.HOOD_UPPER_TOLERANCE,
-                HoodConstants.HOOD_GEAR_RATIO, "Hood");
+        super(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
+                HoodConstants.ACCELERATION, HoodConstants.JERK,
+                HoodConstants.LOWER_TOLERANCE,
+                HoodConstants.UPPER_TOLERANCE,
+                HoodConstants.GEAR_RATIO, "Hood");
 
-        configureMotor(HoodConstants.HOOD_INVERTED, HoodConstants.HOOD_BRAKE,
-                HoodConstants.HOOD_SUPPLY_CURRENT_LIMIT,
-                HoodConstants.HOOD_STATOR_CURRENT_LIMIT,
-                HoodConstants.HOOD_SLOT0_CONFIGS);
+        configureMotor(HoodConstants.INVERTED, HoodConstants.BRAKE,
+                HoodConstants.SUPPLY_CURRENT_LIMIT,
+                HoodConstants.STATOR_CURRENT_LIMIT,
+                HoodConstants.SLOT0_CONFIGS);
 
-        configureSometimesEncoder(HoodConstants.HOOD_ENCODER_ID,
-                "rio", HoodConstants.HOOD_MAGNET_OFFSET,
-                HoodConstants.HOOD_SENSOR_TO_MECH_GEAR_RATIO,
-                HoodConstants.HOOD_MOTOR_TO_SENSOR_GEAR_RATIO,
-                HoodConstants.HOOD_IS_CCW_POS,
-                HoodConstants.HOOD_ABSOLUTE_DISCONTINUITY_POINT);
+        configureSometimesEncoder(HoodConstants.ENCODER_ID,
+                "rio", HoodConstants.MAGNET_OFFSET,
+                HoodConstants.SENSOR_TO_MECH_GEAR_RATIO,
+                HoodConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
+                HoodConstants.IS_CCW_POS,
+                HoodConstants.ABSOLUTE_DISCONTINUITY_POINT);
 
-        configurePivot(HoodConstants.HOOD_MIN,
-                HoodConstants.HOOD_MAX);
+        configurePivot(HoodConstants.MIN,
+                HoodConstants.MAX);
     }
 
     public static HoodSubsystem getInstance() {

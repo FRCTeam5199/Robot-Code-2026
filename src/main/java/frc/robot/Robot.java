@@ -34,8 +34,6 @@ public class Robot extends TimedRobot {
     public static final IntakeRollerSubsystem intakerollersubsystem = IntakeRollerSubsystem.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
-    public static LimelightHelpers.PoseEstimate limelightRightData;
-    public static LimelightHelpers.PoseEstimate limelightLeftData;
     public static Timer originTimer = new Timer();
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
