@@ -210,6 +210,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         LimelightHelpers.SetThrottle("limelight-right", 200);
         LimelightHelpers.SetThrottle("limelight-left", 200);
+        LimelightHelpers.SetThrottle("limelight-turret", 200);
     }
 
     @Override
@@ -220,6 +221,7 @@ public class Robot extends TimedRobot {
     public void disabledExit() {
         LimelightHelpers.SetThrottle("limelight-right", 0);
         LimelightHelpers.SetThrottle("limelight-left", 0);
+        LimelightHelpers.SetThrottle("limelight-turret", 0);
     }
 
     @Override

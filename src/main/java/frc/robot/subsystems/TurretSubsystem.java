@@ -10,6 +10,7 @@ import frc.robot.utility.Type;
 
 public class TurretSubsystem extends TemplateSubsystem {
     private static TurretSubsystem turretSubsystem;
+    private static Vision vision = Vision.getInstance();
     private static ShotCalculator shotCalculator = ShotCalculator.getInstance();
 
     private TrapezoidProfile profile;
@@ -26,8 +27,7 @@ public class TurretSubsystem extends TemplateSubsystem {
     private NetworkTable networkTable;
     private NetworkTable turretNetworkTable;
 
-    private DoublePublisher goalPositionLogging;
-    private DoublePublisher goalPositionWithoutPhaseDelayLogging;
+    private DoublePublisher goalPositionLogging, goalPositionPhaseDelayed;
     private DoublePublisher currentPositionLogging;
     private DoublePublisher goalVelocityLogging;
     private DoublePublisher currentVelocityLogging;
@@ -68,7 +68,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         turretNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Turret/");
 
         goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
-        goalPositionWithoutPhaseDelayLogging = networkTable.getDoubleTopic("Goal Position Without Phase Delay").publish();
+        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
         currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
         goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
         currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
@@ -89,16 +89,17 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        goalPositionLogging.set(goalRotations);
-        currentPositionLogging.set(getMotorRot());
+        goalPositionLogging.set(shotCalculator.getTurretAngle());
+        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+        currentPositionLogging.set(getDegrees());
 
         goalVelocityLogging.set(goalVelocityRotPerSec);
         currentVelocityLogging.set(getMotorVelocity());
 
         turretToTargetDistance.set(shotCalculator.getTurretToTargetDistance());
+        futureTurretPose.set(shotCalculator.getFutureTurretPositionPhaseDelayed());
 
-        turretPose.set(shotCalculator.getTurretPosition());
-        futureTurretPose.set(shotCalculator.getFutureTurretPosition());
+        vision.addSample(getDegrees());
 
         isMechAtGoal.set(isMechAtGoal());
 
@@ -129,8 +130,8 @@ public class TurretSubsystem extends TemplateSubsystem {
     }
 
     public boolean isMechAtGoal() {
-        return getMotorRot() >= goalRotations - getMotorRotFromDegrees(TurretConstants.LOWER_TOLERANCE)
-                && getMotorRot() <= goalRotations + getMotorRotFromDegrees(TurretConstants.UPPER_TOLERANCE);
+        return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
+                && getDegrees() <= shotCalculator.getTurretAngle() + TurretConstants.UPPER_TOLERANCE;
     }
 
     public void setStopMoving(boolean stopMoving) {

@@ -108,10 +108,8 @@ public class RobotContainer {
     private static Command leftBumperReleased;
 
     //Drive
-    public static final double MaxSpeed = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude(); // kSpeedAt12VoltsMps desired top speed
-    public static final double MaxAngularRate = 2.5 * Math.PI; //Originally 2 * Math.PI
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
-            .withDeadband(MaxSpeed * .05).withRotationalDeadband(MaxAngularRate * .05) // Add a 10% deadband
+            .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     //Current Robot State
@@ -121,7 +119,10 @@ public class RobotContainer {
     private static Translation2d[] robotCorners = new Translation2d[4];
 
     //Misc
-    public static final Telemetry logger = new Telemetry(MaxSpeed);
+    public static final Telemetry logger = new Telemetry(Constants.MAX_SPEED);
+    public static double requestXVelocity;
+    public static double requestYVelocity;
+    public static double requestRotationalVelocity;
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBalls().alongWith(
@@ -173,15 +174,19 @@ public class RobotContainer {
             }
         }
 
+        requestXVelocity = -commandXboxController.getLeftY() * Constants.MAX_SPEED;
+        requestYVelocity = -commandXboxController.getLeftX() * Constants.MAX_SPEED;
+        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_SPEED;
+
         // Logging
         logger.telemeterize(currentState);
     }
 
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                        .withVelocityY(-commandXboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(-commandXboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * Constants.MAX_SPEED) // Drive forward with negative Y (forward)
+                        .withVelocityY(-commandXboxController.getLeftX() * Constants.MAX_SPEED) // Drive left with negative X (left)
+                        .withRotationalRate(-commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE) // Drive counterclockwise with negative X (left)
                 ));
         // Field Centric
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
@@ -270,5 +275,17 @@ public class RobotContainer {
 
     public static VelocityCommand getKickerControlAuto() {
         return kickerAuto;
+    }
+
+    public static double getRequestRotationalVelocity() {
+        return requestRotationalVelocity;
+    }
+
+    public static double getRequestYVelocity() {
+        return requestYVelocity;
+    }
+
+    public static double getRequestXVelocity() {
+        return requestXVelocity;
     }
 }
