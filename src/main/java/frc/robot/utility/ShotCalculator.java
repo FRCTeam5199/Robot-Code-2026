@@ -158,7 +158,7 @@ public class ShotCalculator extends SubsystemBase {
             while (turretAngle <= TurretConstants.MIN) turretAngle += 360;
             while (turretAngle >= TurretConstants.MAX) turretAngle -= 360;
 
-            turretVelocity -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d)
+            turretVelocity -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d);
 
             // Based on Future Pose
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
