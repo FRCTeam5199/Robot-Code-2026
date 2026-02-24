@@ -9,25 +9,25 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
     public double goal = 70;
 
     private IntakePivotSubsystem() {
-        super(Type.PIVOT, IntakePivotConstants.INTAKE_PIVOT_MOTOR_ID, IntakePivotConstants.INTAKE_PIVOT_VELOCITY_OUT,
-                IntakePivotConstants.INTAKE_PIVOT_ACCELERATION_OUT, IntakePivotConstants.INTAKE_PIVOT_JERK_OUT,
-                IntakePivotConstants.INTAKE_PIVOT_LOWER_TOLERANCE,
-                IntakePivotConstants.INTAKE_PIVOT_UPPER_TOLERANCE,
-                IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIOA, "Intake Pivot");
+        super(Type.PIVOT, IntakePivotConstants.MOTOR_ID, IntakePivotConstants.VELOCITY,
+                IntakePivotConstants.ACCELERATION, IntakePivotConstants.JERK,
+                IntakePivotConstants.LOWER_TOLERANCE,
+                IntakePivotConstants.UPPER_TOLERANCE,
+                IntakePivotConstants.GEAR_RATIOA, "Intake Pivot");
 
-        configureMotor(IntakePivotConstants.INTAKE_PIVOT_INVERTED, IntakePivotConstants.INTAKE_PIVOT_BRAKE,
-                IntakePivotConstants.INTAKE_PIVOT_SUPPLY_CURRENT_LIMIT,
-                IntakePivotConstants.INTAKE_PIVOT_STATOR_CURRENT_LIMIT,
-                IntakePivotConstants.INTAKE_PIVOT_SLOT0_CONFIGS);
+        configureMotor(IntakePivotConstants.INVERTED, IntakePivotConstants.BRAKE,
+                IntakePivotConstants.SUPPLY_CURRENT_LIMIT,
+                IntakePivotConstants.STATOR_CURRENT_LIMIT,
+                IntakePivotConstants.SLOT0_CONFIGS);
 
-        configureEncoder(IntakePivotConstants.INTAKE_PIVOT_ENCODER_ID,
-                "rio", IntakePivotConstants.INTAKE_PIVOT_MAGNET_OFFSET,
+        configureEncoder(IntakePivotConstants.ENCODER_ID,
+                "rio", IntakePivotConstants.MAGNET_OFFSET,
                 IntakePivotConstants.INTAKE_SENSOR_MECH_RATIO,
-                IntakePivotConstants.INTAKE_PIVOT_GEAR_RATIO,
-                IntakePivotConstants.INTAKE_PIVOT_ENCODER_DIRECTION);
+                IntakePivotConstants.GEAR_RATIO,
+                IntakePivotConstants.ENCODER_DIRECTION);
 
-        configurePivot(IntakePivotConstants.INTAKE_PIVOT_MIN,
-                IntakePivotConstants.INTAKE_PIVOT_MAX);
+        configurePivot(IntakePivotConstants.MIN,
+                IntakePivotConstants.MAX);
     }
 
     public static IntakePivotSubsystem getInstance() {
@@ -39,7 +39,8 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-        // System.out.println("Degrees: " + getDegrees());
-        // System.out.println("Goal: " + getGoal());
+        //    System.out.println("Degrees: " + getDegrees());
+        //    System.out.println("Goal: " + getGoal());
+        // System.out.println("Is at Goal: "+ isMechAtGoal(false));
     }
 }

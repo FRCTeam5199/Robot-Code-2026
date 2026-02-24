@@ -4,6 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.constants.HopperConstants;
+import frc.robot.constants.IndexerConstants;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
@@ -15,15 +23,18 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
-    //    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
+    public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    public static final IntakeRollerSubsystem intakerollersubsystem = IntakeRollerSubsystem.getInstance();
+    public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
-    public static LimelightHelpers.PoseEstimate limelightRightData;
-    public static LimelightHelpers.PoseEstimate limelightLeftData;
+    public static Timer originTimer = new Timer();
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
@@ -80,12 +91,10 @@ public class Robot extends TimedRobot {
 
         // userInterface.setTab("Control");
 
+//        LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
+//                -.316, -.316, .453, 0, 5, 135.218);
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
-//                .33, .28, .25, 0, 5, 25);
-        LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
-                -.325, -.341, .406, 0, 5, 135.218);
-        commandSwerveDrivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999.0));
-
+//                -.317, .317, .436, 180, 5, -135.218);
         Logger.addDataReceiver(new WPILOGWriter());
     }
 
@@ -189,45 +198,12 @@ public class Robot extends TimedRobot {
         //     motorFollower.setVoltage(0);
         // }
 
-//        if (LimelightHelpers.getTV("limelight-right")) {
-//            LimelightHelpers.SetRobotOrientation("limelight-right",
-//                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(),
-//                    0, 0, 0, 0, 0);
-//            limelightRightData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-//
-//            if (limelightRightData != null) {
-//            commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-//                    limelightRightData.timestampSeconds, VecBuilder.fill(.3,.3,9999999).times(limelightRightData.avgTagDist));
-//            }
-//        }
-
-        if (LimelightHelpers.getTV("limelight-left")) {
-            LimelightHelpers.SetRobotOrientation("limelight-left",
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-            limelightLeftData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-
-            if (limelightLeftData != null) {
-                commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                        limelightLeftData.timestampSeconds);
-//                System.out.println("Left Cam Tag Distance: " + limelightLeftData.avgTagDist);
-            }
-        }
-
-//        System.out.println("Mechanism at goal: " + RobotContainer.areMechanismsAtGoals());
-
-//         if (RobotContainer.areMechanismsAtGoals() && indexerSubsystem.getGoal() != 15) {
-// // // //          
-//             indexerSubsystem.setVelocity(15);
-//             hopperSubsystem.setVelocity(25);
-// // //                  
-//         } else if (indexerSubsystem.getGoal() != -15) {
-// //        
-//             indexerSubsystem.setVelocity(-15);
-//             hopperSubsystem.setVelocity(0);
-//         }
-
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
+
+//        Runtime runtime = Runtime.getRuntime();
+//        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+//        System.out.println("Used memory: " + usedMemory / 1024 / 1024 + "MB / " + runtime.totalMemory() / 1024 / 1024 + "MB");
     }
 
     @Override
@@ -270,10 +246,10 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-//        CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
-//        CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
-//        CommandScheduler.getInstance().schedule(RobotContainer.turretControl);
-
+        // CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
+        CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED));
+        CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED));
+        // CommandScheduler.getInstance().schedule(new VelocityCommand(intakerollersubsystem, 90));
 
     }
 
