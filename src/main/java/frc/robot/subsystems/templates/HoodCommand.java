@@ -1,40 +1,41 @@
 package frc.robot.subsystems.templates;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class TurretCommand extends Command {
+public class HoodCommand extends Command {
     private double goal;
     private double goalVelocity;
-    private TurretSubsystem turretSubsystem;
+    private HoodSubsystem hoodSubsystem;
     private boolean updateGoalPosition;
 
-    public TurretCommand(TurretSubsystem turretSubsystem, double goal) {
-        this.turretSubsystem = turretSubsystem;
+    public HoodCommand(HoodSubsystem hoodSubsystem, double goal) {
+        this.hoodSubsystem = hoodSubsystem;
         this.goal = goal;
         updateGoalPosition = false;
-        turretSubsystem.setContinuousMotion(false);
+        hoodSubsystem.setContinuousMotion(false);
 
-        addRequirements(turretSubsystem);
+        addRequirements(hoodSubsystem);
     }
 
-    public TurretCommand(TurretSubsystem turretSubsystem, double goal, double goalVelocity) {
-        this(turretSubsystem, goal);
+    public HoodCommand(HoodSubsystem hoodSubsystem, double goal, double goalVelocity) {
+        this(hoodSubsystem, goal);
 
         this.goalVelocity = goalVelocity;
     }
 
     @Override
     public void initialize() {
-        turretSubsystem.setPositionProfiling(goal, goalVelocity);
-        turretSubsystem.setCommandRunning(true);
-        turretSubsystem.setStopMoving(false);
+        hoodSubsystem.setPositionProfiling(goal, goalVelocity);
+        hoodSubsystem.setCommandRunning(true);
+        hoodSubsystem.setStopMoving(false);
     }
 
     @Override
     public void execute() {
         if (updateGoalPosition) {
-            turretSubsystem.updateGoalPosition(goal, goalVelocity);
+            hoodSubsystem.updateGoalPosition(goal, goalVelocity);
             updateGoalPosition = false;
         }
     }

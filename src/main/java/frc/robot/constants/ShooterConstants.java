@@ -5,37 +5,29 @@ import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class ShooterConstants {
-    public static final int SHOOTER_MOTOR_ID = 21;
-    public static final double SHOOTER_STATOR_CURRENT_LIMIT = 60;
-    public static final double SHOOTER_SUPPLY_CURRENT_LIMIT = 60;
-    public static final boolean SHOOTER_INVERTED = false;
-    public static final boolean SHOOTER_BRAKE = false;
+    public static final int MOTOR_ID = 22;
+    public static final int SECOND_MOTOR_ID = 26;
+    public static final double STATOR_CURRENT_LIMIT = 60;
+    public static final double SUPPLY_CURRENT_LIMIT = 60;
+    public static final boolean INVERTED = false;
+    public static final boolean SECOND_INVERTED = true;
+    public static final boolean BRAKE = false;
 
-    public static final Slot0Configs SHOOTER_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(99999999999999999999d)
+    public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
+            .withKP(.5)
             .withKI(0)
-            .withKD(0)
-            .withKS(.37)
+            .withKD(0.001)
+            .withKS(.25)
             .withKG(0)
-            .withKV(.12195121951219512195121951219512)
+            .withKV(.1242236025)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
-    public static final Slot1Configs SHOOTER_SLOT1_CONFIGS = new Slot1Configs()
-            .withKP(5)
-            .withKI(0)
-            .withKD(0)
-            .withKS(.37)
-            .withKG(0)
-            .withKV(.12195121951219512195121951219512)
-            .withKA(0)
-            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
+    public static final double ACCELERATION = 400;
+    public static final double JERK = 4000;
 
-    public static final double SHOOTER_ACCELERATION = 400;
-    public static final double SHOOTER_JERK = 4000;
+    public static final double LOWER_TOLERANCE = 3;
+    public static final double UPPER_TOLERANCE = 2;
 
-    public static final double SHOOTER_LOWER_TOLERANCE = 5;
-    public static final double SHOOTER_UPPER_TOLERANCE = 5;
-
-    public static final double[][] SHOOTER_GEAR_RATIO = {{1, 1}};
+    public static final double[][] GEAR_RATIO = {{1, 1}};
 }
