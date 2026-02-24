@@ -1,52 +1,33 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.constants.HoodConstants;
-import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
 public class HoodSubsystem extends TemplateSubsystem {
     private static HoodSubsystem hoodSubsystem;
 
-    private TrapezoidProfile profile;
-    private TrapezoidProfile.State currentState;
-    private TrapezoidProfile.State goalState;
-
-    private double goalRotations;
-    private double goalVelocityRotPerSec;
-    private boolean continuousMotion = false;
-
-    private boolean stopMoving = false;
-
     private HoodSubsystem() {
-        super(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
-                HoodConstants.ACCELERATION, HoodConstants.JERK,
-                HoodConstants.LOWER_TOLERANCE,
-                HoodConstants.UPPER_TOLERANCE,
-                HoodConstants.GEAR_RATIO, "Hood");
+        super(Type.PIVOT, HoodConstants.HOOD_MOTOR_ID, HoodConstants.HOOD_VELOCITY,
+                HoodConstants.HOOD_ACCELERATION, HoodConstants.HOOD_JERK,
+                HoodConstants.HOOD_LOWER_TOLERANCE,
+                HoodConstants.HOOD_UPPER_TOLERANCE,
+                HoodConstants.HOOD_GEAR_RATIO, "Hood");
 
-        configureMotor(HoodConstants.INVERTED, HoodConstants.BRAKE,
-                HoodConstants.SUPPLY_CURRENT_LIMIT,
-                HoodConstants.STATOR_CURRENT_LIMIT,
-                HoodConstants.SLOT0_CONFIGS);
+        configureMotor(HoodConstants.HOOD_INVERTED, HoodConstants.HOOD_BRAKE,
+                HoodConstants.HOOD_SUPPLY_CURRENT_LIMIT,
+                HoodConstants.HOOD_STATOR_CURRENT_LIMIT,
+                HoodConstants.HOOD_SLOT0_CONFIGS);
 
-        configureSometimesEncoder(HoodConstants.ENCODER_ID,
-                "rio", HoodConstants.MAGNET_OFFSET,
-                HoodConstants.SENSOR_TO_MECH_GEAR_RATIO,
-                HoodConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
-                HoodConstants.IS_CCW_POS,
-                HoodConstants.ABSOLUTE_DISCONTINUITY_POINT);
+        halfConfigureEncoder(HoodConstants.HOOD_ENCODER_ID,
+                "rio", HoodConstants.HOOD_MAGNET_OFFSET,
+                HoodConstants.HOOD_SENSOR_TO_MECH_GEAR_RATIO,
+                HoodConstants.HOOD_MOTOR_TO_SENSOR_GEAR_RATIO,
+                HoodConstants.HOOD_IS_CCW_POS,
+                HoodConstants.HOOD_ABSOLUTE_DISCONTINUITY_POINT);
 
-        configurePivot(HoodConstants.MIN,
-                HoodConstants.MAX);
-
-        configureCustomFF();
-
-        profile = new TrapezoidProfile(new TrapezoidProfile
-                .Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
-        currentState = new TrapezoidProfile.State(0, 0);
-        goalState = new TrapezoidProfile.State(0, 0);
+        configurePivot(HoodConstants.HOOD_MIN,
+                HoodConstants.HOOD_MAX);
     }
 
     public static HoodSubsystem getInstance() {
@@ -58,48 +39,8 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-//        System.out.println("Hood Degrees: " + getDegrees());
+        //    System.out.println("Hood Degrees: " + getDegrees());
 //        System.out.println("Hood is at goal: " + isMechAtGoal(false));
-//        System.out.println(getGearRatio());
-
-        //Motor Rotations = degrees / 360 / .00694444444444
-        //Degrees = motorRot * 360 * .00694444444444
-
-        if (!stopMoving) followLastProfile();
     }
-
-    public void setPositionProfiling(double degrees, double degreePerSec) {
-        goalRotations = getMotorRotFromDegrees(degrees);
-        goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
-
-        goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
-        currentState = new TrapezoidProfile.State(getMotorRot(), getMotorVelocity());
-    }
-
-    public void updateGoalPosition(double degrees, double degreePerSec) {
-        goalRotations = getMotorRotFromDegrees(degrees);
-        goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
-
-        goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
-    }
-
-    public void followLastProfile() {
-        currentState = profile.calculate(0.02, currentState, goalState);
-        setPositionVoltage(goalState.position, getFeedForward(goalState.position, goalState.velocity));
-    }
-
-    public boolean isMechAtGoal() {
-        return getMotorRot() >= goalRotations - getMotorRotFromDegrees(HoodConstants.LOWER_TOLERANCE)
-                && getMotorRot() <= goalRotations + getMotorRotFromDegrees(HoodConstants.UPPER_TOLERANCE);
-    }
-
-    public void setStopMoving(boolean stopMoving) {
-        this.stopMoving = stopMoving;
-    }
-
-    public void setContinuousMotion(boolean continuousMotion) {
-        this.continuousMotion = continuousMotion;
-    }
-
 }
 

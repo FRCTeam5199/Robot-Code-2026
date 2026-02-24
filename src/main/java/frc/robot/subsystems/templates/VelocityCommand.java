@@ -45,8 +45,7 @@ public class VelocityCommand extends Command {
 
     @Override
     public boolean isFinished() {
-//        return templateSubsystem.isMechAtGoal(true);
-        return false;
+        return templateSubsystem.isMechAtGoal(true);
     }
 
     @Override

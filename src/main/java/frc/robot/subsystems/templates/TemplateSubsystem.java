@@ -2,8 +2,7 @@ package frc.robot.subsystems.templates;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -16,13 +15,10 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Type;
 
@@ -42,19 +38,14 @@ public class TemplateSubsystem extends SubsystemBase {
     private TalonFXConfiguration secondaryMotorConfig;
     private CANcoder encoder;
     private CANcoderConfiguration encoderConfig;
-    private CANcoder sometimesEncoder;
-    private CANcoderConfiguration sometimesEncoderConfig;
     private double goal;
-    private double secondaryGoal;
     private boolean followLastMechProfile = false;
     private boolean isCommandRunning = false;
     private DynamicMotionMagicVoltage dynamicMotionMagicVoltage;
     private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
     private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
     private PositionVoltage positionVoltage;
-    private VelocityVoltage velocityVoltage;
     private SimpleMotorFeedforward simpleMotorFeedforward;
-    private ArmFeedforward armFeedforward;
     private Slot0Configs slot0Configs;
     private double velocity;
     private double acceleration;
@@ -66,7 +57,6 @@ public class TemplateSubsystem extends SubsystemBase {
     private double offset;
     private boolean changedOffset = false;
     private double gearRatio = 1d;
-    private double motorToSensorRatio = 1d;
     private double drumCircumference;
     private Type type;
     private String name;
@@ -88,8 +78,6 @@ public class TemplateSubsystem extends SubsystemBase {
         motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0)
                 .withEnableFOC(true);
         positionVoltage = new PositionVoltage(0).withSlot(0)
-                .withEnableFOC(true);
-        velocityVoltage = new VelocityVoltage(0).withSlot(0)
                 .withEnableFOC(true);
 
         this.lowerTolerance = lowerTolerance;
@@ -133,10 +121,6 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.MotionMagic.MotionMagicCruiseVelocity = velocity;
         motorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
         motorConfig.MotionMagic.MotionMagicJerk = jerk;
-
-        motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
-
-        motor.optimizeBusUtilization(50);
 
         motor.getConfigurator().apply(motorConfig);
         motor.setPosition(0);
@@ -233,50 +217,44 @@ public class TemplateSubsystem extends SubsystemBase {
         gearRatio = motorToSensorRatio * sensorToMechRatio;
     }
 
-    public void configureSometimesEncoder(int encoderId, String canbus, double magnetOffset,
-                                          double sensorToMechRatio, double motorToSensorRatio,
-                                          boolean isCCWPositive, double absoluteDiscontinuityPoint) {
-        sometimesEncoder = new CANcoder(encoderId);
-        sometimesEncoderConfig = new CANcoderConfiguration();
+    public void halfConfigureEncoder(int encoderId, String canbus, double magnetOffset,
+                                     double sensorToMechRatio, double motorToSensorRatio,
+                                     boolean isCCWPositive, double absoluteDiscontinuityPoint) {
+        encoder = new CANcoder(encoderId);
+        encoderConfig = new CANcoderConfiguration();
 
-        sometimesEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = absoluteDiscontinuityPoint;
-        sometimesEncoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = absoluteDiscontinuityPoint;
+        encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
                 : SensorDirectionValue.Clockwise_Positive;
 
-        sometimesEncoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
-        sometimesEncoder.getConfigurator().apply(sometimesEncoderConfig);
+        encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
+        encoder.getConfigurator().apply(encoderConfig);
 
-        this.motorToSensorRatio = motorToSensorRatio;
-
-        motor.setPosition(sometimesEncoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
+        motor.setPosition(encoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
+        encoder = null;
     }
 
     public void configureCustomFF() {
-        if (type == Type.PIVOT) armFeedforward = new ArmFeedforward(slot0Configs.kS,
-                slot0Configs.kG, slot0Configs.kV / (2d * Math.PI));
-        else if (type == Type.ROLLER)
-            simpleMotorFeedforward = new SimpleMotorFeedforward(slot0Configs.kS,
-                    slot0Configs.kV, slot0Configs.kA);
+        simpleMotorFeedforward = new SimpleMotorFeedforward(slot0Configs.kS, slot0Configs.kV);
     }
 
-    public double getFeedForward(double velocityRot) {
-        return simpleMotorFeedforward.calculate(velocityRot);
+    public double getFeedForward(double velocity) {
+        return simpleMotorFeedforward.calculate(velocity);
     }
 
-    public double getFeedForward(double currentRot, double velocityRot) {
-        return armFeedforward.calculate(getDegreesFromMotorRot(currentRot)
-                * Math.PI / 180d, velocityRot);
+    public double getFeedForward(double currentVelocity, double nextVelocity) {
+        return simpleMotorFeedforward.calculateWithVelocities(currentVelocity, nextVelocity);
     }
 
     public void setPercent(double percent) {
         followLastMechProfile = false;
-        if (percent > 1) percent /= 100d;
+        if (percent > 1) percent /= 100;
         motor.set(percent);
     }
 
     public void setSecondaryPercent(double percent) {
         followLastMechProfile = false;
-        if (percent > 1) percent /= 100d;
+        if (percent > 1) percent /= 100;
         secondaryMotor.set(percent);
     }
 
@@ -298,10 +276,10 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void setSecondaryVelocity(double rps) {
-        this.secondaryGoal = rps;
+        this.goal = rps;
         followLastMechProfile = false;
         if (rps == 0) setPercent(0);
-        else secondaryMotor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps));
+        else motor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps));
     }
 
     public void setPosition(double goal) {
@@ -426,10 +404,6 @@ public class TemplateSubsystem extends SubsystemBase {
         return goal;
     }
 
-    public double getSecondaryGoal() {
-        return secondaryGoal;
-    }
-
     public void setFollowLastMechProfile(boolean followLastMechProfile) {
         this.followLastMechProfile = followLastMechProfile;
     }
@@ -512,7 +486,7 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public double getSecondaryMotorVelocity() {
-        return secondaryMotor.getRotorVelocity().getValueAsDouble();
+        return secondaryMotor.getVelocity().getValueAsDouble();
     }
 
     public double getMotorVoltage() {
@@ -569,16 +543,6 @@ public class TemplateSubsystem extends SubsystemBase {
         return encoder.getAbsolutePosition().getValueAsDouble() * 360d * sensorToMechRatio;
     }
 
-    public double getSometimesEncoderRot() {
-        if (sometimesEncoder == null) return 0;
-        return sometimesEncoder.getAbsolutePosition().getValueAsDouble();
-    }
-
-    public void zeroMotor() {
-        if (sometimesEncoder == null) motor.setPosition(0);
-        else motor.setPosition(sometimesEncoder.getAbsolutePosition().getValueAsDouble() * this.motorToSensorRatio);
-    }
-
     @Override
     public void periodic() {
         if (changedOffset) {
@@ -586,14 +550,12 @@ public class TemplateSubsystem extends SubsystemBase {
             changedOffset = false;
         }
 
-
-//        if (type == Type.LINEAR) poseData.set(getMechM());
-//        else poseData.set(getDegrees());
-//        velocityData.set(getMotorVelocity());
-//        voltageData.set(getMotorVoltage());
-//        supplyCurrentData.set(-getSupplyCurrent());
-//        statorCurrentData.set(-getStatorCurrent());
-//        tempData.set(getMotorTemp());
+        poseData.set(getDegrees());
+        velocityData.set(getMotorVelocity());
+        voltageData.set(getMotorVoltage());
+        supplyCurrentData.set(-getSupplyCurrent());
+        statorCurrentData.set(-getStatorCurrent());
+        tempData.set(getMotorTemp());
     }
 
     public void setControl(ControlRequest control) {
@@ -610,9 +572,5 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public void setCommandRunning(boolean commandRunning) {
         isCommandRunning = commandRunning;
-    }
-
-    public double getGearRatio() {
-        return gearRatio;
     }
 }
