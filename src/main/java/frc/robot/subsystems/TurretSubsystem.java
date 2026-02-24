@@ -126,6 +126,8 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     public void followLastProfile() {
         currentState = profile.calculate(0.02, currentState, goalState);
+
+        //not using profiling right now so bypassing it
         setPositionVoltage(goalState.position, getFeedForward(goalState.velocity));
     }
 

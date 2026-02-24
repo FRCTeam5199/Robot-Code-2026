@@ -78,7 +78,6 @@ public class ShotCalculator extends SubsystemBase {
     public void periodic() {
         if (RobotContainer.getPose() != null) {
             Pose2d estimatedPose = RobotContainer.getPose();
-            //phase delay is 0 so this isn't being used right now
             Pose2d estimatedPosePhaseDelayed =
                     estimatedPose.exp(
                             new Twist2d(
@@ -135,7 +134,6 @@ public class ShotCalculator extends SubsystemBase {
 
             turretVelocityPhaseDelayed -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d);
 
-
             //Turret Angle Calculations
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
                 turretRotation = Constants.RED_HUB_CENTER
@@ -160,8 +158,7 @@ public class ShotCalculator extends SubsystemBase {
             while (turretAngle <= TurretConstants.MIN) turretAngle += 360;
             while (turretAngle >= TurretConstants.MAX) turretAngle -= 360;
 
-            turretVelocity -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d);
-
+            turretVelocity -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d)
 
             // Based on Future Pose
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
