@@ -8,17 +8,17 @@ public class IndexerSubsystem extends TemplateSubsystem {
     private static IndexerSubsystem indexerSubsystem;
 
     private IndexerSubsystem() {
-        super(Type.ROLLER, IndexerConstants.MOTOR_ID,
-                0, IndexerConstants.ACCELERATION,
-                IndexerConstants.JERK,
-                IndexerConstants.LOWER_TOLERANCE,
-                IndexerConstants.UPPER_TOLERANCE,
-                IndexerConstants.GEAR_RATIO, "Indexer");
+        super(Type.ROLLER, IndexerConstants.INDEXER_MOTOR_ID,
+                0, IndexerConstants.INDEXER_ACCELERATION,
+                IndexerConstants.INDEXER_JERK,
+                IndexerConstants.INDEXER_LOWER_TOLERANCE,
+                IndexerConstants.INDEXER_UPPER_TOLERANCE,
+                IndexerConstants.INDEXER_GEAR_RATIO, "Indexer");
 
-        configureMotor(IndexerConstants.INVERTED, IndexerConstants.BRAKE,
-                IndexerConstants.SUPPLY_CURRENT_LIMIT,
-                IndexerConstants.STATOR_CURRENT_LIMIT,
-                IndexerConstants.SLOT0_CONFIGS);
+        configureMotor(IndexerConstants.INDEXER_INVERTED, IndexerConstants.INDEXER_BRAKE,
+                IndexerConstants.INDEXER_SUPPLY_CURRENT_LIMIT,
+                IndexerConstants.INDEXER_STATOR_CURRENT_LIMIT,
+                IndexerConstants.INDEXER_SLOT0_CONFIGS);
     }
 
     public static IndexerSubsystem getInstance() {
@@ -31,6 +31,6 @@ public class IndexerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        //    System.out.println("Indexer Velocity: " + getMotorVelocity());
+    //    System.out.println("Indexer Velocity: " + getMotorVelocity());
     }
 }

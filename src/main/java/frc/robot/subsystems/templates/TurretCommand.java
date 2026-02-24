@@ -9,26 +9,19 @@ public class TurretCommand extends Command {
     private TurretSubsystem turretSubsystem;
     private boolean updateGoalPosition;
 
-    public TurretCommand(TurretSubsystem turretSubsystem, double goal) {
+    public TurretCommand(TurretSubsystem turretSubsystem, double goal, double goalVelocity) {
         this.turretSubsystem = turretSubsystem;
         this.goal = goal;
+        this.goalVelocity = goalVelocity;
         updateGoalPosition = false;
-        turretSubsystem.setContinuousMotion(false);
 
         addRequirements(turretSubsystem);
-    }
-
-    public TurretCommand(TurretSubsystem turretSubsystem, double goal, double goalVelocity) {
-        this(turretSubsystem, goal);
-
-        this.goalVelocity = goalVelocity;
     }
 
     @Override
     public void initialize() {
         turretSubsystem.setPositionProfiling(goal, goalVelocity);
         turretSubsystem.setCommandRunning(true);
-        turretSubsystem.setStopMoving(false);
     }
 
     @Override

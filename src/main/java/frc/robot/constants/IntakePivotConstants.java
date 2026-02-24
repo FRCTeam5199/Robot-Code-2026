@@ -5,43 +5,47 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class IntakePivotConstants {
-    public static final int MOTOR_ID = 14;
-    public static final int ENCODER_ID = 16;
+    public static final int INTAKE_PIVOT_MOTOR_ID = 14;
+    public static final int INTAKE_PIVOT_ENCODER_ID = 16;
 
-    public static final double STATOR_CURRENT_LIMIT = 60;
-    public static final double SUPPLY_CURRENT_LIMIT = 60;
-    public static final boolean INVERTED = false;
-    public static final boolean BRAKE = true;
+    public static final double INTAKE_PIVOT_STATOR_CURRENT_LIMIT = 60;
+    public static final double INTAKE_PIVOT_SUPPLY_CURRENT_LIMIT = 60;
+    public static final boolean INTAKE_PIVOT_INVERTED = false;
+    public static final boolean INTAKE_PIVOT_BRAKE = true;
 
-    public static final double DEPLOY = 92;
-    public static final double STOW = 2;
+    public static final double INTAKE_OUT = 108;
+    public static final double INTAKE_IN = 5;
 
-    public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(10)
+    public static final Slot0Configs INTAKE_PIVOT_SLOT0_CONFIGS = new Slot0Configs()
+            .withKP(25)
             .withKI(0)
             .withKD(0)
-            .withKS(.19)
-            .withKG(0)
-            .withKV(1.59)
+            .withKS(.17)
+            .withKG(.25)
+            .withKV(.09090909090909090909090909090909)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
             .withGravityType(GravityTypeValue.Arm_Cosine)
-            .withGravityArmPositionOffset(.0);
+            .withGravityArmPositionOffset(.055555555555555555); //figure out how to use this
 
-    public static final double VELOCITY = 5;
-    public static final double ACCELERATION = 7;
-    public static final double JERK = 70;
+    public static final double INTAKE_PIVOT_VELOCITY_OUT = 8;
+    public static final double INTAKE_PIVOT_ACCELERATION_OUT = 16;
+    public static final double INTAKE_PIVOT_JERK_OUT = 100;
 
-    public static final double LOWER_TOLERANCE = 4;
-    public static final double UPPER_TOLERANCE = 4;
+    public static final double INTAKE_PIVOT_VELOCITY_IN = .5;
+    public static final double INTAKE_PIVOT_ACCELERATION_IN = 4;
+    public static final double INTAKE_PIVOT_JERK_IN = 10;
 
-    public static final double MAGNET_OFFSET = -.6611328125;
-    public static final boolean ENCODER_DIRECTION = false;
+    public static final double INTAKE_PIVOT_LOWER_TOLERANCE = 4;
+    public static final double INTAKE_PIVOT_UPPER_TOLERANCE = 4;
 
-    public static final double MIN = 0;
-    public static final double MAX = 94;
+    public static final double INTAKE_PIVOT_MAGNET_OFFSET = -0.3239746;
+    public static final boolean INTAKE_PIVOT_ENCODER_DIRECTION = false;
 
-    public static final double GEAR_RATIO = 20d;
-    public static final double[][] GEAR_RATIOA = {{20, 1}};
+    public static final double INTAKE_PIVOT_MIN = 3;
+    public static final double INTAKE_PIVOT_MAX = 109;
+
+    public static final double INTAKE_PIVOT_GEAR_RATIO = 20d;
+    public static final double[][] INTAKE_PIVOT_GEAR_RATIOA = {{20, 1}};
     public static final double INTAKE_SENSOR_MECH_RATIO = 1d;
 }
