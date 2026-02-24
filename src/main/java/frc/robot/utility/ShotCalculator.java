@@ -177,7 +177,7 @@ public class ShotCalculator extends SubsystemBase {
 
         // Sets continuous control for turret, shooter, kicker
         RobotContainer.getTurretControlAuto().setGoal(shotCalculator.getTurretAnglePhaseDelayed(),
-                turretSubsystem.getMotorRotFromDegrees(shotCalculator.getTurretVelocityPhaseDelayed()));
+                shotCalculator.getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
     }
