@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.*;
+import frc.robot.RobotContainer;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
@@ -32,6 +33,8 @@ public class TurretSubsystem extends TemplateSubsystem {
     private DoublePublisher goalVelocityLogging;
     private DoublePublisher currentVelocityLogging;
     private DoublePublisher turretToTargetDistance;
+    private DoublePublisher velocity;
+    private DoublePublisher acceleration;
     private BooleanPublisher isMechAtGoal;
     private StructPublisher<Pose2d> turretPose;
     private StructPublisher<Pose2d> futureTurretPose;
@@ -76,6 +79,8 @@ public class TurretSubsystem extends TemplateSubsystem {
         isMechAtGoal = turretNetworkTable.getBooleanTopic("Is Mech At Goal").publish();
         turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
         futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
+        velocity = networkTable.getDoubleTopic("Velocity").publish();
+        acceleration = networkTable.getDoubleTopic("Acceleration").publish();
     }
 
     public static TurretSubsystem getInstance() {
@@ -98,6 +103,9 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         turretToTargetDistance.set(shotCalculator.getTurretToTargetDistance());
         futureTurretPose.set(shotCalculator.getFutureTurretPositionPhaseDelayed());
+
+        velocity.set(RobotContainer.velocity);
+        acceleration.set(RobotContainer.acceleration);
 
         vision.addSample(getDegrees());
 
@@ -127,8 +135,12 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void followLastProfile() {
         currentState = profile.calculate(0.02, currentState, goalState);
 
-        //not using profiling right now so bypassing it
-        setPositionVoltage(goalState.position, getFeedForward(goalState.velocity));
+        if ((Math.abs(shotCalculator.getTurretAngle() - goalState.position)) >= 10) {
+            setPositionVoltage(currentState.position, currentState.velocity);
+        } else {
+            setPositionVoltage(goalState.position, goalState.velocity);
+        }
+
     }
 
     public boolean isMechAtGoal() {

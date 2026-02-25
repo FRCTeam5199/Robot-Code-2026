@@ -3,7 +3,7 @@ package frc.robot.utility;
 public enum Setpoint {
     HUB(0, 0, 28), //intake against hub
     TOWER(0, 5, 32),
-    LEFT_CORNER(-40, 10, 39),
+    LEFT_CORNER(-45, 10, 39),
     OUTPOST(36, 10, 38);
 
     private final double turretAngle, hoodAngle, shooterSpeed;

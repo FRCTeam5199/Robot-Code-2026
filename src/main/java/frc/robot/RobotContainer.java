@@ -123,6 +123,8 @@ public class RobotContainer {
     public static double requestXVelocity;
     public static double requestYVelocity;
     public static double requestRotationalVelocity;
+    public static double lastVelocity = 0, velocity = 0;
+    public static double acceleration = 0;
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBalls().alongWith(
@@ -158,6 +160,11 @@ public class RobotContainer {
     public static void periodic() {
         currentState = commandSwerveDrivetrain.getStateCopy();
 
+        velocity = Math.sqrt(Math.pow(RobotContainer.getSpeeds().vxMetersPerSecond, 2)
+                + Math.pow(RobotContainer.getSpeeds().vyMetersPerSecond, 2));
+        acceleration = (velocity - lastVelocity) / .02;
+        lastVelocity = velocity;
+
         updateRobotCorners();
 
         // Sets Enums, default is Shooting
@@ -174,9 +181,9 @@ public class RobotContainer {
             }
         }
 
-        requestXVelocity = -commandXboxController.getLeftY() * Constants.MAX_SPEED;
-        requestYVelocity = -commandXboxController.getLeftX() * Constants.MAX_SPEED;
-        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_SPEED;
+        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
+        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
+        requestRotationalVelocity = commandXboxController.getRightX() * Constants.MAX_SPEED;
 
         // Logging
         logger.telemeterize(currentState);
@@ -190,10 +197,8 @@ public class RobotContainer {
                 ));
         // Field Centric
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
-                .runOnce(commandSwerveDrivetrain::seedFieldCentric));
-        // Zeroing Pigeon (Always towards red alliance)
-        commandXboxController.button(7)
-                .onTrue(new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)));
+                .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
+                        new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180))));
 
         commandXboxController.povDown().onTrue(intakeDeploy);
         commandXboxController.povUp().onTrue(intakeStow);

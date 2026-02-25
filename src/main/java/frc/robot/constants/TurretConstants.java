@@ -16,23 +16,23 @@ public class TurretConstants {
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(10)
             .withKI(0)
-            .withKD(0)
-            .withKS(.46)
+            .withKD(.9)
+            .withKS(.47)
             .withKG(0)
-            .withKV(.09638554216867469879518072289157)
-            .withKA(0)
+            .withKV(.09451795841209829867674858223062)
+            .withKA(0.001)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double VELOCITY = 100;
     public static final double ACCELERATION = 300;
     public static final double JERK = 3000;
 
-    public static final double LOWER_TOLERANCE = 1;
-    public static final double UPPER_TOLERANCE = 1;
+    public static final double LOWER_TOLERANCE = 5;
+    public static final double UPPER_TOLERANCE = 5;
 
     public static final double[][] GEAR_RATIO = {{50, 12}, {100, 10}};
 
-    public static final double ENCODER_MAGNET_OFFSET = -.122314453125;
+    public static final double ENCODER_MAGNET_OFFSET = -.479248046875;
     public static final double SENSOR_TO_MECH_GEAR_RATIO = 100d / 10d;
     public static final double MOTOR_TO_SENSOR_GEAR_RATIO = 50d / 12d;
     public static final boolean CCW_POSITIVE = false;

@@ -59,6 +59,7 @@ public class HoodSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 //        System.out.println("Hood Degrees: " + getDegrees());
+//        System.out.println(getGoal());
 //        System.out.println("Hood is at goal: " + isMechAtGoal(false));
 //        System.out.println(getGearRatio());
 

@@ -50,17 +50,17 @@ public class ShotCalculator extends SubsystemBase {
         shooterSpeedLookupTable.put(2.501, 35d);
         shooterSpeedLookupTable.put(3.507, 39.5);
 
-        timeOfFlightLookupTable.put(1.49, (1.14 + 1.10) / 2d);
-        timeOfFlightLookupTable.put(2.51, (1.26 + 1.22) / 2d);
+        timeOfFlightLookupTable.put(1.49, (1.14 + 1.10) / 2d); //m=.11764705882352941176470588235294
+        timeOfFlightLookupTable.put(2.51, (1.26 + 1.22) / 2d); //m = .2
         timeOfFlightLookupTable.put(3.52, (1.4 + 1.48) / 2d);
         //------------------------------------------------------
-        shuttleHoodLookupTable.put(4.586, 5d);
-        shuttleHoodLookupTable.put(5d, 10d);
+        shuttleHoodLookupTable.put(4.586, 10d);
         shuttleHoodLookupTable.put(5d, 15d);
+        shuttleHoodLookupTable.put(5d, 20d);
 
-        shuttleShooterSpeedLookupTable.put(4.586, 30d);
-        shuttleShooterSpeedLookupTable.put(5.586, 40d);
-        shuttleShooterSpeedLookupTable.put(6.586, 50d);
+        shuttleShooterSpeedLookupTable.put(4.586, 40d);
+        shuttleShooterSpeedLookupTable.put(5.586, 50d);
+        shuttleShooterSpeedLookupTable.put(6.586, 60d);
 
         shuttleTimeOfFlightLookupTable.put(4.586, (1.14 + 1.10) / 2d);
         shuttleTimeOfFlightLookupTable.put(5.586, (1.26 + 1.22) / 2d);
@@ -85,8 +85,11 @@ public class ShotCalculator extends SubsystemBase {
                                     RobotContainer.getRequestYVelocity() * Constants.PHASE_DELAY,
                                     RobotContainer.getRequestRotationalVelocity() * Constants.PHASE_DELAY));
 
-            Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed);
-            Pair<Pose2d, Double> turret = createFutureTurretPose(estimatedPose);
+            Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
+                    new ChassisSpeeds(RobotContainer.getRequestXVelocity(), RobotContainer.getRequestYVelocity(),
+                            RobotContainer.getRequestRotationalVelocity()));
+            Pair<Pose2d, Double> turret = createFutureTurretPose(estimatedPose,
+                    ChassisSpeeds.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(), RobotContainer.getPose().getRotation()));
 
             futureTurretPositionPhaseDelayed = turretPhaseDelayed.getFirst();
             futureTurretToTargetDistancePhaseDelayed = turretPhaseDelayed.getSecond();
@@ -104,7 +107,7 @@ public class ShotCalculator extends SubsystemBase {
             if (Double.isNaN(lastHoodAnglePhaseDelayed)) lastHoodAnglePhaseDelayed = hoodAnglePhaseDelayed;
             hoodVelocityPhaseDelayed = (hoodAnglePhaseDelayed - lastHoodAnglePhaseDelayed) / .02;
 
-//            hoodAngle = hoodLookupTable.get(futureTurretToTargetDistance);
+            hoodAngle = hoodLookupTable.get(futureTurretToTargetDistance);
             if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
             hoodVelocity = (hoodAngle - lastHoodAngle) / .02;
 
@@ -182,7 +185,7 @@ public class ShotCalculator extends SubsystemBase {
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
     }
 
-    public Pair<Pose2d, Double> createFutureTurretPose(Pose2d pose2d) {
+    public Pair<Pose2d, Double> createFutureTurretPose(Pose2d pose2d, ChassisSpeeds fieldRelativeVelocity) {
         Pose2d turretPosition = pose2d.transformBy(Constants.ROBOT_TO_TURRET);
 
         // Sets distance values for lookup tables based on ShotMode
@@ -199,8 +202,6 @@ public class ShotCalculator extends SubsystemBase {
         }
 
         //Robot's current velocity
-        ChassisSpeeds fieldRelativeVelocity = ChassisSpeeds.fromRobotRelativeSpeeds(
-                RobotContainer.getSpeeds(), pose2d.getRotation());
         double robotAngleRadians = pose2d.getRotation().getRadians();
 
         //Turret's current velocity imparted from robot
@@ -221,25 +222,25 @@ public class ShotCalculator extends SubsystemBase {
         double lookaheadTurretToTargetDistance = turretToTargetDistance;
 
         //Iterate to converge on a final future position
-//        for (int i = 0; i < 10; i++) {
-//            timeOfFlight = timeOfFlightLookupTable.get(lookaheadTurretToTargetDistance);
-//            double offsetX = turretVelocityX * timeOfFlight;
-//            double offsetY = turretVelocityY * timeOfFlight;
-//            futureTurretPosition =
-//                    new Pose2d(
-//                            turretPosition.getTranslation().plus(new Translation2d(offsetX, offsetY)),
-//                            turretPosition.getRotation());
-//            if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
-//                lookaheadTurretToTargetDistance = Constants.RED_HUB_FRONT_CENTER
-//                        .getDistance(turretPosition.getTranslation());
-//            } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
-//                lookaheadTurretToTargetDistance = Constants.SHUTTLE_LEFT_CORNER
-//                        .getDistance(turretPosition.getTranslation());
-//            } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
-//                lookaheadTurretToTargetDistance = Constants.SHUTTLE_RIGHT_CORNER
-//                        .getDistance(turretPosition.getTranslation());
-//            }
-//        }
+        for (int i = 0; i < 10; i++) {
+            timeOfFlight = timeOfFlightLookupTable.get(lookaheadTurretToTargetDistance);
+            double offsetX = turretVelocityX * timeOfFlight;
+            double offsetY = turretVelocityY * timeOfFlight;
+            futureTurretPosition =
+                    new Pose2d(
+                            turretPosition.getTranslation().plus(new Translation2d(offsetX, offsetY)),
+                            turretPosition.getRotation());
+            if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
+                lookaheadTurretToTargetDistance = Constants.RED_HUB_FRONT_CENTER
+                        .getDistance(futureTurretPosition.getTranslation());
+            } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
+                lookaheadTurretToTargetDistance = Constants.SHUTTLE_LEFT_CORNER
+                        .getDistance(futureTurretPosition.getTranslation());
+            } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
+                lookaheadTurretToTargetDistance = Constants.SHUTTLE_RIGHT_CORNER
+                        .getDistance(futureTurretPosition.getTranslation());
+            }
+        }
 
         return new Pair<>(futureTurretPosition, lookaheadTurretToTargetDistance);
     }
