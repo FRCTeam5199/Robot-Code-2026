@@ -50,8 +50,8 @@ public class ShotCalculator extends SubsystemBase {
         shooterSpeedLookupTable.put(2.501, 35d);
         shooterSpeedLookupTable.put(3.507, 39.5);
 
-        timeOfFlightLookupTable.put(1.49, (1.14 + 1.10) / 2d); //m=.11764705882352941176470588235294
-        timeOfFlightLookupTable.put(2.51, (1.26 + 1.22) / 2d); //m = .2
+        timeOfFlightLookupTable.put(1.49, (1.14 + 1.10) / 2d);
+        timeOfFlightLookupTable.put(2.51, (1.26 + 1.22) / 2d);
         timeOfFlightLookupTable.put(3.52, (1.4 + 1.48) / 2d);
         //------------------------------------------------------
         shuttleHoodLookupTable.put(4.586, 10d);
@@ -135,7 +135,7 @@ public class ShotCalculator extends SubsystemBase {
             while (turretAnglePhaseDelayed <= TurretConstants.MIN) turretAnglePhaseDelayed += 360;
             while (turretAnglePhaseDelayed >= TurretConstants.MAX) turretAnglePhaseDelayed -= 360;
 
-            turretVelocityPhaseDelayed -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d);
+            turretVelocityPhaseDelayed -= (RobotContainer.getRequestRotationalVelocity() / Math.PI * 180d);
 
             //Turret Angle Calculations
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {

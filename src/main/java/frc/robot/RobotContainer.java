@@ -183,7 +183,7 @@ public class RobotContainer {
 
         requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
         requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
-        requestRotationalVelocity = commandXboxController.getRightX() * Constants.MAX_SPEED;
+        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
 
         // Logging
         logger.telemeterize(currentState);

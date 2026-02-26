@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.*;
 import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
@@ -33,6 +34,7 @@ public class TurretSubsystem extends TemplateSubsystem {
     private DoublePublisher goalVelocityLogging;
     private DoublePublisher currentVelocityLogging;
     private DoublePublisher turretToTargetDistance;
+    private DoublePublisher lateralDistance;
     private DoublePublisher velocity;
     private DoublePublisher acceleration;
     private BooleanPublisher isMechAtGoal;
@@ -76,6 +78,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
         currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
         turretToTargetDistance = networkTable.getDoubleTopic("Distance").publish();
+        lateralDistance = networkTable.getDoubleTopic("lateralDistance").publish();
         isMechAtGoal = turretNetworkTable.getBooleanTopic("Is Mech At Goal").publish();
         turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
         futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
@@ -102,6 +105,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         currentVelocityLogging.set(getMotorVelocity());
 
         turretToTargetDistance.set(shotCalculator.getTurretToTargetDistance());
+        lateralDistance.set(getLateralDistance());
         futureTurretPose.set(shotCalculator.getFutureTurretPositionPhaseDelayed());
 
         velocity.set(RobotContainer.velocity);
@@ -144,8 +148,7 @@ public class TurretSubsystem extends TemplateSubsystem {
     }
 
     public boolean isMechAtGoal() {
-        return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
-                && getDegrees() <= shotCalculator.getTurretAngle() + TurretConstants.UPPER_TOLERANCE;
+        return getLateralDistance() < .3;
     }
 
     public void setStopMoving(boolean stopMoving) {
@@ -154,5 +157,17 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     public void setContinuousMotion(boolean continuousMotion) {
         this.continuousMotion = continuousMotion;
+    }
+
+    public double getLateralDistance() {
+        double degrees = getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
+        double slope = Math.tan(Math.toRadians(degrees));
+        Pose2d futureTurretPose = shotCalculator.getFutureTurretPosition();
+
+        double deltaX = Constants.RED_HUB_CENTER.getX() - futureTurretPose.getX();
+        double deltaY = slope * deltaX;
+        double projectedY = futureTurretPose.getY() + deltaY;
+
+        return Math.abs(Constants.RED_HUB_CENTER.getY() - projectedY);
     }
 }
