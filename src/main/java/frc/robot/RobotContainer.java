@@ -15,11 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Velocity;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
@@ -117,7 +113,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBalls().alongWith(
-                new ParallelCommandGroup(turretControlAuto)); //kickerauto, shooterauto, hoodauto
+                new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto)); //kickerauto, shooterauto, hoodauto
         leftTriggerReleased = RobotCommands.idleState();
 
 
@@ -271,11 +267,11 @@ public class RobotContainer {
 //        commandXboxController.b().onTrue(setOutpostSetpoint);
 //        commandXboxController.a().onTrue(setTowerSetpoint);
 
-        commandXboxController.a().onTrue(new ParallelCommandGroup(new VelocityCommand(shooterSubsystem, 35), new VelocityCommand(kickerSubsystem, 17.5)))
-                .onFalse(new ParallelCommandGroup(new VelocityCommand(shooterSubsystem, 0), new VelocityCommand(kickerSubsystem, 0)));
+//       c
+        commandXboxController.a().onTrue(new HoodCommand(hoodSubsystem, 18.749999999988)).onFalse(new HoodCommand(hoodSubsystem, 0));
 
-        commandXboxController.b().onTrue(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
-                .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
+                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
         commandXboxController.povLeft().onTrue(RobotCommands.zeroTurret());
 

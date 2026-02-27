@@ -42,12 +42,26 @@ public class ShotCalculator extends SubsystemBase {
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
         //key - distance to front center hub
-        hoodLookupTable.put(1d, 0d);
+        hoodLookupTable.put(0.995, 0d);
+        hoodLookupTable.put(2.01, 0d);
+        hoodLookupTable.put(3.045, 0d);
+        hoodLookupTable.put(4d, 9.9999999999936);
+        hoodLookupTable.put(5d, 9.9999999999936);
+        hoodLookupTable.put(5.9944, 18.749999999988);
 
-        shooterSpeedLookupTable.put(1d, 32d);
+        shooterSpeedLookupTable.put(0.995, 28d);
+        shooterSpeedLookupTable.put(2d, 33d);
+        shooterSpeedLookupTable.put(3.045, 33d);
+        shooterSpeedLookupTable.put(4d, 35d);
+        shooterSpeedLookupTable.put(5d, 40d);
+        shooterSpeedLookupTable.put(5.9944, 44d);
 
-        timeOfFlightLookupTable.put(1d, (1.14 + 1.10) / 2d);
-
+        timeOfFlightLookupTable.put(0.995, 0.81); //
+        timeOfFlightLookupTable.put(2d, 1.08);
+        timeOfFlightLookupTable.put(3.045, 1.27);
+        timeOfFlightLookupTable.put(4d, 1.09);
+        timeOfFlightLookupTable.put(5d, 1.4);
+        timeOfFlightLookupTable.put(5.9944, 1.4);
         //------------------------------------------------------
         shuttleHoodLookupTable.put(4.586, 10d);
         shuttleHoodLookupTable.put(5d, 15d);

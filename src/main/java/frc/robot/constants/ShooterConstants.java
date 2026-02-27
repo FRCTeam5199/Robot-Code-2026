@@ -17,9 +17,9 @@ public class ShooterConstants {
             .withKP(.5)
             .withKI(0)
             .withKD(0.001)
-            .withKS(.25)
+            .withKS(0.33)
             .withKG(0)
-            .withKV(.1242236025)
+            .withKV(.12048192771084337349397590361446)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 

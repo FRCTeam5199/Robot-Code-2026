@@ -11,7 +11,7 @@ public class HopperConstants {
     public static final boolean BRAKE = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0.2)
+            .withKP(0.3) //0.2
             .withKI(0)
             .withKD(0)
             .withKS(0.23)
