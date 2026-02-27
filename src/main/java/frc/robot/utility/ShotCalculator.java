@@ -42,17 +42,12 @@ public class ShotCalculator extends SubsystemBase {
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
         //key - distance to front center hub
-        hoodLookupTable.put(1.499, 0d);
-        hoodLookupTable.put(2.501, 0d);
-        hoodLookupTable.put(3.507, 0d);
+        hoodLookupTable.put(1d, 0d);
 
-        shooterSpeedLookupTable.put(1.499, 32d);
-        shooterSpeedLookupTable.put(2.501, 35d);
-        shooterSpeedLookupTable.put(3.507, 39.5);
+        shooterSpeedLookupTable.put(1d, 32d);
 
-        timeOfFlightLookupTable.put(1.49, (1.14 + 1.10) / 2d);
-        timeOfFlightLookupTable.put(2.51, (1.26 + 1.22) / 2d);
-        timeOfFlightLookupTable.put(3.52, (1.4 + 1.48) / 2d);
+        timeOfFlightLookupTable.put(1d, (1.14 + 1.10) / 2d);
+
         //------------------------------------------------------
         shuttleHoodLookupTable.put(4.586, 10d);
         shuttleHoodLookupTable.put(5d, 15d);
@@ -183,7 +178,10 @@ public class ShotCalculator extends SubsystemBase {
                 shotCalculator.getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
+        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),
+                shotCalculator.getHoodVelocityPhaseDelayed());
     }
+
 
     public Pair<Pose2d, Double> createFutureTurretPose(Pose2d pose2d, ChassisSpeeds fieldRelativeVelocity) {
         Pose2d turretPosition = pose2d.transformBy(Constants.ROBOT_TO_TURRET);

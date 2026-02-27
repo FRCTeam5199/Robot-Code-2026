@@ -62,8 +62,6 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         configureRoller(TurretConstants.MIN, TurretConstants.MAX);
 
-        configureCustomFF();
-
         profile = new TrapezoidProfile(new TrapezoidProfile
                 .Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
         currentState = new TrapezoidProfile.State(0, 0);
@@ -97,9 +95,9 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        goalPositionLogging.set(shotCalculator.getTurretAngle());
-        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
-        currentPositionLogging.set(getDegrees());
+        goalPositionLogging.set(shotCalculator.getHoodAngle());
+        goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());
+        currentPositionLogging.set(HoodSubsystem.getInstance().getDegrees());
 
         goalVelocityLogging.set(goalVelocityRotPerSec);
         currentVelocityLogging.set(getMotorVelocity());

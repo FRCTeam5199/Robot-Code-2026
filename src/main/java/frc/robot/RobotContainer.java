@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -128,8 +129,9 @@ public class RobotContainer {
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBalls().alongWith(
-                new ParallelCommandGroup(shooterAuto, kickerAuto, turretControlAuto));
+                new ParallelCommandGroup(turretControlAuto)); //kickerauto, shooterauto, hoodauto
         leftTriggerReleased = RobotCommands.idleState();
+
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
@@ -170,16 +172,16 @@ public class RobotContainer {
         // Sets Enums, default is Shooting
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
         shotMode = ShotMode.SHOOTING;
-        for (Translation2d robotCorner : robotCorners) {
-            if (Constants.TRENCH.getX() - robotCorner.getX() > .05) {
-                if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-                    shotMode = ShotMode.SHUTTLING_RIGHT;
-                } else {
-                    shotMode = ShotMode.SHUTTLING_LEFT;
-                }
-                break;
-            }
-        }
+//        for (Translation2d robotCorner : robotCorners) {
+//            if (Constants.TRENCH.getX() - robotCorner.getX() > .05) {
+//                if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
+//                    shotMode = ShotMode.SHUTTLING_RIGHT;
+//                } else {
+//                    shotMode = ShotMode.SHUTTLING_LEFT;
+//                }
+//                break;
+//            }
+//        }
 
         requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
         requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
@@ -205,6 +207,7 @@ public class RobotContainer {
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
                 .onFalse(intakeRollerStop);
+
 //        commandXboxController.rightTrigger()
 //                .onTrue(new ParallelCommandGroup(intakeDeploy, intakeRollerIntake))
 //                .onFalse(new ParallelCommandGroup(intakeStow, intakeRollerStop));
@@ -219,15 +222,15 @@ public class RobotContainer {
 
         commandXboxController.y().onTrue(setHubSetpoint);
         commandXboxController.x().onTrue(setLeftCornerSetpoint);
-        commandXboxController.b().onTrue(setOutpostSetpoint);
-        commandXboxController.a().onTrue(setTowerSetpoint);
+//        commandXboxController.b().onTrue(setOutpostSetpoint);
+//        commandXboxController.a().onTrue(setTowerSetpoint);
 
-        // commandXboxController.a().onTrue(
-        //         new SequentialCommandGroup(
-        //                 new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY),
-        //                 new PositionCommand(intakePivotSubsystem, 80)
-        //         ).repeatedly()
-        // );
+        commandXboxController.a().onTrue(new ParallelCommandGroup(new VelocityCommand(shooterSubsystem, 35), new VelocityCommand(kickerSubsystem, 17.5)))
+                .onFalse(new ParallelCommandGroup(new VelocityCommand(shooterSubsystem, 0), new VelocityCommand(kickerSubsystem, 0)));
+
+        commandXboxController.b().onTrue(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
+                .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+
         commandXboxController.povLeft().onTrue(RobotCommands.zeroTurret());
 
     }

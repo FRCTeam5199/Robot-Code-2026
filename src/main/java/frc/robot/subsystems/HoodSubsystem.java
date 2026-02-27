@@ -41,8 +41,6 @@ public class HoodSubsystem extends TemplateSubsystem {
         configurePivot(HoodConstants.MIN,
                 HoodConstants.MAX);
 
-        configureCustomFF();
-
         profile = new TrapezoidProfile(new TrapezoidProfile
                 .Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
         currentState = new TrapezoidProfile.State(0, 0);
@@ -60,7 +58,7 @@ public class HoodSubsystem extends TemplateSubsystem {
         super.periodic();
 //        System.out.println("Hood Degrees: " + getDegrees());
 //        System.out.println(getGoal());
-//        System.out.println("Hood is at goal: " + isMechAtGoal(false));
+        System.out.println("Hood is at goal: " + isMechAtGoal(true));
 //        System.out.println(getGearRatio());
 
         //Motor Rotations = degrees / 360 / .00694444444444
@@ -86,7 +84,7 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void followLastProfile() {
         currentState = profile.calculate(0.02, currentState, goalState);
-        setPositionVoltage(goalState.position, getFeedForward(goalState.position, goalState.velocity));
+        setPositionVoltage(goalState.position, goalState.velocity);
     }
 
     public boolean isMechAtGoal() {

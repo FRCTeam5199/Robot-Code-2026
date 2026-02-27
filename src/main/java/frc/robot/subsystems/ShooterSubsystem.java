@@ -47,5 +47,6 @@ public class ShooterSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
         isMechAtGoal.set(isMechAtGoal(true));
+        System.out.println("Shooter:" + isMechAtGoal(true));
     }
 }

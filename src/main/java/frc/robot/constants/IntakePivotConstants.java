@@ -13,16 +13,16 @@ public class IntakePivotConstants {
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 92;
-    public static final double STOW = 2;
+    public static final double DEPLOY = 100;
+    public static final double STOW = 5;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(10)
+            .withKP(20)
             .withKI(0)
             .withKD(0)
-            .withKS(.19)
-            .withKG(0)
-            .withKV(1.59)
+            .withKS(0.25)
+            .withKG(0.25)
+            .withKV(.15384615384615384615384615384615)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
             .withGravityType(GravityTypeValue.Arm_Cosine)
@@ -35,11 +35,11 @@ public class IntakePivotConstants {
     public static final double LOWER_TOLERANCE = 4;
     public static final double UPPER_TOLERANCE = 4;
 
-    public static final double MAGNET_OFFSET = -.6611328125;
+    public static final double MAGNET_OFFSET = -.968017578125;
     public static final boolean ENCODER_DIRECTION = false;
 
     public static final double MIN = 0;
-    public static final double MAX = 94;
+    public static final double MAX = 105;
 
     public static final double GEAR_RATIO = 20d;
     public static final double[][] GEAR_RATIOA = {{20, 1}};

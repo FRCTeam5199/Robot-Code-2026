@@ -16,7 +16,7 @@ public class HoodConstants {
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(10)
             .withKI(0)
-            .withKD(0)
+            .withKD(0.25)
             .withKS(0.26)
             .withKG(0)
             .withKV(.09025270758122743682310469314079)
@@ -29,10 +29,10 @@ public class HoodConstants {
     public static final double ACCELERATION = 800;
     public static final double JERK = 8000;
 
-    public static final double LOWER_TOLERANCE = 2;
-    public static final double UPPER_TOLERANCE = 2;
+    public static final double LOWER_TOLERANCE = 4;
+    public static final double UPPER_TOLERANCE = 4;
 
-    public static final double MAGNET_OFFSET = 0.052978515625;
+    public static final double MAGNET_OFFSET = -0.137451171875;
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;

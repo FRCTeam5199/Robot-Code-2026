@@ -53,8 +53,6 @@ public class TemplateSubsystem extends SubsystemBase {
     private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
     private PositionVoltage positionVoltage;
     private VelocityVoltage velocityVoltage;
-    private SimpleMotorFeedforward simpleMotorFeedforward;
-    private ArmFeedforward armFeedforward;
     private Slot0Configs slot0Configs;
     private double velocity;
     private double acceleration;
@@ -249,23 +247,6 @@ public class TemplateSubsystem extends SubsystemBase {
         this.motorToSensorRatio = motorToSensorRatio;
 
         motor.setPosition(sometimesEncoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
-    }
-
-    public void configureCustomFF() {
-        if (type == Type.PIVOT) armFeedforward = new ArmFeedforward(slot0Configs.kS,
-                slot0Configs.kG, slot0Configs.kV / (2d * Math.PI));
-        else if (type == Type.ROLLER)
-            simpleMotorFeedforward = new SimpleMotorFeedforward(slot0Configs.kS,
-                    slot0Configs.kV, slot0Configs.kA);
-    }
-
-    public double getFeedForward(double velocityRot) {
-        return simpleMotorFeedforward.calculate(velocityRot);
-    }
-
-    public double getFeedForward(double currentRot, double velocityRot) {
-        return armFeedforward.calculate(getDegreesFromMotorRot(currentRot)
-                * Math.PI / 180d, velocityRot);
     }
 
     public void setPercent(double percent) {

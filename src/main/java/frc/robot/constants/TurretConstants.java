@@ -16,11 +16,11 @@ public class TurretConstants {
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(10)
             .withKI(0)
-            .withKD(.9)
+            .withKD(0.1)
             .withKS(.47)
             .withKG(0)
             .withKV(.09451795841209829867674858223062)
-            .withKA(0.001)
+            .withKA(0.0005)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double VELOCITY = 100;

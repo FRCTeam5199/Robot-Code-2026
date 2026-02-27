@@ -246,10 +246,8 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        // CommandScheduler.getInstance().schedule(new InstantCommand(() -> hoodSubsystem.getMotor().setPosition(0)));
-        CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED));
-        CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED));
-        // CommandScheduler.getInstance().schedule(new VelocityCommand(intakerollersubsystem, 90));
+        CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)); //IndexerConstants.IDLING_SPEED
+        CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED));   //HopperConstants.IDLING_SPEED
 
     }
 

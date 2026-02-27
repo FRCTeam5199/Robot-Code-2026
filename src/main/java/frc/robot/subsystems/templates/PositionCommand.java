@@ -52,15 +52,11 @@ public class PositionCommand extends Command {
     @Override
     public void initialize() {
         if (changeConstraints) {
-            if (useCustomFF) templateSubsystem.setPosition(goal,
-                    templateSubsystem.getFeedForward(goalVelocity));
-            else templateSubsystem.setPosition(goal);
+            templateSubsystem.setPosition(goal);
             templateSubsystem.setConstraints(velocity, acceleration, jerk);
             changeConstraints = false;
         } else {
-            if (useCustomFF) templateSubsystem.setPosition(goal,
-                    templateSubsystem.getFeedForward(goalVelocity));
-            else templateSubsystem.setPosition(goal);
+            templateSubsystem.setPosition(goal);
         }
         templateSubsystem.setCommandRunning(true);
     }
@@ -68,9 +64,7 @@ public class PositionCommand extends Command {
     @Override
     public void execute() {
         if (updateGoalPosition) {
-            if (useCustomFF) templateSubsystem.setPosition(goal,
-                    templateSubsystem.getFeedForward(goalVelocity));
-            else templateSubsystem.setPosition(goal);
+            templateSubsystem.setPosition(goal);
             updateGoalPosition = false;
         }
         if (changeConstraints) {
