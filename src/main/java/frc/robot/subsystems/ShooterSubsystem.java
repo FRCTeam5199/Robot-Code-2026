@@ -4,16 +4,21 @@ import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
+import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.Type;
 
 public class ShooterSubsystem extends TemplateSubsystem {
     private static ShooterSubsystem shooterSubsystem;
     private static BooleanPublisher isMechAtGoal;
+    private static DoublePublisher goalSpeed;
+    private static DoublePublisher currentSpeed;
     private static NetworkTable shooterNetworkTable;
+    private static ShotCalculator shotCalculator = ShotCalculator.getInstance();
 
     private ShooterSubsystem() {
         super(Type.ROLLER, ShooterConstants.MOTOR_ID,
@@ -34,6 +39,8 @@ public class ShooterSubsystem extends TemplateSubsystem {
 
         shooterNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Shooter/");
         isMechAtGoal = shooterNetworkTable.getBooleanTopic("Is Mech At Goal").publish();
+        goalSpeed = shooterNetworkTable.getDoubleTopic("Goal Speed").publish();
+        currentSpeed = shooterNetworkTable.getDoubleTopic("Current Speed").publish();
     }
 
     public static ShooterSubsystem getInstance() {
@@ -46,7 +53,13 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        isMechAtGoal.set(isMechAtGoal(true));
-        System.out.println("Shooter:" + isMechAtGoal(true));
+        isMechAtGoal.set(isMechAtGoalAuto());
+        goalSpeed.set(shotCalculator.getShooterSpeed());
+        currentSpeed.set(getMotorVelocity());
+    }
+
+    public boolean isMechAtGoalAuto() {
+        return getMotorVelocity() >= shotCalculator.getShooterSpeed() - ShooterConstants.LOWER_TOLERANCE
+                && getMotorVelocity() <= shotCalculator.getShooterSpeed() + ShooterConstants.UPPER_TOLERANCE;
     }
 }

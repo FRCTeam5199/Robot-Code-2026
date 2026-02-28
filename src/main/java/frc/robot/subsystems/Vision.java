@@ -74,8 +74,8 @@ public class Vision extends SubsystemBase {
                 //Only adds pose when it is less than 1m different from our current location
                 //or when we're at the origin (haven't gotten vision data yet)
                 if (RobotContainer.getPose().getTranslation()
-                        .getDistance(limelightLeftData.pose.getTranslation()) < 2d
-                        || originTimer.get() < 5) {
+                        .getDistance(limelightLeftData.pose.getTranslation()) < 3d
+                        || originTimer.get() < 7) {
 
                     commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
                             limelightLeftData.timestampSeconds, VecBuilder
@@ -106,8 +106,8 @@ public class Vision extends SubsystemBase {
                 //Only adds pose when it is less than 1m different from our current location
                 //or when we're at the origin (haven't gotten vision data yet)
                 if (RobotContainer.getPose().getTranslation()
-                        .getDistance(limelightRightData.pose.getTranslation()) < 2d
-                        || originTimer.get() < 5) {
+                        .getDistance(limelightRightData.pose.getTranslation()) < 3d
+                        || originTimer.get() < 7) {
 
                     commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
                             limelightRightData.timestampSeconds, VecBuilder

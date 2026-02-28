@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TurretConstants;
+import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class ShotCalculator extends SubsystemBase {
@@ -50,13 +51,13 @@ public class ShotCalculator extends SubsystemBase {
         hoodLookupTable.put(5.9944, 18.749999999988);
 
         shooterSpeedLookupTable.put(0.995, 28d);
-        shooterSpeedLookupTable.put(2d, 33d);
-        shooterSpeedLookupTable.put(3.045, 33d);
+        shooterSpeedLookupTable.put(2d, 32d);
+        shooterSpeedLookupTable.put(3.045, 34d);
         shooterSpeedLookupTable.put(4d, 35d);
         shooterSpeedLookupTable.put(5d, 40d);
         shooterSpeedLookupTable.put(5.9944, 44d);
 
-        timeOfFlightLookupTable.put(0.995, 0.81); //
+        timeOfFlightLookupTable.put(0.995, 0.81);
         timeOfFlightLookupTable.put(2d, 1.08);
         timeOfFlightLookupTable.put(3.045, 1.27);
         timeOfFlightLookupTable.put(4d, 1.09);
@@ -67,9 +68,9 @@ public class ShotCalculator extends SubsystemBase {
         shuttleHoodLookupTable.put(5d, 15d);
         shuttleHoodLookupTable.put(5d, 20d);
 
-        shuttleShooterSpeedLookupTable.put(4.586, 40d);
-        shuttleShooterSpeedLookupTable.put(5.586, 50d);
-        shuttleShooterSpeedLookupTable.put(6.586, 60d);
+        shuttleShooterSpeedLookupTable.put(4.586, 30d);
+        shuttleShooterSpeedLookupTable.put(5.586, 354d);
+        shuttleShooterSpeedLookupTable.put(6.586, 40d);
 
         shuttleTimeOfFlightLookupTable.put(4.586, (1.14 + 1.10) / 2d);
         shuttleTimeOfFlightLookupTable.put(5.586, (1.26 + 1.22) / 2d);
@@ -114,9 +115,8 @@ public class ShotCalculator extends SubsystemBase {
                 hoodAngle = shuttleHoodLookupTable.get(futureTurretToTargetDistance);
             }
             if (Double.isNaN(lastHoodAnglePhaseDelayed)) lastHoodAnglePhaseDelayed = hoodAnglePhaseDelayed;
-            hoodVelocityPhaseDelayed = (hoodAnglePhaseDelayed - lastHoodAnglePhaseDelayed) / .02;
+            hoodVelocityPhaseDelayed = (hoodAnglePhaseDelayed - HoodSubsystem.getInstance().getDegrees()) / .02;
 
-            hoodAngle = hoodLookupTable.get(futureTurretToTargetDistance);
             if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
             hoodVelocity = (hoodAngle - lastHoodAngle) / .02;
 
@@ -132,12 +132,20 @@ public class ShotCalculator extends SubsystemBase {
                         .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
             }
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
+
+            double degrees = TurretSubsystem.getInstance().getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
+            while (degrees >= 180d) degrees -= 360d;
+            while (degrees <= -180d) degrees += 360d;
+
+            System.out.println("Calculated radians: " + Math.toRadians(degrees));
+            System.out.println("Wrong radians: " + lastTurretRotationPhaseDelayed.getRadians());
+
             turretVelocityPhaseDelayed = turretRotationPhaseDelayed
-                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02;
+                    .minus(new Rotation2d(Math.toRadians(degrees))).getDegrees() / .02; //change to current position
 
             // Sets turret angle and then adjusts it based on robot's rotation in relation to target
             turretAnglePhaseDelayed = turretRotationPhaseDelayed.getDegrees();
-            turretAnglePhaseDelayed -= RobotContainer.getPose().getRotation().getDegrees();
+            turretAnglePhaseDelayed -= futureTurretPositionPhaseDelayed.getRotation().getDegrees();
 
 
             //Wraps to within bounds
@@ -165,7 +173,6 @@ public class ShotCalculator extends SubsystemBase {
             turretAngle = turretRotation.getDegrees();
             turretAngle -= RobotContainer.getPose().getRotation().getDegrees();
 
-
             //Wraps to within bounds
             while (turretAngle <= TurretConstants.MIN) turretAngle += 360;
             while (turretAngle >= TurretConstants.MAX) turretAngle -= 360;
@@ -192,8 +199,8 @@ public class ShotCalculator extends SubsystemBase {
                 shotCalculator.getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
-        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),
-                shotCalculator.getHoodVelocityPhaseDelayed());
+        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAngle(),
+                0);
     }
 
 

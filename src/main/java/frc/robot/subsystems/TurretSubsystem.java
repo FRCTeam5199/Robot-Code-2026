@@ -5,9 +5,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.*;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.HoodConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
+import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
 
 public class TurretSubsystem extends TemplateSubsystem {
@@ -95,9 +97,9 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        goalPositionLogging.set(shotCalculator.getHoodAngle());
-        goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());
-        currentPositionLogging.set(HoodSubsystem.getInstance().getDegrees());
+        goalPositionLogging.set(shotCalculator.getTurretAngle());
+        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+        currentPositionLogging.set(getDegrees());
 
         goalVelocityLogging.set(goalVelocityRotPerSec);
         currentVelocityLogging.set(getMotorVelocity());
@@ -145,8 +147,17 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     }
 
-    public boolean isMechAtGoal() {
+    public boolean isMechAtGoalAuto() {
+        if (RobotContainer.getShotMode() != ShotMode.SHOOTING) {
+            return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
+                    && getDegrees() <= shotCalculator.getTurretAngle() + TurretConstants.UPPER_TOLERANCE;
+        }
         return getLateralDistance() < .3;
+    }
+
+    public boolean isMechAtGoal() {
+        return getMotorRot() >= goalRotations - getMotorRotFromDegrees(TurretConstants.LOWER_TOLERANCE)
+                && getMotorRot() <= goalRotations + getMotorRotFromDegrees(TurretConstants.UPPER_TOLERANCE);
     }
 
     public void setStopMoving(boolean stopMoving) {

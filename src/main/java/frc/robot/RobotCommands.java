@@ -4,12 +4,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.HopperConstants;
 import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.templates.HoodCommand;
 import frc.robot.subsystems.templates.PositionCommand;
-import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
-
-import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 
 public class RobotCommands {
     private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
@@ -21,6 +17,39 @@ public class RobotCommands {
     private static boolean isIdling = false;
 
     // Runs Hopper and Indexer the way for shooting
+    public static Command indexBallsAuto() {
+        return new FunctionalCommand(
+                () -> {
+                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling) {
+                        isIdling = false;
+                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
+                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling) {
+                        isIdling = true;
+                        indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
+                        hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
+                    }
+                },
+                () -> {
+                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling) {
+                        isIdling = false;
+                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
+                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling) {
+                        isIdling = true;
+                        indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
+                        hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
+                    }
+                },
+                (interrupted) -> {
+                    indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
+                    hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
+                },
+                () -> false,
+                indexerSubsystem, hopperSubsystem
+        );
+    }
+
     public static Command indexBalls() {
         return new FunctionalCommand(
                 () -> {
@@ -77,12 +106,21 @@ public class RobotCommands {
         );
     }
 
+    public static Command moveHoodToZero() {
+        return new SequentialCommandGroup(
+//                new InstantCommand(() -> hoodSubsystem.setStopMoving(true)),
+//                new PositionCommand(hoodSubsystem, 0),
+//                new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
+                new InstantCommand(() -> hoodSubsystem.setPositionProfiling(0, 0))
+        );
+    }
+
     public static Command idleState() {
         return new ParallelCommandGroup(
                 zeroTurret(),
+                moveHoodToZero(),
                 new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED),
                 new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
-                new HoodCommand(hoodSubsystem, 0),
                 new VelocityCommand(shooterSubsystem, 0),
                 new VelocityCommand(kickerSubsystem, 0)
         );

@@ -6,7 +6,6 @@ package frc.robot;
 
 
 import java.util.Map;
-import java.util.Set;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -14,7 +13,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.*;
@@ -62,7 +60,7 @@ public class RobotContainer {
     //Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
     //        private static PositionCommand hoodControlAuto = new PositionCommand(hoodSubsystem, 0, true, false, 0);
-    private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
+//    private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
     private static final HoodCommand hoodHub = new HoodCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle());
     private static final HoodCommand hoodTower = new HoodCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle());
     private static final HoodCommand hoodLeftCorner = new HoodCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle());
@@ -112,7 +110,7 @@ public class RobotContainer {
     private static Translation2d[] robotCorners = new Translation2d[4];
 
     public RobotContainer() {
-        leftTriggerPressed = RobotCommands.indexBalls().alongWith(
+        leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto)); //kickerauto, shooterauto, hoodauto
         leftTriggerReleased = RobotCommands.idleState();
 
@@ -156,16 +154,16 @@ public class RobotContainer {
         // Sets Enums, default is Shooting
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
         shotMode = ShotMode.SHOOTING;
-//        for (Translation2d robotCorner : robotCorners) {
-//            if (Constants.TRENCH.getX() - robotCorner.getX() > .05) {
-//                if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-//                    shotMode = ShotMode.SHUTTLING_RIGHT;
-//                } else {
-//                    shotMode = ShotMode.SHUTTLING_LEFT;
-//                }
-//                break;
-//            }
-//        }
+        for (Translation2d robotCorner : robotCorners) {
+            if (Constants.TRENCH.getX() - robotCorner.getX() > .05) {
+                if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
+                    shotMode = ShotMode.SHUTTLING_RIGHT;
+                } else {
+                    shotMode = ShotMode.SHUTTLING_LEFT;
+                }
+                break;
+            }
+        }
 
         requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
         requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
@@ -173,6 +171,12 @@ public class RobotContainer {
 
         // Logging
         logger.telemeterize(currentState);
+    }
+
+    public static boolean areMechanismsAtGoalsAuto() {
+        return turretSubsystem.isMechAtGoalAuto() && hoodSubsystem.isMechAtGoalAuto()
+                && shooterSubsystem.isMechAtGoalAuto()
+                && kickerSubsystem.isMechAtGoalAuto();
     }
 
     public static boolean areMechanismsAtGoals() {
@@ -239,6 +243,7 @@ public class RobotContainer {
                         .withVelocityY(-commandXboxController.getLeftX() * Constants.MAX_SPEED) // Drive left with negative X (left)
                         .withRotationalRate(-commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE) // Drive counterclockwise with negative X (left)
                 ));
+
         // Field Centric
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
@@ -264,14 +269,13 @@ public class RobotContainer {
 
         commandXboxController.y().onTrue(setHubSetpoint);
         commandXboxController.x().onTrue(setLeftCornerSetpoint);
-//        commandXboxController.b().onTrue(setOutpostSetpoint);
-//        commandXboxController.a().onTrue(setTowerSetpoint);
+        commandXboxController.b().onTrue(setOutpostSetpoint);
+        commandXboxController.a().onTrue(setTowerSetpoint);
 
-//       c
-        commandXboxController.a().onTrue(new HoodCommand(hoodSubsystem, 18.749999999988)).onFalse(new HoodCommand(hoodSubsystem, 0));
-
-        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
-                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+//        commandXboxController.a().onTrue(new HoodCommand(hoodSubsystem, 18.749999999988)).onFalse(new HoodCommand(hoodSubsystem, 0));
+//
+//        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
+//                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
         commandXboxController.povLeft().onTrue(RobotCommands.zeroTurret());
 

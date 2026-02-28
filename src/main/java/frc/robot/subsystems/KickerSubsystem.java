@@ -6,11 +6,14 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.fasterxml.jackson.databind.EnumNamingStrategies.KebabCaseStrategy;
 
 import frc.robot.constants.KickerConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
+import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.Type;
 
 public class KickerSubsystem extends TemplateSubsystem {
     private static KickerSubsystem kickerSubsystem;
+    private static ShotCalculator shotCalculator = ShotCalculator.getInstance();
 
     private KickerSubsystem() {
         super(Type.ROLLER, KickerConstants.UPPER_MOTOR_ID,
@@ -42,7 +45,8 @@ public class KickerSubsystem extends TemplateSubsystem {
 
     }
 
-    public double getKickerLowerSpeedFromUpperSpeed(double upperKickerSpeed) {
-        return upperKickerSpeed * KickerConstants.SCALE_FACTOR;
+    public boolean isMechAtGoalAuto() {
+        return getMotorVelocity() >= shotCalculator.getKickerSpeed() - KickerConstants.LOWER_TOLERANCE
+                && getMotorVelocity() <= shotCalculator.getKickerSpeed() + KickerConstants.UPPER_TOLERANCE;
     }
 }

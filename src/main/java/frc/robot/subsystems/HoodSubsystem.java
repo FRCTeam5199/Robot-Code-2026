@@ -1,9 +1,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.constants.HoodConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
+import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.Type;
 
 public class HoodSubsystem extends TemplateSubsystem {
@@ -18,6 +22,11 @@ public class HoodSubsystem extends TemplateSubsystem {
     private boolean continuousMotion = false;
 
     private boolean stopMoving = false;
+
+    private NetworkTable hoodTable;
+    private DoublePublisher goalPosition;
+    private DoublePublisher goalPositionPhaseDelay;
+    private DoublePublisher currentPosition;
 
     private HoodSubsystem() {
         super(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
@@ -45,6 +54,11 @@ public class HoodSubsystem extends TemplateSubsystem {
                 .Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
         currentState = new TrapezoidProfile.State(0, 0);
         goalState = new TrapezoidProfile.State(0, 0);
+
+        hoodTable = NetworkTableInstance.getDefault().getTable("Hood/");
+        goalPosition = hoodTable.getDoubleTopic("Goal Position").publish();
+        goalPositionPhaseDelay = hoodTable.getDoubleTopic("Goal Position Phase Delay").publish();
+        currentPosition = hoodTable.getDoubleTopic("Current Position").publish();
     }
 
     public static HoodSubsystem getInstance() {
@@ -56,10 +70,14 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-        System.out.println("Hood Degrees: " + getDegrees());
-        System.out.println(getGoal());
+//        System.out.println("Hood Degrees: " + getDegrees());
+//        System.out.println(getGoal());
 //        System.out.println("Hood is at goal: " + isMechAtGoal(true));
 //        System.out.println(getGearRatio());
+
+        goalPosition.set(ShotCalculator.getInstance().getHoodAngle());
+        goalPositionPhaseDelay.set(ShotCalculator.getInstance().getHoodAnglePhaseDelayed());
+        currentPosition.set(getDegrees());
 
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444
@@ -84,7 +102,12 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void followLastProfile() {
         currentState = profile.calculate(0.02, currentState, goalState);
-        setPositionVoltage(goalState.position, goalState.velocity);
+        setPositionVoltage(goalState.position);
+    }
+
+    public boolean isMechAtGoalAuto() {
+        return getDegrees() >= ShotCalculator.getInstance().getHoodAngle() - HoodConstants.LOWER_TOLERANCE
+                && getDegrees() <= ShotCalculator.getInstance().getHoodAngle() + HoodConstants.UPPER_TOLERANCE;
     }
 
     public boolean isMechAtGoal() {
