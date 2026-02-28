@@ -64,17 +64,17 @@ public class ShotCalculator extends SubsystemBase {
         timeOfFlightLookupTable.put(5d, 1.4);
         timeOfFlightLookupTable.put(5.9944, 1.4);
         //------------------------------------------------------
-        shuttleHoodLookupTable.put(4.586, 10d);
-        shuttleHoodLookupTable.put(5d, 15d);
-        shuttleHoodLookupTable.put(5d, 20d);
+        shuttleHoodLookupTable.put(5.5, 10d);
+        shuttleHoodLookupTable.put(7d, 12d);
+        shuttleHoodLookupTable.put(8.5d, 14d);
 
-        shuttleShooterSpeedLookupTable.put(4.586, 30d);
-        shuttleShooterSpeedLookupTable.put(5.586, 354d);
-        shuttleShooterSpeedLookupTable.put(6.586, 40d);
+        shuttleShooterSpeedLookupTable.put(5.5, 30d);
+        shuttleShooterSpeedLookupTable.put(7d, 37d);
+        shuttleShooterSpeedLookupTable.put(8.5d, 39d);
 
-        shuttleTimeOfFlightLookupTable.put(4.586, (1.14 + 1.10) / 2d);
-        shuttleTimeOfFlightLookupTable.put(5.586, (1.26 + 1.22) / 2d);
-        shuttleTimeOfFlightLookupTable.put(6.586, (1.4 + 1.48) / 2d);
+        shuttleTimeOfFlightLookupTable.put(5.5, (1.14 + 1.10) / 2d);
+        shuttleTimeOfFlightLookupTable.put(7d, (1.26 + 1.22) / 2d);
+        shuttleTimeOfFlightLookupTable.put(8.5, (1.4 + 1.48) / 2d);
 
     }
 
@@ -137,11 +137,20 @@ public class ShotCalculator extends SubsystemBase {
             while (degrees >= 180d) degrees -= 360d;
             while (degrees <= -180d) degrees += 360d;
 
-            System.out.println("Calculated radians: " + Math.toRadians(degrees));
-            System.out.println("Wrong radians: " + lastTurretRotationPhaseDelayed.getRadians());
+            if (Math.abs(TurretSubsystem.getInstance().getDegrees()
+                    + RobotContainer.getPose().getRotation().getDegrees()
+                    - turretRotationPhaseDelayed.getDegrees()) > 10) {
+                degrees = lastTurretRotationPhaseDelayed.getDegrees();
+            }
 
+//            turretVelocityPhaseDelayed = turretRotationPhaseDelayed
+//                    .minus(new Rotation2d(Math.toRadians(degrees))).getDegrees() / .02;
             turretVelocityPhaseDelayed = turretRotationPhaseDelayed
-                    .minus(new Rotation2d(Math.toRadians(degrees))).getDegrees() / .02; //change to current position
+                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02;
+
+//            System.out.println("Adjusted Velocity: " + turretVelocityPhaseDelayed);
+//            System.out.println("Previous Velocity: " + turretRotationPhaseDelayed
+//                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02);
 
             // Sets turret angle and then adjusts it based on robot's rotation in relation to target
             turretAnglePhaseDelayed = turretRotationPhaseDelayed.getDegrees();

@@ -6,8 +6,8 @@ public class Constants {
     public static final int XBOX_PORT = 0;
     public static final Translation2d TRENCH = new Translation2d(11.916, 4.035);
     public static final Translation2d RED_HUB_CENTER = new Translation2d(11.916, 4.035);
-    public static final Translation2d SHUTTLE_LEFT_CORNER = new Translation2d(15, 1.3);
-    public static final Translation2d SHUTTLE_RIGHT_CORNER = new Translation2d(16, 7.35);
+    public static final Translation2d SHUTTLE_LEFT_CORNER = new Translation2d(15.809, 1.311);
+    public static final Translation2d SHUTTLE_RIGHT_CORNER = new Translation2d(15.809, 6.797);
     public static final Translation2d RED_HUB_FRONT_CENTER = new Translation2d(12.513, 4.035);
     public static final double HUB_RADIUS = .52959;
     public static final Transform2d ROBOT_TO_TURRET = new Transform2d(-.13335, .13335, new Rotation2d(0));
