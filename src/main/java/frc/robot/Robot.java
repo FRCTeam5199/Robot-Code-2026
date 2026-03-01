@@ -99,6 +99,11 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+    public void robotInit() {
+        commandSwerveDrivetrain.configureAutoBuilder();
+    }
+
+    @Override
     public void robotPeriodic() {
         // if (userInterface.getComponentData("Set (L)").getBoolean(false)) {
         //     userInterface.setComponentData("Set (L)", false);
