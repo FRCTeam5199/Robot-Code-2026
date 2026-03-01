@@ -79,7 +79,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
         turretToTargetDistance = networkTable.getDoubleTopic("Distance").publish();
         lateralDistance = networkTable.getDoubleTopic("lateralDistance").publish();
-        isMechAtGoal = turretNetworkTable.getBooleanTopic("Is Mech At Goal").publish();
+        isMechAtGoal = networkTable.getBooleanTopic("Turret Is Mech At Goal").publish();
         turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
         futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
         velocity = networkTable.getDoubleTopic("Velocity").publish();
@@ -113,7 +113,7 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         vision.addSample(getDegrees());
 
-        isMechAtGoal.set(isMechAtGoal());
+        isMechAtGoal.set(isMechAtGoalAuto());
 
         if (!stopMoving) followLastProfile();
 

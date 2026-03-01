@@ -165,9 +165,26 @@ public class RobotContainer {
             }
         }
 
-        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
-        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
-        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
+        double scalingFactor = 1.5;
+
+        if (commandXboxController.getLeftY() < 0)
+            requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+        else
+            requestXVelocity = Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+
+        if (commandXboxController.getLeftX() < 0)
+            requestYVelocity = -Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+        else
+            requestYVelocity = Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+
+        if (commandXboxController.getRightX() < 0)
+            requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), scalingFactor) * Constants.MAX_ANGULAR_RATE;
+        else
+            requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), scalingFactor) * Constants.MAX_ANGULAR_RATE;
+
+//        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
+//        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
+//        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
 
         // Logging
         logger.telemeterize(currentState);
@@ -239,9 +256,9 @@ public class RobotContainer {
 
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * Constants.MAX_SPEED) // Drive forward with negative Y (forward)
-                        .withVelocityY(-commandXboxController.getLeftX() * Constants.MAX_SPEED) // Drive left with negative X (left)
-                        .withRotationalRate(-commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE) // Drive counterclockwise with negative X (left)
+                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
+                        .withVelocityY(-requestYVelocity) // Drive left with negative X (left)
+                        .withRotationalRate(requestRotationalVelocity) // Drive counterclockwise with negative X (left)
                 ));
 
         // Field Centric
