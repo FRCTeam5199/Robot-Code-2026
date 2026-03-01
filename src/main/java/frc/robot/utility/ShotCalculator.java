@@ -50,11 +50,11 @@ public class ShotCalculator extends SubsystemBase {
         hoodLookupTable.put(5d, 9.9999999999936);
         hoodLookupTable.put(5.9944, 18.749999999988);
 
-        shooterSpeedLookupTable.put(0.995, 28d);
-        shooterSpeedLookupTable.put(2d, 32d);
-        shooterSpeedLookupTable.put(3.045, 34d);
-        shooterSpeedLookupTable.put(4d, 35d);
-        shooterSpeedLookupTable.put(5d, 40d);
+        shooterSpeedLookupTable.put(0.995, 27d);
+        shooterSpeedLookupTable.put(2d, 31d);
+        shooterSpeedLookupTable.put(3.045, 34.5d);
+        shooterSpeedLookupTable.put(4d, 34d);
+        shooterSpeedLookupTable.put(5d, 38d);
         shooterSpeedLookupTable.put(5.9944, 44d);
 
         timeOfFlightLookupTable.put(0.995, 0.81);
@@ -67,14 +67,17 @@ public class ShotCalculator extends SubsystemBase {
         shuttleHoodLookupTable.put(5.5, 10d);
         shuttleHoodLookupTable.put(7d, 12d);
         shuttleHoodLookupTable.put(8.5d, 14d);
+        shuttleHoodLookupTable.put(10d, 18d);
 
         shuttleShooterSpeedLookupTable.put(5.5, 30d);
         shuttleShooterSpeedLookupTable.put(7d, 37d);
         shuttleShooterSpeedLookupTable.put(8.5d, 39d);
+        shuttleShooterSpeedLookupTable.put(10d, 43d);
 
-        shuttleTimeOfFlightLookupTable.put(5.5, (1.14 + 1.10) / 2d);
-        shuttleTimeOfFlightLookupTable.put(7d, (1.26 + 1.22) / 2d);
-        shuttleTimeOfFlightLookupTable.put(8.5, (1.4 + 1.48) / 2d);
+        shuttleTimeOfFlightLookupTable.put(5.5, (1.27 + 1.23) / 2d);
+        shuttleTimeOfFlightLookupTable.put(7d, 1.37);
+        shuttleTimeOfFlightLookupTable.put(8.5, 1.47);
+        shuttleTimeOfFlightLookupTable.put(10d, (1.57 + 1.54) / 2d);
 
     }
 
