@@ -13,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.*;
@@ -23,6 +24,7 @@ import frc.robot.subsystems.templates.PositionCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
@@ -114,7 +116,6 @@ public class RobotContainer {
                 new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto)); //kickerauto, shooterauto, hoodauto
         leftTriggerReleased = RobotCommands.idleState();
 
-
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
                         turretHub, hoodHub, shooterHub, kickerHub
@@ -153,19 +154,22 @@ public class RobotContainer {
 
         // Sets Enums, default is Shooting
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
-        shotMode = ShotMode.SHOOTING;
+        if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
+            shotMode = ShotMode.SHUTTLING_RIGHT;
+        } else {
+            shotMode = ShotMode.SHUTTLING_LEFT;
+        }
         for (Translation2d robotCorner : robotCorners) {
-            if (Constants.TRENCH.getX() - robotCorner.getX() > .05) {
-                if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-                    shotMode = ShotMode.SHUTTLING_RIGHT;
-                } else {
-                    shotMode = ShotMode.SHUTTLING_LEFT;
-                }
-                break;
+            if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .05)
+                    shotMode = ShotMode.SHOOTING;
+            } else {
+                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .05)
+                    shotMode = ShotMode.SHOOTING;
             }
         }
 
-        double scalingFactor = 1.5;
+        double scalingFactor = 1.25;
 
         if (commandXboxController.getLeftY() < 0)
             requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
@@ -264,7 +268,11 @@ public class RobotContainer {
         // Field Centric
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
-                        new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180))));
+                        new ConditionalCommand(
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
+                                () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
+                ));
 
         commandXboxController.povDown().onTrue(intakeDeploy);
         commandXboxController.povUp().onTrue(intakeStow);
@@ -286,13 +294,13 @@ public class RobotContainer {
 
         commandXboxController.y().onTrue(setHubSetpoint);
         commandXboxController.x().onTrue(setLeftCornerSetpoint);
-        commandXboxController.b().onTrue(setOutpostSetpoint);
+//        commandXboxController.b().onTrue(setOutpostSetpoint);
         commandXboxController.a().onTrue(setTowerSetpoint);
 
 //        commandXboxController.a().onTrue(new HoodCommand(hoodSubsystem, 18.749999999988)).onFalse(new HoodCommand(hoodSubsystem, 0));
 //
-//        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
-//                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
+                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
         commandXboxController.povLeft().onTrue(RobotCommands.zeroTurret());
 

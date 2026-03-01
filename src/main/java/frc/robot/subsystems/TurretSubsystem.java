@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.*;
 import frc.robot.RobotContainer;
@@ -8,6 +9,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.HoodConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
+import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
@@ -173,10 +175,13 @@ public class TurretSubsystem extends TemplateSubsystem {
         double slope = Math.tan(Math.toRadians(degrees));
         Pose2d futureTurretPose = shotCalculator.getFutureTurretPosition();
 
-        double deltaX = Constants.RED_HUB_CENTER.getX() - futureTurretPose.getX();
+        Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
+                Constants.RED_HUB_CENTER);
+
+        double deltaX = hubCenter.getX() - futureTurretPose.getX();
         double deltaY = slope * deltaX;
         double projectedY = futureTurretPose.getY() + deltaY;
 
-        return Math.abs(Constants.RED_HUB_CENTER.getY() - projectedY);
+        return Math.abs(hubCenter.getY() - projectedY);
     }
 }
