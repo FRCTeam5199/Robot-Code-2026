@@ -29,7 +29,7 @@ public class Vision extends SubsystemBase {
         LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
                 -.317, .317, .436, 180, 5, -135.218);
 
-        startThread();
+//        startThread();
     }
 
     public static Vision getInstance() {
