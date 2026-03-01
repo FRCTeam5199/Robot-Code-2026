@@ -53,8 +53,8 @@ public class ShotCalculator extends SubsystemBase {
         shooterSpeedLookupTable.put(0.995, 27d);
         shooterSpeedLookupTable.put(2d, 31d);
         shooterSpeedLookupTable.put(3.045, 34.5d);
-        shooterSpeedLookupTable.put(4d, 34d);
-        shooterSpeedLookupTable.put(5d, 38d);
+        shooterSpeedLookupTable.put(4d, 33d);
+        shooterSpeedLookupTable.put(5d, 37d);
         shooterSpeedLookupTable.put(5.9944, 44d);
 
         timeOfFlightLookupTable.put(0.995, 0.81);
