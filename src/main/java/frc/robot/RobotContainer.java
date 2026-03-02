@@ -262,10 +262,12 @@ public class RobotContainer {
     }
 
     public static double getRequestYVelocity() {
+        if (Robot.getAlliance().equals(DriverStation.Alliance.Blue)) return -requestYVelocity;
         return requestYVelocity;
     }
 
     public static double getRequestXVelocity() {
+        if (Robot.getAlliance().equals(DriverStation.Alliance.Blue)) return -requestXVelocity;
         return requestXVelocity;
     }
 
@@ -305,7 +307,7 @@ public class RobotContainer {
 
         commandXboxController.y().onTrue(setHubSetpoint);
         commandXboxController.x().onTrue(setLeftCornerSetpoint);
-    //    commandXboxController.b().onTrue(setOutpostSetpoint);
+        //    commandXboxController.b().onTrue(setOutpostSetpoint);
         commandXboxController.a().onTrue(setTowerSetpoint);
 //
         // commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))

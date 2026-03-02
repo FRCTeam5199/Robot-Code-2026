@@ -26,8 +26,8 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
                 IntakePivotConstants.GEAR_RATIO,
                 IntakePivotConstants.ENCODER_DIRECTION);
 
-        configurePivot(IntakePivotConstants.MIN,
-                IntakePivotConstants.MAX);
+//        configurePivot(IntakePivotConstants.MIN,
+//                IntakePivotConstants.MAX);
     }
 
     public static IntakePivotSubsystem getInstance() {
@@ -39,8 +39,9 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-//        System.out.println("Degrees: " + getDegrees());
-        //    System.out.println("Goal: " + getGoal());
+        System.out.println("Degrees: " + getDegrees());
+        System.out.println("Goal: " + getGoal());
+        System.out.println();
         // System.out.println("Is at Goal: "+ isMechAtGoal(false));
     }
 }

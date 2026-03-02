@@ -10,7 +10,7 @@ public class IntakePivotConstants {
 
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
-    public static final boolean INVERTED = false;
+    public static final boolean INVERTED = true;
     public static final boolean BRAKE = true;
 
     public static final double DEPLOY = 100;
@@ -35,7 +35,7 @@ public class IntakePivotConstants {
     public static final double LOWER_TOLERANCE = 4;
     public static final double UPPER_TOLERANCE = 4;
 
-    public static final double MAGNET_OFFSET = -.968017578125;
+    public static final double MAGNET_OFFSET = -.94677734375;
     public static final boolean ENCODER_DIRECTION = false;
 
     public static final double MIN = 0;
