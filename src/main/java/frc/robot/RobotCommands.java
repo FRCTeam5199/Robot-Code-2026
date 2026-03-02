@@ -118,13 +118,13 @@ public class RobotCommands {
 
     public static Command extendClimb() {
         return new InstantCommand(() ->
-        climberSubsystem.setVelocity(50));
+        climberSubsystem.setPosition(10));
     }
 
 
     public static Command retractClimb() {
         return new InstantCommand(() ->
-        climberSubsystem.setVelocity(-50));
+        climberSubsystem.setPosition(0));
     }
 
     public static Command stopClimb() {
