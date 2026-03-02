@@ -29,7 +29,7 @@ import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
-    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    //    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakerollersubsystem = IntakeRollerSubsystem.getInstance();

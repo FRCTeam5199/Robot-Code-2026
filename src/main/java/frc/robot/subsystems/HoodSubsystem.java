@@ -65,7 +65,7 @@ public class HoodSubsystem extends TemplateSubsystem {
         isMechAtGoal = hoodTable.getBooleanTopic("Hood Is Mech At Goal").publish();
     }
 
-    public static HoodSubsystem getInstance() {
+    private static HoodSubsystem getInstance() {
         if (hoodSubsystem == null) {
             hoodSubsystem = new HoodSubsystem();
         }
