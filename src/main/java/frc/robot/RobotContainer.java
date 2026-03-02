@@ -314,17 +314,14 @@ public class RobotContainer {
         // commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
         //         .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
-        if (climbMode == ClimbMode.CLIMB) {
-            commandXboxController.b().onTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB));
-        }
-        else {
-            commandXboxController.b().onTrue(new InstantCommand(() -> climbMode = climbMode.CLIMB));
-        }
 
+        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
+                .toggleOnFalse(new InstantCommand(()-> climbMode = climbMode.CLIMB));
+        
         commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), ()->climbMode == climbMode.CLIMB));
         commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), ()-> climbMode == climbMode.CLIMB));
-
     }
+
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
