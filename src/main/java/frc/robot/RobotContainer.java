@@ -25,6 +25,7 @@ import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.AllianceFlipper;
+import frc.robot.utility.ClimbMode;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
@@ -43,6 +44,7 @@ public class RobotContainer {
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
+    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
@@ -102,6 +104,9 @@ public class RobotContainer {
     private static Command leftTriggerReleased;
     private static Command leftBumperPressed;
     private static Command leftBumperReleased;
+    private static Command extend;
+    private static Command retract;
+    private static Command stop;
     private static Setpoint currentSetpoint = Setpoint.HUB;
     //Mode Commands
     private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
@@ -110,11 +115,17 @@ public class RobotContainer {
     private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
     private static ShotMode shotMode = ShotMode.SHOOTING;
     private static Translation2d[] robotCorners = new Translation2d[4];
+    private static ClimbMode climbMode = ClimbMode.NOCLIMB;
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto)); //kickerauto, shooterauto, hoodauto
         leftTriggerReleased = RobotCommands.idleState();
+
+        extend = RobotCommands.extendClimb();
+        retract = RobotCommands.retractClimb();
+        stop = RobotCommands.stopClimb();
+
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
@@ -294,15 +305,15 @@ public class RobotContainer {
 
         commandXboxController.y().onTrue(setHubSetpoint);
         commandXboxController.x().onTrue(setLeftCornerSetpoint);
-//        commandXboxController.b().onTrue(setOutpostSetpoint);
+    //    commandXboxController.b().onTrue(setOutpostSetpoint);
         commandXboxController.a().onTrue(setTowerSetpoint);
-
-//        commandXboxController.a().onTrue(new HoodCommand(hoodSubsystem, 18.749999999988)).onFalse(new HoodCommand(hoodSubsystem, 0));
 //
-        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
-                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+        // commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
+        //         .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
-        commandXboxController.povLeft().onTrue(RobotCommands.zeroTurret());
+        commandXboxController.b().onTrue(RobotCommands.zeroTurret());
+        commandXboxController.povLeft().onTrue(extend).onFalse(stop);
+        commandXboxController.povRight().onTrue(retract).onFalse(stop);
 
     }
 
