@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,6 +15,8 @@ import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
+
+import java.util.function.Consumer;
 
 public class TurretSubsystem extends TemplateSubsystem {
     private static TurretSubsystem turretSubsystem;
@@ -152,7 +155,6 @@ public class TurretSubsystem extends TemplateSubsystem {
         } else {
             setPositionVoltage(goalState.position, getFF(goalState.velocity));
         }
-
     }
 
     public boolean isMechAtGoalAuto() {

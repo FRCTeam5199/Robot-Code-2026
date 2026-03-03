@@ -115,10 +115,19 @@ public class ShotCalculator extends SubsystemBase {
                                     RobotContainer.getRequestXVelocity() * Constants.PHASE_DELAY,
                                     RobotContainer.getRequestYVelocity() * Constants.PHASE_DELAY,
                                     RobotContainer.getRequestRotationalVelocity() * Constants.PHASE_DELAY));
+//            Pose2d estimatedPosePhaseDelayed =
+//                    estimatedPose.exp(
+//                            new Twist2d(
+//                                    RobotContainer.getSpeeds().vxMetersPerSecond * Constants.PHASE_DELAY,
+//                                    RobotContainer.getSpeeds().vyMetersPerSecond * Constants.PHASE_DELAY,
+//                                    RobotContainer.getSpeeds().omegaRadiansPerSecond * Constants.PHASE_DELAY));
 
             Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
                     new ChassisSpeeds(RobotContainer.getRequestXVelocity(), RobotContainer.getRequestYVelocity(),
                             RobotContainer.getRequestRotationalVelocity()));
+//            Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
+//                    ChassisSpeeds.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
+//                            RobotContainer.getPose().getRotation()));
             Pair<Pose2d, Double> turret = createFutureTurretPose(estimatedPose,
                     ChassisSpeeds.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
                             RobotContainer.getPose().getRotation()));
@@ -165,9 +174,9 @@ public class ShotCalculator extends SubsystemBase {
             }
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
 
-            double degrees = TurretSubsystem.getInstance().getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
-            while (degrees >= 180d) degrees -= 360d;
-            while (degrees <= -180d) degrees += 360d;
+//            double degrees = TurretSubsystem.getInstance().getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
+//            while (degrees >= 180d) degrees -= 360d;
+//            while (degrees <= -180d) degrees += 360d;
 
 //            if (Math.abs(TurretSubsystem.getInstance().getDegrees()
 //                    + RobotContainer.getPose().getRotation().getDegrees()
@@ -175,17 +184,13 @@ public class ShotCalculator extends SubsystemBase {
 //                degrees = lastTurretRotationPhaseDelayed.getDegrees();
 //            }
 
-            turretVelocityPhaseDelayed = turretRotationPhaseDelayed
-                    .minus(new Rotation2d(Math.toRadians(degrees))).getDegrees() / .02;
+//            turretVelocityPhaseDelayed = turretRotationPhaseDelayed
+//                    .minus(new Rotation2d(Math.toRadians(degrees))).getDegrees() / .02;
 //            System.out.println("Corrected: " + TurretSubsystem.getInstance().getMotorRotFromDegrees(turretVelocityPhaseDelayed));
 //            System.out.println("Old: " + TurretSubsystem.getInstance().getMotorRotFromDegrees(turretRotationPhaseDelayed
 //                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02));
-//            turretVelocityPhaseDelayed = turretRotationPhaseDelayed
-//                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02;
-
-//            System.out.println("Adjusted Velocity: " + turretVelocityPhaseDelayed);
-//            System.out.println("Previous Velocity: " + turretRotationPhaseDelayed
-//                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02);
+            turretVelocityPhaseDelayed = turretRotationPhaseDelayed
+                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02;
 
             // Sets turret angle and then adjusts it based on robot's rotation in relation to target
             turretAnglePhaseDelayed = turretRotationPhaseDelayed.getDegrees();
@@ -197,6 +202,7 @@ public class ShotCalculator extends SubsystemBase {
             while (turretAnglePhaseDelayed >= TurretConstants.MAX) turretAnglePhaseDelayed -= 360;
 
             turretVelocityPhaseDelayed -= (RobotContainer.getRequestRotationalVelocity() / Math.PI * 180d);
+//            turretVelocityPhaseDelayed -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d);
 
             //Turret Angle Calculations
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
