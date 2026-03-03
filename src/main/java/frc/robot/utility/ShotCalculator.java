@@ -13,6 +13,9 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.utility.AllianceFlipper;
+
+import java.util.concurrent.BlockingDeque;
 
 public class ShotCalculator extends SubsystemBase {
     private static ShotCalculator shotCalculator;
@@ -43,26 +46,59 @@ public class ShotCalculator extends SubsystemBase {
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
         //key - distance to front center hub
-        hoodLookupTable.put(0.995, 0d);
-        hoodLookupTable.put(2.01, 0d);
-        hoodLookupTable.put(3.045, 0d);
-        hoodLookupTable.put(4d, 9.9999999999936);
-        hoodLookupTable.put(5d, 9.9999999999936);
-        hoodLookupTable.put(5.9944, 18.749999999988);
+//        hoodLookupTable.put(1.01, 0d);                   //motor rotation * 360 * gear ratio
+//        hoodLookupTable.put(2.06375, 0d);
+//        hoodLookupTable.put(3.0051375, 4.9999999999999968);
+//        hoodLookupTable.put(3.52425, 7.4999999952);
+//        hoodLookupTable.put(4.03606, 8.74999999944);
+//        hoodLookupTable.put(4.4973875, 9.9999999999936);
+//        hoodLookupTable.put(5.038, 11.2499999928);
+//        hoodLookupTable.put(5.554, 13.749999912);
+//        hoodLookupTable.put(5.9737625, 14.9999999904);
+//        hoodLookupTable.put(6.453, 16.2499999896);     // We are here
+//
+//        shooterSpeedLookupTable.put(1.01, 27d);
+//        shooterSpeedLookupTable.put(2.06375, 31d);
+//        shooterSpeedLookupTable.put(3.0051375, 32.75);
+//        shooterSpeedLookupTable.put(3.5, 33.8);
+//        shooterSpeedLookupTable.put(4.03606, 35.2);
+//        shooterSpeedLookupTable.put(4.4973875, 36d);
+//        shooterSpeedLookupTable.put(5.038, 38d);
+//        shooterSpeedLookupTable.put(5.554, 40.2);
+//        shooterSpeedLookupTable.put(5.9737625, 42d);
+//        shooterSpeedLookupTable.put(6.5d, 46d);
+//
+//
+//        timeOfFlightLookupTable.put(1.01, 0.835);
+//        timeOfFlightLookupTable.put(2.06375, (1.04 + 1.05) / 2d);
+//        timeOfFlightLookupTable.put(3.0051375, (1.06 + 1.09) / 2d);
+//        timeOfFlightLookupTable.put(3.5, (1.11 + 1.16) / 2d);
+//        timeOfFlightLookupTable.put(4.03606, (1.15 + 1.19) / 2d);
+//        timeOfFlightLookupTable.put(4.4973875, (1.13 + 1.2) / 2d);
+//        timeOfFlightLookupTable.put(5.038, (1.25 + 1.27) / 2d);
+//        timeOfFlightLookupTable.put(5.554, (1.24 + 1.33) / 2d);
+//        timeOfFlightLookupTable.put(5.9737625, (1.32 + 1.34) / 2d);
+//        timeOfFlightLookupTable.put(6.5d, (1.32 + 1.3) / 2d);
 
-        shooterSpeedLookupTable.put(0.995, 27d);
-        shooterSpeedLookupTable.put(2d, 31d);
-        shooterSpeedLookupTable.put(3.045, 34.5d);
-        shooterSpeedLookupTable.put(4d, 33d);
-        shooterSpeedLookupTable.put(5d, 37d);
-        shooterSpeedLookupTable.put(5.9944, 44d);
 
-        timeOfFlightLookupTable.put(0.995, 0.81);
-        timeOfFlightLookupTable.put(2d, 1.08);
-        timeOfFlightLookupTable.put(3.045, 1.27);
-        timeOfFlightLookupTable.put(4d, 1.09);
-        timeOfFlightLookupTable.put(5d, 1.4);
-        timeOfFlightLookupTable.put(5.9944, 1.4);
+        //Motor Rotations = degrees / 360 / .00694444444444
+        //Degrees = motorRot * 360 * .00694444444444
+
+        hoodLookupTable.put(.962 + Constants.HUB_RADIUS, 0d);
+        hoodLookupTable.put(1.971 + Constants.HUB_RADIUS, 2d);
+        hoodLookupTable.put(3.006 + Constants.HUB_RADIUS, 4d);
+        hoodLookupTable.put(4.013 + Constants.HUB_RADIUS, 6d);
+
+        shooterSpeedLookupTable.put(.962 + Constants.HUB_RADIUS, 25.5);
+        shooterSpeedLookupTable.put(1.971 + Constants.HUB_RADIUS, 31d);
+        shooterSpeedLookupTable.put(3.006 + Constants.HUB_RADIUS, 35d);
+        shooterSpeedLookupTable.put(4.013 + Constants.HUB_RADIUS, 35d);
+
+        timeOfFlightLookupTable.put(.962 + Constants.HUB_RADIUS, 0.92);
+        timeOfFlightLookupTable.put(1.971 + Constants.HUB_RADIUS, 1.2);
+        timeOfFlightLookupTable.put(3.006 + Constants.HUB_RADIUS, 1.24);
+        timeOfFlightLookupTable.put(4.013 + Constants.HUB_RADIUS, 1.2);
+
         //------------------------------------------------------
         shuttleHoodLookupTable.put(5.5, 10d);
         shuttleHoodLookupTable.put(7d, 12d);
@@ -125,13 +161,22 @@ public class ShotCalculator extends SubsystemBase {
 
 
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
-                turretRotationPhaseDelayed = Constants.RED_HUB_CENTER
+                Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
+                        Constants.RED_HUB_CENTER);
+
+                turretRotationPhaseDelayed = hubCenter
                         .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
-                turretRotationPhaseDelayed = Constants.SHUTTLE_LEFT_CORNER
+                Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
+                        Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
+
+                turretRotationPhaseDelayed = shuttlingLeftCorner
                         .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
-                turretRotationPhaseDelayed = Constants.SHUTTLE_RIGHT_CORNER
+                Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
+                        Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
+
+                turretRotationPhaseDelayed = shuttlingRightCorner
                         .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
             }
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
@@ -168,14 +213,23 @@ public class ShotCalculator extends SubsystemBase {
 
             //Turret Angle Calculations
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
-                turretRotation = Constants.RED_HUB_CENTER
-                        .minus(futureTurretPosition.getTranslation()).getAngle();
+                Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
+                        Constants.RED_HUB_CENTER);
+
+                turretRotation = hubCenter
+                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
-                turretRotation = Constants.SHUTTLE_LEFT_CORNER
-                        .minus(futureTurretPosition.getTranslation()).getAngle();
+                Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
+                        Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
+
+                turretRotation = shuttlingLeftCorner
+                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
-                turretRotation = Constants.SHUTTLE_RIGHT_CORNER
-                        .minus(futureTurretPosition.getTranslation()).getAngle();
+                Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
+                        Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
+
+                turretRotation = shuttlingRightCorner
+                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
             }
             if (lastTurretRotation == null) lastTurretRotation = turretRotation;
             turretVelocity = turretRotation
@@ -225,10 +279,30 @@ public class ShotCalculator extends SubsystemBase {
             turretToTargetDistance = Constants.RED_HUB_FRONT_CENTER
                     .getDistance(turretPosition.getTranslation());
         } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
-            turretToTargetDistance = Constants.SHUTTLE_LEFT_CORNER
+            turretToTargetDistance = Constants.RED_SHUTTLE_LEFT_CORNER
                     .getDistance(turretPosition.getTranslation());
         } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
-            turretToTargetDistance = Constants.SHUTTLE_RIGHT_CORNER
+            turretToTargetDistance = Constants.RED_SHUTTLE_RIGHT_CORNER
+                    .getDistance(turretPosition.getTranslation());
+        }
+
+        if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
+            Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
+                    Constants.RED_HUB_CENTER);
+
+            turretToTargetDistance = hubCenter
+                    .getDistance(turretPosition.getTranslation());
+        } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
+            Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
+                    Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
+
+            turretToTargetDistance = shuttlingLeftCorner
+                    .getDistance(turretPosition.getTranslation());
+        } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
+            Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
+                    Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
+
+            turretToTargetDistance = shuttlingRightCorner
                     .getDistance(turretPosition.getTranslation());
         }
 
@@ -265,10 +339,10 @@ public class ShotCalculator extends SubsystemBase {
                 lookaheadTurretToTargetDistance = Constants.RED_HUB_FRONT_CENTER
                         .getDistance(futureTurretPosition.getTranslation());
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
-                lookaheadTurretToTargetDistance = Constants.SHUTTLE_LEFT_CORNER
+                lookaheadTurretToTargetDistance = Constants.RED_SHUTTLE_LEFT_CORNER
                         .getDistance(futureTurretPosition.getTranslation());
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
-                lookaheadTurretToTargetDistance = Constants.SHUTTLE_RIGHT_CORNER
+                lookaheadTurretToTargetDistance = Constants.RED_SHUTTLE_RIGHT_CORNER
                         .getDistance(futureTurretPosition.getTranslation());
             }
         }

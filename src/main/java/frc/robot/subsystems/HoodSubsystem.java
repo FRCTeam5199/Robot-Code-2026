@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -27,6 +28,7 @@ public class HoodSubsystem extends TemplateSubsystem {
     private DoublePublisher goalPosition;
     private DoublePublisher goalPositionPhaseDelay;
     private DoublePublisher currentPosition;
+    private BooleanPublisher isMechAtGoal;
 
     private HoodSubsystem() {
         super(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
@@ -59,6 +61,8 @@ public class HoodSubsystem extends TemplateSubsystem {
         goalPosition = hoodTable.getDoubleTopic("Goal Position").publish();
         goalPositionPhaseDelay = hoodTable.getDoubleTopic("Goal Position Phase Delay").publish();
         currentPosition = hoodTable.getDoubleTopic("Current Position").publish();
+
+        isMechAtGoal = hoodTable.getBooleanTopic("Hood Is Mech At Goal").publish();
     }
 
     public static HoodSubsystem getInstance() {
@@ -78,6 +82,7 @@ public class HoodSubsystem extends TemplateSubsystem {
         goalPosition.set(ShotCalculator.getInstance().getHoodAngle());
         goalPositionPhaseDelay.set(ShotCalculator.getInstance().getHoodAnglePhaseDelayed());
         currentPosition.set(getDegrees());
+        isMechAtGoal.set(isMechAtGoalAuto());
 
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444

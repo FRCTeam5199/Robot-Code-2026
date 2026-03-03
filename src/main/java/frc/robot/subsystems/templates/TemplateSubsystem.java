@@ -571,7 +571,7 @@ public class TemplateSubsystem extends SubsystemBase {
 
 //        if (type == Type.LINEAR) poseData.set(getMechM());
 //        else poseData.set(getDegrees());
-//        velocityData.set(getMotorVelocity());
+        velocityData.set(getMotorVelocity());
 //        voltageData.set(getMotorVoltage());
 //        supplyCurrentData.set(-getSupplyCurrent());
 //        statorCurrentData.set(-getStatorCurrent());

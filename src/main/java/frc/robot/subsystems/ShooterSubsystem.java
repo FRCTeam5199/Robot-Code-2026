@@ -37,7 +37,7 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.SECOND_INVERTED
         );
 
-        shooterNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Shooter/");
+        shooterNetworkTable = NetworkTableInstance.getDefault().getTable("Shooter/");
         isMechAtGoal = shooterNetworkTable.getBooleanTopic("Is Mech At Goal").publish();
         goalSpeed = shooterNetworkTable.getDoubleTopic("Goal Speed").publish();
         currentSpeed = shooterNetworkTable.getDoubleTopic("Current Speed").publish();

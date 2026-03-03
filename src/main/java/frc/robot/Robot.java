@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.HopperConstants;
 import frc.robot.constants.IndexerConstants;
@@ -40,7 +41,7 @@ public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
     // private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
-
+    private static DriverStation.Alliance alliance;
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -220,6 +221,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
+        if (DriverStation.getAlliance().isPresent()) alliance = DriverStation.getAlliance().get();
     }
 
     @Override
@@ -280,5 +282,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
+    }
+
+    public static DriverStation.Alliance getAlliance() {
+        return alliance;
     }
 }

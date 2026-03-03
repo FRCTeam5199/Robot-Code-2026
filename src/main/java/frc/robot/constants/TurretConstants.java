@@ -20,7 +20,7 @@ public class TurretConstants {
             .withKS(.47)
             .withKG(0)
             .withKV(.09451795841209829867674858223062)
-            .withKA(0.0005)
+            .withKA(0)//.0005
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double VELOCITY = 100;

@@ -7,6 +7,7 @@ package frc.robot;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -16,6 +17,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.*;
@@ -26,6 +28,8 @@ import frc.robot.subsystems.templates.PositionCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.AllianceFlipper;
+import frc.robot.utility.ClimbMode;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
@@ -44,6 +48,7 @@ public class RobotContainer {
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
+    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
@@ -103,6 +108,9 @@ public class RobotContainer {
     private static Command leftTriggerReleased;
     private static Command leftBumperPressed;
     private static Command leftBumperReleased;
+    private static Command extend;
+    private static Command retract;
+    private static Command stop;
     private static Setpoint currentSetpoint = Setpoint.HUB;
     //Mode Commands
     private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
@@ -111,11 +119,16 @@ public class RobotContainer {
     private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
     private static ShotMode shotMode = ShotMode.SHOOTING;
     private static Translation2d[] robotCorners = new Translation2d[4];
+    private static ClimbMode climbMode = ClimbMode.NOCLIMB;
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto)); //kickerauto, shooterauto, hoodauto
         leftTriggerReleased = RobotCommands.idleState();
+
+        extend = RobotCommands.extendClimb();
+        retract = RobotCommands.retractClimb();
+        stop = RobotCommands.stopClimb();
 
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
@@ -156,21 +169,41 @@ public class RobotContainer {
 
         // Sets Enums, default is Shooting
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
-        shotMode = ShotMode.SHOOTING;
+        if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
+            shotMode = ShotMode.SHUTTLING_RIGHT;
+        } else {
+            shotMode = ShotMode.SHUTTLING_LEFT;
+        }
         for (Translation2d robotCorner : robotCorners) {
-            if (Constants.TRENCH.getX() - robotCorner.getX() > .05) {
-                if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-                    shotMode = ShotMode.SHUTTLING_RIGHT;
-                } else {
-                    shotMode = ShotMode.SHUTTLING_LEFT;
-                }
-                break;
+            if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .05)
+                    shotMode = ShotMode.SHOOTING;
+            } else {
+                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .05)
+                    shotMode = ShotMode.SHOOTING;
             }
         }
 
-        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
-        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
-        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
+        double scalingFactor = 1.25;
+
+        if (commandXboxController.getLeftY() < 0)
+            requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+        else
+            requestXVelocity = Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+
+        if (commandXboxController.getLeftX() < 0)
+            requestYVelocity = -Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+        else
+            requestYVelocity = Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+
+        if (commandXboxController.getRightX() < 0)
+            requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), scalingFactor) * Constants.MAX_ANGULAR_RATE;
+        else
+            requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), scalingFactor) * Constants.MAX_ANGULAR_RATE;
+
+//        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
+//        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
+//        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
 
         // Logging
         logger.telemeterize(currentState);
@@ -233,24 +266,30 @@ public class RobotContainer {
     }
 
     public static double getRequestYVelocity() {
+        if (Robot.getAlliance().equals(DriverStation.Alliance.Blue)) return -requestYVelocity;
         return requestYVelocity;
     }
 
     public static double getRequestXVelocity() {
+        if (Robot.getAlliance().equals(DriverStation.Alliance.Blue)) return -requestXVelocity;
         return requestXVelocity;
     }
 
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-commandXboxController.getLeftY() * Constants.MAX_SPEED) // Drive forward with negative Y (forward)
-                        .withVelocityY(-commandXboxController.getLeftX() * Constants.MAX_SPEED) // Drive left with negative X (left)
-                        .withRotationalRate(-commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE) // Drive counterclockwise with negative X (left)
+                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
+                        .withVelocityY(-requestYVelocity) // Drive left with negative X (left)
+                        .withRotationalRate(requestRotationalVelocity) // Drive counterclockwise with negative X (left)
                 ));
 
         // Field Centric
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
-                        new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180))));
+                        new ConditionalCommand(
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
+                                () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
+                ));
 
         commandXboxController.povDown().onTrue(intakeDeploy);
         commandXboxController.povUp().onTrue(intakeStow);
@@ -272,17 +311,20 @@ public class RobotContainer {
 
         commandXboxController.y().onTrue(setHubSetpoint);
         commandXboxController.x().onTrue(setLeftCornerSetpoint);
-        commandXboxController.b().onTrue(setOutpostSetpoint);
+        //    commandXboxController.b().onTrue(setOutpostSetpoint);
         commandXboxController.a().onTrue(setTowerSetpoint);
-
-//        commandXboxController.a().onTrue(new HoodCommand(hoodSubsystem, 18.749999999988)).onFalse(new HoodCommand(hoodSubsystem, 0));
 //
-//        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
-//                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
+                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
-        commandXboxController.povLeft().onTrue(RobotCommands.zeroTurret());
 
+        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
+                .toggleOnFalse(new InstantCommand(()-> climbMode = climbMode.CLIMB));
+        
+        commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), ()->climbMode == climbMode.CLIMB));
+        commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), ()-> climbMode == climbMode.CLIMB));
     }
+
 
     public Command getAutonomousCommand() {
         return new PathPlannerAuto("drive tune");

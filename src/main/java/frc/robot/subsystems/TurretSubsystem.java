@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.*;
 import frc.robot.RobotContainer;
@@ -8,6 +9,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.HoodConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
+import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
@@ -79,7 +81,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
         turretToTargetDistance = networkTable.getDoubleTopic("Distance").publish();
         lateralDistance = networkTable.getDoubleTopic("lateralDistance").publish();
-        isMechAtGoal = turretNetworkTable.getBooleanTopic("Is Mech At Goal").publish();
+        isMechAtGoal = networkTable.getBooleanTopic("Turret Is Mech At Goal").publish();
         turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
         futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
         velocity = networkTable.getDoubleTopic("Velocity").publish();
@@ -113,9 +115,9 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         vision.addSample(getDegrees());
 
-        isMechAtGoal.set(isMechAtGoal());
+        isMechAtGoal.set(isMechAtGoalAuto());
 
-        if (!stopMoving) followLastProfile();
+//        if (!stopMoving) followLastProfile();
 
 //        System.out.println("Turret Degrees: " + getDegrees());
 
@@ -173,10 +175,13 @@ public class TurretSubsystem extends TemplateSubsystem {
         double slope = Math.tan(Math.toRadians(degrees));
         Pose2d futureTurretPose = shotCalculator.getFutureTurretPosition();
 
-        double deltaX = Constants.RED_HUB_CENTER.getX() - futureTurretPose.getX();
+        Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
+                Constants.RED_HUB_CENTER);
+
+        double deltaX = hubCenter.getX() - futureTurretPose.getX();
         double deltaY = slope * deltaX;
         double projectedY = futureTurretPose.getY() + deltaY;
 
-        return Math.abs(Constants.RED_HUB_CENTER.getY() - projectedY);
+        return Math.abs(hubCenter.getY() - projectedY);
     }
 }

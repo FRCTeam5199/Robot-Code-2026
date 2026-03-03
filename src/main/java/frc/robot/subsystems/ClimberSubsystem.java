@@ -19,8 +19,8 @@ public class ClimberSubsystem extends TemplateSubsystem {
                 ClimberConstants.STATOR_CURRENT_LIMIT,
                 ClimberConstants.SLOT0_CONFIGS);
 
-        configureLinearMech(ClimberConstants.DRUM_CIRCUMFERENCE, ClimberConstants.MIN,
-                ClimberConstants.MAX);
+        // configureLinearMech(ClimberConstants.DRUM_CIRCUMFERENCE, ClimberConstants.MIN,
+        //         ClimberConstants.MAX);
     }
 
     public static ClimberSubsystem getInstance() {

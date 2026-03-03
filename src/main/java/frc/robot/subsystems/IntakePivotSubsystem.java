@@ -6,7 +6,6 @@ import frc.robot.utility.Type;
 
 public class IntakePivotSubsystem extends TemplateSubsystem {
     private static IntakePivotSubsystem intakePivotSubsystem;
-    public double goal = 70;
 
     private IntakePivotSubsystem() {
         super(Type.PIVOT, IntakePivotConstants.MOTOR_ID, IntakePivotConstants.VELOCITY,
@@ -40,7 +39,8 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 //        System.out.println("Degrees: " + getDegrees());
-        //    System.out.println("Goal: " + getGoal());
+//        System.out.println("Goal: " + getGoal());
+//        System.out.println();
         // System.out.println("Is at Goal: "+ isMechAtGoal(false));
     }
 }
