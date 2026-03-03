@@ -6,6 +6,7 @@ package frc.robot;
 
 
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -313,11 +314,14 @@ public class RobotContainer {
         commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
                 .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
-        commandXboxController.b().onTrue(RobotCommands.zeroTurret());
-        commandXboxController.povLeft().onTrue(extend).onFalse(stop);
-        commandXboxController.povRight().onTrue(retract).onFalse(stop);
 
+        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
+                .toggleOnFalse(new InstantCommand(()-> climbMode = climbMode.CLIMB));
+        
+        commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), ()->climbMode == climbMode.CLIMB));
+        commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), ()-> climbMode == climbMode.CLIMB));
     }
+
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
