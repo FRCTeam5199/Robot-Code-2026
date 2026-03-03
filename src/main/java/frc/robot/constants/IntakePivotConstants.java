@@ -10,7 +10,7 @@ public class IntakePivotConstants {
 
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
-    public static final boolean INVERTED = true;
+    public static final boolean INVERTED = false;
     public static final boolean BRAKE = true;
 
     public static final double DEPLOY = 100;
