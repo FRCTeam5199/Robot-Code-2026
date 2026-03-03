@@ -2,8 +2,22 @@
   "robotWidth": 0.8625,
   "robotLength": 0.863,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [],
+  "pathFolders": [
+    "Blue Score Bottom",
+    "Blue Score Top",
+    "Blue Shuttle Bottom",
+    "Blue Shuttle Top",
+    "Red Score Bottom",
+    "Red Score Top",
+    "Red Shuttle Bottom",
+    "Red Shuttle Top"
+  ],
+  "autoFolders": [
+    "Blue Score",
+    "Blue Shuttle",
+    "Red Score",
+    "Red Shuttle"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
