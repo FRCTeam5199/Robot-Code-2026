@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TurretConstants;
@@ -112,9 +113,9 @@ public class ShotCalculator extends SubsystemBase {
             Pose2d estimatedPosePhaseDelayed =
                     estimatedPose.exp(
                             new Twist2d(
-                                    RobotContainer.getRequestXVelocity() * Constants.PHASE_DELAY,
-                                    RobotContainer.getRequestYVelocity() * Constants.PHASE_DELAY,
-                                    RobotContainer.getRequestRotationalVelocity() * Constants.PHASE_DELAY));
+                                    -RobotContainer.getRequestXVelocity() * Constants.PHASE_DELAY,
+                                    -RobotContainer.getRequestYVelocity() * Constants.PHASE_DELAY,
+                                    RobotContainer.getRequestRotationalVelocity() * .05));
 //            Pose2d estimatedPosePhaseDelayed =
 //                    estimatedPose.exp(
 //                            new Twist2d(
@@ -125,6 +126,7 @@ public class ShotCalculator extends SubsystemBase {
             Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
                     new ChassisSpeeds(RobotContainer.getRequestXVelocity(), RobotContainer.getRequestYVelocity(),
                             RobotContainer.getRequestRotationalVelocity()));
+
 //            Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
 //                    ChassisSpeeds.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
 //                            RobotContainer.getPose().getRotation()));
@@ -211,19 +213,19 @@ public class ShotCalculator extends SubsystemBase {
                 hubCenter = Constants.RED_HUB_FRONT_CENTER;
 
                 turretRotation = hubCenter
-                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
+                        .minus(futureTurretPosition.getTranslation()).getAngle();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
                 Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
                         Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
 
                 turretRotation = shuttlingLeftCorner
-                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
+                        .minus(futureTurretPosition.getTranslation()).getAngle();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
                 Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
                         Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
 
                 turretRotation = shuttlingRightCorner
-                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
+                        .minus(futureTurretPosition.getTranslation()).getAngle();
             }
             if (lastTurretRotation == null) lastTurretRotation = turretRotation;
             turretVelocity = turretRotation
@@ -311,34 +313,34 @@ public class ShotCalculator extends SubsystemBase {
         double lookaheadTurretToTargetDistance = turretToTargetDistance;
 
         //Iterate to converge on a final future position
-//        for (int i = 0; i < 10; i++) {
-//            timeOfFlight = timeOfFlightLookupTable.get(lookaheadTurretToTargetDistance);
-//            double offsetX = turretVelocityX * timeOfFlight;
-//            double offsetY = turretVelocityY * timeOfFlight;
-//            futureTurretPosition =
-//                    new Pose2d(
-//                            turretPosition.getTranslation().plus(new Translation2d(offsetX, offsetY)),
-//                            turretPosition.getRotation());
-//            if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
-//                Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
-//                        Constants.RED_HUB_CENTER);
-//
-//                lookaheadTurretToTargetDistance = hubCenter
-//                        .getDistance(turretPosition.getTranslation());
-//            } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
-//                Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
-//                        Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
-//
-//                lookaheadTurretToTargetDistance = shuttlingLeftCorner
-//                        .getDistance(turretPosition.getTranslation());
-//            } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
-//                Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
-//                        Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
-//
-//                lookaheadTurretToTargetDistance = shuttlingRightCorner
-//                        .getDistance(turretPosition.getTranslation());
-//            }
-//        }
+        for (int i = 0; i < 10; i++) {
+            timeOfFlight = timeOfFlightLookupTable.get(lookaheadTurretToTargetDistance);
+            double offsetX = turretVelocityX * timeOfFlight;
+            double offsetY = turretVelocityY * timeOfFlight;
+            futureTurretPosition =
+                    new Pose2d(
+                            turretPosition.getTranslation().plus(new Translation2d(offsetX, offsetY)),
+                            turretPosition.getRotation());
+            if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
+                Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
+                        Constants.RED_HUB_CENTER);
+
+                lookaheadTurretToTargetDistance = hubCenter
+                        .getDistance(turretPosition.getTranslation());
+            } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
+                Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
+                        Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
+
+                lookaheadTurretToTargetDistance = shuttlingLeftCorner
+                        .getDistance(turretPosition.getTranslation());
+            } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
+                Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
+                        Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
+
+                lookaheadTurretToTargetDistance = shuttlingRightCorner
+                        .getDistance(turretPosition.getTranslation());
+            }
+        }
 
         return new Pair<>(futureTurretPosition, lookaheadTurretToTargetDistance);
     }

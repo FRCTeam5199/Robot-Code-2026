@@ -9,6 +9,8 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.utility.LimelightHelpers;
 
+import java.awt.geom.Ellipse2D;
+
 public class Vision extends SubsystemBase {
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public volatile static LimelightHelpers.PoseEstimate limelightRightData;
@@ -73,10 +75,7 @@ public class Vision extends SubsystemBase {
 
                 //Only adds pose when it is less than 1m different from our current location
                 //or when we're at the origin (haven't gotten vision data yet)
-                if (RobotContainer.getPose().getTranslation()
-                        .getDistance(limelightLeftData.pose.getTranslation()) < 3d
-                        || originTimer.get() < 7) {
-
+                if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
                             limelightLeftData.timestampSeconds, VecBuilder
                                     .fill(xyStdev, xyStdev, 9999999999d));
@@ -105,9 +104,7 @@ public class Vision extends SubsystemBase {
 
                 //Only adds pose when it is less than 1m different from our current location
                 //or when we're at the origin (haven't gotten vision data yet)
-                if (RobotContainer.getPose().getTranslation()
-                        .getDistance(limelightRightData.pose.getTranslation()) < 3d
-                        || originTimer.get() < 7) {
+                if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
 
                     commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
                             limelightRightData.timestampSeconds, VecBuilder

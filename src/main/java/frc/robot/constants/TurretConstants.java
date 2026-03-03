@@ -14,17 +14,17 @@ public class TurretConstants {
     public static final boolean BRAKE = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0)
+            .withKP(10)
             .withKI(0)
-            .withKD(0)
+            .withKD(.1)
             .withKS(.35)
             .withKG(0)
             .withKV(.098522167487684729064039408867)
             .withKA(0)//.0005
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
-    public static final double VELOCITY = 100;
-    public static final double ACCELERATION = 300;
+    public static final double VELOCITY = 200;
+    public static final double ACCELERATION = 400;
     public static final double JERK = 3000;
 
     public static final double LOWER_TOLERANCE = 5;
