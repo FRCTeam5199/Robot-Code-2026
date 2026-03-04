@@ -322,9 +322,9 @@ public class TemplateSubsystem extends SubsystemBase {
 //        dynamicMotionMagicVoltage.Jerk = this.jerk;
     }
 
-    public void setPositionVoltage(double motorRotations, double velocity) {
+    public void setPositionVoltage(double motorRotations, double feedforward) {
         motor.setControl(positionVoltage.withPosition(motorRotations)
-                .withVelocity(velocity));
+                .withFeedForward(feedforward));
     }
 
     public void setPositionVoltage(double motorRotations) {

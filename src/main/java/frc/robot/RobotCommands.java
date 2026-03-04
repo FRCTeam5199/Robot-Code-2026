@@ -98,7 +98,7 @@ public class RobotCommands {
                         () -> {
                         },
                         (interrupted) -> turretSubsystem.setVoltage(0),
-                        () -> Math.abs(turretSubsystem.getSometimesEncoderRot()) < .1,
+                        () -> Math.abs(turretSubsystem.getSometimesEncoderRot()) < .05,
                         turretSubsystem
                 ),
                 new InstantCommand(turretSubsystem::zeroMotor),

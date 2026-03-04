@@ -64,8 +64,7 @@ public class RobotContainer {
     private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
     //Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
-    //        private static PositionCommand hoodControlAuto = new PositionCommand(hoodSubsystem, 0, true, false, 0);
-//    private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
+    private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
     private static final HoodCommand hoodHub = new HoodCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle());
     private static final HoodCommand hoodTower = new HoodCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle());
     private static final HoodCommand hoodLeftCorner = new HoodCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle());
@@ -120,7 +119,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
-                new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto)); //kickerauto, shooterauto, hoodauto
+                new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto));
         leftTriggerReleased = RobotCommands.idleState();
 
         extend = RobotCommands.extendClimb();
