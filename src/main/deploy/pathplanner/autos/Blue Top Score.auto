@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Top Start To Mid"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Top Mid Half Clear"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Top Mid To Climb"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Blue Score",
+  "choreoAuto": false
+}
