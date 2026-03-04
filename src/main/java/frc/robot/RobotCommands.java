@@ -12,8 +12,8 @@ public class RobotCommands {
     private static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     private static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     private static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
-    //    private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-//    private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
+    private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     private static boolean isIdling = false;
 
     // Runs Hopper and Indexer the way for shooting
@@ -97,7 +97,7 @@ public class RobotCommands {
                         () -> {
                         },
                         (interrupted) -> turretSubsystem.setVoltage(0),
-                        () -> Math.abs(turretSubsystem.getSometimesEncoderRot()) < .1,
+                        () -> Math.abs(turretSubsystem.getSometimesEncoderRot()) < .05,
                         turretSubsystem
                 ),
                 new InstantCommand(turretSubsystem::zeroMotor),
@@ -111,7 +111,7 @@ public class RobotCommands {
 //                new InstantCommand(() -> hoodSubsystem.setStopMoving(true)),
 //                new PositionCommand(hoodSubsystem, 0),
 //                new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
-//                new InstantCommand(() -> hoodSubsystem.setPositionProfiling(0, 0))
+                new InstantCommand(() -> hoodSubsystem.setPositionProfiling(0, 0))
         );
     }
 
@@ -121,7 +121,7 @@ public class RobotCommands {
                 moveHoodToZero(),
                 new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED),
                 new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
-//                new VelocityCommand(shooterSubsystem, 0),
+                new VelocityCommand(shooterSubsystem, 0),
                 new VelocityCommand(kickerSubsystem, 0)
         );
     }

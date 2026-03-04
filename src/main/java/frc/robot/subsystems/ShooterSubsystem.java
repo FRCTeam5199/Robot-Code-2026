@@ -43,7 +43,7 @@ public class ShooterSubsystem extends TemplateSubsystem {
         currentSpeed = shooterNetworkTable.getDoubleTopic("Current Speed").publish();
     }
 
-    private static ShooterSubsystem getInstance() {
+    public static ShooterSubsystem getInstance() {
         if (shooterSubsystem == null) {
             shooterSubsystem = new ShooterSubsystem();
         }

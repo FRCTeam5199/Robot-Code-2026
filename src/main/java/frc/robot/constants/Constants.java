@@ -15,10 +15,10 @@ public class Constants {
     public static final Translation2d BLUE_SHUTTLE_LEFT_CORNER = new Translation2d(.740, 1.311);
     public static final Translation2d BLUE_SHUTTLE_RIGHT_CORNER = new Translation2d(.740, 6.797);
 
-
     public static final double HUB_RADIUS = .52959;
     public static final Transform2d ROBOT_TO_TURRET = new Transform2d(-.13335, .13335, new Rotation2d(0));
-    public static final double PHASE_DELAY = 0.045;
+    public static final double PHASE_DELAY = 0.06;
+    public static final double ROTATIONAL_PHASE_DELAY = 0.06;
     public static final double CENTER_TO_BUMPER = 0; //add this later
     public static final Transform2d FRONT_LEFT_CORNER = new Transform2d(-CENTER_TO_BUMPER, -CENTER_TO_BUMPER, new Rotation2d(0));
     public static final Transform2d FRONT_RIGHT_CORNER = new Transform2d(CENTER_TO_BUMPER, -CENTER_TO_BUMPER, new Rotation2d(0));
