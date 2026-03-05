@@ -314,11 +314,11 @@ public class RobotContainer {
                 .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
 
-        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
-                .toggleOnFalse(new InstantCommand(()-> climbMode = climbMode.CLIMB));
-        
-        commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), ()->climbMode == climbMode.CLIMB));
-        commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), ()-> climbMode == climbMode.CLIMB));
+//        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
+//                .toggleOnFalse(new InstantCommand(() -> climbMode = climbMode.CLIMB));
+
+//        commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), () -> climbMode == climbMode.CLIMB));
+//        commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), () -> climbMode == climbMode.CLIMB));
     }
 
 

@@ -122,7 +122,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         velocity.set(RobotContainer.velocity);
         acceleration.set(RobotContainer.acceleration);
 
-        vision.addSample(getDegrees());
+//        vision.addSample(getDegrees());
 
         isMechAtGoal.set(isMechAtGoalAuto());
 
