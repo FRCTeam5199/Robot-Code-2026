@@ -211,7 +211,7 @@ public class TemplateSubsystem extends SubsystemBase {
         encoder = new CANcoder(encoderId);
         encoderConfig = new CANcoderConfiguration();
 
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
         encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
                 : SensorDirectionValue.Clockwise_Positive;
 

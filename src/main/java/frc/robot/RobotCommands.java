@@ -14,7 +14,7 @@ public class RobotCommands {
     private static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-        public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     private static boolean isIdling = false;
 
     // Runs Hopper and Indexer the way for shooting
@@ -98,7 +98,7 @@ public class RobotCommands {
                         () -> {
                         },
                         (interrupted) -> turretSubsystem.setVoltage(0),
-                        () -> Math.abs(turretSubsystem.getSometimesEncoderRot()) < .05,
+                        () -> Math.abs(turretSubsystem.getSometimesEncoderRot()) < .1,
                         turretSubsystem
                 ),
                 new InstantCommand(turretSubsystem::zeroMotor),
@@ -118,18 +118,18 @@ public class RobotCommands {
 
     public static Command extendClimb() {
         return new InstantCommand(() ->
-        climberSubsystem.setPosition(10));
+                climberSubsystem.setPosition(10));
     }
 
 
     public static Command retractClimb() {
         return new InstantCommand(() ->
-        climberSubsystem.setPosition(0));
+                climberSubsystem.setPosition(0));
     }
 
     public static Command stopClimb() {
         return new InstantCommand(() ->
-        climberSubsystem.setVelocity(0));
+                climberSubsystem.setVelocity(0));
     }
 
     public static Command idleState() {
