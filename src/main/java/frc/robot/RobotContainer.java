@@ -28,17 +28,15 @@ import frc.robot.subsystems.templates.PositionCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.AllianceFlipper;
-import frc.robot.utility.ClimbMode;
-import frc.robot.utility.Setpoint;
-import frc.robot.utility.ShotCalculator;
-import frc.robot.utility.ShotMode;
+import frc.robot.utility.*;
 
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
 
+
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+    public static final Autos auton = Autos.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
@@ -50,6 +48,9 @@ public class RobotContainer {
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
+
+    private static ClimberSetpoints climberSetpoints = ClimberSetpoints.CLIMB_LEFT_RED;
+
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
@@ -148,6 +149,9 @@ public class RobotContainer {
         ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
         leftBumperReleased = RobotCommands.idleState();
 
+        commandSwerveDrivetrain.configureAutoBuilder();
+
+        Autos.initializeAutos();
         configureBindings();
     }
 
@@ -325,17 +329,23 @@ public class RobotContainer {
 //        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
 //                .toggleOnFalse(new InstantCommand(() -> climbMode = climbMode.CLIMB));
 
-//        commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), () -> climbMode == climbMode.CLIMB));
-//        commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), () -> climbMode == climbMode.CLIMB));
+//
+//        commandXboxController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(-12)))
+//                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
+//        commandXboxController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(12)))
+//                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
+        commandXboxController.povLeft().onTrue(Autos.driveToPose(ClimberSetpoints.CLIMB_LEFT_RED_PREP));
+        commandXboxController.povRight().onTrue(Autos.driveToPose(ClimberSetpoints.CLIMB_LEFT_RED));
 
-        commandXboxController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(-12)))
-                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
-        commandXboxController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(12)))
-                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
     }
 
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("drive tune");
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+            return Autos.autonChooserRed.getSelected();
+        } else {
+            return Autos.autonChooserBlue.getSelected();
+        }
     }
 }
