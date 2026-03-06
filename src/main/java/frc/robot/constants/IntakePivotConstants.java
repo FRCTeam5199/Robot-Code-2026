@@ -13,7 +13,7 @@ public class IntakePivotConstants {
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 100;
+    public static final double DEPLOY = 98;
     public static final double STOW = 5;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()

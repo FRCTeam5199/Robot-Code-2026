@@ -54,9 +54,9 @@ public class ShotCalculator extends SubsystemBase {
 
         shooterSpeedLookupTable.put(1.004 + Constants.HUB_RADIUS, 26d);
         shooterSpeedLookupTable.put(1.988 + Constants.HUB_RADIUS, 31.5);
-        shooterSpeedLookupTable.put(2.962 + Constants.HUB_RADIUS, 36d);
-        shooterSpeedLookupTable.put(3.917 + Constants.HUB_RADIUS, 37d);
-        shooterSpeedLookupTable.put(5.006 + Constants.HUB_RADIUS, 44d);
+        shooterSpeedLookupTable.put(2.962 + Constants.HUB_RADIUS, 35d);
+        shooterSpeedLookupTable.put(3.917 + Constants.HUB_RADIUS, 35d);
+        shooterSpeedLookupTable.put(5.006 + Constants.HUB_RADIUS, 42d);
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444
 
@@ -189,12 +189,13 @@ public class ShotCalculator extends SubsystemBase {
             while (turretAnglePhaseDelayed >= TurretConstants.MAX) turretAnglePhaseDelayed -= 360;
 
 //            turretVelocityPhaseDelayed -= (RobotContainer.getRequestRotationalVelocity() / Math.PI * 180d);
-            turretVelocityPhaseDelayed -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d);
+            turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 
             //Turret Angle Calculations
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
                 Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
                         Constants.RED_HUB_CENTER);
+                
 //                hubCenter = Constants.RED_HUB_FRONT_CENTER;
 
                 turretRotation = hubCenter
@@ -224,7 +225,7 @@ public class ShotCalculator extends SubsystemBase {
             while (turretAngle <= TurretConstants.MIN) turretAngle += 360;
             while (turretAngle >= TurretConstants.MAX) turretAngle -= 360;
 
-            turretVelocity -= (RobotContainer.getSpeeds().omegaRadiansPerSecond / Math.PI * 180d);
+            turretVelocity -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 
             // Based on Future Pose
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
@@ -246,8 +247,8 @@ public class ShotCalculator extends SubsystemBase {
                 shotCalculator.getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
-        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAngle(),
-                0);
+        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),
+                shotCalculator.getHoodVelocityPhaseDelayed());
     }
 
 
@@ -311,19 +312,19 @@ public class ShotCalculator extends SubsystemBase {
                         Constants.RED_HUB_CENTER);
 
                 lookaheadTurretToTargetDistance = hubCenter
-                        .getDistance(turretPosition.getTranslation());
+                        .getDistance(futureTurretPosition.getTranslation());
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
                 Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
                         Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
 
                 lookaheadTurretToTargetDistance = shuttlingLeftCorner
-                        .getDistance(turretPosition.getTranslation());
+                        .getDistance(futureTurretPosition.getTranslation());
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
                 Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
                         Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
 
                 lookaheadTurretToTargetDistance = shuttlingRightCorner
-                        .getDistance(turretPosition.getTranslation());
+                        .getDistance(futureTurretPosition.getTranslation());
             }
         }
 
@@ -359,7 +360,7 @@ public class ShotCalculator extends SubsystemBase {
     }
 
     public double getKickerSpeedPhaseDelayed() {
-        return (shooterSpeedPhaseDelayed / 2d);
+        return (shooterSpeedPhaseDelayed / 2.5d);
     }
 
     public double getTurretAngle() {
