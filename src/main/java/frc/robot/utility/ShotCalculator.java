@@ -95,22 +95,12 @@ public class ShotCalculator extends SubsystemBase {
     public void periodic() {
         if (RobotContainer.getPose() != null) {
             Pose2d estimatedPose = RobotContainer.getPose();
-//            Pose2d estimatedPosePhaseDelayed =
-//                    estimatedPose.exp(
-//                            new Twist2d(
-//                                    -RobotContainer.getRequestXVelocity() * Constants.PHASE_DELAY,
-//                                    -RobotContainer.getRequestYVelocity() * Constants.PHASE_DELAY,
-//                                    RobotContainer.getRequestRotationalVelocity() * Constants.ROTATIONAL_PHASE_DELAY));
             Pose2d estimatedPosePhaseDelayed =
                     estimatedPose.exp(
                             new Twist2d(
                                     RobotContainer.getSpeeds().vxMetersPerSecond * Constants.PHASE_DELAY,
                                     RobotContainer.getSpeeds().vyMetersPerSecond * Constants.PHASE_DELAY,
                                     RobotContainer.getSpeeds().omegaRadiansPerSecond * Constants.ROTATIONAL_PHASE_DELAY));
-
-//            Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
-//                    new ChassisSpeeds(RobotContainer.getRequestXVelocity(), RobotContainer.getRequestYVelocity(),
-//                            RobotContainer.getRequestRotationalVelocity()));
 
             Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
                     ChassisSpeeds.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
@@ -133,16 +123,14 @@ public class ShotCalculator extends SubsystemBase {
                 hoodAngle = shuttleHoodLookupTable.get(futureTurretToTargetDistance);
             }
             if (Double.isNaN(lastHoodAnglePhaseDelayed)) lastHoodAnglePhaseDelayed = hoodAnglePhaseDelayed;
-//            hoodVelocityPhaseDelayed = (hoodAnglePhaseDelayed - HoodSubsystem.getInstance().getDegrees()) / .02;
+            hoodVelocityPhaseDelayed = (hoodAnglePhaseDelayed - lastHoodAnglePhaseDelayed) / .02;
 
             if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
             hoodVelocity = (hoodAngle - lastHoodAngle) / .02;
 
-
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
                 Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
                         Constants.RED_HUB_CENTER);
-//                hubCenter = Constants.RED_HUB_FRONT_CENTER;
 
                 turretRotationPhaseDelayed = hubCenter
                         .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
@@ -160,22 +148,6 @@ public class ShotCalculator extends SubsystemBase {
                         .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
             }
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
-
-//            double degrees = TurretSubsystem.getInstance().getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
-//            while (degrees >= 180d) degrees -= 360d;
-//            while (degrees <= -180d) degrees += 360d;
-
-//            if (Math.abs(TurretSubsystem.getInstance().getDegrees()
-//                    + RobotContainer.getPose().getRotation().getDegrees()
-//                    - turretRotationPhaseDelayed.getDegrees()) > 10) {
-//                degrees = lastTurretRotationPhaseDelayed.getDegrees();
-//            }
-
-//            turretVelocityPhaseDelayed = turretRotationPhaseDelayed
-//                    .minus(new Rotation2d(Math.toRadians(degrees))).getDegrees() / .02;
-//            System.out.println("Corrected: " + TurretSubsystem.getInstance().getMotorRotFromDegrees(turretVelocityPhaseDelayed));
-//            System.out.println("Old: " + TurretSubsystem.getInstance().getMotorRotFromDegrees(turretRotationPhaseDelayed
-//                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02));
             turretVelocityPhaseDelayed = turretRotationPhaseDelayed
                     .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02;
 
@@ -195,7 +167,7 @@ public class ShotCalculator extends SubsystemBase {
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
                 Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
                         Constants.RED_HUB_CENTER);
-                
+
 //                hubCenter = Constants.RED_HUB_FRONT_CENTER;
 
                 turretRotation = hubCenter
@@ -285,7 +257,7 @@ public class ShotCalculator extends SubsystemBase {
         double turretVelocityX =
                 fieldRelativeVelocity.vxMetersPerSecond
                         + fieldRelativeVelocity.omegaRadiansPerSecond
-                        * (Constants.ROBOT_TO_TURRET.getY() * Math.cos(robotAngleRadians)
+                        * (-Constants.ROBOT_TO_TURRET.getY() * Math.cos(robotAngleRadians)
                         - Constants.ROBOT_TO_TURRET.getX() * Math.sin(robotAngleRadians));
         double turretVelocityY =
                 fieldRelativeVelocity.vyMetersPerSecond

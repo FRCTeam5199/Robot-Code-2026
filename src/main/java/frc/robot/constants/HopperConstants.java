@@ -23,8 +23,8 @@ public class HopperConstants {
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;
 
-    public static final double LOWER_TOLERANCE = 2;
-    public static final double UPPER_TOLERANCE = 2;
+    public static final double LOWER_TOLERANCE = 10;
+    public static final double UPPER_TOLERANCE = 10;
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 

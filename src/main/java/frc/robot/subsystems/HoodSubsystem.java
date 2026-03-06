@@ -112,7 +112,7 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void followLastProfile() {
         currentState = profile.calculate(0.02, currentState, goalState);
-        setPositionVoltage(goalState.position, getFF(goalState.velocity));
+        setPositionVoltage(goalState.position);
     }
 
     public boolean isMechAtGoalAuto() {

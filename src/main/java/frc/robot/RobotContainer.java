@@ -210,11 +210,6 @@ public class RobotContainer {
 //        System.out.println(predictedWrapAround());
     }
 
-//    public static boolean predictedWrapAround() {
-//        return -turretSubsystem.getDegrees() + (shotCalculator.getTurretVelocity() * (shotCalculator.getKickerSpeed() * 2.06)) <= TurretConstants.MIN ||
-//                turretSubsystem.getDegrees() + (shotCalculator.getTurretVelocity() * (shotCalculator.getKickerSpeed() * 2.06)) >= TurretConstants.MAX;
-//    }
-
     public static boolean areMechanismsAtGoalsAuto() {
         return turretSubsystem.isMechAtGoalAuto() && hoodSubsystem.isMechAtGoalAuto()
                 && shooterSubsystem.isMechAtGoalAuto()
@@ -329,6 +324,11 @@ public class RobotContainer {
 
 //        commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), () -> climbMode == climbMode.CLIMB));
 //        commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), () -> climbMode == climbMode.CLIMB));
+
+        commandXboxController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(-12)))
+                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
+        commandXboxController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(12)))
+                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
     }
 
 

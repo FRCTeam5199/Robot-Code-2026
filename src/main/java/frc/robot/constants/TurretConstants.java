@@ -14,9 +14,9 @@ public class TurretConstants {
     public static final boolean BRAKE = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(10)
+            .withKP(5)
             .withKI(0)
-            .withKD(.1)
+            .withKD(0.2)
             .withKS(.35)
             .withKG(0)
             .withKV(.098522167487684729064039408867)
@@ -40,4 +40,6 @@ public class TurretConstants {
 
     public static final double MIN = -120d;
     public static final double MAX = 240d;
+
+    public static final double INDEXING_TIME = .25;
 }

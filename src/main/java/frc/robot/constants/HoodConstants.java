@@ -25,7 +25,6 @@ public class HoodConstants {
             .withGravityType(GravityTypeValue.Arm_Cosine)
             .withGravityArmPositionOffset(0);
 
-
     public static final double VELOCITY = 150;
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;
@@ -33,7 +32,7 @@ public class HoodConstants {
     public static final double LOWER_TOLERANCE = .5;
     public static final double UPPER_TOLERANCE = .5;
 
-    public static final double MAGNET_OFFSET = .4560546875;
+    public static final double MAGNET_OFFSET = .263427734375;
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;

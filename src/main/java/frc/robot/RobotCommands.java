@@ -16,30 +16,36 @@ public class RobotCommands {
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     private static boolean isIdling = false;
+    private static boolean isIndexing = false;
 
     // Runs Hopper and Indexer the way for shooting
     public static Command indexBallsAuto() {
         return new FunctionalCommand(
                 () -> {
-                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling /* && !RobotContainer.predictedWrapAround() */) {
+                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling) {
                         isIdling = false;
-                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling /* && RobotContainer.predictedWrapAround() */) {
+                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling) {
                         isIdling = true;
+                        isIndexing = false;
                         indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                     }
                 },
                 () -> {
-                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling /* && !RobotContainer.predictedWrapAround() */) {
+                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling) {
                         isIdling = false;
-                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling /* && RobotContainer.predictedWrapAround()*/) {
+                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling) {
                         isIdling = true;
+                        isIndexing = false;
                         indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
+                    }
+
+                    if (hopperSubsystem.isAboveSpeed(HopperConstants.INDEXING_SPEED - 10) && !isIndexing) {
+                        isIndexing = true;
+                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
                     }
                 },
                 (interrupted) -> {

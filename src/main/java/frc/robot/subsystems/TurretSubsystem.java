@@ -129,7 +129,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         if (!stopMoving) followLastProfile();
 
 //        System.out.println("Turret Degrees: " + getDegrees());
-
+        predictWrapAround();
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {
@@ -153,11 +153,13 @@ public class TurretSubsystem extends TemplateSubsystem {
         if ((Math.abs(shotCalculator.getTurretAngle() - goalState.position)) >= 10) {
             setPositionVoltage(currentState.position, getFF(currentState.velocity));
         } else {
-            setPositionVoltage(goalState.position, getFF(goalState.velocity));
+            setPositionVoltage(currentState.position, getFF(currentState.velocity));
         }
     }
 
     public boolean isMechAtGoalAuto() {
+        if (predictWrapAround()) return false; //prevents shooting before a wrap
+
         if (RobotContainer.getShotMode() != ShotMode.SHOOTING) {
             return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
                     && getDegrees() <= shotCalculator.getTurretAngle() + TurretConstants.UPPER_TOLERANCE;
@@ -195,5 +197,14 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     public double getFF(double velocity) {
         return simpleMotorFeedforward.calculate(velocity);
+    }
+
+
+    public static boolean predictWrapAround() {
+        double predictedTurretPosition = turretSubsystem.getDegrees()
+                + turretSubsystem.getDegreesFromMotorRot(turretSubsystem.getMotorVelocity())
+                * TurretConstants.INDEXING_TIME;
+        return predictedTurretPosition >= TurretConstants.MAX
+                || predictedTurretPosition <= TurretConstants.MIN;
     }
 }

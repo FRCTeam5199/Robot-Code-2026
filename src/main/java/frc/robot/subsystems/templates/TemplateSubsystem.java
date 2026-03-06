@@ -385,9 +385,9 @@ public class TemplateSubsystem extends SubsystemBase {
         }
     }
 
-    public boolean isAboveSpeed() {
+    public boolean isAboveSpeed(double goalVelocity) {
         if (type != Type.ROLLER) return false;
-        return getMechVelocity() > goal - lowerTolerance;
+        return getMechVelocity() > goalVelocity;
     }
 
     public void setOffset(double offset, boolean changedOffset) {
