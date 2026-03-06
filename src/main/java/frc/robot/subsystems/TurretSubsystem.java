@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.PositionVoltage;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -13,6 +15,8 @@ import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
+
+import java.util.function.Consumer;
 
 public class TurretSubsystem extends TemplateSubsystem {
     private static TurretSubsystem turretSubsystem;
@@ -44,6 +48,8 @@ public class TurretSubsystem extends TemplateSubsystem {
     private BooleanPublisher isMechAtGoal;
     private StructPublisher<Pose2d> turretPose;
     private StructPublisher<Pose2d> futureTurretPose;
+
+    private SimpleMotorFeedforward simpleMotorFeedforward;
 
     private TurretSubsystem() {
         super(Type.ROLLER, TurretConstants.MOTOR_ID,
@@ -86,6 +92,9 @@ public class TurretSubsystem extends TemplateSubsystem {
         futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
         velocity = networkTable.getDoubleTopic("Velocity").publish();
         acceleration = networkTable.getDoubleTopic("Acceleration").publish();
+
+        simpleMotorFeedforward = new SimpleMotorFeedforward(TurretConstants.SLOT0_CONFIGS.kS,
+                TurretConstants.SLOT0_CONFIGS.kV, TurretConstants.SLOT0_CONFIGS.kA);
     }
 
     public static TurretSubsystem getInstance() {
@@ -113,14 +122,14 @@ public class TurretSubsystem extends TemplateSubsystem {
         velocity.set(RobotContainer.velocity);
         acceleration.set(RobotContainer.acceleration);
 
-        vision.addSample(getDegrees());
+//        vision.addSample(getDegrees());
 
         isMechAtGoal.set(isMechAtGoalAuto());
 
-//        if (!stopMoving) followLastProfile();
+        if (!stopMoving) followLastProfile();
 
 //        System.out.println("Turret Degrees: " + getDegrees());
-
+        predictWrapAround();
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {
@@ -142,14 +151,15 @@ public class TurretSubsystem extends TemplateSubsystem {
         currentState = profile.calculate(0.02, currentState, goalState);
 
         if ((Math.abs(shotCalculator.getTurretAngle() - goalState.position)) >= 10) {
-            setPositionVoltage(currentState.position, currentState.velocity);
+            setPositionVoltage(currentState.position, getFF(currentState.velocity));
         } else {
-            setPositionVoltage(goalState.position, goalState.velocity);
+            setPositionVoltage(currentState.position, getFF(currentState.velocity));
         }
-
     }
 
     public boolean isMechAtGoalAuto() {
+        if (predictWrapAround()) return false; //prevents shooting before a wrap
+
         if (RobotContainer.getShotMode() != ShotMode.SHOOTING) {
             return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
                     && getDegrees() <= shotCalculator.getTurretAngle() + TurretConstants.UPPER_TOLERANCE;
@@ -183,5 +193,18 @@ public class TurretSubsystem extends TemplateSubsystem {
         double projectedY = futureTurretPose.getY() + deltaY;
 
         return Math.abs(hubCenter.getY() - projectedY);
+    }
+
+    public double getFF(double velocity) {
+        return simpleMotorFeedforward.calculate(velocity);
+    }
+
+
+    public static boolean predictWrapAround() {
+        double predictedTurretPosition = turretSubsystem.getDegrees()
+                + turretSubsystem.getDegreesFromMotorRot(turretSubsystem.getMotorVelocity())
+                * TurretConstants.INDEXING_TIME;
+        return predictedTurretPosition >= TurretConstants.MAX
+                || predictedTurretPosition <= TurretConstants.MIN;
     }
 }

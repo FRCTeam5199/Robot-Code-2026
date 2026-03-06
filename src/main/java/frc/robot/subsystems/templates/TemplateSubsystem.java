@@ -211,7 +211,7 @@ public class TemplateSubsystem extends SubsystemBase {
         encoder = new CANcoder(encoderId);
         encoderConfig = new CANcoderConfiguration();
 
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
         encoderConfig.MagnetSensor.SensorDirection = isCCWPositive ? SensorDirectionValue.CounterClockwise_Positive
                 : SensorDirectionValue.Clockwise_Positive;
 
@@ -322,9 +322,9 @@ public class TemplateSubsystem extends SubsystemBase {
 //        dynamicMotionMagicVoltage.Jerk = this.jerk;
     }
 
-    public void setPositionVoltage(double motorRotations, double velocity) {
+    public void setPositionVoltage(double motorRotations, double feedforward) {
         motor.setControl(positionVoltage.withPosition(motorRotations)
-                .withVelocity(velocity));
+                .withFeedForward(feedforward));
     }
 
     public void setPositionVoltage(double motorRotations) {
@@ -385,9 +385,9 @@ public class TemplateSubsystem extends SubsystemBase {
         }
     }
 
-    public boolean isAboveSpeed() {
+    public boolean isAboveSpeed(double goalVelocity) {
         if (type != Type.ROLLER) return false;
-        return getMechVelocity() > goal - lowerTolerance;
+        return getMechVelocity() > goalVelocity;
     }
 
     public void setOffset(double offset, boolean changedOffset) {

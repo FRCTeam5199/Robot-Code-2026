@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -29,6 +30,7 @@ public class HoodSubsystem extends TemplateSubsystem {
     private DoublePublisher goalPositionPhaseDelay;
     private DoublePublisher currentPosition;
     private BooleanPublisher isMechAtGoal;
+    private SimpleMotorFeedforward simpleMotorFeedforward;
 
     private HoodSubsystem() {
         super(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
@@ -63,6 +65,9 @@ public class HoodSubsystem extends TemplateSubsystem {
         currentPosition = hoodTable.getDoubleTopic("Current Position").publish();
 
         isMechAtGoal = hoodTable.getBooleanTopic("Hood Is Mech At Goal").publish();
+
+        simpleMotorFeedforward = new SimpleMotorFeedforward(HoodConstants.SLOT0_CONFIGS.kS,
+                HoodConstants.SLOT0_CONFIGS.kV, HoodConstants.SLOT0_CONFIGS.kA);
     }
 
     public static HoodSubsystem getInstance() {
@@ -128,5 +133,8 @@ public class HoodSubsystem extends TemplateSubsystem {
         this.continuousMotion = continuousMotion;
     }
 
+    public double getFF(double velocity) {
+        return simpleMotorFeedforward.calculate(velocity);
+    }
 }
 

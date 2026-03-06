@@ -29,10 +29,10 @@ public class HoodConstants {
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;
 
-    public static final double LOWER_TOLERANCE = 2;
-    public static final double UPPER_TOLERANCE = 2;
+    public static final double LOWER_TOLERANCE = .5;
+    public static final double UPPER_TOLERANCE = .5;
 
-    public static final double MAGNET_OFFSET = -.34228515625;
+    public static final double MAGNET_OFFSET = .263427734375;
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;

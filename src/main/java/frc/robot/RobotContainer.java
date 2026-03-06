@@ -67,8 +67,7 @@ public class RobotContainer {
     private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
     //Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
-    //        private static PositionCommand hoodControlAuto = new PositionCommand(hoodSubsystem, 0, true, false, 0);
-//    private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
+    private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
     private static final HoodCommand hoodHub = new HoodCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle());
     private static final HoodCommand hoodTower = new HoodCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle());
     private static final HoodCommand hoodLeftCorner = new HoodCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle());
@@ -88,9 +87,11 @@ public class RobotContainer {
     private static final VelocityCommand kickerLeftCorner = new VelocityCommand(kickerSubsystem, Setpoint.LEFT_CORNER.getKickerSpeed());
     private static final VelocityCommand kickerOutpost = new VelocityCommand(kickerSubsystem, Setpoint.OUTPOST.getKickerSpeed());
     //Indexer Commands
+    private static final VelocityCommand indexerAuto = new VelocityCommand(indexerSubsystem, 0);
     private static final VelocityCommand indexerIdle = new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED);
     private static final VelocityCommand indexerIndex = new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED);
     //Hopper Commands
+    private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
     private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
     private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
     //Intake Roller Commands
@@ -123,7 +124,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
-                new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto)); //kickerauto, shooterauto, hoodauto
+                new ParallelCommandGroup(kickerAuto, shooterAuto, hoodControlAuto, turretControlAuto));
         leftTriggerReleased = RobotCommands.idleState();
 
         extend = RobotCommands.extendClimb();
@@ -207,6 +208,9 @@ public class RobotContainer {
 
         // Logging
         logger.telemeterize(currentState);
+
+//        System.out.println(shotCalculator.getTurretVelocity());
+//        System.out.println(predictedWrapAround());
     }
 
     public static boolean areMechanismsAtGoalsAuto() {
@@ -314,15 +318,20 @@ public class RobotContainer {
         //    commandXboxController.b().onTrue(setOutpostSetpoint);
         commandXboxController.a().onTrue(setTowerSetpoint);
 //
-        commandXboxController.b().onTrue(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
-                .onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+        commandXboxController.b().onTrue(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
+                .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
 
-        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
-                .toggleOnFalse(new InstantCommand(()-> climbMode = climbMode.CLIMB));
-        
-        commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), ()->climbMode == climbMode.CLIMB));
-        commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), ()-> climbMode == climbMode.CLIMB));
+//        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
+//                .toggleOnFalse(new InstantCommand(() -> climbMode = climbMode.CLIMB));
+
+//        commandXboxController.povLeft().onTrue(new ConditionalCommand(extend, RobotCommands.stopClimb(), () -> climbMode == climbMode.CLIMB));
+//        commandXboxController.povRight().onTrue(new ConditionalCommand(retract, RobotCommands.zeroTurret(), () -> climbMode == climbMode.CLIMB));
+
+        commandXboxController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(-12)))
+                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
+        commandXboxController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(12)))
+                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
     }
 
 

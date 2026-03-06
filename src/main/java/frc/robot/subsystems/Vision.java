@@ -11,11 +11,11 @@ import frc.robot.utility.LimelightHelpers;
 
 import java.awt.geom.Ellipse2D;
 
-public class Vision extends SubsystemBase {
+public class Vision {
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public volatile static LimelightHelpers.PoseEstimate limelightRightData;
     public volatile static LimelightHelpers.PoseEstimate limelightLeftData;
-    public volatile static LimelightHelpers.PoseEstimate limelightTurretData;
+    public volatile static LimelightHelpers.PoseEstimate limelightFrontData;
     public static Timer originTimer = new Timer();
     private static Vision vision;
     private final TimeInterpolatableBuffer<Rotation3d> turretAngleBuffer =
@@ -26,10 +26,12 @@ public class Vision extends SubsystemBase {
         //filters: 1,2,3,4,5,6,8,9,10,11,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32 - removing outpost, tower, and trench
         //filters: 1,2,3,4,5,6,7,8,9,10,11,12,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32 - removing outpost
 
-        LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
+        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_LEFT_NAME,
                 -.316, -.316, .453, 0, 5, 135.218);
-        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
+        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_RIGHT_NAME,
                 -.317, .317, .436, 180, 5, -135.218);
+        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_FRONT_NAME,
+                -.182, .156, .445, 0, 10, 0); //forward and side could be switched around, yaw might be 180
 
 //        startThread();
     }
@@ -73,8 +75,6 @@ public class Vision extends SubsystemBase {
                         .getDistance(new Translation2d(0, 0)) < .25)
                     originTimer.restart();
 
-                //Only adds pose when it is less than 1m different from our current location
-                //or when we're at the origin (haven't gotten vision data yet)
                 if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
                             limelightLeftData.timestampSeconds, VecBuilder
@@ -102,8 +102,6 @@ public class Vision extends SubsystemBase {
                         .getDistance(new Translation2d(0, 0)) < .25)
                     originTimer.restart();
 
-                //Only adds pose when it is less than 1m different from our current location
-                //or when we're at the origin (haven't gotten vision data yet)
                 if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
 
                     commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
@@ -112,69 +110,32 @@ public class Vision extends SubsystemBase {
                 }
             }
         }
-    }
 
-    public Pose3d getTurretCameraPose(double timeStamp) {
-        if (turretAngleBuffer.getSample(timeStamp).isEmpty())
-            return new Pose3d(Translation3d.kZero, Rotation3d.kZero);
-        return Constants.ROBOT_RELATIVE_TURRET_POSE.transformBy(
-                        new Transform3d(Translation3d.kZero,
-                                turretAngleBuffer.getSample(timeStamp).get()))
-                .transformBy(Constants.TURRET_TO_CAMERA);
-    }
+        if (LimelightHelpers.getTV(Constants.LIMELIGHT_FRONT_NAME)) {
+            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_FRONT_NAME,
+                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
+            limelightFrontData = LimelightHelpers
+                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_FRONT_NAME);
 
-    public void addSample(double degrees) {
-        turretAngleBuffer.addSample(Timer.getTimestamp(),
-                new Rotation3d(0, 0, Math.toRadians(-degrees)));
-    }
+            if (limelightFrontData != null) {
+                double xyStdev = .3;
 
-    @Override
-    public void periodic() {
-//        if (LimelightHelpers.getTV(Constants.LIMELIGHT_TURRET_NAME)) {
-//            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_TURRET_NAME,
-//                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(),
-//                    0, 0, 0, 0, 0);
-//
-//            limelightTurretData = LimelightHelpers
-//                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_TURRET_NAME);
-//            if (limelightTurretData != null) {
-////                System.out.println("Limelight Timestamp: " + limelightTurretData.timestampSeconds);
-////                System.out.println("Timer Timestamp: " + Timer.getFPGATimestamp());
-//
-//                Pose3d turretLimelightPose = getTurretCameraPose(limelightTurretData.timestampSeconds);
-//
-//                LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_TURRET_NAME,
-//                        turretLimelightPose.getX(), turretLimelightPose.getY(), turretLimelightPose.getZ(),
-//                        Math.toDegrees(turretLimelightPose.getRotation().getX()),
-//                        Math.toDegrees(turretLimelightPose.getRotation().getY()),
-//                        -Math.toDegrees(turretLimelightPose.getRotation().getZ()));
-//
-//                limelightTurretData = LimelightHelpers
-//                        .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_TURRET_NAME);
-//
-//                double xyStdev = .3;
-////
-//                if (limelightTurretData.tagCount < 2) {
-//                    xyStdev *= Math.pow(limelightTurretData.avgTagDist, 3);
-//                } else {
-//                    xyStdev *= limelightTurretData.avgTagDist;
-//                }
-//
-////                if (RobotContainer.getPose().getTranslation()
-////                        .getDistance(new Translation2d(0, 0)) < .25)
-////                    originTimer.restart();
-////
-//                //Only adds pose when it is less than 1m different from our current location
-//                //or when we're at the origin (haven't gotten vision data yet)
-////                if (RobotContainer.getPose().getTranslation()
-////                        .getDistance(limelightTurretData.pose.getTranslation()) < 1d
-////                        || originTimer.get() < 5) {
-////
-//                commandSwerveDrivetrain.addVisionMeasurement(limelightTurretData.pose,
-//                        limelightTurretData.timestampSeconds, VecBuilder
-//                                .fill(xyStdev, xyStdev, 9999999999d));
-////                }
-//            }
-//        }
+                if (limelightFrontData.tagCount < 2) {
+                    xyStdev *= Math.pow(limelightFrontData.avgTagDist, 3);
+                } else {
+                    xyStdev *= limelightFrontData.avgTagDist;
+                }
+
+                if (RobotContainer.getPose().getTranslation()
+                        .getDistance(new Translation2d(0, 0)) < .25)
+                    originTimer.restart();
+
+                if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
+                    commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
+                            limelightFrontData.timestampSeconds, VecBuilder
+                                    .fill(xyStdev, xyStdev, 9999999999d));
+                }
+            }
+        }
     }
 }
