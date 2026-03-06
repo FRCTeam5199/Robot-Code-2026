@@ -84,9 +84,11 @@ public class RobotContainer {
     private static final VelocityCommand kickerLeftCorner = new VelocityCommand(kickerSubsystem, Setpoint.LEFT_CORNER.getKickerSpeed());
     private static final VelocityCommand kickerOutpost = new VelocityCommand(kickerSubsystem, Setpoint.OUTPOST.getKickerSpeed());
     //Indexer Commands
+    private static final VelocityCommand indexerAuto = new VelocityCommand(indexerSubsystem, 0);
     private static final VelocityCommand indexerIdle = new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED);
     private static final VelocityCommand indexerIndex = new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED);
     //Hopper Commands
+    private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
     private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
     private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
     //Intake Roller Commands
@@ -203,7 +205,15 @@ public class RobotContainer {
 
         // Logging
         logger.telemeterize(currentState);
+
+//        System.out.println(shotCalculator.getTurretVelocity());
+//        System.out.println(predictedWrapAround());
     }
+
+//    public static boolean predictedWrapAround() {
+//        return -turretSubsystem.getDegrees() + (shotCalculator.getTurretVelocity() * (shotCalculator.getKickerSpeed() * 2.06)) <= TurretConstants.MIN ||
+//                turretSubsystem.getDegrees() + (shotCalculator.getTurretVelocity() * (shotCalculator.getKickerSpeed() * 2.06)) >= TurretConstants.MAX;
+//    }
 
     public static boolean areMechanismsAtGoalsAuto() {
         return turretSubsystem.isMechAtGoalAuto() && hoodSubsystem.isMechAtGoalAuto()

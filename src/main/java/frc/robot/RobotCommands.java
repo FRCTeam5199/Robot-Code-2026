@@ -21,22 +21,22 @@ public class RobotCommands {
     public static Command indexBallsAuto() {
         return new FunctionalCommand(
                 () -> {
-                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling) {
+                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling /* && !RobotContainer.predictedWrapAround() */) {
                         isIdling = false;
                         indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling) {
+                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling /* && RobotContainer.predictedWrapAround() */) {
                         isIdling = true;
                         indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                     }
                 },
                 () -> {
-                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling) {
+                    if (RobotContainer.areMechanismsAtGoalsAuto() && isIdling /* && !RobotContainer.predictedWrapAround() */) {
                         isIdling = false;
                         indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling) {
+                    } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling /* && RobotContainer.predictedWrapAround()*/) {
                         isIdling = true;
                         indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
