@@ -11,10 +11,8 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -47,6 +45,11 @@ public class RobotContainer {
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
+
+    private static final LinearFilter xFilter = LinearFilter.movingAverage(5);
+    private static final LinearFilter yFilter = LinearFilter.movingAverage(5);
+    private static final LinearFilter rotSinFilter = LinearFilter.movingAverage(5);
+    private static final LinearFilter rotCosFilter = LinearFilter.movingAverage(5);
 
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
@@ -143,6 +146,8 @@ public class RobotContainer {
     private static ShotMode shotMode = ShotMode.SHOOTING;
     private static Translation2d[] robotCorners = new Translation2d[4];
     private static ClimbMode climbMode = ClimbMode.NOCLIMB;
+    private static boolean filtersInitialized = false;
+
 
     public RobotContainer() {
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
@@ -185,6 +190,26 @@ public class RobotContainer {
 
     public static void periodic() {
         currentState = commandSwerveDrivetrain.getStateCopy();
+
+        if (currentState == null || currentState.Pose == null) return;
+
+        // Seed filters with actual pose on first loop to avoid zero averaging
+        if (!filtersInitialized) {
+            for (int i = 0; i < 5; i++) {
+                xFilter.calculate(currentState.Pose.getX());
+                yFilter.calculate(currentState.Pose.getY());
+                rotSinFilter.calculate(Math.sin(currentState.Pose.getRotation().getRadians()));
+                rotCosFilter.calculate(Math.cos(currentState.Pose.getRotation().getRadians()));
+                xFilter.calculate(currentState.Speeds.vxMetersPerSecond);
+                xFilter.calculate(currentState.Speeds.vyMetersPerSecond);
+                xFilter.calculate(currentState.Speeds.omegaRadiansPerSecond);
+            }
+            filtersInitialized = true;
+        }
+        currentState.Pose = new Pose2d(
+                xFilter.calculate(currentState.Pose.getX()),
+                yFilter.calculate(currentState.Pose.getY()),
+                getRotFilter(currentState.Pose.getRotation()));
 
         velocity = Math.sqrt(Math.pow(RobotContainer.getSpeeds().vxMetersPerSecond, 2)
                 + Math.pow(RobotContainer.getSpeeds().vyMetersPerSecond, 2));
@@ -234,7 +259,7 @@ public class RobotContainer {
         calculateAutoClimbVelocities();
 
         // Logging
-        logger.telemeterize(currentState);
+        logger.telemeterize(currentState); //currentState
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
@@ -252,9 +277,12 @@ public class RobotContainer {
                 && kickerSubsystem.isMechAtGoal(true);
     }
 
-    public static Pose2d getPose() {
-        return currentState.Pose;
-    }
+//    public static Pose2d getPose() {
+//        return currentState.Pose;
+//    }
+
+//    public static double get
+
 
     public static ChassisSpeeds getSpeeds() {
         return currentState.Speeds;
@@ -437,4 +465,30 @@ public class RobotContainer {
     public boolean aligned() {
         return climberSetpoint.getPose2d().getTranslation().getDistance(getPose().getTranslation()) < .1;
     }
+
+//    public static double getXFilter() {
+//        return poseFilter.calculate(getRawPose().getX());
+//    }
+//
+//    public static double getYFilter() {
+//        return poseFilter.calculate(getRawPose().getY());
+//    }
+//
+//    public static double getRotFilter() {
+//        return poseFilter.calculate(getRawPose().getRotation().getRadians());
+//    }
+
+    public static Pose2d getPose() {
+        return currentState.Pose;
+    }
+
+
+    private static Rotation2d getRotFilter(Rotation2d rotation) {
+        double radians = rotation.getRadians();
+        return new Rotation2d(
+                Math.atan2(
+                        rotSinFilter.calculate(Math.sin(radians)),
+                        rotCosFilter.calculate(Math.cos(radians))));
+    }
+
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.wpilibj.Timer;
@@ -19,6 +20,8 @@ public class Vision {
     private static Vision vision;
     private final TimeInterpolatableBuffer<Rotation3d> turretAngleBuffer =
             TimeInterpolatableBuffer.createBuffer(Constants.TURRET_BUFFER_SIZE);
+//    private final LinearFilter poseFilter =
+//            LinearFilter.movingAverage((int) (0.1 / 0.02));
 
     private Vision() {
         //5,8,9,10,11,2,3,4 - hub april tags
