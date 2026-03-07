@@ -143,8 +143,8 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public void configureLinearMech(double drumCircumference, double motorMinRotation, double motorMaxRotation) {
         this.drumCircumference = drumCircumference;
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = motorMaxRotation;
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = motorMinRotation;
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromMechM(motorMaxRotation);
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromMechM(motorMinRotation);
 
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;

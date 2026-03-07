@@ -28,6 +28,6 @@ public class IndexerConstants {
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
-    public static final double INDEXING_SPEED = 30;
+    public static final double INDEXING_SPEED = 90;
     public static final double IDLING_SPEED = -15;
 }

@@ -126,10 +126,9 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         isMechAtGoal.set(isMechAtGoalAuto());
 
-        if (!stopMoving) followLastProfile();
+//        if (!stopMoving) followLastProfile();
 
 //        System.out.println("Turret Degrees: " + getDegrees());
-        predictWrapAround();
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {

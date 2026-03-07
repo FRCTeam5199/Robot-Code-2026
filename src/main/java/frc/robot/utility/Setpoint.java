@@ -1,5 +1,7 @@
 package frc.robot.utility;
 
+import frc.robot.constants.KickerConstants;
+
 public enum Setpoint {
     HUB(0, 0, 28), //28 //intake against hub
     TOWER(0, 5, 32),
@@ -27,6 +29,6 @@ public enum Setpoint {
     }
 
     public double getKickerSpeed() {
-        return (shooterSpeed / 2.5);
+        return (shooterSpeed * KickerConstants.SCALE_FACTOR);
     }
 }

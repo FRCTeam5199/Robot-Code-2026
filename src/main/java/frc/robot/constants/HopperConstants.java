@@ -28,6 +28,6 @@ public class HopperConstants {
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
-    public static final double INDEXING_SPEED = 60;
+    public static final double INDEXING_SPEED = 116;
     public static final double IDLING_SPEED = -5;
 }

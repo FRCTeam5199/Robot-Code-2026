@@ -4,7 +4,6 @@ package frc.robot;
 /// / Open Source Software; you can modify and/or share it under the terms of
 /// / the WPILib BSD license file in the root directory of this project.
 
-import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -13,7 +12,6 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -21,12 +19,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
-import frc.robot.utility.ClimberSetpoints;
+import frc.robot.utility.ClimberSetpoint;
 import frc.robot.utility.ShotCalculator;
-
-import java.util.Map;
-import java.util.concurrent.CyclicBarrier;
-import java.util.function.Supplier;
 
 public final class Autos {
     private SendableChooser<Command> autoChooser;
@@ -79,7 +73,7 @@ public final class Autos {
     private static Command blueTopMidHalfClear;
     private static Command blueTopMidToScore;
 
-    public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+    public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
@@ -147,7 +141,7 @@ public final class Autos {
         );
     }
 
-    public static Command driveToPose(ClimberSetpoints climberSetpoints) {
+    public static Command driveToPose(ClimberSetpoint climberSetpoint) {
         return new SequentialCommandGroup(
                 new InstantCommand(() ->
                         commandSwerveDrivetrain.applyRequest(() ->
@@ -158,13 +152,42 @@ public final class Autos {
                 ),
 
                 AutoBuilder.pathfindToPose(
-                        climberSetpoints.getPose2d(),
+                        climberSetpoint.getPose2d(),
                         new PathConstraints(1, 3,
                                 Units.degreesToRadians(540d), Units.degreesToRadians(720d)), 1d));
 
     }
 
-    public static Command driveToPose(ClimberSetpoints climberSetpoints,
+    public static Command pidAlign(ClimberSetpoint climberSetpoint) {
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> RobotContainer.setClimberSetpoint(climberSetpoint)),
+                new FunctionalCommand(
+                        () -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(0)
+                                            .withRotationalRate(0));
+                        },
+                        () -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(RobotContainer.getXVelocity())
+                                            .withVelocityY(RobotContainer.getYVelocity())
+                                            .withRotationalRate(RobotContainer.getRotationVelocity()));
+                        },
+                        (interrupted) -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(0)
+                                            .withRotationalRate(0));
+                        },
+                        () -> false/* (commandSwerveDrivetrain.getState().Speeds.vxMetersPerSecond < .01
+                                && commandSwerveDrivetrain.getState().Speeds.vyMetersPerSecond < .01)*/,
+                        commandSwerveDrivetrain
+                )
+        );
+    }
+
+    public static Command driveToPose(ClimberSetpoint climberSetpoint,
                                       double maxVelocity, double maxAcceleration, double goalEndVelocity) {
         return new SequentialCommandGroup(
                 new InstantCommand(() ->
@@ -175,7 +198,7 @@ public final class Autos {
                         )
                 ),
                 AutoBuilder.pathfindToPose(
-                        climberSetpoints.getPose2d(),
+                        climberSetpoint.getPose2d(),
                         new PathConstraints(maxVelocity, maxAcceleration,
                                 Units.degreesToRadians(540d), Units.degreesToRadians(720d)), goalEndVelocity)
         );

@@ -28,5 +28,5 @@ public class IntakeRollerConstants {
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
-    public static final double INTAKE_SPEED = 90;
+    public static final double INTAKE_SPEED = 116;
 }

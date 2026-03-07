@@ -16,7 +16,6 @@ public class Vision {
     public volatile static LimelightHelpers.PoseEstimate limelightRightData;
     public volatile static LimelightHelpers.PoseEstimate limelightLeftData;
     public volatile static LimelightHelpers.PoseEstimate limelightFrontData;
-    public static Timer originTimer = new Timer();
     private static Vision vision;
     private final TimeInterpolatableBuffer<Rotation3d> turretAngleBuffer =
             TimeInterpolatableBuffer.createBuffer(Constants.TURRET_BUFFER_SIZE);
@@ -46,7 +45,7 @@ public class Vision {
             while (!Thread.interrupted()) {
                 updatePoses();
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
                 } catch (InterruptedException ignored) {
 
                 }
@@ -63,17 +62,13 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT_NAME);
 
             if (limelightLeftData != null) {
-                double xyStdev = .3;
+                double xyStdev = .5;
 
                 if (limelightLeftData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
                 } else {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
-
-                if (RobotContainer.getPose().getTranslation()
-                        .getDistance(new Translation2d(0, 0)) < .25)
-                    originTimer.restart();
 
                 if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
@@ -90,7 +85,7 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
 
             if (limelightRightData != null) {
-                double xyStdev = .3;
+                double xyStdev = .5;
 
                 if (limelightRightData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
@@ -98,12 +93,7 @@ public class Vision {
                     xyStdev *= limelightRightData.avgTagDist;
                 }
 
-                if (RobotContainer.getPose().getTranslation()
-                        .getDistance(new Translation2d(0, 0)) < .25)
-                    originTimer.restart();
-
                 if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
-
                     commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
                             limelightRightData.timestampSeconds, VecBuilder
                                     .fill(xyStdev, xyStdev, 9999999999d));
@@ -118,17 +108,13 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_FRONT_NAME);
 
             if (limelightFrontData != null) {
-                double xyStdev = .3;
+                double xyStdev = .5;
 
                 if (limelightFrontData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightFrontData.avgTagDist, 3);
                 } else {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
-
-                if (RobotContainer.getPose().getTranslation()
-                        .getDistance(new Translation2d(0, 0)) < .25)
-                    originTimer.restart();
 
                 if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,

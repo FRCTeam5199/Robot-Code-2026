@@ -5,18 +5,18 @@
 package frc.robot;
 
 
-import java.nio.file.Path;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -33,7 +33,6 @@ import frc.robot.utility.*;
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
 
-
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
     public static final Autos auton = Autos.getInstance();
@@ -49,23 +48,36 @@ public class RobotContainer {
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
 
-    private static ClimberSetpoints climberSetpoints = ClimberSetpoints.CLIMB_LEFT_RED;
-
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
+
     //Drive
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
+    private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
+    private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(4, 0, 0, new TrapezoidProfile.Constraints(100, 200));
+
+    private static final ProfiledPIDController drivePIDControllerY = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
+    private static final ProfiledPIDController drivePIDControllerYClose = new ProfiledPIDController(4, 0.0, 0, new TrapezoidProfile.Constraints(100, 200));
+
+    public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
+
+    public static double xVelocity = 0;
+    public static double yVelocity = 0;
+    public static double rotationVelocity = 0;
+
     //Misc
     public static final Telemetry logger = new Telemetry(Constants.MAX_SPEED);
+
     //Turret Commands
     private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
     private static final TurretCommand turretHub = new TurretCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
     private static final TurretCommand turretTower = new TurretCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
     private static final TurretCommand turretLeftCorner = new TurretCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
     private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
+
     //Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
     private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
@@ -73,6 +85,7 @@ public class RobotContainer {
     private static final HoodCommand hoodTower = new HoodCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle());
     private static final HoodCommand hoodLeftCorner = new HoodCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle());
     private static final HoodCommand hoodOutpost = new HoodCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle());
+
     //Shooter Commands
     private static final VelocityCommand shooterAuto = new VelocityCommand(shooterSubsystem, 0);
     private static final VelocityCommand shooterStop = new VelocityCommand(shooterSubsystem, 0);
@@ -80,6 +93,7 @@ public class RobotContainer {
     private static final VelocityCommand shooterTower = new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed());
     private static final VelocityCommand shooterLeftCorner = new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed());
     private static final VelocityCommand shooterOutpost = new VelocityCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed());
+
     //Kicker Commands
     private static final VelocityCommand kickerAuto = new VelocityCommand(kickerSubsystem, 0);
     private static final VelocityCommand kickerZero = new VelocityCommand(kickerSubsystem, 0);
@@ -87,24 +101,31 @@ public class RobotContainer {
     private static final VelocityCommand kickerTower = new VelocityCommand(kickerSubsystem, Setpoint.TOWER.getKickerSpeed());
     private static final VelocityCommand kickerLeftCorner = new VelocityCommand(kickerSubsystem, Setpoint.LEFT_CORNER.getKickerSpeed());
     private static final VelocityCommand kickerOutpost = new VelocityCommand(kickerSubsystem, Setpoint.OUTPOST.getKickerSpeed());
+
     //Indexer Commands
     private static final VelocityCommand indexerAuto = new VelocityCommand(indexerSubsystem, 0);
     private static final VelocityCommand indexerIdle = new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED);
     private static final VelocityCommand indexerIndex = new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED);
+
     //Hopper Commands
     private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
     private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
     private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
+
     //Intake Roller Commands
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
+
     //Current Robot State
     public static SwerveDrivetrain.SwerveDriveState currentState;
+    private static Setpoint currentSetpoint = Setpoint.HUB;
+    private static ClimberSetpoint climberSetpoint = ClimberSetpoint.CLIMB_LEFT_RED;
     public static double requestXVelocity;
     public static double requestYVelocity;
     public static double requestRotationalVelocity;
     public static double lastVelocity = 0, velocity = 0;
     public static double acceleration = 0;
+
     //Button Bindings
     private static Command leftTriggerPressed;
     private static Command leftTriggerReleased;
@@ -113,7 +134,7 @@ public class RobotContainer {
     private static Command extend;
     private static Command retract;
     private static Command stop;
-    private static Setpoint currentSetpoint = Setpoint.HUB;
+
     //Mode Commands
     private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
     private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
@@ -209,6 +230,8 @@ public class RobotContainer {
 //        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
 //        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
 //        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
+
+        calculateAutoClimbVelocities();
 
         // Logging
         logger.telemeterize(currentState);
@@ -317,10 +340,10 @@ public class RobotContainer {
                 .onFalse(leftBumperReleased);
 
 
-        commandXboxController.y().onTrue(setHubSetpoint);
-        commandXboxController.x().onTrue(setLeftCornerSetpoint);
+//        commandXboxController.y().onTrue(setHubSetpoint);
+//        commandXboxController.x().onTrue(setLeftCornerSetpoint);
         //    commandXboxController.b().onTrue(setOutpostSetpoint);
-        commandXboxController.a().onTrue(setTowerSetpoint);
+//        commandXboxController.a().onTrue(setTowerSetpoint);
 //
         commandXboxController.b().onTrue(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
                 .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
@@ -334,8 +357,19 @@ public class RobotContainer {
 //                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
 //        commandXboxController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(12)))
 //                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
-        commandXboxController.povLeft().onTrue(Autos.driveToPose(ClimberSetpoints.CLIMB_LEFT_RED_PREP));
-        commandXboxController.povRight().onTrue(Autos.driveToPose(ClimberSetpoints.CLIMB_LEFT_RED));
+
+        commandXboxController.povLeft().onTrue(Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP));
+        commandXboxController.povRight().onTrue(Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED))
+                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
+                        .withVelocityX(-requestXVelocity)
+                        .withVelocityY(-requestYVelocity)
+                        .withRotationalRate(requestRotationalVelocity)));
+
+//        commandXboxController.povRight().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
+//        commandXboxController.povLeft().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
+        commandXboxController.a().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.ZERO));
+
+//        commandXboxController.povRight().onTrue(commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityY(-1)));
 
     }
 
@@ -347,5 +381,60 @@ public class RobotContainer {
         } else {
             return Autos.autonChooserBlue.getSelected();
         }
+    }
+
+    public static void calculateAutoClimbVelocities() {
+        double currentX = getPose().getX();
+        double currentY = getPose().getY();
+
+        double currentRotation = getPose().getRotation().getDegrees();
+        if (currentRotation < 0) currentRotation += 360;
+        while (currentRotation >= 360) currentRotation -= 360;
+        while (currentRotation <= -360) currentRotation += 360;
+
+        double goalX = climberSetpoint.getPose2d().getX();
+        double goalY = climberSetpoint.getPose2d().getY();
+
+        if ((Math.abs(currentX - goalX) > .15
+                || Math.abs(currentY - goalY) > .1)) {
+            xVelocity = drivePIDControllerX.calculate(currentX, goalX);
+            yVelocity = drivePIDControllerY.calculate(currentY, goalY);
+        } else {
+            xVelocity = drivePIDControllerXClose.calculate(currentX, goalX);
+            yVelocity = drivePIDControllerYClose.calculate(currentY, goalY);
+        }
+
+        // Fixes backwards PID controller
+        xVelocity = -xVelocity;
+        yVelocity = -yVelocity;
+
+        rotationVelocity = turnPIDController.calculate(currentRotation,
+                climberSetpoint.getPose2d().getRotation().getDegrees());
+        if (currentRotation > climberSetpoint.getPose2d().getRotation().getDegrees()) rotationVelocity -= .3;
+        else rotationVelocity += .3;
+
+//        System.out.println("X velocity: " + xVelocity);
+//        System.out.println("Y velocity: " + yVelocity);
+//        System.out.println("Rotational velocity: " + rotationVelocity);
+    }
+
+    public static void setClimberSetpoint(ClimberSetpoint climberSetpoint) {
+        RobotContainer.climberSetpoint = climberSetpoint;
+    }
+
+    public static double getXVelocity() {
+        return xVelocity;
+    }
+
+    public static double getYVelocity() {
+        return yVelocity;
+    }
+
+    public static double getRotationVelocity() {
+        return rotationVelocity;
+    }
+
+    public boolean aligned() {
+        return climberSetpoint.getPose2d().getTranslation().getDistance(getPose().getTranslation()) < .1;
     }
 }
