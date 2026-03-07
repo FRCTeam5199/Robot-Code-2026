@@ -62,8 +62,8 @@ public class RobotContainer {
     private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
     private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(4, 0, 0, new TrapezoidProfile.Constraints(100, 200));
 
-    private static final ProfiledPIDController drivePIDControllerY = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
-    private static final ProfiledPIDController drivePIDControllerYClose = new ProfiledPIDController(4, 0.0, 0, new TrapezoidProfile.Constraints(100, 200));
+    private static final ProfiledPIDController drivePIDControllerY = new ProfiledPIDController(2.5, 0, 0, new TrapezoidProfile.Constraints(100, 200));
+    private static final ProfiledPIDController drivePIDControllerYClose = new ProfiledPIDController(4.5, 0.0, 0, new TrapezoidProfile.Constraints(100, 200));
 
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
 
@@ -393,9 +393,19 @@ public class RobotContainer {
                         .withVelocityY(-requestYVelocity)
                         .withRotationalRate(requestRotationalVelocity)));
 
+        commandXboxController.y().onTrue(new SequentialCommandGroup(
+                Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
+                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY)),
+                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED).until(
+                        () -> aligned() && (commandSwerveDrivetrain.getState().Speeds.vxMetersPerSecond < .01
+                                && commandSwerveDrivetrain.getState().Speeds.vyMetersPerSecond < .01)),
+                new PositionCommand(climberSubsystem, ClimberConstants.ZERO)
+        ));
+
 //        commandXboxController.povRight().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
 //        commandXboxController.povLeft().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
         commandXboxController.a().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.ZERO));
+        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
 
 //        commandXboxController.povRight().onTrue(commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityY(-1)));
 
