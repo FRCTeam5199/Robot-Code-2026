@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.*;
 
 public class Constants {
     public static final int XBOX_PORT = 0;
+    public static final int OPERATOR_XBOX_PORT = 1;
 
     public static final Translation2d RED_HUB_CENTER = new Translation2d(11.916, 4.035);
     public static final Translation2d RED_HUB_FRONT_CENTER = new Translation2d(12.513, 4.035);
@@ -19,11 +20,11 @@ public class Constants {
     public static final Transform2d ROBOT_TO_TURRET = new Transform2d(-.13335, .13335, new Rotation2d(0));
     public static final double PHASE_DELAY = 0.1;
     public static final double ROTATIONAL_PHASE_DELAY = 0.1;
-    public static final double CENTER_TO_BUMPER = 0; //add this later
-    public static final Transform2d FRONT_LEFT_CORNER = new Transform2d(-CENTER_TO_BUMPER, -CENTER_TO_BUMPER, new Rotation2d(0));
+    public static final double CENTER_TO_BUMPER = 0.69 / 2d; //TODO: do this with actual bumpers
+    public static final Transform2d FRONT_LEFT_CORNER = new Transform2d(CENTER_TO_BUMPER, CENTER_TO_BUMPER, new Rotation2d(0));
     public static final Transform2d FRONT_RIGHT_CORNER = new Transform2d(CENTER_TO_BUMPER, -CENTER_TO_BUMPER, new Rotation2d(0));
     public static final Transform2d BACK_LEFT_CORNER = new Transform2d(-CENTER_TO_BUMPER, CENTER_TO_BUMPER, new Rotation2d(0));
-    public static final Transform2d BACK_RIGHT_CORNER = new Transform2d(CENTER_TO_BUMPER, CENTER_TO_BUMPER, new Rotation2d(0));
+    public static final Transform2d BACK_RIGHT_CORNER = new Transform2d(-CENTER_TO_BUMPER, -CENTER_TO_BUMPER, new Rotation2d(0));
     public static final double MAX_SPEED = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude();
     public static final double MAX_ANGULAR_RATE = 2.5 * Math.PI;
     public static final Pose3d ROBOT_RELATIVE_TURRET_POSE = new Pose3d(ROBOT_TO_TURRET.getX(), -ROBOT_TO_TURRET.getY(), .470, Rotation3d.kZero);

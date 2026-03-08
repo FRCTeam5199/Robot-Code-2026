@@ -1,0 +1,102 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.445301204819277,
+        "y": 7.400734939759036
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.734771084337349,
+        "y": 7.422590361445783
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.30278313253012,
+        "y": 6.745072289156626
+      },
+      "prevControl": {
+        "x": 8.137311771481928,
+        "y": 7.311493486590824
+      },
+      "nextControl": {
+        "x": 8.871024096385542,
+        "y": 4.799939759036144
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.363,
+        "y": 0.516277108433735
+      },
+      "prevControl": {
+        "x": 7.665142623303995,
+        "y": 0.516277108433735
+      },
+      "nextControl": {
+        "x": 5.662204400219975,
+        "y": 0.5162771084337352
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.9098433734939757,
+        "y": 0.6583373493975899
+      },
+      "prevControl": {
+        "x": 4.85001011645226,
+        "y": 0.6395340145384241
+      },
+      "nextControl": {
+        "x": 1.7243012048192767,
+        "y": 0.7020481927710841
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.48389156626506,
+        "y": 1.9587349397590366
+      },
+      "prevControl": {
+        "x": 1.5542516699886897,
+        "y": 1.7188402632778772
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Blue Shuttle Top",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

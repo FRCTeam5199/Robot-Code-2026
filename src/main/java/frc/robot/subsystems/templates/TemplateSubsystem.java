@@ -82,7 +82,7 @@ public class TemplateSubsystem extends SubsystemBase {
         this.jerk = jerk;
 
         dynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, this.velocity, this.acceleration)
-                .withJerk(this.jerk).withSlot(0).withEnableFOC(true);
+                .withJerk(this.jerk).withSlot(0).withEnableFOC(enableFoc);
         motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0)
                 .withEnableFOC(enableFoc);
         positionVoltage = new PositionVoltage(0).withSlot(0)
@@ -275,14 +275,14 @@ public class TemplateSubsystem extends SubsystemBase {
         this.goal = rps;
         followLastMechProfile = false;
         if (rps == 0) setPercent(0);
-        else motor.setControl(motionMagicVelocityVoltage.withVelocity(rps));
+        else motor.setControl(motionMagicVelocityVoltage.withVelocity(rps + offset));
     }
 
     public void setSecondaryVelocity(double rps) {
         this.secondaryGoal = rps;
         followLastMechProfile = false;
         if (rps == 0) setPercent(0);
-        else secondaryMotor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps));
+        else secondaryMotor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps + offset));
     }
 
     public void setPosition(double goal) {
@@ -397,6 +397,11 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public double getOffset() {
         return offset;
+    }
+
+    public void changeOffset(double deltaOffset) {
+        this.offset += deltaOffset;
+        this.changedOffset = true;
     }
 
     public void setOffset(double offset) {

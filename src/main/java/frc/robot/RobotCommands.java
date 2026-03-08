@@ -176,4 +176,13 @@ public class RobotCommands {
                 new PositionCommand(climberSubsystem, ClimberConstants.CLIMB)
         );
     }
+
+    public static Command outtake() {
+        return new ParallelCommandGroup(
+                new VelocityCommand(indexerSubsystem, -50),
+                new VelocityCommand(hopperSubsystem, -50),
+                new VelocityCommand(shooterSubsystem, -50),
+                new VelocityCommand(kickerSubsystem, -50)
+        );
+    }
 }

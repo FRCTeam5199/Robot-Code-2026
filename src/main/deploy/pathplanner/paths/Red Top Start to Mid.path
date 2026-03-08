@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.907284926295768,
-        "y": 7.2799000000000005
+        "x": 9.767096385542168,
+        "y": 7.542795180722893
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.757,
-        "y": 6.977822222222221
+        "x": 8.390204819277107,
+        "y": 7.25867469879518
       },
       "prevControl": {
-        "x": 9.409877777777776,
-        "y": 6.977822222222221
+        "x": 8.750819277108432,
+        "y": 7.302385542168673
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -70.0
   },
   "reversed": false,
   "folder": "Red Shuttle Top",

@@ -33,6 +33,8 @@ public class
 
 RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
+//    public static final CommandXboxController operatorCommandXboxController
+//            = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -142,6 +144,7 @@ RobotContainer {
     public static double requestXVelocity;
     public static double requestYVelocity;
     public static double requestRotationalVelocity;
+
     public static double lastVelocity = 0, velocity = 0;
     public static double acceleration = 0;
     public static boolean isClimbing = false;
@@ -194,8 +197,6 @@ RobotContainer {
                 ))
         ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
         leftBumperReleased = RobotCommands.idleState();
-
-        commandSwerveDrivetrain.configureAutoBuilder();
 
         NamedCommands.registerCommand("shoot", leftTriggerPressed);
         NamedCommands.registerCommand("hoodZero", hoodZero);
@@ -254,14 +255,13 @@ RobotContainer {
         }
         for (Translation2d robotCorner : robotCorners) {
             if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
-                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .05)
+                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .2)
                     shotMode = ShotMode.SHOOTING;
             } else {
-                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .05)
+                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .2)
                     shotMode = ShotMode.SHOOTING;
             }
         }
-
         double scalingFactor = 1.25;
 
         if (commandXboxController.getLeftY() < 0)
@@ -377,16 +377,12 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        commandXboxController.povDown().onTrue(intakeDeploy);
-        commandXboxController.povUp().onTrue(intakeStow);
+        commandXboxController.x().onTrue(intakeDeploy);
+        commandXboxController.a().onTrue(intakeStow);
         commandXboxController.rightBumper().onTrue(intakeAgitation);
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
                 .onFalse(intakeRollerStop);
-
-//        commandXboxController.rightTrigger()
-//                .onTrue(new ParallelCommandGroup(intakeDeploy, intakeRollerIntake))
-//                .onFalse(new ParallelCommandGroup(intakeStow, intakeRollerStop));
 
         commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);
@@ -396,41 +392,36 @@ RobotContainer {
                 .onFalse(leftBumperReleased);
 
 
-//        commandXboxController.y().onTrue(setHubSetpoint);
-//        commandXboxController.x().onTrue(setLeftCornerSetpoint);
-        //    commandXboxController.b().onTrue(setOutpostSetpoint);
-//        commandXboxController.a().onTrue(setTowerSetpoint);
+//        commandXboxController.povLeft().onTrue(Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP));
+//        commandXboxController.povRight().onTrue(Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED))
+//                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
+//                        .withVelocityX(-requestXVelocity)
+//                        .withVelocityY(-requestYVelocity)
+//                        .withRotationalRate(requestRotationalVelocity)));
+
+//        commandXboxController.y().onTrue(RobotCommands.teleopAutoClimb()) //left climb
+//                .onFalse(new InstantCommand(() -> setIsClimbing(false)));
+//        commandXboxController.b().onTrue(new PrintCommand("add right climb")); //right climb
+
+//        commandXboxController.a().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.ZERO));
+//        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
+
+
+//        operatorCommandXboxController.y().onTrue(setHubSetpoint);
+//        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
+//        operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
+//        operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 //
-//        commandXboxController.b().onTrue(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, 60), new VelocityCommand(indexerSubsystem, 30)))
-//                .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, -5), new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
-
-
-//        commandXboxController.b().toggleOnTrue(new InstantCommand(() -> climbMode = climbMode.NOCLIMB))
-//                .toggleOnFalse(new InstantCommand(() -> climbMode = climbMode.CLIMB));
-
+//        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+//        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 //
-//        commandXboxController.povLeft().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(-12)))
+//        operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(-12)))
 //                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
-//        commandXboxController.povRight().onTrue(new InstantCommand(() -> climberSubsystem.setVelocity(12)))
+//        operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(12)))
 //                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
-
-        commandXboxController.povLeft().onTrue(Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP));
-        commandXboxController.povRight().onTrue(Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED))
-                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
-                        .withVelocityX(-requestXVelocity)
-                        .withVelocityY(-requestYVelocity)
-                        .withRotationalRate(requestRotationalVelocity)));
-
-        commandXboxController.y().onTrue(RobotCommands.teleopAutoClimb())
-                .onFalse(new InstantCommand(() -> setIsClimbing(false)));
-
-//        commandXboxController.povRight().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-//        commandXboxController.povLeft().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
-        commandXboxController.a().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.ZERO));
-        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-
-//        commandXboxController.povRight().onTrue(commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityY(-1)));
-
+//
+//        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
+//                .onFalse(RobotCommands.idleState());
     }
 
 

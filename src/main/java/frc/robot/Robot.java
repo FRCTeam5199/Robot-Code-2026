@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
     private static DriverStation.Alliance alliance;
 
     public Robot() {
+        commandSwerveDrivetrain.configureAutoBuilder();
         m_robotContainer = new RobotContainer();
 
         // userInterface.createComponent("Motor ID (L)", "Control", BuiltInWidgets.kTextView, 0, 0, 1, 1, 0);
@@ -97,7 +98,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        commandSwerveDrivetrain.configureAutoBuilder();
         CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
     }
 

@@ -7,26 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Start to Mid"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "runIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Red Bottom Mid Full Clear"
-                }
-              }
-            ]
+            "pathName": "Red Bottom Shuttle"
           }
         }
       ]

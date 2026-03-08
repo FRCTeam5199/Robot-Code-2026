@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Start to Mid"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Bottom Mid Half Clear"
+            "pathName": "Red Bottom Score"
           }
         },
         {
           "type": "parallel",
           "data": {
             "commands": []
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         }
       ]

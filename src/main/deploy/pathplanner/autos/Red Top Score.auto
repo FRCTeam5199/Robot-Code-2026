@@ -9,18 +9,6 @@
           "data": {
             "pathName": "Red Top Start to Mid"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Top Mid Half Clear"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Top Mid to Score"
-          }
         }
       ]
     }
