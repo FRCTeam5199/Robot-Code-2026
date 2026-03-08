@@ -142,19 +142,19 @@ public final class Autos {
     }
 
     public static Command driveToPose(ClimberSetpoint climberSetpoint) {
-        return new SequentialCommandGroup(
-                new InstantCommand(() ->
-                        commandSwerveDrivetrain.applyRequest(() ->
-                                drive.withVelocityX(0).
-                                        withVelocityX(0).
-                                        withRotationalRate(0)
-                        )
-                ),
+//        return new SequentialCommandGroup(
+//                new InstantCommand(() ->
+//                        commandSwerveDrivetrain.applyRequest(() ->
+//                                drive.withVelocityX(0).
+//                                        withVelocityX(0).
+//                                        withRotationalRate(0)
+//                        )
+//                ),
 
-                AutoBuilder.pathfindToPose(
-                        climberSetpoint.getPose2d(),
-                        new PathConstraints(1, 3,
-                                Units.degreesToRadians(540d), Units.degreesToRadians(720d)), 1d));
+        return AutoBuilder.pathfindToPose(
+                climberSetpoint.getPose2d(),
+                new PathConstraints(2, 2,
+                        Units.degreesToRadians(540d), Units.degreesToRadians(720d)), 0d);
 
     }
 
@@ -171,6 +171,29 @@ public final class Autos {
                         () -> {
                             commandSwerveDrivetrain.setControl(
                                     drive.withVelocityX(RobotContainer.getXVelocity())
+                                            .withVelocityY(0)
+                                            .withRotationalRate(RobotContainer.getRotationVelocity()));
+                        },
+                        (interrupted) -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(0)
+                                            .withRotationalRate(0));
+                        },
+                        () -> RobotContainer.alignedX()/* (commandSwerveDrivetrain.getState().Speeds.vxMetersPerSecond < .01
+                                && commandSwerveDrivetrain.getState().Speeds.vyMetersPerSecond < .01)*/,
+                        commandSwerveDrivetrain
+                ),
+                new FunctionalCommand(
+                        () -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(0)
+                                            .withRotationalRate(0));
+                        },
+                        () -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
                                             .withVelocityY(RobotContainer.getYVelocity())
                                             .withRotationalRate(RobotContainer.getRotationVelocity()));
                         },
@@ -180,7 +203,7 @@ public final class Autos {
                                             .withVelocityY(0)
                                             .withRotationalRate(0));
                         },
-                        () -> false/* (commandSwerveDrivetrain.getState().Speeds.vxMetersPerSecond < .01
+                        () -> RobotContainer.alignedY()/* (commandSwerveDrivetrain.getState().Speeds.vxMetersPerSecond < .01
                                 && commandSwerveDrivetrain.getState().Speeds.vyMetersPerSecond < .01)*/,
                         commandSwerveDrivetrain
                 )

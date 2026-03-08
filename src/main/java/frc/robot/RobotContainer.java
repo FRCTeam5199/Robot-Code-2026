@@ -28,7 +28,9 @@ import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.*;
 
-public class RobotContainer {
+public class
+
+RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
 
     //Subsystems
@@ -47,9 +49,7 @@ public class RobotContainer {
     public static final Vision vision = Vision.getInstance();
 
     private static final LinearFilter xFilter = LinearFilter.movingAverage(5);
-    private static final LinearFilter yFilter = LinearFilter.movingAverage(5);
-    private static final LinearFilter rotSinFilter = LinearFilter.movingAverage(5);
-    private static final LinearFilter rotCosFilter = LinearFilter.movingAverage(5);
+    private static final LinearFilter yFilter = LinearFilter.movingAverage(20);
 
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
@@ -60,10 +60,10 @@ public class RobotContainer {
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
-    private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(4, 0, 0, new TrapezoidProfile.Constraints(100, 200));
+    private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(3.5, 0, 0, new TrapezoidProfile.Constraints(100, 200));
 
     private static final ProfiledPIDController drivePIDControllerY = new ProfiledPIDController(2.5, 0, 0, new TrapezoidProfile.Constraints(100, 200));
-    private static final ProfiledPIDController drivePIDControllerYClose = new ProfiledPIDController(4.5, 0.0, 0, new TrapezoidProfile.Constraints(100, 200));
+    private static final ProfiledPIDController drivePIDControllerYClose = new ProfiledPIDController(5.5, 0.0, 0, new TrapezoidProfile.Constraints(100, 200));
 
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
 
@@ -121,6 +121,7 @@ public class RobotContainer {
 
     //Current Robot State
     public static SwerveDrivetrain.SwerveDriveState currentState;
+    public static Pose2d filteredPose;
     private static Setpoint currentSetpoint = Setpoint.HUB;
     private static ClimberSetpoint climberSetpoint = ClimberSetpoint.CLIMB_LEFT_RED;
     public static double requestXVelocity;
@@ -128,6 +129,7 @@ public class RobotContainer {
     public static double requestRotationalVelocity;
     public static double lastVelocity = 0, velocity = 0;
     public static double acceleration = 0;
+    public static boolean isClimbing = false;
 
     //Button Bindings
     private static Command leftTriggerPressed;
@@ -195,21 +197,16 @@ public class RobotContainer {
 
         // Seed filters with actual pose on first loop to avoid zero averaging
         if (!filtersInitialized) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 20; i++) {
                 xFilter.calculate(currentState.Pose.getX());
                 yFilter.calculate(currentState.Pose.getY());
-                rotSinFilter.calculate(Math.sin(currentState.Pose.getRotation().getRadians()));
-                rotCosFilter.calculate(Math.cos(currentState.Pose.getRotation().getRadians()));
-                xFilter.calculate(currentState.Speeds.vxMetersPerSecond);
-                xFilter.calculate(currentState.Speeds.vyMetersPerSecond);
-                xFilter.calculate(currentState.Speeds.omegaRadiansPerSecond);
             }
             filtersInitialized = true;
         }
-        currentState.Pose = new Pose2d(
+        filteredPose = new Pose2d(
                 xFilter.calculate(currentState.Pose.getX()),
                 yFilter.calculate(currentState.Pose.getY()),
-                getRotFilter(currentState.Pose.getRotation()));
+                currentState.Pose.getRotation());
 
         velocity = Math.sqrt(Math.pow(RobotContainer.getSpeeds().vxMetersPerSecond, 2)
                 + Math.pow(RobotContainer.getSpeeds().vyMetersPerSecond, 2));
@@ -395,12 +392,11 @@ public class RobotContainer {
 
         commandXboxController.y().onTrue(new SequentialCommandGroup(
                 Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
-                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY)),
-                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED).until(
-                        () -> aligned() && (commandSwerveDrivetrain.getState().Speeds.vxMetersPerSecond < .01
-                                && commandSwerveDrivetrain.getState().Speeds.vyMetersPerSecond < .01)),
+                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
+                        .alongWith(new InstantCommand(() -> isClimbing = true)),
+                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
                 new PositionCommand(climberSubsystem, ClimberConstants.ZERO)
-        ));
+        )).onFalse(new InstantCommand(() -> isClimbing = false));
 
 //        commandXboxController.povRight().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
 //        commandXboxController.povLeft().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
@@ -422,8 +418,8 @@ public class RobotContainer {
     }
 
     public static void calculateAutoClimbVelocities() {
-        double currentX = getPose().getX();
-        double currentY = getPose().getY();
+        double currentX = filteredPose.getX();
+        double currentY = filteredPose.getY();
 
         double currentRotation = getPose().getRotation().getDegrees();
         if (currentRotation < 0) currentRotation += 360;
@@ -446,10 +442,18 @@ public class RobotContainer {
         xVelocity = -xVelocity;
         yVelocity = -yVelocity;
 
+        //TODO: switch this (maybe) for blue
+        if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+            if (currentX > goalX) xVelocity += Constants.DRIVE_X_KS;
+            else xVelocity -= Constants.DRIVE_X_KS;
+        }
+
         rotationVelocity = turnPIDController.calculate(currentRotation,
                 climberSetpoint.getPose2d().getRotation().getDegrees());
         if (currentRotation > climberSetpoint.getPose2d().getRotation().getDegrees()) rotationVelocity -= .3;
         else rotationVelocity += .3;
+
+//        System.out.println("Filtered y: " + filteredPose.getY());
 
 //        System.out.println("X velocity: " + xVelocity);
 //        System.out.println("Y velocity: " + yVelocity);
@@ -472,8 +476,14 @@ public class RobotContainer {
         return rotationVelocity;
     }
 
-    public boolean aligned() {
-        return climberSetpoint.getPose2d().getTranslation().getDistance(getPose().getTranslation()) < .1;
+    public static boolean alignedX() {
+        return Math.abs(climberSetpoint.getPose2d().getTranslation()
+                .minus(getPose().getTranslation()).getX()) < .03 && getSpeeds().vxMetersPerSecond < .01;
+    }
+
+    public static boolean alignedY() {
+        return Math.abs(climberSetpoint.getPose2d().getTranslation()
+                .minus(getPose().getTranslation()).getY()) < .03 && getSpeeds().vyMetersPerSecond < .01;
     }
 
 //    public static double getXFilter() {
@@ -492,13 +502,7 @@ public class RobotContainer {
         return currentState.Pose;
     }
 
-
-    private static Rotation2d getRotFilter(Rotation2d rotation) {
-        double radians = rotation.getRadians();
-        return new Rotation2d(
-                Math.atan2(
-                        rotSinFilter.calculate(Math.sin(radians)),
-                        rotCosFilter.calculate(Math.cos(radians))));
+    public static boolean isClimbing() {
+        return isClimbing;
     }
-
 }

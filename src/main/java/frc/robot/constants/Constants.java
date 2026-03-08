@@ -32,4 +32,5 @@ public class Constants {
     public static final String LIMELIGHT_LEFT_NAME = "limelight-left"; //10.51.99.11:5801
     public static final String LIMELIGHT_RIGHT_NAME = "limelight-right"; //10.51.99.12:5801
     public static final String LIMELIGHT_FRONT_NAME = "limelight-turret"; //10.51.99.13:5801 - NOT SET YET
+    public static final double DRIVE_X_KS = .28;
 }

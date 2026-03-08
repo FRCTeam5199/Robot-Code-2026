@@ -73,7 +73,8 @@ public class Vision {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
 
-                if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
+                if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
+                        && !RobotContainer.isClimbing()) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
                             limelightLeftData.timestampSeconds, VecBuilder
                                     .fill(xyStdev, xyStdev, 9999999999d));
@@ -119,7 +120,8 @@ public class Vision {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
 
-                if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
+                if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
+                        && !RobotContainer.isClimbing()) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
                             limelightFrontData.timestampSeconds, VecBuilder
                                     .fill(xyStdev, xyStdev, 9999999999d));

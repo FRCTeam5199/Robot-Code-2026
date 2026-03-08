@@ -28,12 +28,12 @@ public class ClimberConstants {
             .withGravityType(GravityTypeValue.Arm_Cosine)
             .withGravityArmPositionOffset(.0);
 
-    public static final double VELOCITY = 100;
+    public static final double VELOCITY = 50;
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;
 
-    public static final double LOWER_TOLERANCE = 4;
-    public static final double UPPER_TOLERANCE = 4;
+    public static final double LOWER_TOLERANCE = .02;
+    public static final double UPPER_TOLERANCE = .02;
 
     public static final double MIN = 0;
     public static final double MAX = .25;
