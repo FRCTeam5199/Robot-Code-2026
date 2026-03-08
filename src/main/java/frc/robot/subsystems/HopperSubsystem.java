@@ -13,7 +13,7 @@ public class HopperSubsystem extends TemplateSubsystem {
                 HopperConstants.JERK,
                 HopperConstants.LOWER_TOLERANCE,
                 HopperConstants.UPPER_TOLERANCE,
-                HopperConstants.GEAR_RATIO, "Hopper");
+                HopperConstants.GEAR_RATIO, "Hopper", true);
 
         configureMotor(HopperConstants.INVERTED, HopperConstants.BRAKE,
                 HopperConstants.SUPPLY_CURRENT_LIMIT,

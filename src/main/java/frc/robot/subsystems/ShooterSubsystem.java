@@ -26,7 +26,7 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.JERK,
                 ShooterConstants.LOWER_TOLERANCE,
                 ShooterConstants.UPPER_TOLERANCE,
-                ShooterConstants.GEAR_RATIO, "Shooter");
+                ShooterConstants.GEAR_RATIO, "Shooter", true);
 
         configureMotor(ShooterConstants.INVERTED, ShooterConstants.BRAKE,
                 ShooterConstants.SUPPLY_CURRENT_LIMIT,

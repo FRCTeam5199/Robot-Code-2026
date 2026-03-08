@@ -17,9 +17,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Red Bottom Mid to Score"
+            "commands": []
           }
         }
       ]

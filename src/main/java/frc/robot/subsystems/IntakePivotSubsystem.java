@@ -12,7 +12,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
                 IntakePivotConstants.ACCELERATION, IntakePivotConstants.JERK,
                 IntakePivotConstants.LOWER_TOLERANCE,
                 IntakePivotConstants.UPPER_TOLERANCE,
-                IntakePivotConstants.GEAR_RATIOA, "Intake Pivot");
+                IntakePivotConstants.GEAR_RATIOA, "Intake Pivot", false);
 
         configureMotor(IntakePivotConstants.INVERTED, IntakePivotConstants.BRAKE,
                 IntakePivotConstants.SUPPLY_CURRENT_LIMIT,
@@ -41,6 +41,6 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
 //        System.out.println("Degrees: " + getDegrees());
 //        System.out.println("Goal: " + getGoal());
 //        System.out.println();
-        // System.out.println("Is at Goal: "+ isMechAtGoal(false));
+//        System.out.println("Is at Goal: " + isMechAtGoal(false));
     }
 }

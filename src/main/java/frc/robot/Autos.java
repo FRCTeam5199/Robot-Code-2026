@@ -41,38 +41,6 @@ public final class Autos {
     private static PathPlannerAuto blueBottomShuttle;
     private static PathPlannerAuto blueTopShuttle;
 
-    private static Command redBottomStartToMid;
-    // Bottom Shuttling Paths- Red
-    private static Command redBottomMidFullClear;
-    private static Command redTopStartToClimb;
-    // Bottom Shooting Paths - Red
-    private static Command redBottomMidHalfClear;
-    private static Command redBottomMidToScore;
-
-    private static Command blueBottomStartToMid;
-    // Bottom Shuttling Paths- Blue
-    private static Command blueBottomMidFullClear;
-    private static Command blueTopStartToClimb;
-    // Bottom Shooting Paths - Blue
-    private static Command blueBottomMidHalfClear;
-    private static Command blueBottomMidToScore;
-    //------------------------------------------------------------------------
-    private static Command redTopStartToMid;
-    // Top Shuttling Paths- Red
-    private static Command redTopMidFullClear;
-    private static Command redBottomStartToClimb;
-    // Top Shooting Paths - Red
-    private static Command redTopMidHalfClear;
-    private static Command redTopMidToScore;
-
-    private static Command blueTopStartToMid;
-    // Bottom Shooting Paths- Blue
-    private static Command blueTopMidFullClear;
-    private static Command blueBottomStartToClimb;
-    // Bottom Shuttling Paths - Blue
-    private static Command blueTopMidHalfClear;
-    private static Command blueTopMidToScore;
-
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
@@ -105,9 +73,8 @@ public final class Autos {
 
     public static void initializeAutos() {
 
-
-//        fourPieceBlueBottomL4 = new PathPlannerAuto("4 Piece Blue Bottom L4");
-
+        redBottomScore = new PathPlannerAuto("Red Bottom Score");
+        redBottomShuttle = new PathPlannerAuto("Red Bottom Shuttle");
 
         Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
@@ -117,7 +84,9 @@ public final class Autos {
                 .withSize(2, 1);
 
 
-        //autonChooserRed.addOption();
+        autonChooserRed.addOption("Red Left Score", redBottomScore);
+        autonChooserRed.addOption("Red Left Shuttle", redBottomShuttle);
+        autonChooserRed.addOption("Test", new PathPlannerAuto("test"));
 
 
 //        autonChooserBlue.addOption();
@@ -153,7 +122,7 @@ public final class Autos {
 
         return AutoBuilder.pathfindToPose(
                 climberSetpoint.getPose2d(),
-                new PathConstraints(2, 2,
+                new PathConstraints(2, 1,
                         Units.degreesToRadians(540d), Units.degreesToRadians(720d)), 0d);
 
     }

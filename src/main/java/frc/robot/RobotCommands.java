@@ -1,11 +1,15 @@
 package frc.robot;
 
+import com.pathplanner.lib.util.JSONUtil;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.HopperConstants;
 import frc.robot.constants.IndexerConstants;
+import frc.robot.constants.IntakePivotConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.ClimberSetpoint;
 
 public class RobotCommands {
     private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
@@ -15,6 +19,7 @@ public class RobotCommands {
     private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+    public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     private static boolean isIdling = false;
     private static boolean isIndexing = false;
 
@@ -146,6 +151,29 @@ public class RobotCommands {
                 new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
                 new VelocityCommand(shooterSubsystem, 0),
                 new VelocityCommand(kickerSubsystem, 0)
+        );
+    }
+
+    public static Command teleopAutoClimb() {
+        return new SequentialCommandGroup(
+                Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
+                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
+                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
+                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
+                new PositionCommand(climberSubsystem, ClimberConstants.CLIMB)
+        );
+    }
+
+    public static Command autoAutoCLimb() {
+        return new SequentialCommandGroup(
+                Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
+                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
+                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
+                new WaitCommand(1),
+                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
+                new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW),
+                new WaitUntilCommand(() -> 20 - Robot.getAutoTime() < ClimberConstants.CLIMB_TIME),
+                new PositionCommand(climberSubsystem, ClimberConstants.CLIMB)
         );
     }
 }

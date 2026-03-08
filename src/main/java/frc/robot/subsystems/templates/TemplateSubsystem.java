@@ -71,7 +71,7 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public TemplateSubsystem(Type type, int id, double velocity, double acceleration, double jerk,
                              double lowerTolerance, double upperTolerance,
-                             double[][] gearRatios, String SubsystemName) {
+                             double[][] gearRatios, String SubsystemName, boolean enableFoc) {
         this.type = type;
 
         motor = new TalonFX(id);
@@ -84,11 +84,11 @@ public class TemplateSubsystem extends SubsystemBase {
         dynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, this.velocity, this.acceleration)
                 .withJerk(this.jerk).withSlot(0).withEnableFOC(true);
         motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0)
-                .withEnableFOC(true);
+                .withEnableFOC(enableFoc);
         positionVoltage = new PositionVoltage(0).withSlot(0)
-                .withEnableFOC(true);
+                .withEnableFOC(enableFoc);
         velocityVoltage = new VelocityVoltage(0).withSlot(0)
-                .withEnableFOC(true);
+                .withEnableFOC(enableFoc);
 
         this.lowerTolerance = lowerTolerance;
         this.upperTolerance = upperTolerance;

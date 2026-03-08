@@ -12,7 +12,7 @@ public class ClimberSubsystem extends TemplateSubsystem {
                 ClimberConstants.ACCELERATION, ClimberConstants.JERK,
                 ClimberConstants.LOWER_TOLERANCE,
                 ClimberConstants.UPPER_TOLERANCE,
-                ClimberConstants.GEAR_RATIO, "Climber");
+                ClimberConstants.GEAR_RATIO, "Climber", true);
 
         configureMotor(ClimberConstants.INVERTED, ClimberConstants.BRAKE,
                 ClimberConstants.SUPPLY_CURRENT_LIMIT,

@@ -5,26 +5,20 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.HopperConstants;
 import frc.robot.constants.IndexerConstants;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.*;
 
+import frc.robot.subsystems.templates.PositionCommand;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
@@ -33,10 +27,11 @@ public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
-    public static final IntakeRollerSubsystem intakerollersubsystem = IntakeRollerSubsystem.getInstance();
+    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
-    public static Timer originTimer = new Timer();
+    public static ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+    public static Timer autonTimer = new Timer();
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
@@ -236,14 +231,18 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        RobotContainer.setIsClimbing(false);
 
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
+
+        autonTimer.restart();
     }
 
     @Override
     public void autonomousPeriodic() {
+        System.out.println(20 - Robot.getAutoTime() < ClimberConstants.CLIMB_TIME);
     }
 
     @Override
@@ -257,7 +256,10 @@ public class Robot extends TimedRobot {
         }
         CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)); //IndexerConstants.IDLING_SPEED
         CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED));   //HopperConstants.IDLING_SPEED
-
+        CommandScheduler.getInstance().schedule(RobotCommands.idleState());
+//        CommandScheduler.getInstance().schedule(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
+        CommandScheduler.getInstance().schedule(new VelocityCommand(intakeRollerSubsystem, 0));
+        RobotContainer.setIsClimbing(false);
     }
 
     @Override
@@ -288,5 +290,9 @@ public class Robot extends TimedRobot {
 
     public static DriverStation.Alliance getAlliance() {
         return alliance;
+    }
+
+    public static double getAutoTime() {
+        return autonTimer.get();
     }
 }

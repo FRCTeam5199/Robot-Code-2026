@@ -13,13 +13,15 @@ public class IntakePivotConstants {
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 98;
+    public static final double DEPLOY = 98; //101 with bumper
+    public static final double UPAGITATE = 75;
+    public static final double DOWNAGITATE = 85;
     public static final double STOW = 5;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(20)
+            .withKP(60)
             .withKI(0)
-            .withKD(0)
+            .withKD(1)
             .withKS(0.25)
             .withKG(0.25)
             .withKV(.15384615384615384615384615384615)

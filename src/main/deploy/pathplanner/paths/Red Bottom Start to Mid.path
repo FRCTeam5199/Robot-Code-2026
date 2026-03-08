@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 8.788,
-        "y": 0.833
+        "x": 8.4,
+        "y": 0.724
       },
       "prevControl": {
-        "x": 10.017172610556347,
-        "y": 0.6647974322396584
+        "x": 9.629172610556347,
+        "y": 0.5557974322396584
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,17 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "deployIntake",
+      "waypointRelativePos": 0.7119842829076619,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,7 +49,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 70.0
   },
   "reversed": false,
   "folder": "Red Shuttle Bottom",
@@ -50,5 +57,5 @@
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

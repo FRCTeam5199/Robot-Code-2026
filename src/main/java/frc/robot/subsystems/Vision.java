@@ -97,6 +97,10 @@ public class Vision {
                     xyStdev *= limelightRightData.avgTagDist;
                 }
 
+                if (RobotContainer.isClimbing() && limelightRightData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) > .05)
+                    return;
+
                 if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
                             limelightRightData.timestampSeconds, VecBuilder
