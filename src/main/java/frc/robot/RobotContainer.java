@@ -207,7 +207,8 @@ RobotContainer {
         NamedCommands.registerCommand("agitateIntake", intakeAgitation);
         NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
-        NamedCommands.registerCommand("prepClimb", RobotCommands.autoAutoCLimb());
+        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbLeft());
+        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbRight());
         NamedCommands.registerCommand("climb", climberClimb);
 
         Autos.initializeAutos();
@@ -254,7 +255,7 @@ RobotContainer {
             shotMode = ShotMode.SHUTTLING_LEFT;
         }
         for (Translation2d robotCorner : robotCorners) {
-            if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+            if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
                 if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .15)
                     shotMode = ShotMode.SHOOTING;
             } else {
@@ -403,7 +404,7 @@ RobotContainer {
 //                        .withVelocityY(-requestYVelocity)
 //                        .withRotationalRate(requestRotationalVelocity)));
 
-        commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimb()) //left climb
+        commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimbLeft()) //left climb
                 .onFalse(new InstantCommand(() -> setIsClimbing(false))
                         .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
                                 .withVelocityX(-requestXVelocity)
