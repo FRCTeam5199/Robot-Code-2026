@@ -75,6 +75,8 @@ public final class Autos {
 
         redBottomScore = new PathPlannerAuto("Red Bottom Score");
         redBottomShuttle = new PathPlannerAuto("Red Bottom Shuttle");
+        redTopScore = new PathPlannerAuto("Red Top Score");
+        redTopShuttle = new PathPlannerAuto("Red Top Shuttle");
 
         Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
@@ -86,6 +88,8 @@ public final class Autos {
 
         autonChooserRed.addOption("Red Left Score", redBottomScore);
         autonChooserRed.addOption("Red Left Shuttle", redBottomShuttle);
+        autonChooserRed.addOption("Red Right Score", redTopScore);
+        autonChooserRed.addOption("Red Right Shuttle", redTopShuttle);
         autonChooserRed.addOption("Test", new PathPlannerAuto("test"));
 
 

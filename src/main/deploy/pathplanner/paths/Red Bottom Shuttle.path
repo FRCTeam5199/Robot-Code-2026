@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 8.570774187818888,
-        "y": 1.008024096385542
+        "x": 8.282938659058486,
+        "y": 1.1043937232524967
       },
       "prevControl": {
-        "x": 8.827313253012047,
-        "y": 0.516277108433735
+        "x": 8.55465049928673,
+        "y": 0.6644793152639079
       },
       "nextControl": {
-        "x": 8.1199958955225,
-        "y": 1.872098608015588
+        "x": 7.770798508665489,
+        "y": 1.9335730143649728
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.570774187818888,
-        "y": 6.974554216867469
+        "x": 9.266276747503566,
+        "y": 6.92679029957204
       },
       "prevControl": {
-        "x": 8.003912149979486,
-        "y": 6.6097373615167365
+        "x": 8.951754535637152,
+        "y": 6.592610449463973
       },
       "nextControl": {
-        "x": 9.351843373493976,
-        "y": 7.47722891566265
+        "x": 9.680313837375177,
+        "y": 7.366704707560627
       },
       "isLocked": false,
       "linkedName": null
@@ -97,8 +97,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.6362282878411922,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 0.8642808912896663,
+      "maxWaypointRelativePos": 3.413909520594208,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 1.0,
@@ -111,6 +111,17 @@
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
+    {
+      "name": "shoot",
+      "waypointRelativePos": 0.1944632005401756,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
+    },
     {
       "name": "runIntake",
       "waypointRelativePos": 0.3890818858560793,
@@ -152,28 +163,6 @@
         "type": "named",
         "data": {
           "name": "stable"
-        }
-      }
-    },
-    {
-      "name": "revUp",
-      "waypointRelativePos": 2.9379652605459072,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "revUp"
-        }
-      }
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 3.2555831265508712,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot"
         }
       }
     },

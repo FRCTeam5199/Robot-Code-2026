@@ -207,7 +207,7 @@ RobotContainer {
         NamedCommands.registerCommand("agitateIntake", intakeAgitation);
         NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
-        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbLeft());
+        NamedCommands.registerCommand("prepClimbLeft", RobotCommands.prepAutoCLimbLeft());
         NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbRight());
         NamedCommands.registerCommand("climb", climberClimb);
 
@@ -411,6 +411,16 @@ RobotContainer {
                                 .withVelocityY(-requestYVelocity)
                                 .withRotationalRate(requestRotationalVelocity)))
                         .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
+        commandXboxController.povRight().onTrue(RobotCommands.teleopAutoClimbRight()) //right climb
+                .onFalse(new InstantCommand(() -> setIsClimbing(false))
+                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
+                                .withVelocityX(-requestXVelocity)
+                                .withVelocityY(-requestYVelocity)
+                                .withRotationalRate(requestRotationalVelocity)))
+                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
+
+        commandXboxController.povUp().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
+        commandXboxController.povDown().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
 
 
 //        commandXboxController.b().onTrue(new PrintCommand("add right climb")); //right climb
@@ -447,13 +457,15 @@ RobotContainer {
     }
 
     public static void calculateAutoClimbVelocities() {
-        double currentX = filteredPose.getX();
+        double currentX = getPose().getX();
         double currentY = filteredPose.getY();
 
         double currentRotation = getPose().getRotation().getDegrees();
-        if (currentRotation < 0) currentRotation += 360;
-        while (currentRotation >= 360) currentRotation -= 360;
-        while (currentRotation <= -360) currentRotation += 360;
+        double target = climberSetpoint.getPose2d().getRotation().getDegrees();
+        double rotationalError = target - currentRotation;
+
+        while (rotationalError > 180) rotationalError -= 360;
+        while (rotationalError < -180) rotationalError += 360;
 
         double goalX = climberSetpoint.getPose2d().getX();
         double goalY = climberSetpoint.getPose2d().getY();
@@ -477,8 +489,11 @@ RobotContainer {
             else xVelocity -= Constants.DRIVE_X_KS;
         }
 
-        rotationVelocity = turnPIDController.calculate(currentRotation,
-                climberSetpoint.getPose2d().getRotation().getDegrees());
+        rotationVelocity = turnPIDController.calculate(rotationalError, 0);
+
+        System.out.println("Rotation Velocity: " + rotationVelocity);
+        System.out.println("Goal Degrees: " + climberSetpoint.getPose2d().getRotation().getDegrees());
+
         if (currentRotation > climberSetpoint.getPose2d().getRotation().getDegrees()) rotationVelocity -= .3;
         else rotationVelocity += .3;
 

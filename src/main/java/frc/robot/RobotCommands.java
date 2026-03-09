@@ -9,6 +9,7 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.ClimberSetpoint;
+import frc.robot.utility.ShotCalculator;
 
 public class RobotCommands {
     private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
@@ -19,6 +20,7 @@ public class RobotCommands {
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
+    public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     private static boolean isIdling = false;
     private static boolean isIndexing = false;
 
@@ -32,7 +34,7 @@ public class RobotCommands {
                     } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling) {
                         isIdling = true;
                         isIndexing = false;
-                        indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
+                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED); //indexing speed
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                     }
                 },
@@ -49,7 +51,7 @@ public class RobotCommands {
 
                     if (hopperSubsystem.isAboveSpeed(HopperConstants.INDEXING_SPEED - 10) && !isIndexing) {
                         isIndexing = true;
-                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
+                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED); //indexing speed
                     }
                 },
                 (interrupted) -> {
@@ -168,7 +170,7 @@ public class RobotCommands {
                 Autos.driveToPose(ClimberSetpoint.CLIMB_RIGHT_RED_PREP)
                         .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
                         .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
-                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
+                Autos.pidAlign(ClimberSetpoint.CLIMB_RIGHT_RED),
                 new PositionCommand(climberSubsystem, ClimberConstants.CLIMB)
         );
     }
