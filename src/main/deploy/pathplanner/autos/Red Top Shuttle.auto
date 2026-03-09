@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Top Start to Mid"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Top Mid Full Clear"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Bottom Start to Climb"
+            "pathName": "Red Top Shuttle"
           }
         }
       ]

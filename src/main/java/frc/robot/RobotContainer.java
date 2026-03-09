@@ -255,10 +255,10 @@ RobotContainer {
         }
         for (Translation2d robotCorner : robotCorners) {
             if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
-                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .2)
+                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .15)
                     shotMode = ShotMode.SHOOTING;
             } else {
-                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .2)
+                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .15)
                     shotMode = ShotMode.SHOOTING;
             }
         }
@@ -380,7 +380,7 @@ RobotContainer {
         commandXboxController.x().onTrue(intakeDeploy);
         commandXboxController.a().onTrue(intakeStow);
         commandXboxController.rightBumper().onTrue(intakeAgitation)
-            .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
+                .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
                 .onFalse(intakeRollerStop);
@@ -403,13 +403,13 @@ RobotContainer {
 //                        .withVelocityY(-requestYVelocity)
 //                        .withRotationalRate(requestRotationalVelocity)));
 
-       commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimb()) //left climb
-               .onFalse(new InstantCommand(() -> setIsClimbing(false))
-               .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
-                       .withVelocityX(-requestXVelocity)
-                       .withVelocityY(-requestYVelocity)
-                       .withRotationalRate(requestRotationalVelocity)))
-                       .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
+        commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimb()) //left climb
+                .onFalse(new InstantCommand(() -> setIsClimbing(false))
+                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
+                                .withVelocityX(-requestXVelocity)
+                                .withVelocityY(-requestYVelocity)
+                                .withRotationalRate(requestRotationalVelocity)))
+                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
 
 
 //        commandXboxController.b().onTrue(new PrintCommand("add right climb")); //right climb

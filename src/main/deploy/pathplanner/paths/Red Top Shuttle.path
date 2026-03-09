@@ -1,0 +1,111 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 12.113,
+        "y": 7.444336661911555
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 9.53798858773181,
+        "y": 7.405520684736091
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.308815977175463,
+        "y": 6.241041369472183
+      },
+      "prevControl": {
+        "x": 8.735791726105562,
+        "y": 6.92679029957204
+      },
+      "nextControl": {
+        "x": 8.014031136321757,
+        "y": 5.7675990493131994
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.308815977175463,
+        "y": 1.4149215406562063
+      },
+      "prevControl": {
+        "x": 8.293708940323775,
+        "y": 2.0720776437046435
+      },
+      "nextControl": {
+        "x": 8.334693295292439,
+        "y": 0.2892582025677608
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 13.74305278174037,
+        "y": 0.6515406562054205
+      },
+      "prevControl": {
+        "x": 10.34018544935806,
+        "y": 0.5609700427960057
+      },
+      "nextControl": {
+        "x": 14.622760309977028,
+        "y": 0.6749549250178029
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 14.894593437945792,
+        "y": 2.3594436519258206
+      },
+      "prevControl": {
+        "x": 14.687574893009987,
+        "y": 1.5572467902995721
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7761194029850741,
+      "rotationDegrees": -70.0
+    },
+    {
+      "waypointRelativePos": 1.8507462686567036,
+      "rotationDegrees": -70.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Red Shuttle Top",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
