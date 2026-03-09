@@ -178,7 +178,6 @@ public class RobotCommands {
                 Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
                         .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
                         .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
-                new WaitCommand(1),
                 Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
                 new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW)
         );
@@ -189,7 +188,6 @@ public class RobotCommands {
                 Autos.driveToPose(ClimberSetpoint.CLIMB_RIGHT_RED_PREP)
                         .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
                         .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
-                new WaitCommand(1),
                 Autos.pidAlign(ClimberSetpoint.CLIMB_RIGHT_RED),
                 new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW)
         );
