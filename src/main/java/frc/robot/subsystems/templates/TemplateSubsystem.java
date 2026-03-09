@@ -149,7 +149,7 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-        motor.getConfigurator().apply(motorConfig);
+        // motor.getConfigurator().apply(motorConfig);
     }
 
     public void configurePivot(double motorMinDegrees, double motorMaxDegrees) {
@@ -580,7 +580,7 @@ public class TemplateSubsystem extends SubsystemBase {
 //        voltageData.set(getMotorVoltage());
 //        supplyCurrentData.set(-getSupplyCurrent());
 //        statorCurrentData.set(-getStatorCurrent());
-//        tempData.set(getMotorTemp());
+       tempData.set(getMotorTemp());
     }
 
     public void setControl(ControlRequest control) {

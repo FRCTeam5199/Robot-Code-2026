@@ -379,7 +379,8 @@ RobotContainer {
 
         commandXboxController.x().onTrue(intakeDeploy);
         commandXboxController.a().onTrue(intakeStow);
-        commandXboxController.rightBumper().onTrue(intakeAgitation);
+        commandXboxController.rightBumper().onTrue(intakeAgitation)
+            .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
                 .onFalse(intakeRollerStop);
@@ -391,6 +392,9 @@ RobotContainer {
         commandXboxController.leftBumper().onTrue(leftBumperPressed)
                 .onFalse(leftBumperReleased);
 
+        commandXboxController.y().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
+        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
+
 
 //        commandXboxController.povLeft().onTrue(Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP));
 //        commandXboxController.povRight().onTrue(Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED))
@@ -399,8 +403,15 @@ RobotContainer {
 //                        .withVelocityY(-requestYVelocity)
 //                        .withRotationalRate(requestRotationalVelocity)));
 
-//        commandXboxController.y().onTrue(RobotCommands.teleopAutoClimb()) //left climb
-//                .onFalse(new InstantCommand(() -> setIsClimbing(false)));
+       commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimb()) //left climb
+               .onFalse(new InstantCommand(() -> setIsClimbing(false))
+               .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
+                       .withVelocityX(-requestXVelocity)
+                       .withVelocityY(-requestYVelocity)
+                       .withRotationalRate(requestRotationalVelocity)))
+                       .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
+
+
 //        commandXboxController.b().onTrue(new PrintCommand("add right climb")); //right climb
 
 //        commandXboxController.a().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.ZERO));

@@ -12,7 +12,7 @@ public class ClimberConstants {
     public static final boolean INVERTED = true;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = .2;
+    public static final double DEPLOY = .22;
     public static final double ZERO = 0;
     public static final double CLIMB = 0;
 
@@ -28,7 +28,7 @@ public class ClimberConstants {
             .withGravityType(GravityTypeValue.Arm_Cosine)
             .withGravityArmPositionOffset(.0);
 
-    public static final double VELOCITY = 50;
+    public static final double VELOCITY = 100;
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;
 
