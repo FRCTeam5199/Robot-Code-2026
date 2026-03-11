@@ -31,5 +31,5 @@ public class KickerConstants {
     public static final double UPPER_TOLERANCE = 5;
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
-    public static final double SCALE_FACTOR = (5 / 3);
+    public static final double SCALE_FACTOR = (5d / 3d);
 }

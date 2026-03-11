@@ -99,6 +99,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
+//        if (getAlliance().equals(DriverStation.Alliance.Red)) commandSwerveDrivetrain.getPigeon2().setYaw(180);
     }
 
     @Override
@@ -214,6 +215,7 @@ public class Robot extends TimedRobot {
         LimelightHelpers.SetThrottle("limelight-right", 200);
         LimelightHelpers.SetThrottle("limelight-left", 200);
         LimelightHelpers.SetThrottle("limelight-turret", 200);
+        RobotContainer.setIsAutonomous(false);
     }
 
     @Override
@@ -236,6 +238,8 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
+
+        RobotContainer.setIsAutonomous(true);
 
         autonTimer.restart();
     }
@@ -260,6 +264,7 @@ public class Robot extends TimedRobot {
 //        CommandScheduler.getInstance().schedule(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
         CommandScheduler.getInstance().schedule(new VelocityCommand(intakeRollerSubsystem, 0));
         RobotContainer.setIsClimbing(false);
+        RobotContainer.setIsAutonomous(false);
     }
 
     @Override

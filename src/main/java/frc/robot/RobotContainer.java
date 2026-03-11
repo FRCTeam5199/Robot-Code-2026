@@ -141,6 +141,7 @@ RobotContainer {
     public static Pose2d filteredPose;
     private static Setpoint currentSetpoint = Setpoint.HUB;
     private static ClimberSetpoint climberSetpoint = ClimberSetpoint.CLIMB_LEFT_RED;
+    private static boolean isAutonomous = false;
     public static double requestXVelocity;
     public static double requestYVelocity;
     public static double requestRotationalVelocity;
@@ -182,21 +183,21 @@ RobotContainer {
         stop = RobotCommands.stopClimb();
 
 
-        leftBumperPressed = new SelectCommand<>(Map.ofEntries(
-                Map.entry(Setpoint.HUB, new ParallelCommandGroup(
-                        turretHub, hoodHub, shooterHub, kickerHub
-                )),
-                Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
-                        turretTower, hoodTower, shooterTower, kickerTower
-                )),
-                Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
-                        turretOutpost, hoodOutpost, shooterOutpost, kickerOutpost
-                )),
-                Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
-                        turretLeftCorner, hoodLeftCorner, shooterLeftCorner, kickerLeftCorner
-                ))
-        ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
-        leftBumperReleased = RobotCommands.idleState();
+//        leftBumperPressed = new SelectCommand<>(Map.ofEntries(
+//                Map.entry(Setpoint.HUB, new ParallelCommandGroup(
+//                        turretHub, hoodHub, shooterHub, kickerHub
+//                )),
+//                Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
+//                        turretTower, hoodTower, shooterTower, kickerTower
+//                )),
+//                Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
+//                        turretOutpost, hoodOutpost, shooterOutpost, kickerOutpost
+//                )),
+//                Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
+//                        turretLeftCorner, hoodLeftCorner, shooterLeftCorner, kickerLeftCorner
+//                ))
+//        ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
+//        leftBumperReleased = RobotCommands.idleState();
 
         NamedCommands.registerCommand("shoot", leftTriggerPressed);
         NamedCommands.registerCommand("hoodZero", hoodZero);
@@ -390,8 +391,8 @@ RobotContainer {
                 .onFalse(leftTriggerReleased);
 
         // Back Up Setpoints
-        commandXboxController.leftBumper().onTrue(leftBumperPressed)
-                .onFalse(leftBumperReleased);
+        commandXboxController.leftBumper().onTrue(new SequentialCommandGroup(new VelocityCommand(intakeRollerSubsystem, -90), new VelocityCommand(hopperSubsystem, -60)))
+                .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED), new VelocityCommand(intakeRollerSubsystem, 0)));
 
         commandXboxController.y().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
         commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
@@ -491,8 +492,8 @@ RobotContainer {
 
         rotationVelocity = turnPIDController.calculate(rotationalError, 0);
 
-        System.out.println("Rotation Velocity: " + rotationVelocity);
-        System.out.println("Goal Degrees: " + climberSetpoint.getPose2d().getRotation().getDegrees());
+//        System.out.println("Rotation Velocity: " + rotationVelocity);
+//        System.out.println("Goal Degrees: " + climberSetpoint.getPose2d().getRotation().getDegrees());
 
         if (currentRotation > climberSetpoint.getPose2d().getRotation().getDegrees()) rotationVelocity -= .3;
         else rotationVelocity += .3;
@@ -552,5 +553,13 @@ RobotContainer {
 
     public static void setIsClimbing(boolean isClimbing) {
         RobotContainer.isClimbing = isClimbing;
+    }
+
+    public static boolean isAutonomous() {
+        return isAutonomous;
+    }
+
+    public static void setIsAutonomous(boolean isAutonomous) {
+        RobotContainer.isAutonomous = isClimbing;
     }
 }

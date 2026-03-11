@@ -1,16 +1,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.utility.LimelightHelpers;
-
-import java.awt.geom.Ellipse2D;
 
 public class Vision {
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
@@ -73,11 +68,14 @@ public class Vision {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
 
-                if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
-                        && !RobotContainer.isClimbing()) {
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                            limelightLeftData.timestampSeconds, VecBuilder
-                                    .fill(xyStdev, xyStdev, 9999999999d));
+                if (!RobotContainer.isAutonomous() || limelightLeftData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) < 1d) {
+                    if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
+                            && !RobotContainer.isClimbing()) {
+                        commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
+                                limelightLeftData.timestampSeconds, VecBuilder
+                                        .fill(xyStdev, xyStdev, 9999999999d));
+                    }
                 }
             }
         }
@@ -101,10 +99,13 @@ public class Vision {
                         .getDistance(RobotContainer.getPose().getTranslation()) > .05)
                     return;
 
-                if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-                            limelightRightData.timestampSeconds, VecBuilder
-                                    .fill(xyStdev, xyStdev, 9999999999d));
+                if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) < 1d) {
+                    if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
+                        commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
+                                limelightRightData.timestampSeconds, VecBuilder
+                                        .fill(xyStdev, xyStdev, 9999999999d));
+                    }
                 }
             }
         }
@@ -124,11 +125,14 @@ public class Vision {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
 
-                if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
-                        && !RobotContainer.isClimbing()) {
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
-                            limelightFrontData.timestampSeconds, VecBuilder
-                                    .fill(xyStdev, xyStdev, 9999999999d));
+                if (!RobotContainer.isAutonomous() || limelightFrontData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) < 1d) {
+                    if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
+                            && !RobotContainer.isClimbing()) {
+                        commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
+                                limelightFrontData.timestampSeconds, VecBuilder
+                                        .fill(xyStdev, xyStdev, 9999999999d));
+                    }
                 }
             }
         }

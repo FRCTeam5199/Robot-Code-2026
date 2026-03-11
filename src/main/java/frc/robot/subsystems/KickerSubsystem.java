@@ -42,6 +42,7 @@ public class KickerSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 //        System.out.println(isMechAtGoal(true));
+        System.out.println(getGoal());
 
     }
 

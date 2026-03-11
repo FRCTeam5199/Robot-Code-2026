@@ -7,19 +7,45 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Bottom Start to Mid"
+            "pathName": "Blue Bottom Score"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Blue Bottom Mid Half Clear"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Blue Bottom Mid to Score"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "prepClimbRight"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "climb"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
