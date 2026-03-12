@@ -12,9 +12,9 @@ public class ClimberConstants {
     public static final boolean INVERTED = true;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = .23;
-    public static final double ZERO = 0;
-    public static final double CLIMB = 0;
+    public static final double DEPLOY = .14;
+    public static final double ZERO = -.02;
+    public static final double CLIMB = -.02;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(15)
@@ -35,7 +35,7 @@ public class ClimberConstants {
     public static final double LOWER_TOLERANCE = .02;
     public static final double UPPER_TOLERANCE = .02;
 
-    public static final double MIN = 0;
+    public static final double MIN = -.03;
     public static final double MAX = .25;
 
     public static final double[][] GEAR_RATIO = {{50, 1}};

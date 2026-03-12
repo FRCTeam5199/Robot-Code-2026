@@ -131,8 +131,8 @@ RobotContainer {
     //Climber Commands
     private static final PositionCommand climberClimb = new PositionCommand(climberSubsystem, ClimberConstants.CLIMB);
     private static final PositionCommand climberDeploy = new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY);
-    //
-//    Auton commands
+
+    //    Auton commands
     private static final Command revUp = new ParallelCommandGroup(shooterRevUp, kickerRevUp);
     private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate, intakeDownAgitate).repeatedly();
 
@@ -395,7 +395,13 @@ RobotContainer {
                 .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED), new VelocityCommand(intakeRollerSubsystem, 0)));
 
         commandXboxController.y().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
+//        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
+        commandXboxController.b().onTrue(new SequentialCommandGroup(
+                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED),
+                        new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED)))
+                .onFalse(new ParallelCommandGroup(
+                        new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
+                        new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
 
 //        commandXboxController.povLeft().onTrue(Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP));
