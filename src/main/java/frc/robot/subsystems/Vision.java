@@ -66,7 +66,7 @@ public class Vision {
                 double xyStdev = .5;
 
                 if (limelightLeftData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 999999999999d);
+                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
                 } else {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
@@ -95,7 +95,7 @@ public class Vision {
                 double xyStdev = .5;
 
                 if (limelightRightData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 999999999999d);
+                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
                 } else {
                     xyStdev *= limelightRightData.avgTagDist;
                 }
@@ -125,7 +125,7 @@ public class Vision {
                 double xyStdev = .5;
 
                 if (limelightFrontData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightFrontData.avgTagDist, 999999999999d);
+                    xyStdev *= Math.pow(limelightFrontData.avgTagDist, 3);
                 } else {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
