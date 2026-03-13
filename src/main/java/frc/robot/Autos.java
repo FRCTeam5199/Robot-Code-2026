@@ -12,23 +12,29 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IntakePivotConstants;
+import frc.robot.constants.IntakeRollerConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.ClimberSetpoint;
 import frc.robot.utility.ShotCalculator;
 
 public final class Autos {
     private SendableChooser<Command> autoChooser;
     private static Autos autos;
-
     public static SendableChooser<Command> autonChooserRed = new SendableChooser<>();
     public static SendableChooser<Command> autonChooserBlue = new SendableChooser<>();
+
 
     private static PathPlannerAuto redBottomScore;
     private static PathPlannerAuto redTopScore;
@@ -47,8 +53,11 @@ public final class Autos {
 //    private static PathPlannerAuto blueBottomShuttle;
 //    private static PathPlannerAuto blueTopShuttle;
 
-    private static PathPlannerAuto blueBottomSelfShuttle;
-    private static PathPlannerAuto blueTopSelfShuttle;
+    private static SequentialCommandGroup blueBottomSelfShuttle;
+    private static SequentialCommandGroup blueTopSelfShuttle;
+
+    private static PathPlannerAuto blueBottomDoubleScore;
+    private static PathPlannerAuto blueTopDoubleScore;
 
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
@@ -62,6 +71,8 @@ public final class Autos {
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
+
+    private static Timer pidAlignmentTimer = new Timer();
 
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
@@ -90,7 +101,10 @@ public final class Autos {
         redBottomSelfShuttle = new PathPlannerAuto("Red Bottom Self Shuttle");
         redTopSelfShuttle = new PathPlannerAuto("Red Top Self Shuttle");
 
-        blueBottomSelfShuttle = new PathPlannerAuto("Copy of Red Bottom Self Shuttle");
+        blueBottomSelfShuttle = new PathPlannerAuto("Copy of Red Bottom Self Shuttle").andThen(RobotCommands.indexBallsAuto());
+        blueTopSelfShuttle = new PathPlannerAuto("Copy of Red Top Self Shuttle").andThen(RobotCommands.indexBallsAuto());
+        blueBottomDoubleScore = new PathPlannerAuto("Copy of Red Bottom Double Score");
+        blueTopDoubleScore = new PathPlannerAuto("Copy of Red Top Double Score");
 
         Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
@@ -111,6 +125,10 @@ public final class Autos {
 
 
         autonChooserBlue.addOption("Blue Left Self Shuttle", blueBottomSelfShuttle);
+        autonChooserBlue.addOption("Blue Right Self Shuttle", blueTopSelfShuttle);
+
+        autonChooserBlue.addOption("Blue Left Double Score", blueBottomDoubleScore);
+        autonChooserBlue.addOption("Blue Right Double Score", blueTopDoubleScore);
 
     }
 
@@ -170,8 +188,7 @@ public final class Autos {
                                             .withVelocityY(0)
                                             .withRotationalRate(0));
                         },
-                        () -> RobotContainer.alignedX()/* (commandSwerveDrivetrain.getState().Speeds.vxMetersPerSecond < .01
-                                && commandSwerveDrivetrain.getState().Speeds.vyMetersPerSecond < .01)*/,
+                        RobotContainer::alignedX,
                         commandSwerveDrivetrain
                 ),
                 new FunctionalCommand(
@@ -184,7 +201,7 @@ public final class Autos {
                         () -> {
                             commandSwerveDrivetrain.setControl(
                                     drive.withVelocityX(0)
-                                            .withVelocityY(RobotContainer.getYVelocity())
+                                            .withVelocityY(0)
                                             .withRotationalRate(RobotContainer.getRotationVelocity()));
                         },
                         (interrupted) -> {
@@ -193,8 +210,63 @@ public final class Autos {
                                             .withVelocityY(0)
                                             .withRotationalRate(0));
                         },
-                        () -> RobotContainer.alignedY()/* (commandSwerveDrivetrain.getState().Speeds.vxMetersPerSecond < .01
-                                && commandSwerveDrivetrain.getState().Speeds.vyMetersPerSecond < .01)*/,
+                        RobotContainer::alignedY,
+                        commandSwerveDrivetrain
+                )
+        );
+    }
+
+    public static Command pidAlignLeft() {
+        return new SequentialCommandGroup(
+                new FunctionalCommand(
+                        () -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(0)
+                                            .withRotationalRate(0));
+                        },
+                        () -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(-RobotContainer.getXVelocity())
+                                            .withVelocityY(0)
+                                            .withRotationalRate(RobotContainer.getRotationVelocity()));
+                        },
+                        (interrupted) -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(0)
+                                            .withRotationalRate(0));
+                        },
+                        RobotContainer::alignedX,
+                        commandSwerveDrivetrain
+                ),
+                new FunctionalCommand(
+                        () -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(0)
+                                            .withRotationalRate(0));
+                            pidAlignmentTimer.restart();
+                        },
+                        () -> {
+                            double yVelocity;
+                            if (Robot.getAlliance() != null
+                                    && Robot.getAlliance().equals(DriverStation.Alliance.Blue))
+                                yVelocity = -1;
+                            else
+                                yVelocity = 1;
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(yVelocity)
+                                            .withRotationalRate(RobotContainer.getRotationVelocity()));
+                        },
+                        (interrupted) -> {
+                            commandSwerveDrivetrain.setControl(
+                                    drive.withVelocityX(0)
+                                            .withVelocityY(0)
+                                            .withRotationalRate(0));
+                        },
+                        () -> (RobotContainer.alignedY() && pidAlignmentTimer.get() > .25),
                         commandSwerveDrivetrain
                 )
         );
@@ -223,6 +295,8 @@ public final class Autos {
         }
         return autos;
     }
+
+
 }
 
 

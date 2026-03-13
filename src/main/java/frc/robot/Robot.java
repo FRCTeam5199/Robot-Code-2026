@@ -13,6 +13,7 @@ import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.*;
 
 import frc.robot.subsystems.templates.PositionCommand;
+import frc.robot.utility.ShotCalculator;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot {
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+    public static ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static Timer autonTimer = new Timer();
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
@@ -234,7 +236,10 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         if (getAlliance() != null && getAlliance().equals(DriverStation.Alliance.Red)) {
             commandSwerveDrivetrain.getPigeon2().setYaw(180d);
+        } else {
+            commandSwerveDrivetrain.getPigeon2().setYaw(0);
         }
+        commandSwerveDrivetrain.seedFieldCentric();
 
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         RobotContainer.setIsClimbing(false);

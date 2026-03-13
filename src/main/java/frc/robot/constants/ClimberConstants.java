@@ -12,9 +12,9 @@ public class ClimberConstants {
     public static final boolean INVERTED = true;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = .17;
+    public static final double DEPLOY = .175;
     public static final double ZERO = -.02;
-    public static final double CLIMB = -.02;
+    public static final double CLIMB = 0.0;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(15)
@@ -42,4 +42,9 @@ public class ClimberConstants {
     public static final double DRUM_CIRCUMFERENCE = Math.PI * .0254;
 
     public static final double CLIMB_TIME = 4;
+
+    public static final double CLIMBING_X_DISTANCE_RED = 0;
+    public static final double CLIMBING_X_DISTANCE_BLUE = 0.75;
+
+    public static final int CAN_RANGE_ID = 60;
 }

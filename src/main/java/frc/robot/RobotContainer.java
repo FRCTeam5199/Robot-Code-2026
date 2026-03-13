@@ -13,7 +13,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -52,9 +51,6 @@ RobotContainer {
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
 
-    private static final LinearFilter xFilter = LinearFilter.movingAverage(5);
-    private static final LinearFilter yFilter = LinearFilter.movingAverage(20);
-
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
@@ -67,10 +63,7 @@ RobotContainer {
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
-    private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(3.5, 0, 0, new TrapezoidProfile.Constraints(100, 200));
-
-    private static final ProfiledPIDController drivePIDControllerY = new ProfiledPIDController(2.5, 0, 0, new TrapezoidProfile.Constraints(100, 200));
-    private static final ProfiledPIDController drivePIDControllerYClose = new ProfiledPIDController(5.5, 0.0, 0, new TrapezoidProfile.Constraints(100, 200));
+    private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(2, 0, 0.25, new TrapezoidProfile.Constraints(100, 200));
 
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
 
@@ -151,6 +144,7 @@ RobotContainer {
     public static double acceleration = 0;
     public static boolean isClimbing = false;
     public static boolean isClimberRetracting = false;
+    public static double goalX;
 
     //Button Bindings
     private static Command leftTriggerPressed;
@@ -210,6 +204,8 @@ RobotContainer {
         NamedCommands.registerCommand("agitateIntake", intakeAgitation);
         NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
+        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
+
 //        NamedCommands.registerCommand("prepClimbLeft", RobotCommands.prepAutoCLimbLeft());
 //        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbRight());
 //        NamedCommands.registerCommand("climb", climberClimb);
@@ -229,19 +225,6 @@ RobotContainer {
         currentState = commandSwerveDrivetrain.getStateCopy();
 
         if (currentState == null || currentState.Pose == null) return;
-
-        // Seed filters with actual pose on first loop to avoid zero averaging
-        if (!filtersInitialized) {
-            for (int i = 0; i < 20; i++) {
-                xFilter.calculate(currentState.Pose.getX());
-                yFilter.calculate(currentState.Pose.getY());
-            }
-            filtersInitialized = true;
-        }
-        filteredPose = new Pose2d(
-                xFilter.calculate(currentState.Pose.getX()),
-                yFilter.calculate(currentState.Pose.getY()),
-                currentState.Pose.getRotation());
 
         velocity = Math.sqrt(Math.pow(RobotContainer.getSpeeds().vxMetersPerSecond, 2)
                 + Math.pow(RobotContainer.getSpeeds().vyMetersPerSecond, 2));
@@ -290,7 +273,7 @@ RobotContainer {
         calculateAutoClimbVelocities();
 
         // Logging
-//        logger.telemeterize(currentState);
+        logger.telemeterize(currentState);
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
@@ -365,6 +348,7 @@ RobotContainer {
         return requestXVelocity;
     }
 
+
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
@@ -397,36 +381,40 @@ RobotContainer {
                 .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED), new VelocityCommand(intakeRollerSubsystem, 0)));
 
         commandXboxController.y().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-//        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
-        commandXboxController.b().onTrue(new SequentialCommandGroup(
-                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED),
-                        new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED)))
-                .onFalse(new ParallelCommandGroup(
-                        new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
-                        new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
+//        commandXboxController.b().onTrue(new SequentialCommandGroup(
+//                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED),
+//                        new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED)))
+//                .onFalse(new ParallelCommandGroup(
+//                        new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
+//                        new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
 
 
-//        commandXboxController.povLeft().onTrue(Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP));
+        commandXboxController.povLeft().onTrue(Autos.pidAlignLeft())
+                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
+                        .withVelocityX(-requestXVelocity)
+                        .withVelocityY(-requestYVelocity)
+                        .withRotationalRate(requestRotationalVelocity)));
 //        commandXboxController.povRight().onTrue(Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED))
 //                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
 //                        .withVelocityX(-requestXVelocity)
 //                        .withVelocityY(-requestYVelocity)
 //                        .withRotationalRate(requestRotationalVelocity)));
 
-        commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimbLeft()) //left climb
-                .onFalse(new InstantCommand(() -> setIsClimbing(false))
-                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
-                                .withVelocityX(-requestXVelocity)
-                                .withVelocityY(-requestYVelocity)
-                                .withRotationalRate(requestRotationalVelocity)))
-                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
-        commandXboxController.povRight().onTrue(RobotCommands.teleopAutoClimbRight()) //right climb
-                .onFalse(new InstantCommand(() -> setIsClimbing(false))
-                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
-                                .withVelocityX(-requestXVelocity)
-                                .withVelocityY(-requestYVelocity)
-                                .withRotationalRate(requestRotationalVelocity)))
-                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
+//        commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimbLeft()) //left climb
+//                .onFalse(new InstantCommand(() -> setIsClimbing(false))
+//                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
+//                                .withVelocityX(-requestXVelocity)
+//                                .withVelocityY(-requestYVelocity)
+//                                .withRotationalRate(requestRotationalVelocity)))
+//                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
+//        commandXboxController.povRight().onTrue(RobotCommands.teleopAutoClimbRight()) //right climb
+//                .onFalse(new InstantCommand(() -> setIsClimbing(false))
+//                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
+//                                .withVelocityX(-requestXVelocity)
+//                                .withVelocityY(-requestYVelocity)
+//                                .withRotationalRate(requestRotationalVelocity)))
+//                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
 
         commandXboxController.povUp().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
         commandXboxController.povDown().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
@@ -466,51 +454,60 @@ RobotContainer {
     }
 
     public static void calculateAutoClimbVelocities() {
-        double currentX = getPose().getX();
-        double currentY = filteredPose.getY();
+        double currentX = climberSubsystem.getDistance();
 
         double currentRotation = getPose().getRotation().getDegrees();
-        double target = climberSetpoint.getPose2d().getRotation().getDegrees();
-        double rotationalError = target - currentRotation;
+        double rotationalError;
+        double goalRotation;
+        if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+            goalRotation = 180d;
+            rotationalError = goalRotation - currentRotation;
+        } else {
+            goalRotation = 0d;
+            rotationalError = goalRotation - currentRotation;
+        }
 
         while (rotationalError > 180) rotationalError -= 360;
         while (rotationalError < -180) rotationalError += 360;
 
-        double goalX = climberSetpoint.getPose2d().getX();
-        double goalY = climberSetpoint.getPose2d().getY();
 
-        if ((Math.abs(currentX - goalX) > .15
-                || Math.abs(currentY - goalY) > .1)) {
+        if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+            goalX = ClimberConstants.CLIMBING_X_DISTANCE_RED;
+        } else {
+            goalX = ClimberConstants.CLIMBING_X_DISTANCE_BLUE;
+        }
+
+
+        if ((Math.abs(currentX - goalX) > .15)) {
             xVelocity = drivePIDControllerX.calculate(currentX, goalX);
-            yVelocity = drivePIDControllerY.calculate(currentY, goalY);
         } else {
             xVelocity = drivePIDControllerXClose.calculate(currentX, goalX);
-            yVelocity = drivePIDControllerYClose.calculate(currentY, goalY);
         }
 
         // Fixes backwards PID controller
-        xVelocity = -xVelocity;
-        yVelocity = -yVelocity;
+        if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red))
+            xVelocity = -xVelocity;
 
-        //TODO: switch this (maybe) for blue
-        if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
-            if (currentX > goalX) xVelocity += Constants.DRIVE_X_KS;
-            else xVelocity -= Constants.DRIVE_X_KS;
-        }
+        if (xVelocity < 0) xVelocity -= Constants.DRIVE_X_KS;
+        else xVelocity += Constants.DRIVE_X_KS;
 
         rotationVelocity = -turnPIDController.calculate(rotationalError, 0);
 
 //        System.out.println("Rotation Velocity: " + rotationVelocity);
 //        System.out.println("Goal Degrees: " + climberSetpoint.getPose2d().getRotation().getDegrees());
 
-        if (currentRotation > climberSetpoint.getPose2d().getRotation().getDegrees()) rotationVelocity -= .3;
-        else rotationVelocity += .3;
+//        System.out.println(Math.abs(climberSubsystem.getDistance() - goalX));
 
-//        System.out.println("Filtered y: " + filteredPose.getY());
+        if (currentRotation > goalRotation) rotationVelocity -= .3;
+        else rotationVelocity += .3;
 
 //        System.out.println("X velocity: " + xVelocity);
 //        System.out.println("Y velocity: " + yVelocity);
 //        System.out.println("Rotational velocity: " + rotationVelocity);
+
+//        System.out.println("Aligned X: " + (Math.abs(climberSubsystem.getDistance() - goalX) < .03
+//                && Math.abs(getSpeeds().vxMetersPerSecond) < .01));
+//        System.out.println("Speeds: " + getSpeeds().vxMetersPerSecond);
     }
 
     public static void setClimberSetpoint(ClimberSetpoint climberSetpoint) {
@@ -530,26 +527,13 @@ RobotContainer {
     }
 
     public static boolean alignedX() {
-        return Math.abs(climberSetpoint.getPose2d().getTranslation()
-                .minus(getPose().getTranslation()).getX()) < .03 && getSpeeds().vxMetersPerSecond < .01;
+        return Math.abs(climberSubsystem.getDistance() - goalX) < .03
+                && Math.abs(getSpeeds().vxMetersPerSecond) < .01;
     }
 
     public static boolean alignedY() {
-        return Math.abs(climberSetpoint.getPose2d().getTranslation()
-                .minus(getPose().getTranslation()).getY()) < .03 && getSpeeds().vyMetersPerSecond < .01;
+        return Math.abs(getSpeeds().vyMetersPerSecond) < .05;
     }
-
-//    public static double getXFilter() {
-//        return poseFilter.calculate(getRawPose().getX());
-//    }
-//
-//    public static double getYFilter() {
-//        return poseFilter.calculate(getRawPose().getY());
-//    }
-//
-//    public static double getRotFilter() {
-//        return poseFilter.calculate(getRawPose().getRotation().getRadians());
-//    }
 
     public static Pose2d getPose() {
         return currentState.Pose;
