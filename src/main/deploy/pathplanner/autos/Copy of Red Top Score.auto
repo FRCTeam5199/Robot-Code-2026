@@ -31,6 +31,12 @@
                       }
                     },
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "stowIntake"
+                      }
+                    },
+                    {
                       "type": "wait",
                       "data": {
                         "waitTime": 2.0
