@@ -94,7 +94,7 @@ public class ShotCalculator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (RobotContainer.getPose() != null && false) {
+        if (RobotContainer.getPose() != null) {
             Pose2d estimatedPose = RobotContainer.getPose();
             Pose2d estimatedPosePhaseDelayed =
                     estimatedPose.exp(

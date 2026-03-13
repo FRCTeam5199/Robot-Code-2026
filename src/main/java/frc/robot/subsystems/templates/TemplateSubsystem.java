@@ -69,6 +69,12 @@ public class TemplateSubsystem extends SubsystemBase {
     private Type type;
     private String name;
 
+    public StatusSignal<Angle> positionStatusSignal;
+    public StatusSignal<AngularVelocity> velocityStatusSignal;
+
+    public StatusSignal<Angle> followerPositionStatusSignal;
+    public StatusSignal<AngularVelocity> followerVelocityStatusSignal;
+
     public TemplateSubsystem(Type type, int id, double velocity, double acceleration, double jerk,
                              double lowerTolerance, double upperTolerance,
                              double[][] gearRatios, String SubsystemName, boolean enableFoc) {
@@ -98,14 +104,14 @@ public class TemplateSubsystem extends SubsystemBase {
         }
 
         /* Subsystem Logging on AdvantageKit */
-        networkTable = NetworkTableInstance.getDefault().getTable("Subsystems/" + SubsystemName);
-
-        poseData = networkTable.getDoubleTopic("Position").publish();
-        velocityData = networkTable.getDoubleTopic("Velocity").publish();
-        voltageData = networkTable.getDoubleTopic("Voltage").publish();
-        supplyCurrentData = networkTable.getDoubleTopic("SupplyCurrent").publish();
-        statorCurrentData = networkTable.getDoubleTopic("StatorCurrent").publish();
-        tempData = networkTable.getDoubleTopic("Temp").publish();
+//        networkTable = NetworkTableInstance.getDefault().getTable("Subsystems/" + SubsystemName);
+//
+//        poseData = networkTable.getDoubleTopic("Position").publish();
+//        velocityData = networkTable.getDoubleTopic("Velocity").publish();
+//        voltageData = networkTable.getDoubleTopic("Voltage").publish();
+//        supplyCurrentData = networkTable.getDoubleTopic("SupplyCurrent").publish();
+//        statorCurrentData = networkTable.getDoubleTopic("StatorCurrent").publish();
+//        tempData = networkTable.getDoubleTopic("Temp").publish();
 
         this.name = SubsystemName;
     }
@@ -132,10 +138,14 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
         motorConfig.MotionMagic.MotionMagicJerk = jerk;
 
-//        motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
-//
+        motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
+
         motor.getRotorPosition().setUpdateFrequency(50);
         motor.getRotorVelocity().setUpdateFrequency(50);
+
+        positionStatusSignal = motor.getRotorPosition();
+        velocityStatusSignal = motor.getRotorVelocity();
+
         motor.optimizeBusUtilization();
 
         motor.getConfigurator().apply(motorConfig);
@@ -176,6 +186,11 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection) {
         followerMotor = new TalonFX(followerMotorId);
+
+        motor.getDutyCycle().setUpdateFrequency(100);
+        motor.getMotorVoltage().setUpdateFrequency(100);
+        motor.getTorqueCurrent().setUpdateFrequency(100);
+
         follower = new Follower(motor.getDeviceID(),
                 opposeMasterDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned);
         followerMotor.setControl(follower);
@@ -426,7 +441,7 @@ public class TemplateSubsystem extends SubsystemBase {
 
     //Unit Conversions
     public double getDegrees() {
-        return encoder == null ? motor.getRotorPosition().getValueAsDouble() * gearRatio * 360d
+        return encoder == null ? positionStatusSignal.getValueAsDouble() * gearRatio * 360d
                 : getEncoderDegrees();
     }
 
@@ -435,14 +450,14 @@ public class TemplateSubsystem extends SubsystemBase {
      */
 
     public double getMotorRot() {
-        return motor.getRotorPosition().getValueAsDouble();
+        return positionStatusSignal.getValueAsDouble();
     }
 
     /**
      * @return The rotation of the mechanism itself (Accounts for gear ratios and stuff)
      */
     public double getMechRot() {
-        return motor.getRotorPosition().getValueAsDouble() * gearRatio;
+        return positionStatusSignal.getValueAsDouble() * gearRatio;
     }
 
     public double getDegreesFromMechRot(double mechRot) {
@@ -474,7 +489,7 @@ public class TemplateSubsystem extends SubsystemBase {
      */
     public double getMechM() {
         if (type != Type.LINEAR) return 0;
-        return motor.getRotorPosition().getValueAsDouble() * drumCircumference * gearRatio;
+        return positionStatusSignal.getValueAsDouble() * drumCircumference * gearRatio;
     }
 
     /**
@@ -482,7 +497,7 @@ public class TemplateSubsystem extends SubsystemBase {
      */
     public DoubleSupplier getMechMeter() {
         if (type != Type.LINEAR) return () -> 0;
-        return () -> motor.getRotorPosition().getValueAsDouble() * drumCircumference * gearRatio;
+        return () -> positionStatusSignal.getValueAsDouble() * drumCircumference * gearRatio;
     }
 
     public double getMechMFromMotorRot(double motorRot) {
@@ -497,7 +512,7 @@ public class TemplateSubsystem extends SubsystemBase {
 
     //Motor Values
     public double getMotorVelocity() {
-        return motor.getRotorVelocity().getValueAsDouble();
+        return velocityStatusSignal.getValueAsDouble();
     }
 
     public double getSecondaryMotorVelocity() {
@@ -574,6 +589,14 @@ public class TemplateSubsystem extends SubsystemBase {
             setPosition(goal);
             changedOffset = false;
         }
+
+        positionStatusSignal.refresh();
+        velocityStatusSignal.refresh();
+
+//        if (followerMotor != null) {
+//            followerPositionStatusSignal.refresh();
+//            followerVelocityStatusSignal.refresh();
+//        }
 
 
 //        if (type == Type.LINEAR) poseData.set(getMechM());

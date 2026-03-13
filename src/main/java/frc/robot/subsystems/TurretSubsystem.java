@@ -77,21 +77,21 @@ public class TurretSubsystem extends TemplateSubsystem {
         currentState = new TrapezoidProfile.State(0, 0);
         goalState = new TrapezoidProfile.State(0, 0);
 
-        networkTable = NetworkTableInstance.getDefault().getTable("AutoTracking/");
-        turretNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Turret/");
-
-        goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
-        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
-        currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
-        goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
-        currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
-        turretToTargetDistance = networkTable.getDoubleTopic("Distance").publish();
-        lateralDistance = networkTable.getDoubleTopic("lateralDistance").publish();
-        isMechAtGoal = networkTable.getBooleanTopic("Turret Is Mech At Goal").publish();
-        turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
-        futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
-        velocity = networkTable.getDoubleTopic("Velocity").publish();
-        acceleration = networkTable.getDoubleTopic("Acceleration").publish();
+//        networkTable = NetworkTableInstance.getDefault().getTable("AutoTracking/");
+//        turretNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Turret/");
+//
+//        goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
+//        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
+//        currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
+//        goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
+//        currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
+//        turretToTargetDistance = networkTable.getDoubleTopic("Distance").publish();
+//        lateralDistance = networkTable.getDoubleTopic("lateralDistance").publish();
+//        isMechAtGoal = networkTable.getBooleanTopic("Turret Is Mech At Goal").publish();
+//        turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
+//        futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
+//        velocity = networkTable.getDoubleTopic("Velocity").publish();
+//        acceleration = networkTable.getDoubleTopic("Acceleration").publish();
 
         simpleMotorFeedforward = new SimpleMotorFeedforward(TurretConstants.SLOT0_CONFIGS.kS,
                 TurretConstants.SLOT0_CONFIGS.kV, TurretConstants.SLOT0_CONFIGS.kA);
@@ -119,12 +119,12 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        lateralDistance.set(getLateralDistance());
 //        futureTurretPose.set(shotCalculator.getFutureTurretPositionPhaseDelayed());
 
-        velocity.set(RobotContainer.velocity);
-        acceleration.set(RobotContainer.acceleration);
+//        velocity.set(RobotContainer.velocity);
+//        acceleration.set(RobotContainer.acceleration);
 
 //        vision.addSample(getDegrees());
 
-        isMechAtGoal.set(isMechAtGoalAuto());
+//        isMechAtGoal.set(isMechAtGoalAuto());
 
         if (!stopMoving) followLastProfile();
 
@@ -180,19 +180,18 @@ public class TurretSubsystem extends TemplateSubsystem {
     }
 
     public double getLateralDistance() {
-//        double degrees = getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
-//        double slope = Math.tan(Math.toRadians(degrees));
-//        Pose2d futureTurretPose = shotCalculator.getFutureTurretPosition();
-//
-//        Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
-//                Constants.RED_HUB_CENTER);
-//
-//        double deltaX = hubCenter.getX() - futureTurretPose.getX();
-//        double deltaY = slope * deltaX;
-//        double projectedY = futureTurretPose.getY() + deltaY;
-//
-//        return Math.abs(hubCenter.getY() - projectedY);
-        return 0;
+        double degrees = getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
+        double slope = Math.tan(Math.toRadians(degrees));
+        Pose2d futureTurretPose = shotCalculator.getFutureTurretPosition();
+
+        Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
+                Constants.RED_HUB_CENTER);
+
+        double deltaX = hubCenter.getX() - futureTurretPose.getX();
+        double deltaY = slope * deltaX;
+        double projectedY = futureTurretPose.getY() + deltaY;
+
+        return Math.abs(hubCenter.getY() - projectedY);
     }
 
     public double getFF(double velocity) {

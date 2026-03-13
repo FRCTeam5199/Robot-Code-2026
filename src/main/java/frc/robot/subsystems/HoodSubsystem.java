@@ -59,12 +59,12 @@ public class HoodSubsystem extends TemplateSubsystem {
         currentState = new TrapezoidProfile.State(0, 0);
         goalState = new TrapezoidProfile.State(0, 0);
 
-        hoodTable = NetworkTableInstance.getDefault().getTable("Hood/");
-        goalPosition = hoodTable.getDoubleTopic("Goal Position").publish();
-        goalPositionPhaseDelay = hoodTable.getDoubleTopic("Goal Position Phase Delay").publish();
-        currentPosition = hoodTable.getDoubleTopic("Current Position").publish();
-
-        isMechAtGoal = hoodTable.getBooleanTopic("Hood Is Mech At Goal").publish();
+//        hoodTable = NetworkTableInstance.getDefault().getTable("Hood/");
+//        goalPosition = hoodTable.getDoubleTopic("Goal Position").publish();
+//        goalPositionPhaseDelay = hoodTable.getDoubleTopic("Goal Position Phase Delay").publish();
+//        currentPosition = hoodTable.getDoubleTopic("Current Position").publish();
+//
+//        isMechAtGoal = hoodTable.getBooleanTopic("Hood Is Mech At Goal").publish();
 
         simpleMotorFeedforward = new SimpleMotorFeedforward(HoodConstants.SLOT0_CONFIGS.kS,
                 HoodConstants.SLOT0_CONFIGS.kV, HoodConstants.SLOT0_CONFIGS.kA);

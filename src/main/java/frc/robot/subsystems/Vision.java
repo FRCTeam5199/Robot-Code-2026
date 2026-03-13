@@ -33,7 +33,7 @@ public class Vision {
         LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_FRONT_NAME,
                 -.182, .156, .445, 0, 10, 0); //forward and side could be switched around, yaw might be 180
 
-//        startThread();
+        startThread();
     }
 
     public static Vision getInstance() {

@@ -7,6 +7,7 @@ package frc.robot;
 
 import java.util.Map;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -172,6 +173,7 @@ RobotContainer {
 
 
     public RobotContainer() {
+        optimizeDrivetrain();
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(kickerAuto, shooterAuto,
                         hoodControlAuto, turretControlAuto));
@@ -567,5 +569,13 @@ RobotContainer {
 
     public static void setIsAutonomous(boolean isAutonomous) {
         RobotContainer.isAutonomous = isClimbing;
+    }
+
+    public void optimizeDrivetrain() {
+        for (int i = 0; i < 4; i++) {
+            commandSwerveDrivetrain.getModules()[i].getDriveMotor().optimizeBusUtilization();
+            commandSwerveDrivetrain.getModules()[i].getSteerMotor().optimizeBusUtilization();
+            commandSwerveDrivetrain.getModules()[i].getEncoder().optimizeBusUtilization();
+        }
     }
 }

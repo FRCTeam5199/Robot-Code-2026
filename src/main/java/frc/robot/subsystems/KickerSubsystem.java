@@ -43,6 +43,7 @@ public class KickerSubsystem extends TemplateSubsystem {
         super.periodic();
 //        System.out.println("kicker: " + isMechAtGoal(true));
 //        System.out.println(getGoal());
+//        System.out.println("Vel: " + getMotorVelocity());
 
     }
 
