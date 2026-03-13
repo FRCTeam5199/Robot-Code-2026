@@ -84,10 +84,10 @@ public class HoodSubsystem extends TemplateSubsystem {
 //        System.out.println("Hood is at goal: " + isMechAtGoal(true));
 //        System.out.println(getGearRatio());
 
-        goalPosition.set(ShotCalculator.getInstance().getHoodAngle());
-        goalPositionPhaseDelay.set(ShotCalculator.getInstance().getHoodAnglePhaseDelayed());
-        currentPosition.set(getDegrees());
-        isMechAtGoal.set(isMechAtGoalAuto());
+//        goalPosition.set(ShotCalculator.getInstance().getHoodAngle());
+//        goalPositionPhaseDelay.set(ShotCalculator.getInstance().getHoodAnglePhaseDelayed());
+//        currentPosition.set(getDegrees());
+//        isMechAtGoal.set(isMechAtGoalAuto());
 
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444

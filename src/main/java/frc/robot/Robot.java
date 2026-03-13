@@ -232,6 +232,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        if (getAlliance() != null && getAlliance().equals(DriverStation.Alliance.Red)) {
+            commandSwerveDrivetrain.getPigeon2().setYaw(180d);
+        }
+
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         RobotContainer.setIsClimbing(false);
 
@@ -246,7 +250,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        System.out.println(20 - Robot.getAutoTime() < ClimberConstants.CLIMB_TIME);
+//        System.out.println(20 - Robot.getAutoTime() < ClimberConstants.CLIMB_TIME);
     }
 
     @Override

@@ -7,6 +7,8 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.utility.LimelightHelpers;
 
+import java.awt.geom.Ellipse2D;
+
 public class Vision {
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public volatile static LimelightHelpers.PoseEstimate limelightRightData;
@@ -19,6 +21,7 @@ public class Vision {
 //            LinearFilter.movingAverage((int) (0.1 / 0.02));
 
     private Vision() {
+        //all numbers: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
         //5,8,9,10,11,2,3,4 - hub april tags
         //filters: 1,2,3,4,5,6,8,9,10,11,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32 - removing outpost, tower, and trench
         //filters: 1,2,3,4,5,6,7,8,9,10,11,12,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32 - removing outpost
@@ -30,7 +33,7 @@ public class Vision {
         LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_FRONT_NAME,
                 -.182, .156, .445, 0, 10, 0); //forward and side could be switched around, yaw might be 180
 
-        startThread();
+//        startThread();
     }
 
     public static Vision getInstance() {
@@ -43,7 +46,7 @@ public class Vision {
             while (!Thread.interrupted()) {
                 updatePoses();
                 try {
-                    Thread.sleep(5);
+                    Thread.sleep(10);
                 } catch (InterruptedException ignored) {
 
                 }
@@ -63,13 +66,15 @@ public class Vision {
                 double xyStdev = .5;
 
                 if (limelightLeftData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
+                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 999999999999d);
                 } else {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
 
+//                System.out.println(limelightLeftData.pose.getTranslation().getDistance(RobotContainer.getPose().getTranslation()));
+
                 if (!RobotContainer.isAutonomous() || limelightLeftData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) < 1d) {
+                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
                     if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
                             && !RobotContainer.isClimbing()) {
                         commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
@@ -90,7 +95,7 @@ public class Vision {
                 double xyStdev = .5;
 
                 if (limelightRightData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
+                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 999999999999d);
                 } else {
                     xyStdev *= limelightRightData.avgTagDist;
                 }
@@ -100,7 +105,7 @@ public class Vision {
                     return;
 
                 if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) < 1d) {
+                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
                     if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
                         commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
                                 limelightRightData.timestampSeconds, VecBuilder
@@ -120,13 +125,13 @@ public class Vision {
                 double xyStdev = .5;
 
                 if (limelightFrontData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightFrontData.avgTagDist, 3);
+                    xyStdev *= Math.pow(limelightFrontData.avgTagDist, 999999999999d);
                 } else {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
 
                 if (!RobotContainer.isAutonomous() || limelightFrontData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) < 1d) {
+                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
                     if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
                             && !RobotContainer.isClimbing()) {
                         commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,

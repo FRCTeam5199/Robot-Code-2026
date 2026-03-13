@@ -64,12 +64,12 @@
     },
     {
       "anchor": {
-        "x": 15.580342368045645,
-        "y": 5.490599144079885
+        "x": 15.308630527817401,
+        "y": 3.2263338088445086
       },
       "prevControl": {
-        "x": 15.06673995840709,
-        "y": 6.026056975405187
+        "x": 13.613666191155488,
+        "y": 1.3502282453637668
       },
       "nextControl": null,
       "isLocked": false,
@@ -87,6 +87,10 @@
     },
     {
       "waypointRelativePos": 2.7352697095435685,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 3.070362473347551,
       "rotationDegrees": 0.0
     }
   ],
@@ -108,68 +112,115 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "revUp",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "deployIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "revUp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shuttle",
+      "waypointRelativePos": 0.21607022282241745,
+      "endWaypointRelativePos": 1.8149898717083062,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "runIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "deployIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shuttleAgitate",
+      "waypointRelativePos": 1.82,
+      "endWaypointRelativePos": 2.7981093855502994,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "agitateIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "shoot",
-      "waypointRelativePos": 0.32410533423362514,
-      "endWaypointRelativePos": null,
+      "waypointRelativePos": 3.32,
+      "endWaypointRelativePos": 3.99,
       "command": {
-        "type": "named",
+        "type": "parallel",
         "data": {
-          "name": "shoot"
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "agitateIntake"
+              }
+            }
+          ]
         }
       }
     },
     {
-      "name": "runIntake",
-      "waypointRelativePos": 0.3890818858560793,
+      "name": "prepClimbLeft",
+      "waypointRelativePos": 4.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "runIntake"
-        }
-      }
-    },
-    {
-      "name": "deployIntake",
-      "waypointRelativePos": 0.428784119106699,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "deployIntake"
-        }
-      }
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 0.9210918114143949,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot"
-        }
-      }
-    },
-    {
-      "name": "stable",
-      "waypointRelativePos": 2.644168734491315,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "stable"
-        }
-      }
-    },
-    {
-      "name": "retractIntake",
-      "waypointRelativePos": 3.493796526054589,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "retractIntake"
+          "name": "prepClimbLeft"
         }
       }
     }
@@ -184,7 +235,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Red Shuttle Bottom",

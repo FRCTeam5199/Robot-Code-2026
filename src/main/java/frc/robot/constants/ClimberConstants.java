@@ -12,7 +12,7 @@ public class ClimberConstants {
     public static final boolean INVERTED = true;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = .14;
+    public static final double DEPLOY = .17;
     public static final double ZERO = -.02;
     public static final double CLIMB = -.02;
 

@@ -132,9 +132,11 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
         motorConfig.MotionMagic.MotionMagicJerk = jerk;
 
-        motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
-
-        motor.optimizeBusUtilization(50);
+//        motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
+//
+        motor.getRotorPosition().setUpdateFrequency(50);
+        motor.getRotorVelocity().setUpdateFrequency(50);
+        motor.optimizeBusUtilization();
 
         motor.getConfigurator().apply(motorConfig);
         motor.setPosition(0);
@@ -576,11 +578,11 @@ public class TemplateSubsystem extends SubsystemBase {
 
 //        if (type == Type.LINEAR) poseData.set(getMechM());
 //        else poseData.set(getDegrees());
-        velocityData.set(getMotorVelocity());
+//        velocityData.set(getMotorVelocity());
 //        voltageData.set(getMotorVoltage());
 //        supplyCurrentData.set(-getSupplyCurrent());
 //        statorCurrentData.set(-getStatorCurrent());
-       tempData.set(getMotorTemp());
+//        tempData.set(getMotorTemp());
     }
 
     public void setControl(ControlRequest control) {

@@ -54,11 +54,11 @@ public class ShotCalculator extends SubsystemBase {
         hoodLookupTable.put(3.997 + Constants.HUB_RADIUS, 6d);
         hoodLookupTable.put(4.991 + Constants.HUB_RADIUS, 10d);
 
-        shooterSpeedLookupTable.put(1.013 + Constants.HUB_RADIUS, 24d + 3);
-        shooterSpeedLookupTable.put(1.991 + Constants.HUB_RADIUS, 28d + 3);
-        shooterSpeedLookupTable.put(2.952 + Constants.HUB_RADIUS, 31.5 + 3);
-        shooterSpeedLookupTable.put(3.997 + Constants.HUB_RADIUS, 35d + 3);
-        shooterSpeedLookupTable.put(5.002 + Constants.HUB_RADIUS, 36d + 3);
+        shooterSpeedLookupTable.put(1.013 + Constants.HUB_RADIUS, 24d + 2d);
+        shooterSpeedLookupTable.put(1.991 + Constants.HUB_RADIUS, 28.5 + 1d);
+        shooterSpeedLookupTable.put(2.952 + Constants.HUB_RADIUS, 31.5 + 1.5);
+        shooterSpeedLookupTable.put(3.997 + Constants.HUB_RADIUS, 35d + 1d);
+        shooterSpeedLookupTable.put(5.002 + Constants.HUB_RADIUS, 38d + 1.5);
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444
 
@@ -79,10 +79,10 @@ public class ShotCalculator extends SubsystemBase {
         shuttleShooterSpeedLookupTable.put(8.5d, 39d - 3d);
         shuttleShooterSpeedLookupTable.put(14d, 60d - 3d);
 
-        shuttleTimeOfFlightLookupTable.put(5.5, (1.27 + 1.23) / 2d);
-        shuttleTimeOfFlightLookupTable.put(7d, 1.37);
-        shuttleTimeOfFlightLookupTable.put(8.5, 1.47);
-        shuttleTimeOfFlightLookupTable.put(10d, (1.57 + 1.54) / 2d);
+        shuttleTimeOfFlightLookupTable.put(5.5, ((1.27 + 1.23) / 2d) + .15);
+        shuttleTimeOfFlightLookupTable.put(7d, 1.37 + .15);
+        shuttleTimeOfFlightLookupTable.put(8.5, 1.47 + .15);
+        shuttleTimeOfFlightLookupTable.put(10d, ((1.57 + 1.54) / 2d) + .15);
 
     }
 
@@ -94,7 +94,7 @@ public class ShotCalculator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (RobotContainer.getPose() != null) {
+        if (RobotContainer.getPose() != null && false) {
             Pose2d estimatedPose = RobotContainer.getPose();
             Pose2d estimatedPosePhaseDelayed =
                     estimatedPose.exp(

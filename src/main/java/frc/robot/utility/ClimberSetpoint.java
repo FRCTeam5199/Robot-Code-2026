@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public enum ClimberSetpoint {
     CLIMB_LEFT_RED_PREP(new Pose2d(15.3, 3.3, new Rotation2d(Math.toRadians(180d)))),
-    CLIMB_LEFT_RED(new Pose2d(15.45, 3.52, new Rotation2d(Math.toRadians(180d)))),
+    CLIMB_LEFT_RED(new Pose2d(15.42, 3.52, new Rotation2d(Math.toRadians(180d)))),
     CLIMB_RIGHT_RED_PREP(new Pose2d(15.3, 5.3, new Rotation2d(Math.toRadians(0d)))),
     CLIMB_RIGHT_RED(new Pose2d(15.55, 5.05, new Rotation2d(Math.toRadians(0d))));
 

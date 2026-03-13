@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 8.308815977175463,
-        "y": 6.31867332382311
+        "x": 8.515834522111268,
+        "y": 6.38336661911555
       },
       "prevControl": {
-        "x": 8.462222079138622,
-        "y": 7.361337050822313
+        "x": 8.669240624074426,
+        "y": 7.426030346114753
       },
       "nextControl": {
-        "x": 8.127952007336457,
-        "y": 5.089385189525171
+        "x": 8.334970552272262,
+        "y": 5.15407848481761
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.804482142857143,
-        "y": 1.3625892857142856
+        "x": 9.149828815977175,
+        "y": 1.3502282453637668
       },
       "prevControl": {
-        "x": 8.399386590584879,
-        "y": 2.074793152639087
+        "x": 8.74473326370491,
+        "y": 2.062432112288568
       },
       "nextControl": {
-        "x": 9.216235594065472,
-        "y": 0.6386800783055862
+        "x": 9.561582267185504,
+        "y": 0.6263190379550674
       },
       "isLocked": false,
       "linkedName": null
@@ -110,7 +110,7 @@
     {
       "name": "shuttle",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 2.6983050847457624,
+      "endWaypointRelativePos": 1.9878460499662323,
       "command": {
         "type": "parallel",
         "data": {
@@ -138,20 +138,9 @@
       }
     },
     {
-      "name": "revUp",
-      "waypointRelativePos": 2.8067796610169418,
-      "endWaypointRelativePos": 3.0508474576271145,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "revUp"
-        }
-      }
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 2.8067796610169484,
-      "endWaypointRelativePos": 4.0,
+      "name": "shuttleAgitate",
+      "waypointRelativePos": 2.0,
+      "endWaypointRelativePos": 2.65766374071573,
       "command": {
         "type": "parallel",
         "data": {
@@ -172,6 +161,60 @@
               "type": "named",
               "data": {
                 "name": "agitateIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "revUp",
+      "waypointRelativePos": 2.67,
+      "endWaypointRelativePos": 2.8629304523970336,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "revUp"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "deployIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 2.87,
+      "endWaypointRelativePos": 3.99,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "agitateIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "runIntake"
               }
             }
           ]

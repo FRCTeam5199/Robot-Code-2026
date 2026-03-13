@@ -108,16 +108,16 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        goalPositionLogging.set(shotCalculator.getTurretAngle());
-        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
-        currentPositionLogging.set(getDegrees());
-
-        goalVelocityLogging.set(goalVelocityRotPerSec);
-        currentVelocityLogging.set(getMotorVelocity());
-
-        turretToTargetDistance.set(shotCalculator.getTurretToTargetDistance());
-        lateralDistance.set(getLateralDistance());
-        futureTurretPose.set(shotCalculator.getFutureTurretPositionPhaseDelayed());
+//        goalPositionLogging.set(shotCalculator.getTurretAngle());
+//        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+//        currentPositionLogging.set(getDegrees());
+//
+//        goalVelocityLogging.set(goalVelocityRotPerSec);
+//        currentVelocityLogging.set(getMotorVelocity());
+//
+//        turretToTargetDistance.set(shotCalculator.getTurretToTargetDistance());
+//        lateralDistance.set(getLateralDistance());
+//        futureTurretPose.set(shotCalculator.getFutureTurretPositionPhaseDelayed());
 
         velocity.set(RobotContainer.velocity);
         acceleration.set(RobotContainer.acceleration);
@@ -180,18 +180,19 @@ public class TurretSubsystem extends TemplateSubsystem {
     }
 
     public double getLateralDistance() {
-        double degrees = getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
-        double slope = Math.tan(Math.toRadians(degrees));
-        Pose2d futureTurretPose = shotCalculator.getFutureTurretPosition();
-
-        Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
-                Constants.RED_HUB_CENTER);
-
-        double deltaX = hubCenter.getX() - futureTurretPose.getX();
-        double deltaY = slope * deltaX;
-        double projectedY = futureTurretPose.getY() + deltaY;
-
-        return Math.abs(hubCenter.getY() - projectedY);
+//        double degrees = getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
+//        double slope = Math.tan(Math.toRadians(degrees));
+//        Pose2d futureTurretPose = shotCalculator.getFutureTurretPosition();
+//
+//        Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
+//                Constants.RED_HUB_CENTER);
+//
+//        double deltaX = hubCenter.getX() - futureTurretPose.getX();
+//        double deltaY = slope * deltaX;
+//        double projectedY = futureTurretPose.getY() + deltaY;
+//
+//        return Math.abs(hubCenter.getY() - projectedY);
+        return 0;
     }
 
     public double getFF(double velocity) {

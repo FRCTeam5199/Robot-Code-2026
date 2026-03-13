@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Top Shuttle"
+            "pathName": "Red Top Self Shuttle"
           }
         },
         {
@@ -27,28 +27,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "prepClimbLeft"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "climb"
-                      }
-                    }
-                  ]
+                  "name": "runIntake"
                 }
               }
             ]

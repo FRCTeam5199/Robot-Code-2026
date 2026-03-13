@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.ClimberSetpoint;
 import frc.robot.utility.ShotCalculator;
 
@@ -33,14 +34,21 @@ public final class Autos {
     private static PathPlannerAuto redTopScore;
     private static PathPlannerAuto redBottomDoubleScore;
 
-    private static PathPlannerAuto redBottomShuttle;
-    private static PathPlannerAuto redTopShuttle;
+//    private static PathPlannerAuto redBottomShuttle;
+//    private static PathPlannerAuto redTopShuttle;
+
+    private static PathPlannerAuto redBottomSelfShuttle;
+    private static PathPlannerAuto redTopSelfShuttle;
+
 
     private static PathPlannerAuto blueBottomScore;
     private static PathPlannerAuto blueTopScore;
 
-    private static PathPlannerAuto blueBottomShuttle;
-    private static PathPlannerAuto blueTopShuttle;
+//    private static PathPlannerAuto blueBottomShuttle;
+//    private static PathPlannerAuto blueTopShuttle;
+
+    private static PathPlannerAuto blueBottomSelfShuttle;
+    private static PathPlannerAuto blueTopSelfShuttle;
 
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
@@ -75,10 +83,14 @@ public final class Autos {
     public static void initializeAutos() {
 
         redBottomScore = new PathPlannerAuto("Red Bottom Score");
-        redBottomShuttle = new PathPlannerAuto("Red Bottom Shuttle");
+//        redBottomShuttle = new PathPlannerAuto("Red Bottom Shuttle");
         redTopScore = new PathPlannerAuto("Red Top Score");
-        redTopShuttle = new PathPlannerAuto("Red Top Shuttle");
+//        redTopShuttle = new PathPlannerAuto("Red Top Shuttle");
         redBottomDoubleScore = new PathPlannerAuto("Red Bottom Double Score");
+        redBottomSelfShuttle = new PathPlannerAuto("Red Bottom Self Shuttle");
+        redTopSelfShuttle = new PathPlannerAuto("Red Top Self Shuttle");
+
+        blueBottomSelfShuttle = new PathPlannerAuto("Copy of Red Bottom Self Shuttle");
 
         Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
@@ -89,14 +101,16 @@ public final class Autos {
 
 
         autonChooserRed.addOption("Red Left Score", redBottomScore);
-        autonChooserRed.addOption("Red Left Shuttle", redBottomShuttle);
+//        autonChooserRed.addOption("Red Left Shuttle", redBottomShuttle);
+        autonChooserRed.addOption("Red Left Self Shuttle", redBottomSelfShuttle);
+        autonChooserRed.addOption("Red Right Self Shuttle", redTopSelfShuttle);
         autonChooserRed.addOption("Red Right Score", redTopScore);
-        autonChooserRed.addOption("Red Right Shuttle", redTopShuttle);
-        autonChooserRed.addOption("Red Right Double Score", redBottomDoubleScore);
-        autonChooserRed.addOption("Test", new PathPlannerAuto("test"));
+//        autonChooserRed.addOption("Red Right Shuttle", redTopShuttle);
+        autonChooserRed.addOption("Red Left Double Score", redBottomDoubleScore);
+//        autonChooserRed.addOption("Test", new PathPlannerAuto("test"));
 
 
-//        autonChooserBlue.addOption();
+        autonChooserBlue.addOption("Blue Left Self Shuttle", blueBottomSelfShuttle);
 
     }
 

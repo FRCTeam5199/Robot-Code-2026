@@ -208,9 +208,9 @@ RobotContainer {
         NamedCommands.registerCommand("agitateIntake", intakeAgitation);
         NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
-        NamedCommands.registerCommand("prepClimbLeft", RobotCommands.prepAutoCLimbLeft());
-        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbRight());
-        NamedCommands.registerCommand("climb", climberClimb);
+//        NamedCommands.registerCommand("prepClimbLeft", RobotCommands.prepAutoCLimbLeft());
+//        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbRight());
+//        NamedCommands.registerCommand("climb", climberClimb);
 
         Autos.initializeAutos();
         configureBindings();
@@ -288,7 +288,7 @@ RobotContainer {
         calculateAutoClimbVelocities();
 
         // Logging
-        logger.telemeterize(currentState); //currentState
+//        logger.telemeterize(currentState);
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
@@ -496,7 +496,7 @@ RobotContainer {
             else xVelocity -= Constants.DRIVE_X_KS;
         }
 
-        rotationVelocity = turnPIDController.calculate(rotationalError, 0);
+        rotationVelocity = -turnPIDController.calculate(rotationalError, 0);
 
 //        System.out.println("Rotation Velocity: " + rotationVelocity);
 //        System.out.println("Goal Degrees: " + climberSetpoint.getPose2d().getRotation().getDegrees());

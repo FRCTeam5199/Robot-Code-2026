@@ -53,9 +53,11 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        isMechAtGoal.set(isMechAtGoalAuto());
-        goalSpeed.set(shotCalculator.getShooterSpeed());
-        currentSpeed.set(getMotorVelocity());
+//        isMechAtGoal.set(isMechAtGoalAuto());
+//        goalSpeed.set(shotCalculator.getShooterSpeed());
+//        currentSpeed.set(getMotorVelocity());
+
+//        System.out.println("shooter: " + isMechAtGoal(true));
     }
 
     public boolean isMechAtGoalAuto() {

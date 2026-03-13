@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Top Shuttle"
+            "pathName": "Red Bottom Self Shuttle"
           }
         },
         {
@@ -23,32 +23,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "agitateIntake"
+                  "name": "runIntake"
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "prepClimbLeft"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "climb"
-                      }
-                    }
-                  ]
+                  "name": "agitateIntake"
                 }
               }
             ]
