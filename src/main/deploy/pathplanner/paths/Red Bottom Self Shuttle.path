@@ -101,7 +101,7 @@
       },
       "prevControl": {
         "x": 15.011041369472181,
-        "y": 0.8844365192582014
+        "y": 0.8844365192582015
       },
       "nextControl": null,
       "isLocked": false,
@@ -240,12 +240,6 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "revUp",
-      "waypointRelativePos": 0.04321404456448352,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "deployIntake",
       "waypointRelativePos": 0.09723160027008773,
       "endWaypointRelativePos": null,
@@ -279,6 +273,17 @@
       }
     },
     {
+      "name": "stable",
+      "waypointRelativePos": 1.501477832512313,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stable"
+        }
+      }
+    },
+    {
       "name": "revUp",
       "waypointRelativePos": 1.890614449696153,
       "endWaypointRelativePos": null,
@@ -286,17 +291,6 @@
         "type": "named",
         "data": {
           "name": "revUp"
-        }
-      }
-    },
-    {
-      "name": "stable",
-      "waypointRelativePos": 2.0580688723835254,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "stable"
         }
       }
     },
@@ -319,17 +313,6 @@
         "type": "named",
         "data": {
           "name": "agitateIntake"
-        }
-      }
-    },
-    {
-      "name": "runIntake",
-      "waypointRelativePos": 2.754895340985819,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "runIntake"
         }
       }
     },

@@ -19,46 +19,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
-import frc.robot.constants.IntakePivotConstants;
-import frc.robot.constants.IntakeRollerConstants;
-import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.templates.PositionCommand;
-import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.ClimberSetpoint;
 import frc.robot.utility.ShotCalculator;
 
 public final class Autos {
-    private SendableChooser<Command> autoChooser;
-    private static Autos autos;
-    public static SendableChooser<Command> autonChooserRed = new SendableChooser<>();
-    public static SendableChooser<Command> autonChooserBlue = new SendableChooser<>();
-
-
-    private static PathPlannerAuto redBottomScore;
-    private static PathPlannerAuto redTopScore;
-    private static PathPlannerAuto redBottomDoubleScore;
-
-//    private static PathPlannerAuto redBottomShuttle;
-//    private static PathPlannerAuto redTopShuttle;
-
-    private static PathPlannerAuto redBottomSelfShuttle;
-    private static PathPlannerAuto redTopSelfShuttle;
-
-
-    private static PathPlannerAuto blueBottomScore;
-    private static PathPlannerAuto blueTopScore;
-
-//    private static PathPlannerAuto blueBottomShuttle;
-//    private static PathPlannerAuto blueTopShuttle;
-
-    private static SequentialCommandGroup blueBottomSelfShuttle;
-    private static SequentialCommandGroup blueTopSelfShuttle;
-
-    private static PathPlannerAuto blueBottomDoubleScore;
-    private static PathPlannerAuto blueTopDoubleScore;
-
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
@@ -66,45 +31,57 @@ public final class Autos {
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+
+    //    private static PathPlannerAuto redBottomShuttle;
+//    private static PathPlannerAuto redTopShuttle;
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+
+    //    private static PathPlannerAuto blueBottomShuttle;
+//    private static PathPlannerAuto blueTopShuttle;
     public static final Vision vision = Vision.getInstance();
-
-    private static Timer pidAlignmentTimer = new Timer();
-
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
-
-
-    /**
-     * Gets or creates the AutoChooser (Singleton Method)
-     */
-    public SendableChooser<Command> getAutoChooser() {
-        if (autoChooser == null) {
-            autoChooser = AutoBuilder.buildAutoChooser();
-//            UserInterface.getTab("Auton").add("AutoChooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
-        }
-
-        return autoChooser;
-    }
+    public static SendableChooser<Command> autonChooserRed = new SendableChooser<>();
+    public static SendableChooser<Command> autonChooserBlue = new SendableChooser<>();
+    private static Autos autos;
+    private static PathPlannerAuto redBottomScore;
+    private static PathPlannerAuto redTopScore;
+    private static PathPlannerAuto redBottomDoubleScore;
+    private static PathPlannerAuto redTopDoubleScore;
+    private static PathPlannerAuto redBottomSelfShuttle;
+    private static PathPlannerAuto redTopSelfShuttle;
+    private static PathPlannerAuto blueBottomScore;
+    private static PathPlannerAuto blueTopScore;
+    private static SequentialCommandGroup blueBottomSelfShuttle;
+    private static SequentialCommandGroup blueTopSelfShuttle;
+    private static PathPlannerAuto blueBottomDoubleScore;
+    private static PathPlannerAuto blueTopDoubleScore;
+    private static Timer pidAlignmentTimer = new Timer();
+    private SendableChooser<Command> autoChooser;
 
     public static void initializeAutos() {
 
         redBottomScore = new PathPlannerAuto("Red Bottom Score");
-//        redBottomShuttle = new PathPlannerAuto("Red Bottom Shuttle");
         redTopScore = new PathPlannerAuto("Red Top Score");
-//        redTopShuttle = new PathPlannerAuto("Red Top Shuttle");
+
         redBottomDoubleScore = new PathPlannerAuto("Red Bottom Double Score");
+        redTopDoubleScore = new PathPlannerAuto("Red Tom Double Score");
+
         redBottomSelfShuttle = new PathPlannerAuto("Red Bottom Self Shuttle");
         redTopSelfShuttle = new PathPlannerAuto("Red Top Self Shuttle");
 
         blueBottomSelfShuttle = new PathPlannerAuto("Copy of Red Bottom Self Shuttle").andThen(RobotCommands.indexBallsAuto());
         blueTopSelfShuttle = new PathPlannerAuto("Copy of Red Top Self Shuttle").andThen(RobotCommands.indexBallsAuto());
+
         blueBottomDoubleScore = new PathPlannerAuto("Copy of Red Bottom Double Score");
         blueTopDoubleScore = new PathPlannerAuto("Copy of Red Top Double Score");
+
+        blueBottomScore = new PathPlannerAuto("Copy of Red Bottom Score");
+        blueTopScore = new PathPlannerAuto("Copy of Red Top Score");
 
         Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
@@ -114,21 +91,23 @@ public final class Autos {
                 .withSize(2, 1);
 
 
-        autonChooserRed.addOption("Red Left Score", redBottomScore);
-//        autonChooserRed.addOption("Red Left Shuttle", redBottomShuttle);
+        autonChooserRed.addOption("Red Left Score Climb", redBottomScore);
+        autonChooserRed.addOption("Red Right Score Climb", redTopScore);
+
         autonChooserRed.addOption("Red Left Self Shuttle", redBottomSelfShuttle);
         autonChooserRed.addOption("Red Right Self Shuttle", redTopSelfShuttle);
-        autonChooserRed.addOption("Red Right Score", redTopScore);
-//        autonChooserRed.addOption("Red Right Shuttle", redTopShuttle);
-        autonChooserRed.addOption("Red Left Double Score", redBottomDoubleScore);
-//        autonChooserRed.addOption("Test", new PathPlannerAuto("test"));
 
+        autonChooserRed.addOption("Red Left Double Score", redBottomDoubleScore);
+        autonChooserRed.addOption("Red Right Double Score", redTopDoubleScore);
 
         autonChooserBlue.addOption("Blue Left Self Shuttle", blueBottomSelfShuttle);
         autonChooserBlue.addOption("Blue Right Self Shuttle", blueTopSelfShuttle);
 
         autonChooserBlue.addOption("Blue Left Double Score", blueBottomDoubleScore);
         autonChooserBlue.addOption("Blue Right Double Score", blueTopDoubleScore);
+
+        autonChooserBlue.addOption("Blue Left Score Climb", blueBottomScore);
+        autonChooserBlue.addOption("Blue Right Score Climb", blueTopScore);
 
     }
 
@@ -294,6 +273,18 @@ public final class Autos {
             autos = new Autos();
         }
         return autos;
+    }
+
+    /**
+     * Gets or creates the AutoChooser (Singleton Method)
+     */
+    public SendableChooser<Command> getAutoChooser() {
+        if (autoChooser == null) {
+            autoChooser = AutoBuilder.buildAutoChooser();
+//            UserInterface.getTab("Auton").add("AutoChooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
+        }
+
+        return autoChooser;
     }
 
 

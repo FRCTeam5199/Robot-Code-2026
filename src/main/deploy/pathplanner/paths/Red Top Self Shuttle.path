@@ -65,11 +65,43 @@
     {
       "anchor": {
         "x": 16.0,
-        "y": 7.017360912981456
+        "y": 7.043238231095464
       },
       "prevControl": {
-        "x": 13.528716119828816,
-        "y": 7.263195435092726
+        "x": 13.574850213982625,
+        "y": 7.172624821680343
+      },
+      "nextControl": {
+        "x": 16.25872848037995,
+        "y": 7.029434549295445
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 15.593281027106734,
+        "y": 7.42
+      },
+      "prevControl": {
+        "x": 15.610943326219864,
+        "y": 7.170624694105374
+      },
+      "nextControl": {
+        "x": 15.575618727993604,
+        "y": 7.669375305894626
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 16.0,
+        "y": 7.574
+      },
+      "prevControl": {
+        "x": 15.762433414451301,
+        "y": 7.4961403992385485
       },
       "nextControl": null,
       "isLocked": false,
@@ -151,13 +183,37 @@
         "nominalVoltage": 12.0,
         "unlimited": false
       }
+    },
+    {
+      "name": "Outpost Backup",
+      "minWaypointRelativePos": 4.083727211343682,
+      "maxWaypointRelativePos": 6.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
     }
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "revUp",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "revUp"
+        }
+      }
+    },
+    {
       "name": "shoot",
-      "waypointRelativePos": 0.09723160027008815,
+      "waypointRelativePos": 0.0648210668467259,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -190,23 +246,12 @@
     },
     {
       "name": "stable",
-      "waypointRelativePos": 1.4044564483457151,
+      "waypointRelativePos": 1.400985221674874,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "stable"
-        }
-      }
-    },
-    {
-      "name": "revUp",
-      "waypointRelativePos": 1.9878460499662445,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "revUp"
         }
       }
     },

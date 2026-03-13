@@ -108,6 +108,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "stable",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stable"
+        }
+      }
+    },
+    {
       "name": "runIntake",
       "waypointRelativePos": 0.38892640108035004,
       "endWaypointRelativePos": null,

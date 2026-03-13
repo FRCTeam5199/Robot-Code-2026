@@ -33,8 +33,8 @@ public class
 
 RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
-//    public static final CommandXboxController operatorCommandXboxController
-//            = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
+    public static final CommandXboxController operatorCommandXboxController
+            = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -56,31 +56,22 @@ RobotContainer {
     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
     public static final PositionCommand intakeUpAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.UPAGITATE);
     public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DOWNAGITATE);
-
-
+    private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate, intakeDownAgitate).repeatedly();
     //Drive
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
-    private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
-    private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(2, 0, 0.25, new TrapezoidProfile.Constraints(100, 200));
-
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
-
-    public static double xVelocity = 0;
-    public static double yVelocity = 0;
-    public static double rotationVelocity = 0;
-
     //Misc
     public static final Telemetry logger = new Telemetry(Constants.MAX_SPEED);
-
+    private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
+    private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(2, 0, 0.25, new TrapezoidProfile.Constraints(100, 200));
     //Turret Commands
     private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
     private static final TurretCommand turretHub = new TurretCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
     private static final TurretCommand turretTower = new TurretCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
     private static final TurretCommand turretLeftCorner = new TurretCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
     private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
-
     //Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
     private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
@@ -88,7 +79,6 @@ RobotContainer {
     private static final HoodCommand hoodTower = new HoodCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle());
     private static final HoodCommand hoodLeftCorner = new HoodCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle());
     private static final HoodCommand hoodOutpost = new HoodCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle());
-
     //Shooter Commands
     private static final VelocityCommand shooterAuto = new VelocityCommand(shooterSubsystem, 0);
     private static final VelocityCommand shooterStop = new VelocityCommand(shooterSubsystem, 0);
@@ -97,7 +87,6 @@ RobotContainer {
     private static final VelocityCommand shooterLeftCorner = new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed());
     private static final VelocityCommand shooterOutpost = new VelocityCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed());
     private static final VelocityCommand shooterRevUp = new VelocityCommand(shooterSubsystem, shotCalculator.getShooterSpeed());
-
     //Kicker Commands
     private static final VelocityCommand kickerAuto = new VelocityCommand(kickerSubsystem, 0);
     private static final VelocityCommand kickerZero = new VelocityCommand(kickerSubsystem, 0);
@@ -106,46 +95,45 @@ RobotContainer {
     private static final VelocityCommand kickerLeftCorner = new VelocityCommand(kickerSubsystem, Setpoint.LEFT_CORNER.getKickerSpeed());
     private static final VelocityCommand kickerOutpost = new VelocityCommand(kickerSubsystem, Setpoint.OUTPOST.getKickerSpeed());
     private static final VelocityCommand kickerRevUp = new VelocityCommand(kickerSubsystem, (shotCalculator.getShooterSpeed() * 5 / 3));
-
+    //    Auton commands
+    private static final Command revUp = new ParallelCommandGroup(shooterRevUp, kickerRevUp);
     //Indexer Commands
     private static final VelocityCommand indexerAuto = new VelocityCommand(indexerSubsystem, 0);
     private static final VelocityCommand indexerIdle = new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED);
     private static final VelocityCommand indexerIndex = new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED);
-
     //Hopper Commands
     private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
     private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
     private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
-
     //Intake Roller Commands
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
     private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
-
     //Climber Commands
     private static final PositionCommand climberClimb = new PositionCommand(climberSubsystem, ClimberConstants.CLIMB);
     private static final PositionCommand climberDeploy = new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY);
-
-    //    Auton commands
-    private static final Command revUp = new ParallelCommandGroup(shooterRevUp, kickerRevUp);
-    private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate, intakeDownAgitate).repeatedly();
-
+    public static double xVelocity = 0;
+    public static double yVelocity = 0;
+    public static double rotationVelocity = 0;
     //Current Robot State
     public static SwerveDrivetrain.SwerveDriveState currentState;
     public static Pose2d filteredPose;
-    private static Setpoint currentSetpoint = Setpoint.HUB;
-    private static ClimberSetpoint climberSetpoint = ClimberSetpoint.CLIMB_LEFT_RED;
-    private static boolean isAutonomous = false;
     public static double requestXVelocity;
     public static double requestYVelocity;
     public static double requestRotationalVelocity;
-
     public static double lastVelocity = 0, velocity = 0;
     public static double acceleration = 0;
     public static boolean isClimbing = false;
     public static boolean isClimberRetracting = false;
     public static double goalX;
-
+    private static Setpoint currentSetpoint = Setpoint.HUB;
+    //Mode Commands
+    private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
+    private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
+    private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
+    private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
+    private static ClimberSetpoint climberSetpoint = ClimberSetpoint.CLIMB_LEFT_RED;
+    private static boolean isAutonomous = false;
     //Button Bindings
     private static Command leftTriggerPressed;
     private static Command leftTriggerReleased;
@@ -154,12 +142,6 @@ RobotContainer {
     private static Command extend;
     private static Command retract;
     private static Command stop;
-
-    //Mode Commands
-    private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
-    private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
-    private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
-    private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
     private static ShotMode shotMode = ShotMode.SHOOTING;
     private static Translation2d[] robotCorners = new Translation2d[4];
     private static ClimbMode climbMode = ClimbMode.NOCLIMB;
@@ -206,9 +188,9 @@ RobotContainer {
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
         NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
-//        NamedCommands.registerCommand("prepClimbLeft", RobotCommands.prepAutoCLimbLeft());
+        NamedCommands.registerCommand("prepClimbLeft", Autos.pidAlignLeft());
 //        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbRight());
-//        NamedCommands.registerCommand("climb", climberClimb);
+        NamedCommands.registerCommand("climb", climberClimb);
 
         Autos.initializeAutos();
         configureBindings();
@@ -273,7 +255,7 @@ RobotContainer {
         calculateAutoClimbVelocities();
 
         // Logging
-        logger.telemeterize(currentState);
+//        logger.telemeterize(currentState);
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
@@ -346,111 +328,6 @@ RobotContainer {
     public static double getRequestXVelocity() {
         if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) return -requestXVelocity;
         return requestXVelocity;
-    }
-
-
-    private void configureBindings() {
-        commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
-                        .withVelocityY(-requestYVelocity) // Drive left with negative X (left)
-                        .withRotationalRate(requestRotationalVelocity) // Drive counterclockwise with negative X (left)
-                ));
-
-        // Field Centric
-        commandXboxController.button(8).onTrue(commandSwerveDrivetrain
-                .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
-                        new ConditionalCommand(
-                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
-                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
-                                () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
-                ));
-
-        commandXboxController.x().onTrue(intakeDeploy);
-        commandXboxController.a().onTrue(intakeStow);
-        commandXboxController.rightBumper().onTrue(intakeAgitation)
-                .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
-
-        commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
-                .onFalse(intakeRollerStop);
-
-        commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
-                .onFalse(leftTriggerReleased);
-
-        // Back Up Setpoints
-        commandXboxController.leftBumper().onTrue(new SequentialCommandGroup(new VelocityCommand(intakeRollerSubsystem, -90), new VelocityCommand(hopperSubsystem, -60)))
-                .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED), new VelocityCommand(intakeRollerSubsystem, 0)));
-
-        commandXboxController.y().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
-//        commandXboxController.b().onTrue(new SequentialCommandGroup(
-//                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED),
-//                        new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED)))
-//                .onFalse(new ParallelCommandGroup(
-//                        new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
-//                        new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
-
-
-        commandXboxController.povLeft().onTrue(Autos.pidAlignLeft())
-                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
-                        .withVelocityX(-requestXVelocity)
-                        .withVelocityY(-requestYVelocity)
-                        .withRotationalRate(requestRotationalVelocity)));
-//        commandXboxController.povRight().onTrue(Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED))
-//                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
-//                        .withVelocityX(-requestXVelocity)
-//                        .withVelocityY(-requestYVelocity)
-//                        .withRotationalRate(requestRotationalVelocity)));
-
-//        commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimbLeft()) //left climb
-//                .onFalse(new InstantCommand(() -> setIsClimbing(false))
-//                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
-//                                .withVelocityX(-requestXVelocity)
-//                                .withVelocityY(-requestYVelocity)
-//                                .withRotationalRate(requestRotationalVelocity)))
-//                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
-//        commandXboxController.povRight().onTrue(RobotCommands.teleopAutoClimbRight()) //right climb
-//                .onFalse(new InstantCommand(() -> setIsClimbing(false))
-//                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
-//                                .withVelocityX(-requestXVelocity)
-//                                .withVelocityY(-requestYVelocity)
-//                                .withRotationalRate(requestRotationalVelocity)))
-//                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
-
-        commandXboxController.povUp().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-        commandXboxController.povDown().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
-
-
-//        commandXboxController.b().onTrue(new PrintCommand("add right climb")); //right climb
-
-//        commandXboxController.a().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.ZERO));
-//        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-
-
-//        operatorCommandXboxController.y().onTrue(setHubSetpoint);
-//        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
-//        operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
-//        operatorCommandXboxController.a().onTrue(setTowerSetpoint);
-//
-//        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-//        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
-//
-//        operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(-12)))
-//                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
-//        operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(12)))
-//                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
-//
-//        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
-//                .onFalse(RobotCommands.idleState());
-    }
-
-
-    public Command getAutonomousCommand() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return Autos.autonChooserRed.getSelected();
-        } else {
-            return Autos.autonChooserBlue.getSelected();
-        }
     }
 
     public static void calculateAutoClimbVelocities() {
@@ -553,6 +430,109 @@ RobotContainer {
 
     public static void setIsAutonomous(boolean isAutonomous) {
         RobotContainer.isAutonomous = isClimbing;
+    }
+
+    private void configureBindings() {
+        commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
+                        .withVelocityY(-requestYVelocity) // Drive left with negative X (left)
+                        .withRotationalRate(requestRotationalVelocity) // Drive counterclockwise with negative X (left)
+                ));
+
+        // Field Centric
+        commandXboxController.button(8).onTrue(commandSwerveDrivetrain
+                .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
+                        new ConditionalCommand(
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
+                                () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
+                ));
+
+        commandXboxController.x().onTrue(intakeDeploy);
+        commandXboxController.a().onTrue(intakeStow);
+        commandXboxController.rightBumper().onTrue(intakeAgitation)
+                .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
+
+        commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
+                .onFalse(intakeRollerStop);
+
+        commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
+                .onFalse(leftTriggerReleased);
+
+        // Back Up Setpoints
+        commandXboxController.leftBumper().onTrue(new SequentialCommandGroup(new VelocityCommand(intakeRollerSubsystem, -90), new VelocityCommand(hopperSubsystem, -60)))
+                .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED), new VelocityCommand(intakeRollerSubsystem, 0)));
+
+        commandXboxController.y().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
+        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
+//        commandXboxController.b().onTrue(new SequentialCommandGroup(
+//                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED),
+//                        new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED)))
+//                .onFalse(new ParallelCommandGroup(
+//                        new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
+//                        new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)));
+
+
+//        commandXboxController.povLeft().onTrue(Autos.pidAlignLeft())
+//                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
+//                        .withVelocityX(-requestXVelocity)
+//                        .withVelocityY(-requestYVelocity)
+//                        .withRotationalRate(requestRotationalVelocity)));
+//        commandXboxController.povRight().onTrue(Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED))
+//                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
+//                        .withVelocityX(-requestXVelocity)
+//                        .withVelocityY(-requestYVelocity)
+//                        .withRotationalRate(requestRotationalVelocity)));
+
+//        commandXboxController.povLeft().onTrue(RobotCommands.teleopAutoClimbLeft()) //left climb
+//                .onFalse(new InstantCommand(() -> setIsClimbing(false))
+//                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
+//                                .withVelocityX(-requestXVelocity)
+//                                .withVelocityY(-requestYVelocity)
+//                                .withRotationalRate(requestRotationalVelocity)))
+//                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
+//        commandXboxController.povRight().onTrue(RobotCommands.teleopAutoClimbRight()) //right climb
+//                .onFalse(new InstantCommand(() -> setIsClimbing(false))
+//                        .alongWith(commandSwerveDrivetrain.applyRequest(() -> drive
+//                                .withVelocityX(-requestXVelocity)
+//                                .withVelocityY(-requestYVelocity)
+//                                .withRotationalRate(requestRotationalVelocity)))
+//                        .alongWith(new InstantCommand(() -> climberSubsystem.setVoltage(0))));
+
+        commandXboxController.x().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
+        commandXboxController.a().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
+
+
+//        commandXboxController.b().onTrue(new PrintCommand("add right climb")); //right climb
+
+//        commandXboxController.a().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.ZERO));
+//        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
+
+
+        operatorCommandXboxController.y().onTrue(setHubSetpoint);
+        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
+        operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
+        operatorCommandXboxController.a().onTrue(setTowerSetpoint);
+
+        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+
+        operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(-12)))
+                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
+        operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(12)))
+                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
+
+        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
+                .onFalse(RobotCommands.idleState());
+    }
+
+    public Command getAutonomousCommand() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+            return Autos.autonChooserRed.getSelected();
+        } else {
+            return Autos.autonChooserBlue.getSelected();
+        }
     }
 
     public void optimizeDrivetrain() {

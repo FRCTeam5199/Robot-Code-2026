@@ -12,15 +12,16 @@ import frc.robot.utility.ClimberSetpoint;
 import frc.robot.utility.ShotCalculator;
 
 public class RobotCommands {
+    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+    public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
+    public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
+    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     private static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     private static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     private static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
-    public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
-    public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     private static boolean isIdling = false;
     private static boolean isIndexing = false;
 
@@ -200,7 +201,8 @@ public class RobotCommands {
                 new VelocityCommand(indexerSubsystem, -50),
                 new VelocityCommand(hopperSubsystem, -50),
                 new VelocityCommand(shooterSubsystem, -50),
-                new VelocityCommand(kickerSubsystem, -50)
+                new VelocityCommand(kickerSubsystem, -50),
+                new VelocityCommand(intakeRollerSubsystem, -50)
         );
     }
 }

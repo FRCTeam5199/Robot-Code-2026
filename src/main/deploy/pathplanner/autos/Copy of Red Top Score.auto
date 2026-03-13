@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Bottom Score"
+            "pathName": "Red Top Score"
           }
         },
         {
@@ -27,7 +27,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "prepClimbRight"
+                        "name": "prepClimbLeft"
                       }
                     },
                     {

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Shuttle"
+            "pathName": "Red Bottom Score"
           }
         },
         {
@@ -27,13 +27,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "prepClimbRight"
+                        "name": "prepClimbLeft"
                       }
                     },
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.0
+                        "waitTime": 3.0
                       }
                     },
                     {
@@ -52,6 +52,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Red Shuttle",
+  "folder": "Blue Score",
   "choreoAuto": false
 }
