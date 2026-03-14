@@ -69,7 +69,7 @@ public final class Autos {
         redTopScore = new PathPlannerAuto("Red Top Score");
 
         redBottomDoubleScore = new PathPlannerAuto("Red Bottom Double Score");
-        redTopDoubleScore = new PathPlannerAuto("Red Tom Double Score");
+        redTopDoubleScore = new PathPlannerAuto("Red Top Double Score");
 
         redBottomSelfShuttle = new PathPlannerAuto("Red Bottom Self Shuttle");
         redTopSelfShuttle = new PathPlannerAuto("Red Top Self Shuttle");

@@ -63,7 +63,7 @@ public class ClimberSubsystem extends TemplateSubsystem {
 //        distance.refresh();
 
 //        System.out.println("Climber position: " + climberSubsystem.getMechM());
-//        System.out.println("Distance: " + getDistance());
+    //    System.out.println("Distance: " + getDistance());
     }
 
     public double getDistance() {

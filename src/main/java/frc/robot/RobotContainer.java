@@ -255,7 +255,7 @@ RobotContainer {
         calculateAutoClimbVelocities();
 
         // Logging
-//        logger.telemeterize(currentState);
+       logger.telemeterize(currentState);
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
