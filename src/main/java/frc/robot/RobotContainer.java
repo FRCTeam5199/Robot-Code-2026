@@ -252,7 +252,7 @@ RobotContainer {
 //        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
 //        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
 
-        calculateAutoClimbVelocities();
+        // calculateAutoClimbVelocities();
 
         // Logging
         // logger.telemeterize(currentState);
@@ -380,7 +380,7 @@ RobotContainer {
 //        System.out.println("Aligned X: " + (Math.abs(climberSubsystem.getDistance() - goalX) < .03
 //                && Math.abs(getSpeeds().vxMetersPerSecond) < .01));
 //        System.out.println("Speeds: " + getSpeeds().vxMetersPerSecond);
-        System.out.println("Mechs At Goal: " + areMechanismsAtGoalsAuto());
+        // System.out.println("Mechs At Goal: " + areMechanismsAtGoalsAuto());
     }
 
     public static void setClimberSetpoint(ClimberSetpoint climberSetpoint) {
