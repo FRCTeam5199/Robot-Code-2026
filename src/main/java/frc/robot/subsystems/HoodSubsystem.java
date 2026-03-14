@@ -6,10 +6,12 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.RobotContainer;
 import frc.robot.constants.HoodConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
+import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
 
 public class HoodSubsystem extends TemplateSubsystem {
@@ -116,6 +118,7 @@ public class HoodSubsystem extends TemplateSubsystem {
     }
 
     public boolean isMechAtGoalAuto() {
+        if (RobotContainer.getShotMode() != ShotMode.SHOOTING) return true;
         return getDegrees() >= ShotCalculator.getInstance().getHoodAngle() - HoodConstants.LOWER_TOLERANCE
                 && getDegrees() <= ShotCalculator.getInstance().getHoodAngle() + HoodConstants.UPPER_TOLERANCE;
     }

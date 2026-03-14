@@ -478,10 +478,10 @@ RobotContainer {
         operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
         operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-        operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(-12)))
-                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
-        operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(12)))
-                .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
+        // operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(-12)))
+        //         .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
+        // operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(12)))
+        //         .onFalse(new InstantCommand(() -> climberSubsystem.setVoltage(0)));
 
         operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
                 .onFalse(RobotCommands.idleState());
