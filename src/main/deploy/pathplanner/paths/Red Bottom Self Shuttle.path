@@ -65,15 +65,15 @@
     {
       "anchor": {
         "x": 15.955563480741795,
-        "y": 1.828958630527818
+        "y": 2.0100998573466473
       },
       "prevControl": {
-        "x": 14.738400518926941,
-        "y": 0.7705560550366508
+        "x": 13.93713266761769,
+        "y": 1.2079029957203984
       },
       "nextControl": {
-        "x": 16.55074179743224,
-        "y": 2.3465049928673327
+        "x": 16.688525086238375,
+        "y": 2.301405110813237
       },
       "isLocked": false,
       "linkedName": null
@@ -84,12 +84,12 @@
         "y": 2.566462196861627
       },
       "prevControl": {
-        "x": 15.37375790863577,
-        "y": 3.2981298795744878
+        "x": 15.132171610741535,
+        "y": 2.733703379767239
       },
       "nextControl": {
-        "x": 14.18296718972896,
-        "y": 1.2596576319543509
+        "x": 13.821419949868707,
+        "y": 1.5540268849816976
       },
       "isLocked": false,
       "linkedName": null
@@ -121,7 +121,7 @@
   "constraintZones": [
     {
       "name": "Shuttle",
-      "minWaypointRelativePos": 0.2754895340985827,
+      "minWaypointRelativePos": 0.5584045584045565,
       "maxWaypointRelativePos": 1.2288993923024971,
       "constraints": {
         "maxVelocity": 1.25,
@@ -329,8 +329,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

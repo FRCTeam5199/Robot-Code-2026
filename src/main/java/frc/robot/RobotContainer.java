@@ -255,7 +255,7 @@ RobotContainer {
         calculateAutoClimbVelocities();
 
         // Logging
-        logger.telemeterize(currentState);
+        // logger.telemeterize(currentState);
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
@@ -380,6 +380,7 @@ RobotContainer {
 //        System.out.println("Aligned X: " + (Math.abs(climberSubsystem.getDistance() - goalX) < .03
 //                && Math.abs(getSpeeds().vxMetersPerSecond) < .01));
 //        System.out.println("Speeds: " + getSpeeds().vxMetersPerSecond);
+        System.out.println("Mechs At Goal: " + areMechanismsAtGoalsAuto());
     }
 
     public static void setClimberSetpoint(ClimberSetpoint climberSetpoint) {
@@ -458,15 +459,16 @@ RobotContainer {
         commandXboxController.leftBumper().onTrue(new SequentialCommandGroup(new VelocityCommand(intakeRollerSubsystem, -90), new VelocityCommand(hopperSubsystem, -60)))
                 .onFalse(new ParallelCommandGroup(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED), new VelocityCommand(intakeRollerSubsystem, 0)));
 
-        commandXboxController.y().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-        commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
+        // commandXboxController.y().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(12)));
+        // commandXboxController.b().onTrue(new InstantCommand(() -> climberSubsystem.setVoltage(-12)));
 
-        commandXboxController.povLeft().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY)
-                        .andThen(Autos.pidAlignLeft()))
-                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
-                        .withVelocityX(-requestXVelocity)
-                        .withVelocityY(-requestYVelocity)
-                        .withRotationalRate(requestRotationalVelocity)));
+        //Auto climb Left
+        // commandXboxController.povLeft().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY)
+        //                 .andThen(Autos.pidAlignLeft()))
+        //         .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
+        //                 .withVelocityX(-requestXVelocity)
+        //                 .withVelocityY(-requestYVelocity)
+        //                 .withRotationalRate(requestRotationalVelocity)));
 
         operatorCommandXboxController.y().onTrue(setHubSetpoint);
         operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);

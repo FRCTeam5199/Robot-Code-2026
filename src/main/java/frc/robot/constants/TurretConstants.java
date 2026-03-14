@@ -41,5 +41,5 @@ public class TurretConstants {
     public static final double MIN = -120d;
     public static final double MAX = 240d;
 
-    public static final double INDEXING_TIME = .25;
+    public static final double INDEXING_TIME = .3;
 }

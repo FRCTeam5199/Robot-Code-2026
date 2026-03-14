@@ -3,12 +3,15 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.RobotCentric;
 import com.fasterxml.jackson.databind.EnumNamingStrategies.KebabCaseStrategy;
 
+import frc.robot.RobotContainer;
 import frc.robot.constants.KickerConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
+import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
 
 public class KickerSubsystem extends TemplateSubsystem {
@@ -48,6 +51,7 @@ public class KickerSubsystem extends TemplateSubsystem {
     }
 
     public boolean isMechAtGoalAuto() {
+        if (RobotContainer.getShotMode() != ShotMode.SHOOTING) return true;
         return getMotorVelocity() >= shotCalculator.getKickerSpeed() - KickerConstants.LOWER_TOLERANCE
                 && getMotorVelocity() <= shotCalculator.getKickerSpeed() + KickerConstants.UPPER_TOLERANCE;
     }

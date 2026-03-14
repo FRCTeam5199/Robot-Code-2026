@@ -14,7 +14,7 @@ public class IntakePivotConstants {
     public static final boolean BRAKE = true;
 
     public static final double DEPLOY = 101; //101 with bumper, 98 without
-    public static final double UPAGITATE = 75;
+    public static final double UPAGITATE = 70;
     public static final double DOWNAGITATE = 90;
     public static final double STOW = 5;
 

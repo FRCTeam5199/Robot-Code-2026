@@ -43,8 +43,8 @@ public class ClimberConstants {
 
     public static final double CLIMB_TIME = 4;
 
-    public static final double CLIMBING_X_DISTANCE_RED = 0;
-    public static final double CLIMBING_X_DISTANCE_BLUE = 0.75;
+    public static final double CLIMBING_X_DISTANCE_RED = .775;
+    public static final double CLIMBING_X_DISTANCE_BLUE = 0.766;
 
     public static final int CAN_RANGE_ID = 60;
 }
