@@ -26,8 +26,8 @@ public class ShooterConstants {
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;
 
-    public static final double LOWER_TOLERANCE = 1;
-    public static final double UPPER_TOLERANCE = 1;
+    public static final double LOWER_TOLERANCE = 1 + .5;
+    public static final double UPPER_TOLERANCE = 1 + .5;
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 }

@@ -50,7 +50,7 @@ public class RobotCommands {
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                     }
 
-                    if (hopperSubsystem.isAboveSpeed(HopperConstants.INDEXING_SPEED - 10) && !isIndexing) {
+                    if (hopperSubsystem.isAboveSpeed(HopperConstants.INDEXING_SPEED - 50) && !isIndexing) {
                         isIndexing = true;
                         indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED); //indexing speed
                     }

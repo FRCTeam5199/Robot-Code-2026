@@ -56,7 +56,7 @@ RobotContainer {
     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
     public static final PositionCommand intakeUpAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.UPAGITATE);
     public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DOWNAGITATE);
-    private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate, intakeDownAgitate).repeatedly();
+    private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.4), intakeDownAgitate.withTimeout(.4)).repeatedly();
     //Drive
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband

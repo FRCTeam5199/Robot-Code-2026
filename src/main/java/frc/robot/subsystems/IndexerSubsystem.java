@@ -31,6 +31,6 @@ public class IndexerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        //    System.out.println("Indexer Velocity: " + getMotorVelocity());
+        // System.out.println("Indexer Velocity: " + getMotorVelocity());
     }
 }
