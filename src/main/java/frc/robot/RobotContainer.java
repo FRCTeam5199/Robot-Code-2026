@@ -461,6 +461,13 @@ RobotContainer {
         commandXboxController.y().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
         commandXboxController.b().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.CLIMB));
 
+        commandXboxController.povLeft().onTrue(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY)
+                        .andThen(Autos.pidAlignLeft()))
+                .onFalse(commandSwerveDrivetrain.applyRequest(() -> drive
+                        .withVelocityX(-requestXVelocity)
+                        .withVelocityY(-requestYVelocity)
+                        .withRotationalRate(requestRotationalVelocity)));
+
         operatorCommandXboxController.y().onTrue(setHubSetpoint);
         operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
         operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
