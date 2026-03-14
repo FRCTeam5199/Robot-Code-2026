@@ -140,7 +140,7 @@
     },
     {
       "name": "deployIntake",
-      "waypointRelativePos": 0.3916272788656311,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -151,7 +151,7 @@
     },
     {
       "name": "runIntake",
-      "waypointRelativePos": 0.44564483457123666,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
