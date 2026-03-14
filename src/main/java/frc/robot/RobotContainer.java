@@ -255,7 +255,7 @@ RobotContainer {
         calculateAutoClimbVelocities();
 
         // Logging
-       logger.telemeterize(currentState);
+        logger.telemeterize(currentState);
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
@@ -354,16 +354,11 @@ RobotContainer {
             goalX = ClimberConstants.CLIMBING_X_DISTANCE_BLUE;
         }
 
-
         if ((Math.abs(currentX - goalX) > .15)) {
             xVelocity = drivePIDControllerX.calculate(currentX, goalX);
         } else {
             xVelocity = drivePIDControllerXClose.calculate(currentX, goalX);
         }
-
-        // Fixes backwards PID controller
-        if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red))
-            xVelocity = -xVelocity;
 
         if (xVelocity < 0) xVelocity -= Constants.DRIVE_X_KS;
         else xVelocity += Constants.DRIVE_X_KS;

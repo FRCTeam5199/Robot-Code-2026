@@ -228,12 +228,12 @@ public final class Autos {
                             pidAlignmentTimer.restart();
                         },
                         () -> {
-                            double yVelocity;
-                            if (Robot.getAlliance() != null
-                                    && Robot.getAlliance().equals(DriverStation.Alliance.Blue))
-                                yVelocity = -1;
-                            else
-                                yVelocity = 1;
+                            double yVelocity = -1;
+//                            if (Robot.getAlliance() != null
+//                                    && Robot.getAlliance().equals(DriverStation.Alliance.Blue))
+//                                yVelocity = -1;
+//                            else
+//                                yVelocity = 1;
                             commandSwerveDrivetrain.setControl(
                                     drive.withVelocityX(0)
                                             .withVelocityY(yVelocity)
