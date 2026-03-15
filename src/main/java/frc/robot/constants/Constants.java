@@ -8,13 +8,13 @@ public class Constants {
 
     public static final Translation2d RED_HUB_CENTER = new Translation2d(11.916, 4.035);
     public static final Translation2d RED_HUB_FRONT_CENTER = new Translation2d(12.513, 4.035);
-    public static final Translation2d RED_SHUTTLE_LEFT_CORNER = new Translation2d(15.809, .75);
-    public static final Translation2d RED_SHUTTLE_RIGHT_CORNER = new Translation2d(15.809, 7);
+    public static final Translation2d RED_SHUTTLE_LEFT_CORNER = new Translation2d(15.809, 1.3);
+    public static final Translation2d RED_SHUTTLE_RIGHT_CORNER = new Translation2d(15.809, 6.7);
 
     public static final Translation2d BLUE_HUB_CENTER = new Translation2d(4.626, 4.035);
     public static final Translation2d BLUE_HUB_FRONT_CENTER = new Translation2d(4.029, 4.035);
-    public static final Translation2d BLUE_SHUTTLE_LEFT_CORNER = new Translation2d(.740, .75);   //Right
-    public static final Translation2d BLUE_SHUTTLE_RIGHT_CORNER = new Translation2d(.740, 7);   //Left
+    public static final Translation2d BLUE_SHUTTLE_LEFT_CORNER = new Translation2d(.740, 1.3);   //Right
+    public static final Translation2d BLUE_SHUTTLE_RIGHT_CORNER = new Translation2d(.740, 6.7);   //Left
    
     public static final double HUB_RADIUS = .52959;
     public static final Transform2d ROBOT_TO_TURRET = new Transform2d(-.13335, .13335, new Rotation2d(0));

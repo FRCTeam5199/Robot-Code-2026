@@ -32,7 +32,7 @@ public class HoodConstants {
     public static final double LOWER_TOLERANCE = .5;
     public static final double UPPER_TOLERANCE = .5;
 
-    public static final double MAGNET_OFFSET = -0.141357421875;
+    public static final double MAGNET_OFFSET = -.340087890625;
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;
