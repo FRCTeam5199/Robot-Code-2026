@@ -17,7 +17,7 @@ public class ShooterConstants {
             .withKP(0.25)
             .withKI(0)
             .withKD(0.01)
-            .withKS(0.33)
+            .withKS(0.3)
             .withKG(0)
             .withKV(.12048192771084337349397590361446)
             .withKA(0)

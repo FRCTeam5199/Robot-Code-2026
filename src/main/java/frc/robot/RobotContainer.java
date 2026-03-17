@@ -488,8 +488,11 @@ RobotContainer {
         operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
         operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 
-        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+
+        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+         commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
         operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
                 .onFalse(RobotCommands.idleState());
