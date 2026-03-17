@@ -48,17 +48,17 @@ public class ShotCalculator extends SubsystemBase {
         shuttleShooterSpeedLookupTable = new InterpolatingDoubleTreeMap();
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
-        hoodLookupTable.put(1.013 + Constants.HUB_RADIUS, 0d);
-        hoodLookupTable.put(1.991 + Constants.HUB_RADIUS, 2d);
-        hoodLookupTable.put(2.952 + Constants.HUB_RADIUS, 4d);
-        hoodLookupTable.put(3.997 + Constants.HUB_RADIUS, 6d);
-        hoodLookupTable.put(4.991 + Constants.HUB_RADIUS, 10d);
+        hoodLookupTable.put(1.013 + Constants.HUB_RADIUS, 0d); //0
+        hoodLookupTable.put(1.991 + Constants.HUB_RADIUS, 2d); //2
+        hoodLookupTable.put(2.952 + Constants.HUB_RADIUS, 9d); //4
+        hoodLookupTable.put(3.997 + Constants.HUB_RADIUS, 17.5d); //6
+        hoodLookupTable.put(4.991 + Constants.HUB_RADIUS, 18d); //10
 
-        shooterSpeedLookupTable.put(1.013 + Constants.HUB_RADIUS, 24d + 2d);
-        shooterSpeedLookupTable.put(1.991 + Constants.HUB_RADIUS, 28.5 + 1d);
-        shooterSpeedLookupTable.put(2.952 + Constants.HUB_RADIUS, 31.5 + .5);
-        shooterSpeedLookupTable.put(3.997 + Constants.HUB_RADIUS, 35d + 1d);
-        shooterSpeedLookupTable.put(5.002 + Constants.HUB_RADIUS, 38d + 2.5 + 1d);
+        shooterSpeedLookupTable.put(1.013 + Constants.HUB_RADIUS, 50d); //24d + 2d
+        shooterSpeedLookupTable.put(1.991 + Constants.HUB_RADIUS, 52d); //28.5 + 1d
+        shooterSpeedLookupTable.put(2.952 + Constants.HUB_RADIUS, 53d); //31.5 + .5
+        shooterSpeedLookupTable.put(3.997 + Constants.HUB_RADIUS, 56d);  //35d + 1.5
+        shooterSpeedLookupTable.put(5.002 + Constants.HUB_RADIUS, 60d); //38d + 2.5 + 1d
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444
 
@@ -324,7 +324,7 @@ public class ShotCalculator extends SubsystemBase {
     }
 
     public double getKickerSpeed() {
-        return (shooterSpeed * KickerConstants.SCALE_FACTOR);
+        return (55d);  //shooterSpeed * KickerConstants.SCALE_FACTOR
     }
 
     public double getShooterSpeedPhaseDelayed() {

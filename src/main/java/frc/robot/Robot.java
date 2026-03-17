@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
+
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.ClimberConstants;
@@ -95,7 +97,9 @@ public class Robot extends TimedRobot {
 //                -.316, -.316, .453, 0, 5, 135.218);
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
 //                -.317, .317, .436, 180, 5, -135.218);
-//        Logger.addDataReceiver(new WPILOGWriter());
+        DataLogManager.start("/u/logs");
+
+        Logger.addDataReceiver(new WPILOGWriter());
     }
 
     @Override

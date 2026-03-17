@@ -1,22 +1,21 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.networktables.*;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StructPublisher;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
-import frc.robot.constants.HoodConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
-
-import java.util.function.Consumer;
 
 public class TurretSubsystem extends TemplateSubsystem {
     private static TurretSubsystem turretSubsystem;

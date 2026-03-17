@@ -7,27 +7,52 @@ package frc.robot;
 
 import java.util.Map;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.constants.*;
-import frc.robot.subsystems.*;
+import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.Constants;
+import frc.robot.constants.HopperConstants;
+import frc.robot.constants.IndexerConstants;
+import frc.robot.constants.IntakePivotConstants;
+import frc.robot.constants.IntakeRollerConstants;
+import frc.robot.constants.TunerConstants;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.templates.HoodCommand;
 import frc.robot.subsystems.templates.PositionCommand;
 // import frc.robot.subsystems.templates.ShooterCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.*;
+import frc.robot.utility.ClimbMode;
+import frc.robot.utility.ClimberSetpoint;
+import frc.robot.utility.Setpoint;
+import frc.robot.utility.ShotCalculator;
+import frc.robot.utility.ShotMode;
 
 public class
 
@@ -463,8 +488,11 @@ RobotContainer {
         operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
         operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 
-        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+
+        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+         commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
         operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
                 .onFalse(RobotCommands.idleState());
