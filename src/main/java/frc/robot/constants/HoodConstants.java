@@ -1,5 +1,6 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
@@ -32,7 +33,7 @@ public class HoodConstants {
     public static final double LOWER_TOLERANCE = .5;
     public static final double UPPER_TOLERANCE = .5;
 
-    public static final double MAGNET_OFFSET = -.340087890625;
+    public static final double MAGNET_OFFSET = -0.14111328125;
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;
@@ -43,6 +44,8 @@ public class HoodConstants {
     public static final double SENSOR_TO_MECH_GEAR_RATIO = 18d;
 
     public static final double ABSOLUTE_DISCONTINUITY_POINT = .5;
+
+    public static final CANBus canbus = new CANBus("Shooter");
 }
 
 

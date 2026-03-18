@@ -1,5 +1,6 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
@@ -47,4 +48,6 @@ public class ClimberConstants {
     public static final double CLIMBING_X_DISTANCE_BLUE = 0.766;
 
     public static final int CAN_RANGE_ID = 60;
+
+    public static final CANBus canbus = new CANBus("rio");
 }

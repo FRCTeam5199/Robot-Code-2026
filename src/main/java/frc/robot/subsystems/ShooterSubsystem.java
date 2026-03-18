@@ -26,7 +26,7 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.JERK,
                 ShooterConstants.LOWER_TOLERANCE,
                 ShooterConstants.UPPER_TOLERANCE,
-                ShooterConstants.GEAR_RATIO, "Shooter", true);
+                ShooterConstants.GEAR_RATIO, "Shooter", true, ShooterConstants.canbus);
 
         configureMotor(ShooterConstants.INVERTED, ShooterConstants.BRAKE,
                 ShooterConstants.SUPPLY_CURRENT_LIMIT,
@@ -34,7 +34,8 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.SLOT0_CONFIGS);
 
         configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID,
-                ShooterConstants.SECOND_INVERTED
+                ShooterConstants.SECOND_INVERTED,
+                ShooterConstants.canbus
         );
 
 //        shooterNetworkTable ][tworkTable.getDoubleTopic("Current Speed").publish();

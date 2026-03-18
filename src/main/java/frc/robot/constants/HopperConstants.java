@@ -1,5 +1,6 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
@@ -30,4 +31,6 @@ public class HopperConstants {
 
     public static final double INDEXING_SPEED = 116;
     public static final double IDLING_SPEED = -5;
+
+    public static final CANBus canbus = new CANBus("rio");
 }

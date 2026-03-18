@@ -1,5 +1,6 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
@@ -29,4 +30,6 @@ public class IntakeRollerConstants {
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
     public static final double INTAKE_SPEED = 116;
+
+    public static final CANBus canbus = new CANBus("rio");
 }

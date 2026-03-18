@@ -24,7 +24,7 @@ public class ClimberSubsystem extends TemplateSubsystem {
                 ClimberConstants.ACCELERATION, ClimberConstants.JERK,
                 ClimberConstants.LOWER_TOLERANCE,
                 ClimberConstants.UPPER_TOLERANCE,
-                ClimberConstants.GEAR_RATIO, "Climber", true);
+                ClimberConstants.GEAR_RATIO, "Climber", true, ClimberConstants.canbus);
 
         configureMotor(ClimberConstants.INVERTED, ClimberConstants.BRAKE,
                 ClimberConstants.SUPPLY_CURRENT_LIMIT,
@@ -63,7 +63,7 @@ public class ClimberSubsystem extends TemplateSubsystem {
 //        distance.refresh();
 
 //        System.out.println("Climber position: " + climberSubsystem.getMechM());
-    //    System.out.println("Distance: " + getDistance());
+        //    System.out.println("Distance: " + getDistance());
     }
 
     public double getDistance() {

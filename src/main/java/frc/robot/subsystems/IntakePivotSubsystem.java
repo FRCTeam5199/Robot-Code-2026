@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.constants.IntakePivotConstants;
+import frc.robot.constants.IntakeRollerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
@@ -12,7 +13,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
                 IntakePivotConstants.ACCELERATION, IntakePivotConstants.JERK,
                 IntakePivotConstants.LOWER_TOLERANCE,
                 IntakePivotConstants.UPPER_TOLERANCE,
-                IntakePivotConstants.GEAR_RATIOA, "Intake Pivot", false);
+                IntakePivotConstants.GEAR_RATIOA, "Intake Pivot", false, IntakePivotConstants.canbus);
 
         configureMotor(IntakePivotConstants.INVERTED, IntakePivotConstants.BRAKE,
                 IntakePivotConstants.SUPPLY_CURRENT_LIMIT,

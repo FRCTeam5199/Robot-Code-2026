@@ -1,5 +1,6 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
@@ -46,4 +47,6 @@ public class IntakePivotConstants {
     public static final double GEAR_RATIO = 20d;
     public static final double[][] GEAR_RATIOA = {{20, 1}};
     public static final double INTAKE_SENSOR_MECH_RATIO = 1d;
+
+    public static final CANBus canbus = new CANBus("rio");
 }

@@ -228,7 +228,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     /**
-     * Returns a command that applies the specified control request to this swerve drivetrain.
+     * Returns a command that applies the specifirioed control request to this swerve drivetrain.
      *
      * @param request Function returning the request to apply
      * @return Command to run

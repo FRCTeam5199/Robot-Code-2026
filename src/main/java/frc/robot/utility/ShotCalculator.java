@@ -54,11 +54,11 @@ public class ShotCalculator extends SubsystemBase {
         hoodLookupTable.put(3.997 + Constants.HUB_RADIUS, 17.5d); //6
         hoodLookupTable.put(4.991 + Constants.HUB_RADIUS, 18d); //10
 
-        shooterSpeedLookupTable.put(1.013 + Constants.HUB_RADIUS, 50d); //24d + 2d
-        shooterSpeedLookupTable.put(1.991 + Constants.HUB_RADIUS, 52d); //28.5 + 1d
-        shooterSpeedLookupTable.put(2.952 + Constants.HUB_RADIUS, 53d); //31.5 + .5
-        shooterSpeedLookupTable.put(3.997 + Constants.HUB_RADIUS, 56d);  //35d + 1.5
-        shooterSpeedLookupTable.put(5.002 + Constants.HUB_RADIUS, 60d); //38d + 2.5 + 1d
+        shooterSpeedLookupTable.put(1.013 + Constants.HUB_RADIUS, 30d); //24d + 2d, 50
+        shooterSpeedLookupTable.put(1.991 + Constants.HUB_RADIUS, 35d); //28.5 + 1d, 52
+        shooterSpeedLookupTable.put(2.952 + Constants.HUB_RADIUS, 40d); //31.5 + .5, 53
+        shooterSpeedLookupTable.put(3.997 + Constants.HUB_RADIUS, 40d);  //35d + 1.5, 56
+        shooterSpeedLookupTable.put(5.002 + Constants.HUB_RADIUS, 40d); //38d + 2.5 + 1d, 60
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444
 

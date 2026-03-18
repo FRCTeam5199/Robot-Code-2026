@@ -56,7 +56,7 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.JERK,
                 TurretConstants.LOWER_TOLERANCE,
                 TurretConstants.UPPER_TOLERANCE,
-                TurretConstants.GEAR_RATIO, "Turret", true);
+                TurretConstants.GEAR_RATIO, "Turret", true, TurretConstants.canbus);
 
         configureMotor(TurretConstants.INVERTED, TurretConstants.BRAKE,
                 TurretConstants.SUPPLY_CURRENT_LIMIT,
@@ -64,7 +64,7 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.SLOT0_CONFIGS);
 
         configureSometimesEncoder(TurretConstants.ENCODER_ID,
-                "rio", TurretConstants.ENCODER_MAGNET_OFFSET,
+                "Shooter", TurretConstants.ENCODER_MAGNET_OFFSET,
                 TurretConstants.SENSOR_TO_MECH_GEAR_RATIO,
                 TurretConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
                 TurretConstants.CCW_POSITIVE, TurretConstants.ABSOLUTE_DISCONTINUITY_POINT);
@@ -127,7 +127,6 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         if (!stopMoving) followLastProfile();
 
-//        System.out.println("Turret Degrees: " + getDegrees());
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {

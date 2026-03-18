@@ -3,6 +3,7 @@ package frc.robot.subsystems.templates;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -35,6 +36,7 @@ public class TemplateSubsystem extends SubsystemBase {
     private DoublePublisher statorCurrentData;
     private DoublePublisher tempData;
     private TalonFX motor;
+    private CANBus canBus;
     private TalonFXConfiguration motorConfig;
     private TalonFX followerMotor;
     private Follower follower;
@@ -75,12 +77,55 @@ public class TemplateSubsystem extends SubsystemBase {
     public StatusSignal<Angle> followerPositionStatusSignal;
     public StatusSignal<AngularVelocity> followerVelocityStatusSignal;
 
+
     public TemplateSubsystem(Type type, int id, double velocity, double acceleration, double jerk,
                              double lowerTolerance, double upperTolerance,
                              double[][] gearRatios, String SubsystemName, boolean enableFoc) {
         this.type = type;
 
         motor = new TalonFX(id);
+        motorConfig = new TalonFXConfiguration();
+
+        this.velocity = velocity;
+        this.acceleration = acceleration;
+        this.jerk = jerk;
+
+        dynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, this.velocity, this.acceleration)
+                .withJerk(this.jerk).withSlot(0).withEnableFOC(enableFoc);
+        motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0)
+                .withEnableFOC(enableFoc);
+        positionVoltage = new PositionVoltage(0).withSlot(0)
+                .withEnableFOC(enableFoc);
+        velocityVoltage = new VelocityVoltage(0).withSlot(0)
+                .withEnableFOC(enableFoc);
+
+        this.lowerTolerance = lowerTolerance;
+        this.upperTolerance = upperTolerance;
+
+        for (double[] ratio : gearRatios) {
+            this.gearRatio *= (ratio[1] / ratio[0]);
+        }
+
+        /* Subsystem Logging on AdvantageKit */
+//        networkTable = NetworkTableInstance.getDefault().getTable("Subsystems/" + SubsystemName);
+//
+//        poseData = networkTable.getDoubleTopic("Position").publish();
+//        velocityData = networkTable.getDoubleTopic("Velocity").publish();
+//        voltageData = networkTable.getDoubleTopic("Voltage").publish();
+//        supplyCurrentData = networkTable.getDoubleTopic("SupplyCurrent").publish();
+//        statorCurrentData = networkTable.getDoubleTopic("StatorCurrent").publish();
+//        tempData = networkTable.getDoubleTopic("Temp").publish();
+
+        this.name = SubsystemName;
+    }
+
+    public TemplateSubsystem(Type type, int id, double velocity, double acceleration, double jerk,
+                             double lowerTolerance, double upperTolerance,
+                             double[][] gearRatios, String SubsystemName, boolean enableFoc, CANBus canbus) {
+        this.type = type;
+
+//        motor = new TalonFX(id, "canbus");
+        motor = new TalonFX(id, canbus);
         motorConfig = new TalonFXConfiguration();
 
         this.velocity = velocity;
@@ -184,8 +229,8 @@ public class TemplateSubsystem extends SubsystemBase {
         motor.getConfigurator().apply(motorConfig);
     }
 
-    public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection) {
-        followerMotor = new TalonFX(followerMotorId);
+    public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection, CANBus canbus) {
+        followerMotor = new TalonFX(followerMotorId, canbus);
 
         motor.getDutyCycle().setUpdateFrequency(100);
         motor.getMotorVoltage().setUpdateFrequency(100);
