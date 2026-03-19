@@ -26,6 +26,9 @@ import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
+import javax.xml.crypto.Data;
+import java.sql.Driver;
+
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
@@ -33,7 +36,7 @@ public class Robot extends TimedRobot {
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
-    public static ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+    //    public static ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static Timer autonTimer = new Timer();
     // private static TalonFX motorLeader;
@@ -97,19 +100,22 @@ public class Robot extends TimedRobot {
 //                -.316, -.316, .453, 0, 5, 135.218);
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
 //                -.317, .317, .436, 180, 5, -135.218);
-        DataLogManager.start("/u/logs");
+//        DataLogManager.start("/u/logs");
 
         Logger.addDataReceiver(new WPILOGWriter());
     }
 
     @Override
     public void robotInit() {
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
         CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 //        if (getAlliance().equals(DriverStation.Alliance.Red)) commandSwerveDrivetrain.getPigeon2().setYaw(180);
     }
 
     @Override
     public void robotPeriodic() {
+//        System.out.println("Path: " + DataLogManager.getLogDir());
         // if (userInterface.getComponentData("Set (L)").getBoolean(false)) {
         //     userInterface.setComponentData("Set (L)", false);
         //     motorLeader = new TalonFX((int) userInterface.getComponentData("Motor ID (L)").getInteger(0));

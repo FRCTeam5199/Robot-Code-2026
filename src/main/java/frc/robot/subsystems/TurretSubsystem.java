@@ -4,10 +4,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.networktables.*;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TurretConstants;
@@ -16,6 +16,8 @@ import frc.robot.utility.AllianceFlipper;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
+
+import static edu.wpi.first.units.Units.*;
 
 public class TurretSubsystem extends TemplateSubsystem {
     private static TurretSubsystem turretSubsystem;
@@ -50,13 +52,32 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     private SimpleMotorFeedforward simpleMotorFeedforward;
 
+    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    Volts.of(0.2).per(Second), // ramp rate - slow for a turret
+                    Volts.of(6),                       // max voltage - keep low for turret safety
+                    Seconds.of(8),                     // test timeout
+                    null
+            ),
+            new SysIdRoutine.Mechanism(
+                    (voltage) -> setVoltage(voltage.in(Volts)),
+                    log -> {
+                        log.motor("turret")
+                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
+                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
+                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
+                    },
+                    this
+            )
+    );
+
     private TurretSubsystem() {
         super(Type.ROLLER, TurretConstants.MOTOR_ID,
                 TurretConstants.VELOCITY, TurretConstants.ACCELERATION,
                 TurretConstants.JERK,
                 TurretConstants.LOWER_TOLERANCE,
                 TurretConstants.UPPER_TOLERANCE,
-                TurretConstants.GEAR_RATIO, "Turret", true, TurretConstants.canbus);
+                TurretConstants.GEAR_RATIO, "Turret", true, TurretConstants.CANBUS);
 
         configureMotor(TurretConstants.INVERTED, TurretConstants.BRAKE,
                 TurretConstants.SUPPLY_CURRENT_LIMIT,
@@ -64,24 +85,26 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.SLOT0_CONFIGS);
 
         configureSometimesEncoder(TurretConstants.ENCODER_ID,
-                "Shooter", TurretConstants.ENCODER_MAGNET_OFFSET,
+                TurretConstants.CANBUS, TurretConstants.ENCODER_MAGNET_OFFSET,
                 TurretConstants.SENSOR_TO_MECH_GEAR_RATIO,
                 TurretConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
                 TurretConstants.CCW_POSITIVE, TurretConstants.ABSOLUTE_DISCONTINUITY_POINT);
 
         configureRoller(TurretConstants.MIN, TurretConstants.MAX);
 
+        faster();
+
         profile = new TrapezoidProfile(new TrapezoidProfile
                 .Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
         currentState = new TrapezoidProfile.State(0, 0);
         goalState = new TrapezoidProfile.State(0, 0);
 
-//        networkTable = NetworkTableInstance.getDefault().getTable("AutoTracking/");
-//        turretNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Turret/");
-//
-//        goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
-//        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
-//        currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
+        networkTable = NetworkTableInstance.getDefault().getTable("AutoTracking/");
+        turretNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Turret/");
+
+        goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
+        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
+        currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
 //        goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
 //        currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
 //        turretToTargetDistance = networkTable.getDoubleTopic("Distance").publish();
@@ -107,9 +130,9 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-//        goalPositionLogging.set(shotCalculator.getTurretAngle());
-//        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
-//        currentPositionLogging.set(getDegrees());
+        goalPositionLogging.set(shotCalculator.getTurretAngle());
+        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+        currentPositionLogging.set(getDegrees());
 //
 //        goalVelocityLogging.set(goalVelocityRotPerSec);
 //        currentVelocityLogging.set(getMotorVelocity());
@@ -126,7 +149,6 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        isMechAtGoal.set(isMechAtGoalAuto());
 
         if (!stopMoving) followLastProfile();
-
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {
@@ -203,5 +225,22 @@ public class TurretSubsystem extends TemplateSubsystem {
                 * TurretConstants.INDEXING_TIME;
         return predictedTurretPosition >= TurretConstants.MAX
                 || predictedTurretPosition <= TurretConstants.MIN;
+    }
+
+
+    public Command sysIdQuasistaticForward() {
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+    }
+
+    public Command sysIdQuasistaticReverse() {
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+    }
+
+    public Command sysIdDynamicForward() {
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+    }
+
+    public Command sysIdDynamicReverse() {
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
     }
 }

@@ -124,7 +124,7 @@ public class TemplateSubsystem extends SubsystemBase {
                              double[][] gearRatios, String SubsystemName, boolean enableFoc, CANBus canbus) {
         this.type = type;
 
-//        motor = new TalonFX(id, "canbus");
+//        motor = new TalonFX(id, "CANBUS");
         motor = new TalonFX(id, canbus);
         motorConfig = new TalonFXConfiguration();
 
@@ -220,13 +220,13 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configureRoller(double motorMinDegrees, double motorMaxDegrees) {
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMaxDegrees);
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);
-
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-
-        motor.getConfigurator().apply(motorConfig);
+//        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMaxDegrees);
+//        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);
+//
+//        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+//        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+//
+//        motor.getConfigurator().apply(motorConfig);
     }
 
     public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection, CANBus canbus) {
@@ -239,6 +239,11 @@ public class TemplateSubsystem extends SubsystemBase {
         follower = new Follower(motor.getDeviceID(),
                 opposeMasterDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned);
         followerMotor.setControl(follower);
+    }
+
+    public void faster() {
+        motor.getRotorPosition().setUpdateFrequency(20);
+        motor.getRotorVelocity().setUpdateFrequency(20);
     }
 
     public void configureSecondaryMotor(int motorID, double secondaryVelocity,
@@ -293,10 +298,10 @@ public class TemplateSubsystem extends SubsystemBase {
         gearRatio = motorToSensorRatio * sensorToMechRatio;
     }
 
-    public void configureSometimesEncoder(int encoderId, String canbus, double magnetOffset,
+    public void configureSometimesEncoder(int encoderId, CANBus canBus, double magnetOffset,
                                           double sensorToMechRatio, double motorToSensorRatio,
                                           boolean isCCWPositive, double absoluteDiscontinuityPoint) {
-        sometimesEncoder = new CANcoder(encoderId);
+        sometimesEncoder = new CANcoder(encoderId, canBus);
         sometimesEncoderConfig = new CANcoderConfiguration();
 
         sometimesEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = absoluteDiscontinuityPoint;
@@ -495,6 +500,8 @@ public class TemplateSubsystem extends SubsystemBase {
      */
 
     public double getMotorRot() {
+//        BaseStatusSignal.refreshAll(positionStatusSignal, velocityStatusSignal);
+//        return BaseStatusSignal.getLatencyCompensatedValueAsDouble(positionStatusSignal, velocityStatusSignal);
         return positionStatusSignal.getValueAsDouble();
     }
 
@@ -635,8 +642,7 @@ public class TemplateSubsystem extends SubsystemBase {
             changedOffset = false;
         }
 
-        positionStatusSignal.refresh();
-        velocityStatusSignal.refresh();
+        BaseStatusSignal.refreshAll(positionStatusSignal, velocityStatusSignal);
 
 //        if (followerMotor != null) {
 //            followerPositionStatusSignal.refresh();

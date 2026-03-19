@@ -45,7 +45,7 @@ public class HoodConstants {
 
     public static final double ABSOLUTE_DISCONTINUITY_POINT = .5;
 
-    public static final CANBus canbus = new CANBus("Shooter");
+    public static final CANBus CANBUS = new CANBus("Shooter");
 }
 
 

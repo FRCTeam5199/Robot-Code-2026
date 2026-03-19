@@ -5,11 +5,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.RobotContainer;
-import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.HoodConstants;
-import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
@@ -40,7 +37,7 @@ public class HoodSubsystem extends TemplateSubsystem {
                 HoodConstants.ACCELERATION, HoodConstants.JERK,
                 HoodConstants.LOWER_TOLERANCE,
                 HoodConstants.UPPER_TOLERANCE,
-                HoodConstants.GEAR_RATIO, "Hood", true, HoodConstants.canbus);
+                HoodConstants.GEAR_RATIO, "Hood", true, HoodConstants.CANBUS);
 
         configureMotor(HoodConstants.INVERTED, HoodConstants.BRAKE,
                 HoodConstants.SUPPLY_CURRENT_LIMIT,
@@ -48,7 +45,7 @@ public class HoodSubsystem extends TemplateSubsystem {
                 HoodConstants.SLOT0_CONFIGS);
 
         configureSometimesEncoder(HoodConstants.ENCODER_ID,
-                "Shooter", HoodConstants.MAGNET_OFFSET,
+                HoodConstants.CANBUS, HoodConstants.MAGNET_OFFSET,
                 HoodConstants.SENSOR_TO_MECH_GEAR_RATIO,
                 HoodConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
                 HoodConstants.IS_CCW_POS,
@@ -84,7 +81,7 @@ public class HoodSubsystem extends TemplateSubsystem {
         super.periodic();
 //        System.out.println("Hood Degrees: " + getDegrees());
 //        System.out.println(getGoal());
-        System.out.println("Hood is at goal: " + isMechAtGoal(true));
+//        System.out.println("Hood is at goal: " + isMechAtGoal(true));
 //        System.out.println(getGearRatio());
 
 //        goalPosition.set(ShotCalculator.getInstance().getHoodAngle());

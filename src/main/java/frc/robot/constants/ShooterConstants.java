@@ -2,7 +2,6 @@ package frc.robot.constants;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class ShooterConstants {
@@ -15,13 +14,13 @@ public class ShooterConstants {
     public static final boolean BRAKE = false;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0.25)
+            .withKP(0.013659) //.25
             .withKI(0)
-            .withKD(0.01)
-            .withKS(0.3)
+            .withKD(0) //.01
+            .withKS(.27697) //.3
             .withKG(0)
-            .withKV(.12048192771084337349397590361446)
-            .withKA(0)
+            .withKV(.12105) //.12048192771084337349397590361446
+            .withKA(0.0064364) //0
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double ACCELERATION = 400;
@@ -32,5 +31,5 @@ public class ShooterConstants {
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
-    public static final CANBus canbus = new CANBus("Shooter");
+    public static final CANBus CANBUS = new CANBus("Shooter");
 }

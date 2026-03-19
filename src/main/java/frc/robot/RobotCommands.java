@@ -12,7 +12,7 @@ import frc.robot.utility.ClimberSetpoint;
 import frc.robot.utility.ShotCalculator;
 
 public class RobotCommands {
-    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+    //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
@@ -129,21 +129,21 @@ public class RobotCommands {
         );
     }
 
-    public static Command extendClimb() {
-        return new InstantCommand(() ->
-                climberSubsystem.setPosition(10));
-    }
+//    public static Command extendClimb() {
+//        return new InstantCommand(() ->
+//                climberSubsystem.setPosition(10));
+//    }
+//
 
-
-    public static Command retractClimb() {
-        return new InstantCommand(() ->
-                climberSubsystem.setPosition(0));
-    }
-
-    public static Command stopClimb() {
-        return new InstantCommand(() ->
-                climberSubsystem.setVelocity(0));
-    }
+//    public static Command retractClimb() {
+//        return new InstantCommand(() ->
+//                climberSubsystem.setPosition(0));
+//    }
+//
+//    public static Command stopClimb() {
+//        return new InstantCommand(() ->
+//                climberSubsystem.setVelocity(0));
+//    }
 
     public static Command idleState() {
         return new ParallelCommandGroup(
@@ -156,45 +156,45 @@ public class RobotCommands {
         );
     }
 
-    public static Command teleopAutoClimbLeft() {
-        return new SequentialCommandGroup(
-                Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
-                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
-                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
-                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
-                new PositionCommand(climberSubsystem, ClimberConstants.CLIMB)
-        );
-    }
-
-    public static Command teleopAutoClimbRight() {
-        return new SequentialCommandGroup(
-                Autos.driveToPose(ClimberSetpoint.CLIMB_RIGHT_RED_PREP)
-                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
-                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
-                Autos.pidAlign(ClimberSetpoint.CLIMB_RIGHT_RED),
-                new PositionCommand(climberSubsystem, ClimberConstants.CLIMB)
-        );
-    }
-
-    public static Command prepAutoCLimbLeft() {
-        return new SequentialCommandGroup(
-                Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
-                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
-                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
-                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
-                new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW)
-        );
-    }
-
-    public static Command prepAutoCLimbRight() {
-        return new SequentialCommandGroup(
-                Autos.driveToPose(ClimberSetpoint.CLIMB_RIGHT_RED_PREP)
-                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
-                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
-                Autos.pidAlign(ClimberSetpoint.CLIMB_RIGHT_RED),
-                new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW)
-        );
-    }
+//    public static Command teleopAutoClimbLeft() {
+//        return new SequentialCommandGroup(
+//                Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
+//                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
+//                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
+//                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
+//                new PositionCommand(climberSubsystem, ClimberConstants.CLIMB)
+//        );
+//    }
+//
+//    public static Command teleopAutoClimbRight() {
+//        return new SequentialCommandGroup(
+//                Autos.driveToPose(ClimberSetpoint.CLIMB_RIGHT_RED_PREP)
+//                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
+//                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
+//                Autos.pidAlign(ClimberSetpoint.CLIMB_RIGHT_RED),
+//                new PositionCommand(climberSubsystem, ClimberConstants.CLIMB)
+//        );
+//    }
+//
+//    public static Command prepAutoCLimbLeft() {
+//        return new SequentialCommandGroup(
+//                Autos.driveToPose(ClimberSetpoint.CLIMB_LEFT_RED_PREP)
+//                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
+//                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
+//                Autos.pidAlign(ClimberSetpoint.CLIMB_LEFT_RED),
+//                new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW)
+//        );
+//    }
+//
+//    public static Command prepAutoCLimbRight() {
+//        return new SequentialCommandGroup(
+//                Autos.driveToPose(ClimberSetpoint.CLIMB_RIGHT_RED_PREP)
+//                        .alongWith(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY))
+//                        .alongWith(new InstantCommand(() -> RobotContainer.setIsClimbing(true))),
+//                Autos.pidAlign(ClimberSetpoint.CLIMB_RIGHT_RED),
+//                new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW)
+//        );
+//    }
 
     public static Command outtake() {
         return new ParallelCommandGroup(

@@ -37,7 +37,7 @@ public final class Autos {
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
-    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
+//    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
 
     //    private static PathPlannerAuto blueBottomShuttle;
 //    private static PathPlannerAuto blueTopShuttle;

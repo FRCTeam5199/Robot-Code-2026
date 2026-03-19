@@ -15,13 +15,13 @@ public class TurretConstants {
     public static final boolean BRAKE = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(5)
+            .withKP(5) //5
             .withKI(0)
-            .withKD(0.2)
-            .withKS(.35)
+            .withKD(.2) //.2
+            .withKS(0.54255) //.35
             .withKG(0)
-            .withKV(.098522167487684729064039408867)
-            .withKA(0)
+            .withKV(0.091075) //.098522167487684729064039408867
+            .withKA(0.0034531) //0
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double VELOCITY = 200;
@@ -44,5 +44,5 @@ public class TurretConstants {
 
     public static final double INDEXING_TIME = .3;
 
-    public static final CANBus canbus = new CANBus("Shooter");
+    public static final CANBus CANBUS = new CANBus("Shooter");
 }
