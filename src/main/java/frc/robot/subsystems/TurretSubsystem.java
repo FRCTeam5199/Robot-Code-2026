@@ -1,11 +1,18 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
@@ -18,6 +25,10 @@ import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
 
 import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
 public class TurretSubsystem extends TemplateSubsystem {
     private static TurretSubsystem turretSubsystem;
@@ -50,7 +61,16 @@ public class TurretSubsystem extends TemplateSubsystem {
     private StructPublisher<Pose2d> turretPose;
     private StructPublisher<Pose2d> futureTurretPose;
 
+    private PIDController pidController = new PIDController(.5, 0, .15);
     private SimpleMotorFeedforward simpleMotorFeedforward;
+
+    private SingleJointedArmSim turretSim;
+
+    private NetworkTable simulation;
+    private DoublePublisher position;
+    private StructPublisher<Pose3d> turretSimPose;
+
+    private TalonFXSimState motorSimState;
 
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -84,15 +104,15 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.STATOR_CURRENT_LIMIT,
                 TurretConstants.SLOT0_CONFIGS);
 
-        configureSometimesEncoder(TurretConstants.ENCODER_ID,
-                TurretConstants.CANBUS, TurretConstants.ENCODER_MAGNET_OFFSET,
-                TurretConstants.SENSOR_TO_MECH_GEAR_RATIO,
-                TurretConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
-                TurretConstants.CCW_POSITIVE, TurretConstants.ABSOLUTE_DISCONTINUITY_POINT);
+        // configureSometimesEncoder(TurretConstants.ENCODER_ID,
+        //         TurretConstants.CANBUS, TurretConstants.ENCODER_MAGNET_OFFSET,
+        //         TurretConstants.SENSOR_TO_MECH_GEAR_RATIO,
+        //         TurretConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
+        //         TurretConstants.CCW_POSITIVE, TurretConstants.ABSOLUTE_DISCONTINUITY_POINT);
 
-        configureRoller(TurretConstants.MIN, TurretConstants.MAX);
+        // configureRoller(TurretConstants.MIN, TurretConstants.MAX);
 
-        faster();
+        // faster();
 
         profile = new TrapezoidProfile(new TrapezoidProfile
                 .Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
@@ -117,6 +137,27 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         simpleMotorFeedforward = new SimpleMotorFeedforward(TurretConstants.SLOT0_CONFIGS.kS,
                 TurretConstants.SLOT0_CONFIGS.kV, TurretConstants.SLOT0_CONFIGS.kA);
+
+        simulation = NetworkTableInstance.getDefault().getTable("Simulation/");
+        position = simulation.getDoubleTopic("Turret Position").publish();
+        turretSimPose = NetworkTableInstance.getDefault().getStructTopic("Mechanism/Turret", Pose3d.struct).publish();
+        turretSim = new SingleJointedArmSim(
+            DCMotor.getKrakenX60Foc(1), 
+            getGearRatio(),      
+            .01,             // moment of inertia (kg * m^2) - use JVN or CAD
+            .1,   // "arm length" - distance from center to edge
+            Math.toRadians(TurretConstants.MIN),
+            Math.toRadians(TurretConstants.MAX),
+            false,
+            0
+        );
+
+        // motorSimState = getMotor().getSimState();
+        // motorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+        // motorSimState.setMotorType(MotorType.KrakenX60);
+        // getMotor().setPosition(0);
+        // motorSimState.setRawRotorPosition(0);
+        // motorSimState.setRotorVelocity(0);
     }
 
     public static TurretSubsystem getInstance() {
@@ -130,10 +171,7 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        goalPositionLogging.set(shotCalculator.getTurretAngle());
-        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
-        currentPositionLogging.set(getDegrees());
-//
+        
 //        goalVelocityLogging.set(goalVelocityRotPerSec);
 //        currentVelocityLogging.set(getMotorVelocity());
 //
@@ -152,7 +190,7 @@ public class TurretSubsystem extends TemplateSubsystem {
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {
-        goalRotations = getMotorRotFromDegrees(degrees);
+        goalRotations = getMotorRotFromDegrees(degrees - 90);
         goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
 
         goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
@@ -160,20 +198,24 @@ public class TurretSubsystem extends TemplateSubsystem {
     }
 
     public void updateGoalPosition(double degrees, double degreePerSec) {
-        goalRotations = getMotorRotFromDegrees(degrees);
+        goalRotations = getMotorRotFromDegrees(degrees - 90);
         goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
 
         goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
     }
 
     public void followLastProfile() {
-        currentState = profile.calculate(0.02, currentState, goalState);
+        // currentState = profile.calculate(0.02, currentState, goalState);
 
-        if ((Math.abs(shotCalculator.getTurretAngle() - goalState.position)) >= 10) {
-            setPositionVoltage(currentState.position, getFF(currentState.velocity));
-        } else {
-            setPositionVoltage(currentState.position, getFF(currentState.velocity));
-        }
+        // if ((Math.abs(shotCalculator.getTurretAngle() - goalState.position)) >= 10) {
+        //     setPositionVoltage(goalState.position, getFF(goalState.velocity));
+        // } else {
+        //     setPositionVoltage(goalState.position, getFF(goalState.velocity));
+        // }
+        double volts = pidController.calculate(Math.toDegrees(turretSim.getAngleRads()), getDegreesFromMotorRot(goalState.position));
+        volts = MathUtil.clamp(volts, -12, 12);
+        // System.out.println("Applied Volts: " + volts);
+        turretSim.setInputVoltage(volts);
     }
 
     public boolean isMechAtGoalAuto() {
@@ -225,6 +267,50 @@ public class TurretSubsystem extends TemplateSubsystem {
                 * TurretConstants.INDEXING_TIME;
         return predictedTurretPosition >= TurretConstants.MAX
                 || predictedTurretPosition <= TurretConstants.MIN;
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        // runVolts(5);
+        // System.out.println("Sim Voltage: " + getMotor().getSimState().getMotorVoltage());
+        // System.out.println("Goal rotations: " + goalState.position);
+        // System.out.println("Current Position: " + getMotorRot());
+        // System.out.println("Current Voltage Calculated: " + motorSimState.getMotorVoltageMeasure().baseUnitMagnitude());
+        // turretSimPose.set(update());
+        // turretSim.update(.02);
+        // position.set(Math.toDegrees(turretSim.getAngleRads()));
+
+        // System.out.println("ClosedLoopError: " + getMotor().getClosedLoopError().getValueAsDouble());
+        // System.out.println("ClosedLoopReference: " + getMotor().getClosedLoopReference().getValueAsDouble());
+        // System.out.println("RotorPosition: " + getMotor().getRotorPosition().getValueAsDouble());
+
+        // motorSimState.setSupplyVoltage(12);
+        // turretSim.setInputVoltage(motorSimState.getMotorVoltageMeasure().baseUnitMagnitude());
+        turretSim.update(.02);
+
+        // motorSimState.setRawRotorPosition(getMotorRotFromDegrees(Math.toDegrees(turretSim.getAngleRads())));
+        // motorSimState.setRotorVelocity(getMotorRotFromDegrees(Math.toDegrees(turretSim.getVelocityRadPerSec())));
+
+        turretSimPose.set(update());
+
+        goalPositionLogging.set(shotCalculator.getTurretAngle());
+        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+        currentPositionLogging.set(Math.toDegrees(turretSim.getAngleRads()) + 90);
+
+    }
+
+    public Pose3d update() {
+        return new Pose3d(new Translation3d(.22, .1335, 0), new Rotation3d(0, 0, turretSim.getAngleRads()));
+    }
+
+    public void runVolts(double volts) {
+        turretSim.setInputVoltage(volts);
+        
+    }
+
+    public void resetState() {
+        runVolts(0);
+        turretSim.setState(0, 0);
     }
 
 

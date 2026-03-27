@@ -93,10 +93,10 @@ RobotContainer {
     private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(2, 0, 0.25, new TrapezoidProfile.Constraints(100, 200));
     //Turret Commands
     private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
-    private static final TurretCommand turretHub = new TurretCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
-    private static final TurretCommand turretTower = new TurretCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
-    private static final TurretCommand turretLeftCorner = new TurretCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
-    private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
+    // private static final TurretCommand turretHub = new TurretCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
+    // private static final TurretCommand turretTower = new TurretCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
+    // private static final TurretCommand turretLeftCorner = new TurretCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
+    // private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
     //Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
     private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
@@ -174,7 +174,7 @@ RobotContainer {
 
 
     public RobotContainer() {
-        optimizeDrivetrain();
+        // optimizeDrivetrain();
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(kickerAuto, shooterAuto,
                         hoodControlAuto, turretControlAuto));
@@ -186,34 +186,34 @@ RobotContainer {
 //        stop = RobotCommands.stopClimb();
 
 
-        leftBumperPressed = new SelectCommand<>(Map.ofEntries(
-                Map.entry(Setpoint.HUB, new ParallelCommandGroup(
-                        turretHub, hoodHub, shooterHub, kickerHub
-                )),
-                Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
-                        turretTower, hoodTower, shooterTower, kickerTower
-                )),
-                Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
-                        turretOutpost, hoodOutpost, shooterOutpost, kickerOutpost
-                )),
-                Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
-                        turretLeftCorner, hoodLeftCorner, shooterLeftCorner, kickerLeftCorner
-                ))
-        ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
-        leftBumperReleased = RobotCommands.idleState();
+        // leftBumperPressed = new SelectCommand<>(Map.ofEntries(
+        //         Map.entry(Setpoint.HUB, new ParallelCommandGroup(
+        //                 turretHub, hoodHub, shooterHub, kickerHub
+        //         )),
+        //         Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
+        //                 turretTower, hoodTower, shooterTower, kickerTower
+        //         )),
+        //         Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
+        //                 turretOutpost, hoodOutpost, shooterOutpost, kickerOutpost
+        //         )),
+        //         Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
+        //                 turretLeftCorner, hoodLeftCorner, shooterLeftCorner, kickerLeftCorner
+        //         ))
+        // ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
+        // leftBumperReleased = RobotCommands.idleState();
 
-        NamedCommands.registerCommand("shoot", leftTriggerPressed);
-        NamedCommands.registerCommand("hoodZero", hoodZero);
-        NamedCommands.registerCommand("revUp", revUp);
-        NamedCommands.registerCommand("stable", leftTriggerReleased);
-        NamedCommands.registerCommand("deployIntake", intakeDeploy);
-        NamedCommands.registerCommand("stowIntake", intakeStow);
-        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
-        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
-        NamedCommands.registerCommand("stopIntake", intakeRollerStop);
-        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
+        // NamedCommands.registerCommand("shoot", leftTriggerPressed);
+        // NamedCommands.registerCommand("hoodZero", hoodZero);
+        // NamedCommands.registerCommand("revUp", revUp);
+        // NamedCommands.registerCommand("stable", leftTriggerReleased);
+        // NamedCommands.registerCommand("deployIntake", intakeDeploy);
+        // NamedCommands.registerCommand("stowIntake", intakeStow);
+        // NamedCommands.registerCommand("agitateIntake", intakeAgitation);
+        // NamedCommands.registerCommand("runIntake", intakeRollerIntake);
+        // NamedCommands.registerCommand("stopIntake", intakeRollerStop);
+        // NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
-        NamedCommands.registerCommand("prepClimbLeft", Autos.pidAlignLeft());
+        // NamedCommands.registerCommand("prepClimbLeft", Autos.pidAlignLeft());
 //        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbRight());
 //        NamedCommands.registerCommand("climb", climberClimb);
 
@@ -465,19 +465,21 @@ RobotContainer {
         // Field Centric
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
-                        new ConditionalCommand(
-                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
-                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
-                                () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
+                        // new ConditionalCommand(
+                        //         new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
+                        //         new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
+                        //         () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
 //        commandXboxController.x().onTrue(intakeDeploy);
 //        commandXboxController.a().onTrue(intakeStow);
 
-        commandXboxController.a().whileTrue(turretSubsystem.sysIdQuasistaticForward());
-        commandXboxController.b().whileTrue(turretSubsystem.sysIdQuasistaticReverse());
-        commandXboxController.y().whileTrue(turretSubsystem.sysIdDynamicForward());
-        commandXboxController.x().whileTrue(turretSubsystem.sysIdDynamicReverse());
+        // commandXboxController.a().whileTrue(turretSubsystem.sysIdQuasistaticForward());
+        // commandXboxController.b().whileTrue(turretSubsystem.sysIdQuasistaticReverse());
+        // commandXboxController.y().whileTrue(turretSubsystem.sysIdDynamicForward());
+        // commandXboxController.x().whileTrue(turretSubsystem.sysIdDynamicReverse());
+
+        
 
 
         commandXboxController.rightBumper().onTrue(intakeAgitation)
@@ -486,8 +488,8 @@ RobotContainer {
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
                 .onFalse(intakeRollerStop);
 
-        commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
-                .onFalse(leftTriggerReleased);
+        commandXboxController.a().onTrue(leftTriggerPressed);
+                // .onFalse(leftTriggerReleased);
 
         commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116))
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
@@ -506,6 +508,7 @@ RobotContainer {
 //        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
 //                .onFalse(RobotCommands.idleState());
 //        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
+        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
