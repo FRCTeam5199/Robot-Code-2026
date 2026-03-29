@@ -478,10 +478,11 @@ RobotContainer {
         // commandXboxController.b().whileTrue(turretSubsystem.sysIdQuasistaticReverse());
         // commandXboxController.y().whileTrue(turretSubsystem.sysIdDynamicForward());
         // commandXboxController.x().whileTrue(turretSubsystem.sysIdDynamicReverse());
+        commandXboxController.b().onTrue(new ParallelCommandGroup(new VelocityCommand(shooterSubsystem, 0), new VelocityCommand(kickerSubsystem, 0), new VelocityCommand(hopperSubsystem, 0)));
 
 
-        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),
-            new VelocityCommand(shooterSubsystem, 45), new VelocityCommand(hopperSubsystem, 50)
+        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90).alongWith(new VelocityCommand(shooterSubsystem, 45)),
+            new VelocityCommand(hopperSubsystem, 50)
         )).onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 0),new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 0),
             new VelocityCommand(shooterSubsystem, 0))
         )

@@ -46,21 +46,15 @@ public class RobotCommands {
                     } else if (!RobotContainer.areMechanismsAtGoalsAuto() && !isIdling) {
                         isIdling = true;
                         isIndexing = false;
-                        indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                     }
 
-                    if (hopperSubsystem.isAboveSpeed(HopperConstants.INDEXING_SPEED - 50) && !isIndexing) {
-                        isIndexing = true;
-                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED); //indexing speed
-                    }
                 },
                 (interrupted) -> {
-                    indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                     hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                 },
                 () -> false,
-                indexerSubsystem, hopperSubsystem
+                hopperSubsystem
         );
     }
 
@@ -69,27 +63,22 @@ public class RobotCommands {
                 () -> {
                     if (RobotContainer.areMechanismsAtGoals() && isIdling) {
                         isIdling = false;
-                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else if (!RobotContainer.areMechanismsAtGoals() && !isIdling) {
                         isIdling = true;
-                        indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                     }
                 },
                 () -> {
                     if (RobotContainer.areMechanismsAtGoals() && isIdling) {
                         isIdling = false;
-                        indexerSubsystem.setVelocity(IndexerConstants.INDEXING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else if (!RobotContainer.areMechanismsAtGoals() && !isIdling) {
                         isIdling = true;
-                        indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                     }
                 },
                 (interrupted) -> {
-                    indexerSubsystem.setVelocity(IndexerConstants.IDLING_SPEED);
                     hopperSubsystem.setVelocity(HopperConstants.IDLING_SPEED);
                 },
                 () -> false,
@@ -149,7 +138,6 @@ public class RobotCommands {
         return new ParallelCommandGroup(
                 zeroTurret(),
                 moveHoodToZero(),
-                new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED),
                 new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED),
                 new VelocityCommand(shooterSubsystem, 0),
                 new VelocityCommand(kickerSubsystem, 0)

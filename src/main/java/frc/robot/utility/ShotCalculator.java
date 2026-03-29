@@ -221,6 +221,7 @@ public class ShotCalculator extends SubsystemBase {
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
         RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),
                 shotCalculator.getHoodVelocityPhaseDelayed());
+
     }
 
 
