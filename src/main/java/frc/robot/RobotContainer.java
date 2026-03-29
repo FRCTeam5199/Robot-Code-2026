@@ -471,14 +471,21 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-//        commandXboxController.x().onTrue(intakeDeploy);
-//        commandXboxController.a().onTrue(intakeStow);
+       commandXboxController.x().onTrue(intakeDeploy);
+       commandXboxController.a().onTrue(intakeStow);
 
-        commandXboxController.a().whileTrue(turretSubsystem.sysIdQuasistaticForward());
-        commandXboxController.b().whileTrue(turretSubsystem.sysIdQuasistaticReverse());
-        commandXboxController.y().whileTrue(turretSubsystem.sysIdDynamicForward());
-        commandXboxController.x().whileTrue(turretSubsystem.sysIdDynamicReverse());
+        // commandXboxController.a().whileTrue(turretSubsystem.sysIdQuasistaticForward());
+        // commandXboxController.b().whileTrue(turretSubsystem.sysIdQuasistaticReverse());
+        // commandXboxController.y().whileTrue(turretSubsystem.sysIdDynamicForward());
+        // commandXboxController.x().whileTrue(turretSubsystem.sysIdDynamicReverse());
 
+
+        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),
+            new VelocityCommand(shooterSubsystem, 45), new VelocityCommand(hopperSubsystem, 50)
+        )).onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 0),new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 0),
+            new VelocityCommand(shooterSubsystem, 0))
+        )
+        );
 
         commandXboxController.rightBumper().onTrue(intakeAgitation)
                 .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
@@ -489,8 +496,12 @@ RobotContainer {
         commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);
 
-        commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116))
-                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0));
+        commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
+            new VelocityCommand(hopperSubsystem, -90)
+        ))
+                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
+                    new VelocityCommand(hopperSubsystem, 0)
+                ));
 
 //        operatorCommandXboxController.y().onTrue(setHubSetpoint);
 //        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);

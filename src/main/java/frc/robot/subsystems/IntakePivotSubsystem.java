@@ -20,11 +20,11 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
                 IntakePivotConstants.STATOR_CURRENT_LIMIT,
                 IntakePivotConstants.SLOT0_CONFIGS);
 
-        configureEncoder(IntakePivotConstants.ENCODER_ID,
-                "rio", IntakePivotConstants.MAGNET_OFFSET,
-                IntakePivotConstants.INTAKE_SENSOR_MECH_RATIO,
-                IntakePivotConstants.GEAR_RATIO,
-                IntakePivotConstants.ENCODER_DIRECTION);
+        // configureEncoder(IntakePivotConstants.ENCODER_ID,
+        //         "rio", IntakePivotConstants.MAGNET_OFFSET,
+        //         IntakePivotConstants.INTAKE_SENSOR_MECH_RATIO,
+        //         IntakePivotConstants.GEAR_RATIO,
+        //         IntakePivotConstants.ENCODER_DIRECTION);
 
         configurePivot(IntakePivotConstants.MIN,
                 IntakePivotConstants.MAX);
@@ -39,7 +39,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-//        System.out.println("Degrees: " + getDegrees());
+       System.out.println("Degrees: " + getDegrees());
 //        System.out.println("Goal: " + getGoal());
 //        System.out.println();
 //        System.out.println("Is at Goal: " + isMechAtGoal(false));

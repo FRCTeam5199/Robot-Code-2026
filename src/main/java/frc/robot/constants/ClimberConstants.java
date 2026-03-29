@@ -6,7 +6,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class ClimberConstants {
-    public static final int MOTOR_ID = 28;
+    public static final int MOTOR_ID = 99;
 
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;

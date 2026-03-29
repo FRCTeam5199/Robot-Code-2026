@@ -44,12 +44,12 @@ public class HoodSubsystem extends TemplateSubsystem {
                 HoodConstants.STATOR_CURRENT_LIMIT,
                 HoodConstants.SLOT0_CONFIGS);
 
-        configureSometimesEncoder(HoodConstants.ENCODER_ID,
-                HoodConstants.CANBUS, HoodConstants.MAGNET_OFFSET,
-                HoodConstants.SENSOR_TO_MECH_GEAR_RATIO,
-                HoodConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
-                HoodConstants.IS_CCW_POS,
-                HoodConstants.ABSOLUTE_DISCONTINUITY_POINT);
+        // configureSometimesEncoder(HoodConstants.ENCODER_ID,
+        //         HoodConstants.CANBUS, HoodConstants.MAGNET_OFFSET,
+        //         HoodConstants.SENSOR_TO_MECH_GEAR_RATIO,
+        //         HoodConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
+        //         HoodConstants.IS_CCW_POS,
+        //         HoodConstants.ABSOLUTE_DISCONTINUITY_POINT);
 
         configurePivot(HoodConstants.MIN,
                 HoodConstants.MAX);

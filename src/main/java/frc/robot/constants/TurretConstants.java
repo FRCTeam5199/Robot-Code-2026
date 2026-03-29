@@ -5,7 +5,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class TurretConstants {
-    public static final int MOTOR_ID = 20;
+    public static final int MOTOR_ID = 99;
     public static final int ENCODER_ID = 23;
 
     public static final double STATOR_CURRENT_LIMIT = 60;

@@ -278,12 +278,8 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)); //IndexerConstants.IDLING_SPEED
-        CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED));   //HopperConstants.IDLING_SPEED
-        CommandScheduler.getInstance().schedule(RobotCommands.idleState());
-//        CommandScheduler.getInstance().schedule(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));
-        CommandScheduler.getInstance().schedule(new VelocityCommand(intakeRollerSubsystem, 0));
-        RobotContainer.setIsClimbing(false);
+        // CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)); //IndexerConstants.IDLING_SPEED
+        // CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED));   //HopperConstants.IDLING_SPEED//        CommandScheduler.getInstance().schedule(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));        RobotContainer.setIsClimbing(false);
         RobotContainer.setIsAutonomous(false);
     }
 

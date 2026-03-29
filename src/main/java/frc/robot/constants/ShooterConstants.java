@@ -6,10 +6,10 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class ShooterConstants {
     public static final int MOTOR_ID = 22;
-    public static final int SECOND_MOTOR_ID = 26;
+    public static final int SECOND_MOTOR_ID = 20;
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
-    public static final boolean INVERTED = false;
+    public static final boolean INVERTED = true;
     public static final boolean SECOND_INVERTED = true;
     public static final boolean BRAKE = false;
 

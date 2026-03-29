@@ -6,12 +6,12 @@ import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class KickerConstants {
-    public static final int UPPER_MOTOR_ID = 18;
-    public static final int LOWER_MOTOR_ID = 19;
+    public static final int UPPER_MOTOR_ID = 15;
+    public static final int LOWER_MOTOR_ID = 16;
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
-    public static final boolean LOWER_INVERTED = false;
-    public static final boolean UPPER_INVERTED = true;
+    public static final boolean LOWER_INVERTED = true;
+    public static final boolean UPPER_INVERTED = false;
     public static final boolean UPPER_BRAKE = false;
 
     public static final Slot0Configs UPPER_SLOT0_CONFIGS = new Slot0Configs()

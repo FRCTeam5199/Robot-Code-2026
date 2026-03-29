@@ -202,7 +202,7 @@
   "SwerveOptions": {
     "Gyro": {
       "Id": 13,
-      "Name": "Huebert (pigeon)",
+      "Name": "Oil Rig",
       "Model": "Pigeon 2",
       "CANbus": "2E184B7E46324B532020204A0C420EFF",
       "CANbusFriendly": "Canivore",
