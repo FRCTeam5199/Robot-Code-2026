@@ -9,9 +9,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.HopperConstants;
-import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.*;
 
 import frc.robot.subsystems.templates.PositionCommand;
@@ -31,7 +29,6 @@ import java.sql.Driver;
 
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
@@ -226,7 +223,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         LimelightHelpers.SetThrottle("limelight-right", 200);
         LimelightHelpers.SetThrottle("limelight-left", 200);
-        LimelightHelpers.SetThrottle("limelight-turret", 200);
+        LimelightHelpers.SetThrottle("limelight-front", 200);
         RobotContainer.setIsAutonomous(false);
     }
 
@@ -239,7 +236,7 @@ public class Robot extends TimedRobot {
     public void disabledExit() {
         LimelightHelpers.SetThrottle("limelight-right", 0);
         LimelightHelpers.SetThrottle("limelight-left", 0);
-        LimelightHelpers.SetThrottle("limelight-turret", 0);
+        LimelightHelpers.SetThrottle("limelight-front", 0);
     }
 
     @Override
@@ -278,8 +275,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        // CommandScheduler.getInstance().schedule(new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED)); //IndexerConstants.IDLING_SPEED
-        // CommandScheduler.getInstance().schedule(new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED));   //HopperConstants.IDLING_SPEED//        CommandScheduler.getInstance().schedule(new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY));        RobotContainer.setIsClimbing(false);
         RobotContainer.setIsAutonomous(false);
     }
 

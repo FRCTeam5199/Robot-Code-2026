@@ -17,11 +17,9 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,7 +48,7 @@ public class TemplateSubsystem extends SubsystemBase {
     private double secondaryGoal;
     private boolean followLastMechProfile = false;
     private boolean isCommandRunning = false;
-    private DynamicMotionMagicVoltage dynamicMotionMagicVoltage;
+    private MotionMagicVoltage motionMagicVoltage;
     private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
     private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
     private PositionVoltage positionVoltage;
@@ -90,8 +88,7 @@ public class TemplateSubsystem extends SubsystemBase {
         this.acceleration = acceleration;
         this.jerk = jerk;
 
-        dynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, this.velocity, this.acceleration)
-                .withJerk(this.jerk).withSlot(0).withEnableFOC(enableFoc);
+        motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0).withEnableFOC(enableFoc);
         motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0)
                 .withEnableFOC(enableFoc);
         positionVoltage = new PositionVoltage(0).withSlot(0)
@@ -132,8 +129,7 @@ public class TemplateSubsystem extends SubsystemBase {
         this.acceleration = acceleration;
         this.jerk = jerk;
 
-        dynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, this.velocity, this.acceleration)
-                .withJerk(this.jerk).withSlot(0).withEnableFOC(enableFoc);
+        motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0).withEnableFOC(enableFoc);
         motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0).withSlot(0)
                 .withEnableFOC(enableFoc);
         positionVoltage = new PositionVoltage(0).withSlot(0)
@@ -220,13 +216,13 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void configureRoller(double motorMinDegrees, double motorMaxDegrees) {
-//        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMaxDegrees);
-//        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);
-//
-//        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-//        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-//
-//        motor.getConfigurator().apply(motorConfig);
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = getMotorRotFromDegrees(motorMaxDegrees);
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = getMotorRotFromDegrees(motorMinDegrees);
+
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        motor.getConfigurator().apply(motorConfig);
     }
 
     public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection, CANBus canbus) {
@@ -363,11 +359,12 @@ public class TemplateSubsystem extends SubsystemBase {
         }
 
         this.goal = goal;
-        motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations));
 
-//        dynamicMotionMagicVoltage.Velocity = this.velocity;
-//        dynamicMotionMagicVoltage.Acceleration = this.acceleration;
-//        dynamicMotionMagicVoltage.Jerk = this.jerk;
+        motor.setControl(motionMagicVoltage.withPosition(goalRotations));
+
+//        motionMagicVoltage.Velocity = this.velocity;
+//        motionMagicVoltage.Acceleration = this.acceleration;
+//        motionMagicVoltage.Jerk = this.jerk;
     }
 
     public void setPosition(double goal, double feedforward) {
@@ -381,12 +378,12 @@ public class TemplateSubsystem extends SubsystemBase {
         }
 
         this.goal = goal;
-        motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations)
+        motor.setControl(motionMagicVoltage.withPosition(goalRotations)
                 .withFeedForward(feedforward));
 
-//        dynamicMotionMagicVoltage.Velocity = this.velocity;
-//        dynamicMotionMagicVoltage.Acceleration = this.acceleration;
-//        dynamicMotionMagicVoltage.Jerk = this.jerk;
+//        motionMagicVoltage.Velocity = this.velocity;
+//        motionMagicVoltage.Acceleration = this.acceleration;
+//        motionMagicVoltage.Jerk = this.jerk;
     }
 
     public void setPositionVoltage(double motorRotations, double feedforward) {
@@ -412,13 +409,13 @@ public class TemplateSubsystem extends SubsystemBase {
         this.goal = goal;
 
 
-        motor.setControl(dynamicMotionMagicVoltage.withPosition(goalRotations));
+        motor.setControl(motionMagicVoltage.withPosition(goalRotations));
     }
 
     public void setConstraints(double velocity, double acceleration, double jerk) {
-        dynamicMotionMagicVoltage.Velocity = velocity;
-        dynamicMotionMagicVoltage.Acceleration = acceleration;
-        dynamicMotionMagicVoltage.Jerk = jerk;
+//        motionMagicVoltage.Velocity = velocity;
+//        motionMagicVoltage.Acceleration = acceleration;
+//        motionMagicVoltage.Jerk = jerk;
     }
 
     public boolean isMechAtGoal(boolean isVelocity) {

@@ -31,7 +31,6 @@ public class Constants {
     public static final Transform3d TURRET_TO_CAMERA = new Transform3d(.041, .162, 0, new Rotation3d(Math.toRadians(180d), Math.toRadians(14.69), 0));
     public static final double TURRET_BUFFER_SIZE = 20d;
     public static final String LIMELIGHT_LEFT_NAME = "limelight-left"; //10.51.99.11:5801
-    public static final String LIMELIGHT_FRONT_NAME = "limelight-right"; //10.51.99.12:5801
+    public static final String LIMELIGHT_FRONT_NAME = "limelight-front"; //10.51.99.12:5801
     public static final String LIMELIGHT_RIGHT_NAME = "limelight-turret"; //10.51.99.13:5801 - NOT SET YET
-    public static final double DRIVE_X_KS = .28;
 }

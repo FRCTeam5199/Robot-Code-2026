@@ -12,12 +12,12 @@ public class HopperConstants {
     public static final boolean BRAKE = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0.3) //0.2
+            .withKP(0.5)
             .withKI(0)
             .withKD(0)
-            .withKS(0.23)
+            .withKS(.5)
             .withKG(0)
-            .withKV(0.1031991744066047)
+            .withKV(.11494252873563218390804597701149)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 

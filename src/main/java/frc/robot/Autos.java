@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
-import frc.robot.utility.ClimberSetpoint;
 import frc.robot.utility.ShotCalculator;
 
 public final class Autos {
@@ -36,7 +35,6 @@ public final class Autos {
 //    private static PathPlannerAuto redTopShuttle;
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
-    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
 //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
 
     //    private static PathPlannerAuto blueBottomShuttle;
@@ -109,163 +107,6 @@ public final class Autos {
         // autonChooserBlue.addOption("Blue Left Score Climb", blueBottomScore);
         // autonChooserBlue.addOption("Blue Right Score Climb", blueTopScore);
 
-    }
-
-    public static Command driveToPose(double goalX, double goalY, double goalDegrees) {
-        return new SequentialCommandGroup(
-                new InstantCommand(() ->
-                        commandSwerveDrivetrain.applyRequest(() ->
-                                drive.withVelocityX(0).
-                                        withVelocityX(0).
-                                        withRotationalRate(0)
-                        )
-                ),
-                AutoBuilder.pathfindToPose(
-                        new Pose2d(goalX, goalY, Rotation2d.fromDegrees(goalDegrees)),
-                        new PathConstraints(2d, 2d, Units.degreesToRadians(540d), Units.degreesToRadians(720d)),
-                        0d
-                )
-        );
-    }
-
-    public static Command driveToPose(ClimberSetpoint climberSetpoint) {
-//        return new SequentialCommandGroup(
-//                new InstantCommand(() ->
-//                        commandSwerveDrivetrain.applyRequest(() ->
-//                                drive.withVelocityX(0).
-//                                        withVelocityX(0).
-//                                        withRotationalRate(0)
-//                        )
-//                ),
-
-        return AutoBuilder.pathfindToPose(
-                climberSetpoint.getPose2d(),
-                new PathConstraints(2, 1,
-                        Units.degreesToRadians(540d), Units.degreesToRadians(720d)), 0d);
-
-    }
-
-    public static Command pidAlign(ClimberSetpoint climberSetpoint) {
-        return new SequentialCommandGroup(
-                new InstantCommand(() -> RobotContainer.setClimberSetpoint(climberSetpoint)),
-                new FunctionalCommand(
-                        () -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(0));
-                        },
-                        () -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(RobotContainer.getXVelocity())
-                                            .withVelocityY(0)
-                                            .withRotationalRate(RobotContainer.getRotationVelocity()));
-                        },
-                        (interrupted) -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(0));
-                        },
-                        RobotContainer::alignedX,
-                        commandSwerveDrivetrain
-                ),
-                new FunctionalCommand(
-                        () -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(0));
-                        },
-                        () -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(RobotContainer.getRotationVelocity()));
-                        },
-                        (interrupted) -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(0));
-                        },
-                        RobotContainer::alignedY,
-                        commandSwerveDrivetrain
-                )
-        );
-    }
-
-    public static Command pidAlignLeft() {
-        return new SequentialCommandGroup(
-                new FunctionalCommand(
-                        () -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(0));
-                        },
-                        () -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(-RobotContainer.getXVelocity())
-                                            .withVelocityY(0)
-                                            .withRotationalRate(RobotContainer.getRotationVelocity()));
-                        },
-                        (interrupted) -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(0));
-                        },
-                        RobotContainer::alignedX,
-                        commandSwerveDrivetrain
-                ),
-                new FunctionalCommand(
-                        () -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(0));
-                            pidAlignmentTimer.restart();
-                        },
-                        () -> {
-                            double yVelocity = -1;
-//                            if (Robot.getAlliance() != null
-//                                    && Robot.getAlliance().equals(DriverStation.Alliance.Blue))
-//                                yVelocity = -1;
-//                            else
-//                                yVelocity = 1;
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(yVelocity)
-                                            .withRotationalRate(RobotContainer.getRotationVelocity()));
-                        },
-                        (interrupted) -> {
-                            commandSwerveDrivetrain.setControl(
-                                    drive.withVelocityX(0)
-                                            .withVelocityY(0)
-                                            .withRotationalRate(0));
-                        },
-                        () -> (RobotContainer.alignedY() && pidAlignmentTimer.get() > .25),
-                        commandSwerveDrivetrain
-                )
-        );
-    }
-
-    public static Command driveToPose(ClimberSetpoint climberSetpoint,
-                                      double maxVelocity, double maxAcceleration, double goalEndVelocity) {
-        return new SequentialCommandGroup(
-                new InstantCommand(() ->
-                        commandSwerveDrivetrain.applyRequest(() ->
-                                drive.withVelocityX(0).
-                                        withVelocityX(0).
-                                        withRotationalRate(0)
-                        )
-                ),
-                AutoBuilder.pathfindToPose(
-                        climberSetpoint.getPose2d(),
-                        new PathConstraints(maxVelocity, maxAcceleration,
-                                Units.degreesToRadians(540d), Units.degreesToRadians(720d)), goalEndVelocity)
-        );
     }
 
     public static Autos getInstance() {

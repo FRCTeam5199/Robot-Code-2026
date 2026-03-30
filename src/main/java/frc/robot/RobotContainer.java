@@ -24,18 +24,14 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HopperConstants;
-import frc.robot.constants.IndexerConstants;
 import frc.robot.constants.IntakePivotConstants;
 import frc.robot.constants.IntakeRollerConstants;
 import frc.robot.constants.TunerConstants;
-import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
@@ -48,8 +44,6 @@ import frc.robot.subsystems.templates.PositionCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.ClimbMode;
-import frc.robot.utility.ClimberSetpoint;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
@@ -72,8 +66,6 @@ RobotContainer {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
-    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
-    //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
 
     //Intake Pivot
@@ -123,9 +115,6 @@ RobotContainer {
     //    Auton commands
     private static final Command revUp = new ParallelCommandGroup(shooterRevUp, kickerRevUp);
     //Indexer Commands
-    private static final VelocityCommand indexerAuto = new VelocityCommand(indexerSubsystem, 0);
-    private static final VelocityCommand indexerIdle = new VelocityCommand(indexerSubsystem, IndexerConstants.IDLING_SPEED);
-    private static final VelocityCommand indexerIndex = new VelocityCommand(indexerSubsystem, IndexerConstants.INDEXING_SPEED);
     //Hopper Commands
     private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
     private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
@@ -157,7 +146,6 @@ RobotContainer {
     private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
     private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
     private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
-    private static ClimberSetpoint climberSetpoint = ClimberSetpoint.CLIMB_LEFT_RED;
     private static boolean isAutonomous = false;
     //Button Bindings
     private static Command leftTriggerPressed;
@@ -169,22 +157,16 @@ RobotContainer {
     private static Command stop;
     private static ShotMode shotMode = ShotMode.SHOOTING;
     private static Translation2d[] robotCorners = new Translation2d[4];
-    private static ClimbMode climbMode = ClimbMode.NOCLIMB;
     private static boolean filtersInitialized = false;
 
 
     public RobotContainer() {
         optimizeDrivetrain();
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
-                new ParallelCommandGroup(kickerAuto, shooterAuto,
+                new ParallelCommandGroup(shooterAuto,
                         hoodControlAuto, turretControlAuto));
 
         leftTriggerReleased = RobotCommands.idleState();
-
-//        extend = RobotCommands.extendClimb();
-//        retract = RobotCommands.retractClimb();
-//        stop = RobotCommands.stopClimb();
-
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
@@ -212,10 +194,6 @@ RobotContainer {
         NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
         NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
-
-        NamedCommands.registerCommand("prepClimbLeft", Autos.pidAlignLeft());
-//        NamedCommands.registerCommand("prepClimbRight", RobotCommands.prepAutoCLimbRight());
-//        NamedCommands.registerCommand("climb", climberClimb);
 
         Autos.initializeAutos();
         configureBindings();
@@ -288,14 +266,12 @@ RobotContainer {
 
     public static boolean areMechanismsAtGoalsAuto() {
         return turretSubsystem.isMechAtGoalAuto() && hoodSubsystem.isMechAtGoalAuto()
-                && shooterSubsystem.isMechAtGoalAuto()
-                && kickerSubsystem.isMechAtGoalAuto();
+                && shooterSubsystem.isMechAtGoalAuto();
     }
 
     public static boolean areMechanismsAtGoals() {
         return turretSubsystem.isMechAtGoal() && hoodSubsystem.isMechAtGoal()
-                && shooterSubsystem.isMechAtGoal(true)
-                && kickerSubsystem.isMechAtGoal(true);
+                && shooterSubsystem.isMechAtGoal(true);
     }
 
 //    public static Pose2d getPose() {
@@ -355,64 +331,6 @@ RobotContainer {
         return requestXVelocity;
     }
 
-    public static void calculateAutoClimbVelocities() {
-//        double currentX = climberSubsystem.getDistance();
-        double currentX = 0;
-
-        double currentRotation = getPose().getRotation().getDegrees();
-        double rotationalError;
-        double goalRotation;
-        if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
-            goalRotation = 180d;
-            rotationalError = goalRotation - currentRotation;
-        } else {
-            goalRotation = 0d;
-            rotationalError = goalRotation - currentRotation;
-        }
-
-        while (rotationalError > 180) rotationalError -= 360;
-        while (rotationalError < -180) rotationalError += 360;
-
-
-        if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
-            goalX = ClimberConstants.CLIMBING_X_DISTANCE_RED;
-        } else {
-            goalX = ClimberConstants.CLIMBING_X_DISTANCE_BLUE;
-        }
-
-        if ((Math.abs(currentX - goalX) > .15)) {
-            xVelocity = drivePIDControllerX.calculate(currentX, goalX);
-        } else {
-            xVelocity = drivePIDControllerXClose.calculate(currentX, goalX);
-        }
-
-        if (xVelocity < 0) xVelocity -= Constants.DRIVE_X_KS;
-        else xVelocity += Constants.DRIVE_X_KS;
-
-        rotationVelocity = -turnPIDController.calculate(rotationalError, 0);
-
-//        System.out.println("Rotation Velocity: " + rotationVelocity);
-//        System.out.println("Goal Degrees: " + climberSetpoint.getPose2d().getRotation().getDegrees());
-
-//        System.out.println(Math.abs(climberSubsystem.getDistance() - goalX));
-
-        if (currentRotation > goalRotation) rotationVelocity -= .3;
-        else rotationVelocity += .3;
-
-//        System.out.println("X velocity: " + xVelocity);
-//        System.out.println("Y velocity: " + yVelocity);
-//        System.out.println("Rotational velocity: " + rotationVelocity);
-
-//        System.out.println("Aligned X: " + (Math.abs(climberSubsystem.getDistance() - goalX) < .03
-//                && Math.abs(getSpeeds().vxMetersPerSecond) < .01));
-//        System.out.println("Speeds: " + getSpeeds().vxMetersPerSecond);
-        // System.out.println("Mechs At Goal: " + areMechanismsAtGoalsAuto());
-    }
-
-    public static void setClimberSetpoint(ClimberSetpoint climberSetpoint) {
-        RobotContainer.climberSetpoint = climberSetpoint;
-    }
-
     public static double getXVelocity() {
         return xVelocity;
     }
@@ -423,16 +341,6 @@ RobotContainer {
 
     public static double getRotationVelocity() {
         return rotationVelocity;
-    }
-
-    public static boolean alignedX() {
-//        return Math.abs(climberSubsystem.getDistance() - goalX) < .03
-//                && Math.abs(getSpeeds().vxMetersPerSecond) < .01;
-        return false;
-    }
-
-    public static boolean alignedY() {
-        return Math.abs(getSpeeds().vyMetersPerSecond) < .05;
     }
 
     public static Pose2d getPose() {
@@ -471,21 +379,15 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-       commandXboxController.x().onTrue(intakeDeploy);
-       commandXboxController.a().onTrue(intakeStow);
+        commandXboxController.x().onTrue(intakeDeploy);
+        commandXboxController.a().onTrue(intakeStow);
 
-        // commandXboxController.a().whileTrue(turretSubsystem.sysIdQuasistaticForward());
-        // commandXboxController.b().whileTrue(turretSubsystem.sysIdQuasistaticReverse());
-        // commandXboxController.y().whileTrue(turretSubsystem.sysIdDynamicForward());
-        // commandXboxController.x().whileTrue(turretSubsystem.sysIdDynamicReverse());
-        commandXboxController.b().onTrue(new ParallelCommandGroup(new VelocityCommand(shooterSubsystem, 0), new VelocityCommand(kickerSubsystem, 0), new VelocityCommand(hopperSubsystem, 0)));
+        commandXboxController.b().onTrue(new PositionCommand(turretSubsystem, 0));
 
-
-        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90).alongWith(new VelocityCommand(shooterSubsystem, 45)),
-            new VelocityCommand(hopperSubsystem, 50)
-        )).onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 0),new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 0),
-            new VelocityCommand(shooterSubsystem, 0))
-        )
+        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),
+                new VelocityCommand(hopperSubsystem, 90)
+        )).onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 0), new VelocityCommand(kickerSubsystem, 0)
+                )
         );
 
         commandXboxController.rightBumper().onTrue(intakeAgitation)
@@ -498,10 +400,10 @@ RobotContainer {
                 .onFalse(leftTriggerReleased);
 
         commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
-            new VelocityCommand(hopperSubsystem, -90)
-        ))
+                        new VelocityCommand(hopperSubsystem, -90)
+                ))
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
-                    new VelocityCommand(hopperSubsystem, 0)
+                        new VelocityCommand(hopperSubsystem, 0)
                 ));
 
 //        operatorCommandXboxController.y().onTrue(setHubSetpoint);
@@ -518,6 +420,7 @@ RobotContainer {
 //        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
 //                .onFalse(RobotCommands.idleState());
 //        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
+        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {

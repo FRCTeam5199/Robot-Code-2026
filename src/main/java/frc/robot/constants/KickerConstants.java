@@ -14,13 +14,15 @@ public class KickerConstants {
     public static final boolean UPPER_INVERTED = false;
     public static final boolean UPPER_BRAKE = false;
 
+    public static final double INDEXING_SPEED = 80;
+
     public static final Slot0Configs UPPER_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(0.5)
             .withKI(0)
             .withKD(0.01)
-            .withKS(.36)
+            .withKS(.34)
             .withKG(0)
-            .withKV(.13043478260869565217391304347826)
+            .withKV(.12738853503184713375796178343949)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 

@@ -6,7 +6,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class HoodConstants {
-    public static final int MOTOR_ID = 99;
+    public static final int MOTOR_ID = 19;
     public static final int ENCODER_ID = 99;
 
     public static final double STATOR_CURRENT_LIMIT = 60;
@@ -18,9 +18,9 @@ public class HoodConstants {
             .withKP(5)
             .withKI(0)
             .withKD(0)
-            .withKS(0.26)
+            .withKS(.5)
             .withKG(0)
-            .withKV(.09025270758122743682310469314079)
+            .withKV(.08264462809917355371900826446281)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
             .withGravityType(GravityTypeValue.Arm_Cosine)
@@ -40,7 +40,7 @@ public class HoodConstants {
     public static final double MAX = 29;
 
     public static final double MOTOR_TO_SENSOR_GEAR_RATIO = 8d;
-    public static final double[][] GEAR_RATIO = {{48, 12}, {30, 15}, {180, 10}};
+    public static final double[][] GEAR_RATIO = {{60, 11}, {146, 10}}; //.01255707762557077625570776255708
     public static final double SENSOR_TO_MECH_GEAR_RATIO = 18d;
 
     public static final double ABSOLUTE_DISCONTINUITY_POINT = .5;

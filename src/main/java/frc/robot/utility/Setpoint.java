@@ -29,6 +29,6 @@ public enum Setpoint {
     }
 
     public double getKickerSpeed() {
-        return (shooterSpeed * KickerConstants.SCALE_FACTOR);
+        return 80d;
     }
 }

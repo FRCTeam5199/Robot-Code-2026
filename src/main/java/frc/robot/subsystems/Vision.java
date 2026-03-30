@@ -28,10 +28,10 @@ public class Vision {
 
         LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_LEFT_NAME,
                 -.334929, -.284129, .498502, 0, 5, 135.218);
-        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_RIGHT_NAME,
-                -.317, .317, .436, 180, 5, -135.218);
+//        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_RIGHT_NAME,
+//                -.317, .317, .436, 180, 5, -135.218);
         LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_FRONT_NAME,
-            0.297259, -.054071, 0.488463, 0, 10, 14.106044); //forward and side could be switched around, yaw might be 180
+                -.297259, .054071, 0.488463, 0, 10, 14.106044);
 
         startThread();
     }

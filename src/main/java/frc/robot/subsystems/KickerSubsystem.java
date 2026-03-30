@@ -44,8 +44,8 @@ public class KickerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-//        System.out.println("kicker: " + isMechAtGoal(true));
-//        System.out.println(getGoal());
+        System.out.println("Kicker Velocity: " + isMechAtGoal(true));
+        System.out.println("Kicker Goal: " + getGoal());
 
     }
 
