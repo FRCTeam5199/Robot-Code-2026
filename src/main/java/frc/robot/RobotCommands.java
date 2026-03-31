@@ -13,7 +13,7 @@ public class RobotCommands {
     //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
-    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
+    //    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     private static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     private static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
@@ -119,8 +119,8 @@ public class RobotCommands {
         return new ParallelCommandGroup(
                 new VelocityCommand(hopperSubsystem, -50),
                 new VelocityCommand(shooterSubsystem, -50),
-                new VelocityCommand(kickerSubsystem, -50),
-                new VelocityCommand(intakeRollerSubsystem, -50)
+                new VelocityCommand(kickerSubsystem, -50)
+//                new VelocityCommand(intakeRollerSubsystem, -50)
         );
     }
 }

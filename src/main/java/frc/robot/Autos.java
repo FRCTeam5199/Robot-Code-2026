@@ -24,7 +24,7 @@ import frc.robot.utility.ShotCalculator;
 
 public final class Autos {
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
-    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
+    //    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();

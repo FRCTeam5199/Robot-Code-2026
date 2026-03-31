@@ -30,7 +30,7 @@ import java.sql.Driver;
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
-    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
+    //    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     //    public static ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
