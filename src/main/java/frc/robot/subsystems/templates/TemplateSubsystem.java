@@ -338,9 +338,10 @@ public class TemplateSubsystem extends SubsystemBase {
         this.goal = rps;
         followLastMechProfile = false;
         if (rps == 0) setPercent(0);
-        else motor.setControl(motionMagicVelocityVoltage.withVelocity(rps + offset));
+        else motor.setControl(velocityVoltage.withVelocity(rps + offset));
     }
 
+    //TODO: change to velocityVoltage
     public void setSecondaryVelocity(double rps) {
         this.secondaryGoal = rps;
         followLastMechProfile = false;

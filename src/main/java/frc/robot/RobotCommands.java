@@ -26,7 +26,7 @@ public class RobotCommands {
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
                         kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
                     }
-                    if (kickerSubsystem.isMechAtGoal(true)) {
+                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     }
                 },
@@ -34,13 +34,13 @@ public class RobotCommands {
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
                         kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
                     } else {
-                        kickerSubsystem.setVelocity(0);
+//                        kickerSubsystem.setVelocity(0);
                     }
 
-                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getMotorVelocity() > 5) {
+                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
-                        hopperSubsystem.setVelocity(0);
+//                        hopperSubsystem.setVelocity(0);
                     }
 
                 },
@@ -59,7 +59,7 @@ public class RobotCommands {
                     if (RobotContainer.areMechanismsAtGoals()) {
                         kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
                     }
-                    if (kickerSubsystem.isMechAtGoal(true)) {
+                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     }
                 },
@@ -67,13 +67,13 @@ public class RobotCommands {
                     if (RobotContainer.areMechanismsAtGoals()) {
                         kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
                     } else {
-                        kickerSubsystem.setVelocity(0);
+//                        kickerSubsystem.setVelocity(0);
                     }
 
-                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getMotorVelocity() > 5) {
+                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
-                        hopperSubsystem.setVelocity(0);
+//                        hopperSubsystem.setVelocity(0);
                     }
 
                 },

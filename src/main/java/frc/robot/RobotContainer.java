@@ -266,7 +266,7 @@ RobotContainer {
 
     public static boolean areMechanismsAtGoalsAuto() {
         return turretSubsystem.isMechAtGoalAuto() && hoodSubsystem.isMechAtGoalAuto()
-                && shooterSubsystem.isMechAtGoalAuto();
+                && shooterSubsystem.isMechAtGoalAuto() && shotCalculator.isWithinBounds();
     }
 
     public static boolean areMechanismsAtGoals() {
@@ -379,16 +379,21 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        commandXboxController.x().onTrue(intakeDeploy);
-        commandXboxController.a().onTrue(intakeStow);
+//        commandXboxController.x().onTrue(intakeDeploy);
+//        commandXboxController.a().onTrue(intakeStow);
+//
+//        commandXboxController.b().onTrue(new PositionCommand(turretSubsystem, 0));
+//
+//        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),
+//                new VelocityCommand(hopperSubsystem, 90)
+//        )).onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 0), new VelocityCommand(kickerSubsystem, 0)
+//                )
+//        );
 
-        commandXboxController.b().onTrue(new PositionCommand(turretSubsystem, 0));
-
-        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),
-                new VelocityCommand(hopperSubsystem, 90)
-        )).onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 0), new VelocityCommand(kickerSubsystem, 0)
-                )
-        );
+        commandXboxController.a().onTrue(kickerSubsystem.sysIdDynamicForward());
+        commandXboxController.b().onTrue(kickerSubsystem.sysIdDynamicReverse());
+        commandXboxController.y().onTrue(kickerSubsystem.sysIdQuasistaticForward());
+        commandXboxController.x().onTrue(kickerSubsystem.sysIdQuasistaticReverse());
 
         commandXboxController.rightBumper().onTrue(intakeAgitation)
                 .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
@@ -398,6 +403,7 @@ RobotContainer {
 
         commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);
+
 
         commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
                         new VelocityCommand(hopperSubsystem, -90)

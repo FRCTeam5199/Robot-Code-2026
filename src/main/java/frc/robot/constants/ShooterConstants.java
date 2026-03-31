@@ -7,20 +7,20 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 public class ShooterConstants {
     public static final int MOTOR_ID = 22;
     public static final int SECOND_MOTOR_ID = 20;
-    public static final double STATOR_CURRENT_LIMIT = 60;
+    public static final double STATOR_CURRENT_LIMIT = 100;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean INVERTED = true;
     public static final boolean SECOND_INVERTED = true;
     public static final boolean BRAKE = false;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(1) //.25 //0.013659
+            .withKP(.00096084)
             .withKI(0)
-            .withKD(0) //.01
-            .withKS(.18)
+            .withKD(0)
+            .withKS(.26163)
             .withKG(0)
-            .withKV(0.1103752759381898) //.12048192771084337349397590361446
-            .withKA(0.0064364) //0
+            .withKV(.12255)
+            .withKA(.0036266)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double ACCELERATION = 80000;

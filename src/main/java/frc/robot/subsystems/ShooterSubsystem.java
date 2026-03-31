@@ -21,24 +21,24 @@ public class ShooterSubsystem extends TemplateSubsystem {
     private static NetworkTable shooterNetworkTable;
     private static ShotCalculator shotCalculator = ShotCalculator.getInstance();
 
-//    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
-//            new SysIdRoutine.Config(
-//                    Volts.of(0.2).per(Second), // ramp rate - slow for a turret
-//                    Volts.of(6),                       // max voltage - keep low for turret safety
-//                    Seconds.of(8),                     // test timeout
-//                    null
-//            ),
-//            new SysIdRoutine.Mechanism(
-//                    (voltage) -> setVoltage(voltage.in(Volts)),
-//                    log -> {
-//                        log.motor("shooter")
-//                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
-//                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
-//                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
-//                    },
-//                    this
-//            )
-//    );
+    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    Volts.of(1).per(Second), // ramp rate - slow for a turret
+                    Volts.of(6),                       // max voltage - keep low for turret safety
+                    Seconds.of(8),                     // test timeout
+                    null
+            ),
+            new SysIdRoutine.Mechanism(
+                    (voltage) -> setVoltage(voltage.in(Volts)),
+                    log -> {
+                        log.motor("shooter")
+                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
+                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
+                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
+                    },
+                    this
+            )
+    );
 
     private ShooterSubsystem() {
         super(Type.ROLLER, ShooterConstants.MOTOR_ID,
@@ -58,7 +58,7 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.CANBUS
         );
 
-//        shooterNetworkTable ][tworkTable.getDoubleTopic("Current Speed").publish();
+//        shooterNetworkTable.getDoubleTopic("Current Speed").publish();
     }
 
     public static ShooterSubsystem getInstance() {
@@ -83,19 +83,19 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 && getMotorVelocity() <= shotCalculator.getShooterSpeed() + ShooterConstants.UPPER_TOLERANCE;
     }
 
-//    public Command sysIdQuasistaticForward() {
-//        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
-//    }
-//
-//    public Command sysIdQuasistaticReverse() {
-//        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
-//    }
-//
-//    public Command sysIdDynamicForward() {
-//        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
-//    }
-//
-//    public Command sysIdDynamicReverse() {
-//        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
-//    }
+    public Command sysIdQuasistaticForward() {
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+    }
+
+    public Command sysIdQuasistaticReverse() {
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+    }
+
+    public Command sysIdDynamicForward() {
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+    }
+
+    public Command sysIdDynamicReverse() {
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+    }
 }

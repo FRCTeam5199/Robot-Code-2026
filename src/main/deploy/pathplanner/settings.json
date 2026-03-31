@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.8625,
-  "robotLength": 0.863,
+  "robotWidth": 0.9271,
+  "robotLength": 0.8128,
   "holonomicMode": true,
   "pathFolders": [
     "Blue Score Bottom",

@@ -47,6 +47,13 @@ public class TurretSubsystem extends TemplateSubsystem {
     private DoublePublisher velocity;
     private DoublePublisher acceleration;
     private BooleanPublisher isMechAtGoal;
+    private BooleanPublisher isShooterAtGoal;
+    private BooleanPublisher isIndexerAtGoal;
+    private BooleanPublisher isHoodAtGoal;
+    private BooleanPublisher areMechanismsAtGoalAuto;
+    private DoublePublisher shooterVelocity;
+    private DoublePublisher indexerVelocity;
+    private DoublePublisher hopperVelocity;
     private StructPublisher<Pose2d> turretPose;
     private StructPublisher<Pose2d> futureTurretPose;
 
@@ -105,11 +112,20 @@ public class TurretSubsystem extends TemplateSubsystem {
         goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
         goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
         currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
+
+        shooterVelocity = networkTable.getDoubleTopic("Shooter Velocity").publish();
+        indexerVelocity = networkTable.getDoubleTopic("Indexer Velocity").publish();
+        hopperVelocity = networkTable.getDoubleTopic("Hopper Velocity").publish();
+
 //        goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
 //        currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
 //        turretToTargetDistance = networkTable.getDoubleTopic("Distance").publish();
 //        lateralDistance = networkTable.getDoubleTopic("lateralDistance").publish();
-//        isMechAtGoal = networkTable.getBooleanTopic("Turret Is Mech At Goal").publish();
+        isMechAtGoal = networkTable.getBooleanTopic("Turret Is Mech At Goal").publish();
+        isHoodAtGoal = networkTable.getBooleanTopic("Hood Is Mech At Goal").publish();
+        isShooterAtGoal = networkTable.getBooleanTopic("Shooter Is Mech At Goal").publish();
+        isIndexerAtGoal = networkTable.getBooleanTopic("Indexer Is Mech At Goal").publish();
+        areMechanismsAtGoalAuto = networkTable.getBooleanTopic("Mechanisms Are At Goal").publish();
 //        turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
 //        futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
 //        velocity = networkTable.getDoubleTopic("Velocity").publish();
@@ -133,6 +149,16 @@ public class TurretSubsystem extends TemplateSubsystem {
         goalPositionLogging.set(shotCalculator.getTurretAngle());
         goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
         currentPositionLogging.set(getDegrees());
+
+        shooterVelocity.set(ShooterSubsystem.getInstance().getMotorVelocity());
+        indexerVelocity.set(KickerSubsystem.getInstance().getMotorVelocity());
+        hopperVelocity.set(HopperSubsystem.getInstance().getMotorVelocity());
+
+        isMechAtGoal.set(isMechAtGoalAuto());
+        isHoodAtGoal.set(HoodSubsystem.getInstance().isMechAtGoalAuto());
+        isShooterAtGoal.set(ShooterSubsystem.getInstance().isMechAtGoalAuto());
+        isIndexerAtGoal.set(KickerSubsystem.getInstance().isMechAtGoalAuto());
+        areMechanismsAtGoalAuto.set(RobotContainer.areMechanismsAtGoalsAuto());
 //
 //        goalVelocityLogging.set(goalVelocityRotPerSec);
 //        currentVelocityLogging.set(getMotorVelocity());
