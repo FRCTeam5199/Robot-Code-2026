@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -203,6 +204,24 @@ RobotContainer {
         NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
         NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
+        NamedCommands.registerCommand("startLeft", new ConditionalCommand(
+                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
+                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
+                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
+                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+                                .resetRotation(new Rotation2d(90d)))),
+                () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
+        ));
+        NamedCommands.registerCommand("startRight", new ConditionalCommand(
+                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
+                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+                                .resetRotation(new Rotation2d(Math.toRadians(-90d))))),
+                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
+                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+                                .resetRotation(new Rotation2d(-90d)))),
+                () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
+        ));
 
         Autos.initializeAutos();
         configureBindings();
@@ -420,8 +439,8 @@ RobotContainer {
         commandXboxController.rightBumper().onTrue(intakeAgitation)
                 .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
 
-        commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
-                .onFalse(intakeRollerStop);
+        commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
+                .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
 
         commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);

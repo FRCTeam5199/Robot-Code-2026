@@ -9,7 +9,7 @@ public class IntakeRollerConstants {
     public static final int FOLLOWER_MOTOR_ID = 24;
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
-    public static final boolean INVERTED = true;
+    public static final boolean INVERTED = false;
     public static final boolean BRAKE = true;
     public static final boolean FOLLOWER_INVERTED = true;
 
@@ -17,9 +17,9 @@ public class IntakeRollerConstants {
             .withKP(0.25)
             .withKI(0)
             .withKD(0)
-            .withKS(0.9)
+            .withKS(0.37)
             .withKG(0)
-            .withKV(0.08787346221441124780316344463972)
+            .withKV(.1010101010101010101010101010101)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
