@@ -59,7 +59,7 @@ RobotContainer {
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
     public static final Autos auton = Autos.getInstance();
-    //    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
+    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
@@ -124,9 +124,9 @@ RobotContainer {
     private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
     private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
     //Intake Roller Commands
-//    private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
-//    private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
-//    private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
+    private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
+    private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
+    private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
     //Climber Commands
 //    private static final PositionCommand climberClimb = new PositionCommand(climberSubsystem, ClimberConstants.CLIMB);
 //    private static final PositionCommand climberDeploy = new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY);
@@ -200,8 +200,8 @@ RobotContainer {
         NamedCommands.registerCommand("deployIntake", intakeDeploy);
         NamedCommands.registerCommand("stowIntake", intakeStow);
         NamedCommands.registerCommand("agitateIntake", intakeAgitation);
-//        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
-//        NamedCommands.registerCommand("stopIntake", intakeRollerStop);
+        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
+        NamedCommands.registerCommand("stopIntake", intakeRollerStop);
         NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
         Autos.initializeAutos();
@@ -420,19 +420,19 @@ RobotContainer {
         commandXboxController.rightBumper().onTrue(intakeAgitation)
                 .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
 
-//        commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
-//                .onFalse(intakeRollerStop);
+        commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
+                .onFalse(intakeRollerStop);
 
         commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);
 
 
-//        commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
-//                        new VelocityCommand(hopperSubsystem, -90)
-//                ))
-//                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
-//                        new VelocityCommand(hopperSubsystem, 0)
-//                ));
+        commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
+                        new VelocityCommand(hopperSubsystem, -90)
+                ))
+                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
+                        new VelocityCommand(hopperSubsystem, 0)
+                ));
 
 //        operatorCommandXboxController.y().onTrue(setHubSetpoint);
 //        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
