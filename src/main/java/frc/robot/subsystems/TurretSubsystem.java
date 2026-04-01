@@ -29,11 +29,12 @@ public class TurretSubsystem extends TemplateSubsystem {
     private TrapezoidProfile.State goalState;
 
     private double goalRotations;
+    private double goalDegrees;
     private double goalDegreesWithoutPhaseDelay;
     private double goalVelocityRotPerSec;
     private boolean continuousMotion = false;
 
-    private boolean stopMoving = false;
+    private boolean stopMoving = true;
 
     private NetworkTable networkTable;
     private NetworkTable turretNetworkTable;
@@ -89,7 +90,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         configureMotor(TurretConstants.INVERTED, TurretConstants.BRAKE,
                 TurretConstants.SUPPLY_CURRENT_LIMIT,
                 TurretConstants.STATOR_CURRENT_LIMIT,
-                TurretConstants.SLOT0_CONFIGS);
+                TurretConstants.SLOT0_CONFIGS, true);
 
         configureSometimesEncoder(TurretConstants.ENCODER_ID,
                 TurretConstants.CANBUS, TurretConstants.ENCODER_MAGNET_OFFSET,
@@ -98,8 +99,6 @@ public class TurretSubsystem extends TemplateSubsystem {
                 TurretConstants.CCW_POSITIVE, TurretConstants.ABSOLUTE_DISCONTINUITY_POINT);
 
         configureRoller(TurretConstants.MIN, TurretConstants.MAX);
-
-        faster();
 
         profile = new TrapezoidProfile(new TrapezoidProfile
                 .Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
@@ -113,9 +112,9 @@ public class TurretSubsystem extends TemplateSubsystem {
         goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
         currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
 
-        shooterVelocity = networkTable.getDoubleTopic("Shooter Velocity").publish();
-        indexerVelocity = networkTable.getDoubleTopic("Indexer Velocity").publish();
-        hopperVelocity = networkTable.getDoubleTopic("Hopper Velocity").publish();
+//        shooterVelocity = networkTable.getDoubleTopic("Shooter Velocity").publish();
+//        indexerVelocity = networkTable.getDoubleTopic("Indexer Velocity").publish();
+//        hopperVelocity = networkTable.getDoubleTopic("Hopper Velocity").publish();
 
 //        goalVelocityLogging = networkTable.getDoubleTopic("Goal Velocity").publish();
 //        currentVelocityLogging = networkTable.getDoubleTopic("Current Velocity").publish();
@@ -124,8 +123,8 @@ public class TurretSubsystem extends TemplateSubsystem {
         isMechAtGoal = networkTable.getBooleanTopic("Turret Is Mech At Goal").publish();
         isHoodAtGoal = networkTable.getBooleanTopic("Hood Is Mech At Goal").publish();
         isShooterAtGoal = networkTable.getBooleanTopic("Shooter Is Mech At Goal").publish();
-        isIndexerAtGoal = networkTable.getBooleanTopic("Indexer Is Mech At Goal").publish();
-        areMechanismsAtGoalAuto = networkTable.getBooleanTopic("Mechanisms Are At Goal").publish();
+//        isIndexerAtGoal = networkTable.getBooleanTopic("Indexer Is Mech At Goal").publish();
+//        areMechanismsAtGoalAuto = networkTable.getBooleanTopic("Mechanisms Are At Goal").publish();
 //        turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
 //        futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
 //        velocity = networkTable.getDoubleTopic("Velocity").publish();
@@ -146,19 +145,19 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        goalPositionLogging.set(shotCalculator.getTurretAngle());
-        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
-        currentPositionLogging.set(getDegrees());
+        goalPositionLogging.set(shotCalculator.getHoodAngle());
+        goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());
+        currentPositionLogging.set(HoodSubsystem.getInstance().getDegrees());
 
-        shooterVelocity.set(ShooterSubsystem.getInstance().getMotorVelocity());
-        indexerVelocity.set(KickerSubsystem.getInstance().getMotorVelocity());
-        hopperVelocity.set(HopperSubsystem.getInstance().getMotorVelocity());
-
+//        shooterVelocity.set(ShooterSubsystem.getInstance().getMotorVelocity());
+//        indexerVelocity.set(KickerSubsystem.getInstance().getMotorVelocity());
+//        hopperVelocity.set(HopperSubsystem.getInstance().getMotorVelocity());
+//
         isMechAtGoal.set(isMechAtGoalAuto());
         isHoodAtGoal.set(HoodSubsystem.getInstance().isMechAtGoalAuto());
         isShooterAtGoal.set(ShooterSubsystem.getInstance().isMechAtGoalAuto());
-        isIndexerAtGoal.set(KickerSubsystem.getInstance().isMechAtGoalAuto());
-        areMechanismsAtGoalAuto.set(RobotContainer.areMechanismsAtGoalsAuto());
+//        isIndexerAtGoal.set(KickerSubsystem.getInstance().isMechAtGoalAuto());
+//        areMechanismsAtGoalAuto.set(RobotContainer.areMechanismsAtGoalsAuto());
 //
 //        goalVelocityLogging.set(goalVelocityRotPerSec);
 //        currentVelocityLogging.set(getMotorVelocity());
@@ -176,11 +175,12 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         if (!stopMoving) followLastProfile();
 //        System.out.println(getDegrees());
-
+//        System.out.println("goal: " + getGoal());
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {
         goalRotations = getMotorRotFromDegrees(degrees);
+        goalDegrees = degrees;
         goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
 
         goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
@@ -189,29 +189,31 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     public void updateGoalPosition(double degrees, double degreePerSec) {
         goalRotations = getMotorRotFromDegrees(degrees);
+        goalDegrees = degrees;
         goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
 
         goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
     }
 
     public void followLastProfile() {
-        currentState = profile.calculate(0.02, currentState, goalState);
-
-        if ((Math.abs(shotCalculator.getTurretAngle() - goalState.position)) >= 10) {
-            setPositionVoltage(currentState.position, getFF(currentState.velocity));
-        } else {
-            setPositionVoltage(currentState.position, getFF(currentState.velocity));
-        }
+//        currentState = profile.calculate(0.02, currentState, goalState);
+//
+//        if ((Math.abs(shotCalculator.getTurretAngle() - goalState.position)) >= 10) {
+//            setPositionVoltage(currentState.position, getFF(currentState.velocity));
+//        } else {
+//            setPositionVoltage(currentState.position, getFF(currentState.velocity));
+//        }
+        setPositionMotionMagicFF(goalRotations, getFF(goalVelocityRotPerSec));
     }
 
     public boolean isMechAtGoalAuto() {
-        if (predictWrapAround()) return false; //prevents shooting before a wrap
+//        if (predictWrapAround()) return false; //prevents shooting before a wrap
 
         if (RobotContainer.getShotMode() != ShotMode.SHOOTING) {
             return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
                     && getDegrees() <= shotCalculator.getTurretAngle() + TurretConstants.UPPER_TOLERANCE;
         }
-        return getLateralDistance() < .3;
+        return getLateralDistance() < Constants.HUB_RADIUS - .1;
     }
 
     public boolean isMechAtGoal() {

@@ -13,12 +13,15 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
                 IntakeRollerConstants.JERK,
                 IntakeRollerConstants.LOWER_TOLERANCE,
                 IntakeRollerConstants.UPPER_TOLERANCE,
-                IntakeRollerConstants.GEAR_RATIO, "Intake Roller", true, IntakeRollerConstants.canbus);
+                IntakeRollerConstants.GEAR_RATIO, "Intake Roller", true, IntakeRollerConstants.CAN_BUS);
 
         configureMotor(IntakeRollerConstants.INVERTED, IntakeRollerConstants.BRAKE,
                 IntakeRollerConstants.SUPPLY_CURRENT_LIMIT,
                 IntakeRollerConstants.STATOR_CURRENT_LIMIT,
-                IntakeRollerConstants.SLOT0_CONFIGS);
+                IntakeRollerConstants.SLOT0_CONFIGS, false);
+
+        configureFollowerMotor(IntakeRollerConstants.FOLLOWER_MOTOR_ID,
+                IntakeRollerConstants.FOLLOWER_INVERTED, IntakeRollerConstants.CAN_BUS);
     }
 
     public static IntakeRollerSubsystem getInstance() {

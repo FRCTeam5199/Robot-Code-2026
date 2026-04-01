@@ -26,17 +26,17 @@ public class TurretCommand extends Command {
 
     @Override
     public void initialize() {
-        turretSubsystem.setPositionProfiling(goal, goalVelocity);
-        turretSubsystem.setCommandRunning(true);
-        turretSubsystem.setStopMoving(false);
+//        turretSubsystem.setPositionProfiling(goal, goalVelocity);
+//        turretSubsystem.setCommandRunning(true);
+//        turretSubsystem.setStopMoving(false);
     }
 
     @Override
     public void execute() {
-        if (updateGoalPosition) {
-            turretSubsystem.updateGoalPosition(goal, goalVelocity);
-            updateGoalPosition = false;
-        }
+//        if (updateGoalPosition) {
+//            turretSubsystem.updateGoalPosition(goal, goalVelocity);
+//            updateGoalPosition = false;
+//        }
     }
 
     @Override

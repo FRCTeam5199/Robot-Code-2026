@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -83,12 +84,15 @@ RobotContainer {
     public static final Telemetry logger = new Telemetry(Constants.MAX_SPEED);
     private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
     private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(2, 0, 0.25, new TrapezoidProfile.Constraints(100, 200));
+    private static final LinearFilter accelerationXFilter = LinearFilter.movingAverage(30);
+    private static final LinearFilter accelerationYFilter = LinearFilter.movingAverage(30);
+    private static final LinearFilter accelerationOmegaFilter = LinearFilter.movingAverage(30);
     //Turret Commands
-    private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
-    private static final TurretCommand turretHub = new TurretCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
-    private static final TurretCommand turretTower = new TurretCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
-    private static final TurretCommand turretLeftCorner = new TurretCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
-    private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
+//    private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
+//    private static final TurretCommand turretHub = new TurretCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
+//    private static final TurretCommand turretTower = new TurretCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
+//    private static final TurretCommand turretLeftCorner = new TurretCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
+//    private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
     //Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
     private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
@@ -141,6 +145,11 @@ RobotContainer {
     public static boolean isClimberRetracting = false;
     public static double goalX;
     private static Setpoint currentSetpoint = Setpoint.HUB;
+    private static ChassisSpeeds lastSpeeds;
+    private static double accelerationX;
+    private static double accelerationY;
+    private static double accelerationOmega;
+
     //Mode Commands
     private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
     private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
@@ -161,14 +170,14 @@ RobotContainer {
 
 
     public RobotContainer() {
-        optimizeDrivetrain();
+//        optimizeDrivetrain();
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(shooterAuto,
-                        hoodControlAuto, turretControlAuto));
+                        hoodControlAuto, new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
 
         leftTriggerReleased = RobotCommands.idleState();
 
-        leftBumperPressed = new SelectCommand<>(Map.ofEntries(
+        leftBumperPressed = /*new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
                         turretHub, hoodHub, shooterHub, kickerHub
                 )),
@@ -181,7 +190,7 @@ RobotContainer {
                 Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
                         turretLeftCorner, hoodLeftCorner, shooterLeftCorner, kickerLeftCorner
                 ))
-        ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
+        ), RobotContainer::getCurrentSetpoint).alongWith(*/RobotCommands.indexBalls();
         leftBumperReleased = RobotCommands.idleState();
 
         NamedCommands.registerCommand("shoot", leftTriggerPressed);
@@ -208,6 +217,14 @@ RobotContainer {
 
     public static void periodic() {
         currentState = commandSwerveDrivetrain.getStateCopy();
+        if (lastSpeeds == null) lastSpeeds = getSpeeds();
+        accelerationX = (getSpeeds().vxMetersPerSecond - lastSpeeds.vxMetersPerSecond) / .02;
+        accelerationY = (getSpeeds().vyMetersPerSecond - lastSpeeds.vyMetersPerSecond) / .02;
+        accelerationOmega = (getSpeeds().omegaRadiansPerSecond - lastSpeeds.omegaRadiansPerSecond) / .02;
+
+        accelerationX = accelerationXFilter.calculate(accelerationX);
+        accelerationY = accelerationYFilter.calculate(accelerationY);
+        accelerationOmega = accelerationOmegaFilter.calculate(accelerationOmega);
 
         if (currentState == null || currentState.Pose == null) return;
 
@@ -269,6 +286,11 @@ RobotContainer {
                 && shooterSubsystem.isMechAtGoalAuto() && shotCalculator.isWithinBounds();
     }
 
+    public static boolean areMechanismsExceptShooterAtGoalsAuto() {
+        return turretSubsystem.isMechAtGoalAuto() && hoodSubsystem.isMechAtGoalAuto()
+                && shotCalculator.isWithinBounds();
+    }
+
     public static boolean areMechanismsAtGoals() {
         return turretSubsystem.isMechAtGoal() && hoodSubsystem.isMechAtGoal()
                 && shooterSubsystem.isMechAtGoal(true);
@@ -301,9 +323,9 @@ RobotContainer {
         RobotContainer.currentSetpoint = currentSetpoint;
     }
 
-    public static TurretCommand getTurretControlAuto() {
-        return turretControlAuto;
-    }
+//    public static TurretCommand getTurretControlAuto() {
+//        return turretControlAuto;
+//    }
 
     public static HoodCommand getHoodControlAuto() {
         return hoodControlAuto;
@@ -426,7 +448,7 @@ RobotContainer {
 //        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
 //                .onFalse(RobotCommands.idleState());
 //        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
@@ -444,5 +466,22 @@ RobotContainer {
             commandSwerveDrivetrain.getModules()[i].getSteerMotor().optimizeBusUtilization();
             commandSwerveDrivetrain.getModules()[i].getEncoder().optimizeBusUtilization();
         }
+    }
+
+    public static void updateLastSpeeds() {
+        lastSpeeds = currentState.Speeds;
+    }
+
+
+    public static double getAccelerationOmega() {
+        return accelerationOmega;
+    }
+
+    public static double getAccelerationY() {
+        return accelerationY;
+    }
+
+    public static double getAccelerationX() {
+        return accelerationX;
     }
 }

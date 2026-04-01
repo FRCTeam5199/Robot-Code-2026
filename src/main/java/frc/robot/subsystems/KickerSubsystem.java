@@ -53,7 +53,7 @@ public class KickerSubsystem extends TemplateSubsystem {
         configureMotor(KickerConstants.UPPER_INVERTED, KickerConstants.UPPER_BRAKE,
                 KickerConstants.SUPPLY_CURRENT_LIMIT,
                 KickerConstants.STATOR_CURRENT_LIMIT,
-                KickerConstants.UPPER_SLOT0_CONFIGS);
+                KickerConstants.UPPER_SLOT0_CONFIGS, false);
 
         configureFollowerMotor(KickerConstants.LOWER_MOTOR_ID, KickerConstants.LOWER_INVERTED, KickerConstants.canbus);
     }

@@ -51,13 +51,13 @@ public class ShooterSubsystem extends TemplateSubsystem {
         configureMotor(ShooterConstants.INVERTED, ShooterConstants.BRAKE,
                 ShooterConstants.SUPPLY_CURRENT_LIMIT,
                 ShooterConstants.STATOR_CURRENT_LIMIT,
-                ShooterConstants.SLOT0_CONFIGS);
+                ShooterConstants.SLOT0_CONFIGS, true);
 
         configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID,
                 ShooterConstants.SECOND_INVERTED,
                 ShooterConstants.CANBUS
         );
-
+        
 //        shooterNetworkTable.getDoubleTopic("Current Speed").publish();
     }
 

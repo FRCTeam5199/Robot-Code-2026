@@ -18,7 +18,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
         configureMotor(IntakePivotConstants.INVERTED, IntakePivotConstants.BRAKE,
                 IntakePivotConstants.SUPPLY_CURRENT_LIMIT,
                 IntakePivotConstants.STATOR_CURRENT_LIMIT,
-                IntakePivotConstants.SLOT0_CONFIGS);
+                IntakePivotConstants.SLOT0_CONFIGS, false);
 
         // configureEncoder(IntakePivotConstants.ENCODER_ID,
         //         "rio", IntakePivotConstants.MAGNET_OFFSET,

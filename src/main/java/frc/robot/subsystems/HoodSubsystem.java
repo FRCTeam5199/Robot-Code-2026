@@ -42,7 +42,7 @@ public class HoodSubsystem extends TemplateSubsystem {
         configureMotor(HoodConstants.INVERTED, HoodConstants.BRAKE,
                 HoodConstants.SUPPLY_CURRENT_LIMIT,
                 HoodConstants.STATOR_CURRENT_LIMIT,
-                HoodConstants.SLOT0_CONFIGS);
+                HoodConstants.SLOT0_CONFIGS, true);
 
         // configureSometimesEncoder(HoodConstants.ENCODER_ID,
         //         HoodConstants.CANBUS, HoodConstants.MAGNET_OFFSET,
@@ -112,7 +112,7 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void followLastProfile() {
         currentState = profile.calculate(0.02, currentState, goalState);
-        setPositionVoltage(goalState.position);
+        setPositionMotionMagicFF(goalRotations, getFF(goalVelocityRotPerSec));
     }
 
     public boolean isMechAtGoalAuto() {

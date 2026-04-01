@@ -100,6 +100,12 @@ public class Robot extends TimedRobot {
 //        DataLogManager.start("/u/logs");
 
         Logger.addDataReceiver(new WPILOGWriter());
+
+        addPeriodic(() -> {
+//                    turretSubsystem.periodic();
+                    shotCalculator.periodic();
+                }, .005
+        );
     }
 
     @Override
@@ -214,9 +220,7 @@ public class Robot extends TimedRobot {
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
 
-//        Runtime runtime = Runtime.getRuntime();
-//        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
-//        System.out.println("Used memory: " + usedMemory / 1024 / 1024 + "MB / " + runtime.totalMemory() / 1024 / 1024 + "MB");
+        RobotContainer.updateLastSpeeds();
     }
 
     @Override

@@ -18,7 +18,7 @@ public class HopperSubsystem extends TemplateSubsystem {
         configureMotor(HopperConstants.INVERTED, HopperConstants.BRAKE,
                 HopperConstants.SUPPLY_CURRENT_LIMIT,
                 HopperConstants.STATOR_CURRENT_LIMIT,
-                HopperConstants.SLOT0_CONFIGS);
+                HopperConstants.SLOT0_CONFIGS, false);
     }
 
     public static HopperSubsystem getInstance() {

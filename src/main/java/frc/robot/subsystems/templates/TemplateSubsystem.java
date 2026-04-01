@@ -164,7 +164,7 @@ public class TemplateSubsystem extends SubsystemBase {
     //Configurations
     public void configureMotor(boolean isInverted, boolean isBrakeMode,
                                double supplyCurrentLimit, double statorCurrentLimit,
-                               Slot0Configs slot0Configs) {
+                               Slot0Configs slot0Configs, boolean faster) {
         motorConfig.MotorOutput.Inverted =
                 isInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
         motorConfig.MotorOutput.NeutralMode = isBrakeMode ? NeutralModeValue.Brake : NeutralModeValue.Coast;
@@ -179,13 +179,14 @@ public class TemplateSubsystem extends SubsystemBase {
         motorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
         motorConfig.MotionMagic.MotionMagicJerk = jerk;
 
-        motorConfig.MotorOutput.ControlTimesyncFreqHz = 50;
-
-        motor.getRotorPosition().setUpdateFrequency(50);
-        motor.getRotorVelocity().setUpdateFrequency(50);
-
         positionStatusSignal = motor.getRotorPosition();
         velocityStatusSignal = motor.getRotorVelocity();
+
+        if (faster) {
+            motorConfig.MotorOutput.ControlTimesyncFreqHz = 200;
+            positionStatusSignal.setUpdateFrequency(200);
+            velocityStatusSignal.setUpdateFrequency(200);
+        }
 
         motor.optimizeBusUtilization();
 
@@ -235,11 +236,6 @@ public class TemplateSubsystem extends SubsystemBase {
         follower = new Follower(motor.getDeviceID(),
                 opposeMasterDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned);
         followerMotor.setControl(follower);
-    }
-
-    public void faster() {
-        motor.getRotorPosition().setUpdateFrequency(20);
-        motor.getRotorVelocity().setUpdateFrequency(20);
     }
 
     public void configureSecondaryMotor(int motorID, double secondaryVelocity,
@@ -366,6 +362,11 @@ public class TemplateSubsystem extends SubsystemBase {
 //        motionMagicVoltage.Velocity = this.velocity;
 //        motionMagicVoltage.Acceleration = this.acceleration;
 //        motionMagicVoltage.Jerk = this.jerk;
+    }
+
+    public void setPositionMotionMagicFF(double goalRotations, double ff) {
+        this.goal = getDegreesFromMotorRot(goalRotations);
+        motor.setControl(motionMagicVoltage.withPosition(goalRotations));
     }
 
     public void setPosition(double goal, double feedforward) {

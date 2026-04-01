@@ -6,10 +6,12 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class IntakeRollerConstants {
     public static final int MOTOR_ID = 18;
+    public static final int FOLLOWER_MOTOR_ID = 24;
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean INVERTED = true;
     public static final boolean BRAKE = true;
+    public static final boolean FOLLOWER_INVERTED = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(0.25)
@@ -31,5 +33,5 @@ public class IntakeRollerConstants {
 
     public static final double INTAKE_SPEED = 116;
 
-    public static final CANBus canbus = new CANBus("rio");
+    public static final CANBus CAN_BUS = new CANBus("rio");
 }

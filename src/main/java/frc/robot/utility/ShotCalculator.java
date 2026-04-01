@@ -48,17 +48,16 @@ public class ShotCalculator extends SubsystemBase {
         shuttleShooterSpeedLookupTable = new InterpolatingDoubleTreeMap();
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
-//        hoodLookupTable.put(1.013 + Constants.HUB_RADIUS, 0d); //0
-        hoodLookupTable.put(1.968 + Constants.HUB_RADIUS, 6d); //2
-        hoodLookupTable.put(3.049 + Constants.HUB_RADIUS, 12d); //4
-        hoodLookupTable.put(4.0513 + Constants.HUB_RADIUS, 16d); //6
-        hoodLookupTable.put(5d + Constants.HUB_RADIUS, 24d); //10
+//        hoodLookupTable.put(1.013 + Constants.HUB_RADIUS, 0d);
+        hoodLookupTable.put(1.968 + Constants.HUB_RADIUS, 6d);
+        hoodLookupTable.put(3.049 + Constants.HUB_RADIUS, 12d);
+        hoodLookupTable.put(4.0513 + Constants.HUB_RADIUS, 16d);
+        hoodLookupTable.put(5d + Constants.HUB_RADIUS, 24d);
 
-//        shooterSpeedLookupTable.put(1.013 + Constants.HUB_RADIUS, 30d); //24d + 2d, 50
-        shooterSpeedLookupTable.put(1.968 + Constants.HUB_RADIUS, 55d); //28.5 + 1d, 52
-        shooterSpeedLookupTable.put(3.049 + Constants.HUB_RADIUS, 56d); //31.5 + .5, 53
-        shooterSpeedLookupTable.put(4.0513 + Constants.HUB_RADIUS, 62d);  //35d + 1.5, 56
-        shooterSpeedLookupTable.put(5d + Constants.HUB_RADIUS, 68d); //38d + 2.5 + 1d, 60
+        shooterSpeedLookupTable.put(1.968 + Constants.HUB_RADIUS, 55d);
+        shooterSpeedLookupTable.put(3.049 + Constants.HUB_RADIUS, 56d);
+        shooterSpeedLookupTable.put(4.0513 + Constants.HUB_RADIUS, 62d);
+        shooterSpeedLookupTable.put(5d + Constants.HUB_RADIUS, 68d);
         //Motor Rotations = degrees / 360 / .01255707762557077625570776255708
         //Degrees = motorRot * 360 * .01255707762557077625570776255708
 
@@ -99,9 +98,12 @@ public class ShotCalculator extends SubsystemBase {
             Pose2d estimatedPosePhaseDelayed =
                     estimatedPose.exp(
                             new Twist2d(
-                                    RobotContainer.getSpeeds().vxMetersPerSecond * Constants.PHASE_DELAY,
-                                    RobotContainer.getSpeeds().vyMetersPerSecond * Constants.PHASE_DELAY,
-                                    RobotContainer.getSpeeds().omegaRadiansPerSecond * Constants.ROTATIONAL_PHASE_DELAY));
+                                    RobotContainer.getSpeeds().vxMetersPerSecond * Constants.PHASE_DELAY
+                                            + RobotContainer.getAccelerationX() * Constants.ACCELERATION_PHASE_DELAY,
+                                    RobotContainer.getSpeeds().vyMetersPerSecond * Constants.PHASE_DELAY
+                                            + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
+                                    RobotContainer.getSpeeds().omegaRadiansPerSecond * Constants.PHASE_DELAY
+                                            + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY));
 
             Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
                     ChassisSpeeds.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
@@ -124,10 +126,10 @@ public class ShotCalculator extends SubsystemBase {
                 hoodAngle = shuttleHoodLookupTable.get(futureTurretToTargetDistance);
             }
             if (Double.isNaN(lastHoodAnglePhaseDelayed)) lastHoodAnglePhaseDelayed = hoodAnglePhaseDelayed;
-            hoodVelocityPhaseDelayed = (hoodAnglePhaseDelayed - lastHoodAnglePhaseDelayed) / .02;
+            hoodVelocityPhaseDelayed = (hoodAnglePhaseDelayed - lastHoodAnglePhaseDelayed) / .005;
 
             if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
-            hoodVelocity = (hoodAngle - lastHoodAngle) / .02;
+            hoodVelocity = (hoodAngle - lastHoodAngle) / .005;
 
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
                 Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
@@ -150,7 +152,7 @@ public class ShotCalculator extends SubsystemBase {
             }
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
             turretVelocityPhaseDelayed = turretRotationPhaseDelayed
-                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .02;
+                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .005;
 
             // Sets turret angle and then adjusts it based on robot's rotation in relation to target
             turretAnglePhaseDelayed = turretRotationPhaseDelayed.getDegrees();
@@ -187,7 +189,7 @@ public class ShotCalculator extends SubsystemBase {
             }
             if (lastTurretRotation == null) lastTurretRotation = turretRotation;
             turretVelocity = turretRotation
-                    .minus(lastTurretRotation).getDegrees() / .02;
+                    .minus(lastTurretRotation).getDegrees() / .005;
 
             // Sets turret angle and then adjusts it based on robot's rotation in relation to target
             turretAngle = turretRotation.getDegrees();
@@ -215,8 +217,9 @@ public class ShotCalculator extends SubsystemBase {
         lastHoodAngle = hoodAngle;
 
         // Sets continuous control for turret, shooter, kicker
-        RobotContainer.getTurretControlAuto().setGoal(shotCalculator.getTurretAnglePhaseDelayed(),
-                shotCalculator.getTurretVelocityPhaseDelayed());
+//        RobotContainer.getTurretControlAuto().setGoal(shotCalculator.getTurretAnglePhaseDelayed(),
+//                shotCalculator.getTurretVelocityPhaseDelayed());
+        turretSubsystem.updateGoalPosition(getTurretAnglePhaseDelayed(), getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
         RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),

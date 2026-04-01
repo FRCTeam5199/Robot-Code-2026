@@ -15,7 +15,7 @@ public class HoodConstants {
     public static final boolean BRAKE = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(5)
+            .withKP(50)
             .withKI(0)
             .withKD(0)
             .withKS(.5)
@@ -26,18 +26,18 @@ public class HoodConstants {
             .withGravityType(GravityTypeValue.Arm_Cosine)
             .withGravityArmPositionOffset(0);
 
-    public static final double VELOCITY = 150;
-    public static final double ACCELERATION = 400;
+    public static final double VELOCITY = 100;
+    public static final double ACCELERATION = 200;
     public static final double JERK = 4000;
 
-    public static final double LOWER_TOLERANCE = .5;
-    public static final double UPPER_TOLERANCE = .5;
+    public static final double LOWER_TOLERANCE = 1;
+    public static final double UPPER_TOLERANCE = 1;
 
     public static final double MAGNET_OFFSET = -0.14111328125;
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;
-    public static final double MAX = 29;
+    public static final double MAX = 25;
 
     public static final double MOTOR_TO_SENSOR_GEAR_RATIO = 8d;
     public static final double[][] GEAR_RATIO = {{60, 11}, {146, 10}}; //.01255707762557077625570776255708

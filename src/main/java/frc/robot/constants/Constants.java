@@ -18,8 +18,8 @@ public class Constants {
 
     public static final double HUB_RADIUS = .52959;
     public static final Transform2d ROBOT_TO_TURRET = new Transform2d(-.183769, .120269, new Rotation2d(0));
-    public static final double PHASE_DELAY = 0.1;
-    public static final double ROTATIONAL_PHASE_DELAY = 0.1;
+    public static final double PHASE_DELAY = 0.05;
+    public static final double ACCELERATION_PHASE_DELAY = 0.02;
     public static final double CENTER_TO_BUMPER = 0.69 / 2d; //TODO: do this with actual bumpers
     public static final Transform2d FRONT_LEFT_CORNER = new Transform2d(CENTER_TO_BUMPER, CENTER_TO_BUMPER, new Rotation2d(0));
     public static final Transform2d FRONT_RIGHT_CORNER = new Transform2d(CENTER_TO_BUMPER, -CENTER_TO_BUMPER, new Rotation2d(0));
@@ -32,5 +32,5 @@ public class Constants {
     public static final double TURRET_BUFFER_SIZE = 20d;
     public static final String LIMELIGHT_LEFT_NAME = "limelight-left"; //10.51.99.11:5801
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front"; //10.51.99.12:5801
-    public static final String LIMELIGHT_RIGHT_NAME = "limelight-turret"; //10.51.99.13:5801 - NOT SET YET
+    public static final String LIMELIGHT_RIGHT_NAME = "limelight-right"; //10.51.99.13:5801 - NOT SET YET
 }
