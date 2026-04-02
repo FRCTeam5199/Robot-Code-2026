@@ -431,10 +431,18 @@ RobotContainer {
 //                )
 //        );
 
-        commandXboxController.a().onTrue(kickerSubsystem.sysIdDynamicForward());
-        commandXboxController.b().onTrue(kickerSubsystem.sysIdDynamicReverse());
-        commandXboxController.y().onTrue(kickerSubsystem.sysIdQuasistaticForward());
-        commandXboxController.x().onTrue(kickerSubsystem.sysIdQuasistaticReverse());
+//        commandXboxController.a().onTrue(kickerSubsystem.sysIdDynamicForward());
+//        commandXboxController.b().onTrue(kickerSubsystem.sysIdDynamicReverse());
+//        commandXboxController.y().onTrue(kickerSubsystem.sysIdQuasistaticForward());
+//        commandXboxController.x().onTrue(kickerSubsystem.sysIdQuasistaticReverse());
+
+//        commandXboxController.a().onTrue(new InstantCommand(() -> intakePivotSubsystem.setPercent(.5)))
+//                .onFalse(new InstantCommand(() -> intakePivotSubsystem.setPercent(0)));
+//        commandXboxController.b().onTrue(new InstantCommand(() -> intakePivotSubsystem.setPercent(-.5)))
+//                .onFalse(new InstantCommand(() -> intakePivotSubsystem.setPercent(0)));
+
+        commandXboxController.a().onTrue(new PositionCommand(intakePivotSubsystem, 83));
+        commandXboxController.b().onTrue(new PositionCommand(intakePivotSubsystem, 0));
 
         commandXboxController.rightBumper().onTrue(intakeAgitation)
                 .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
