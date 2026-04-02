@@ -27,12 +27,12 @@ public class Vision {
         //filters: 1,2,3,4,5,6,7,8,9,10,11,12,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32 - removing outpost
 
         LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_LEFT_NAME,
-                -.334929, -.284129, .498502, 0, 5, 135.218);
-//        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_RIGHT_NAME,
-//                -.317, .317, .436, 180, 5, -135.218);
+                -.316, -.316, .453, 0, 5, 134.782);
+        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_RIGHT_NAME,
+                -.319, 0.2498, .509, 0, 0, 20); //160
         LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_FRONT_NAME,
-                -.297259, .054071, 0.488463, 0, 10, 14.106044);
-
+                -.297, .0534, 0.514, 0, 10, 14.106); //forward and side could be switched around, yaw might be 180
+        //-.182, .156, .445
         startThread();
     }
 
@@ -85,35 +85,35 @@ public class Vision {
             }
         }
 
-        // if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
-        //     LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,
-        //             commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-        //     limelightRightData = LimelightHelpers
-        //             .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
+        if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
+            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,
+                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
+            limelightRightData = LimelightHelpers
+                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
 
-        //     if (limelightRightData != null) {
-        //         double xyStdev = .5;
+            if (limelightRightData != null) {
+                double xyStdev = .5;
 
-        //         if (limelightRightData.tagCount < 2) {
-        //             xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
-        //         } else {
-        //             xyStdev *= limelightRightData.avgTagDist;
-        //         }
+                if (limelightRightData.tagCount < 2) {
+                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
+                } else {
+                    xyStdev *= limelightRightData.avgTagDist;
+                }
 
-        //         if (RobotContainer.isClimbing() && limelightRightData.pose.getTranslation()
-        //                 .getDistance(RobotContainer.getPose().getTranslation()) > .05)
-        //             return;
+                if (RobotContainer.isClimbing() && limelightRightData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) > .05)
+                    return;
 
-        //         if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
-        //                 .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
-        //             if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
-        //                 commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-        //                         limelightRightData.timestampSeconds, VecBuilder
-        //                                 .fill(xyStdev, xyStdev, 9999999999d));
-        //             }
-        //         }
-        //     }
-        // }
+                if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
+                    if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
+                        commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
+                                limelightRightData.timestampSeconds, VecBuilder
+                                        .fill(xyStdev, xyStdev, 9999999999d));
+                    }
+                }
+            }
+        }
 
         if (LimelightHelpers.getTV(Constants.LIMELIGHT_FRONT_NAME)) {
             LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_FRONT_NAME,
