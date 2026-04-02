@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.constants.HopperConstants;
 import frc.robot.subsystems.*;
 
@@ -222,6 +224,8 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
         RobotContainer.updateLastSpeeds();
+        System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
+        System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
     }
 
     @Override
@@ -281,6 +285,16 @@ public class Robot extends TimedRobot {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
         RobotContainer.setIsAutonomous(false);
+
+        CommandScheduler.getInstance().schedule(new ConditionalCommand(
+                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
+                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
+                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
+                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+                                .resetRotation(new Rotation2d(90d)))),
+                () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
+        ));
     }
 
     @Override

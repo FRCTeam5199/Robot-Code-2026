@@ -315,13 +315,6 @@ RobotContainer {
                 && shooterSubsystem.isMechAtGoal(true);
     }
 
-//    public static Pose2d getPose() {
-//        return currentState.Pose;
-//    }
-
-//    public static double get
-
-
     public static ChassisSpeeds getSpeeds() {
         return currentState.Speeds;
     }
