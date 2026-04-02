@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "startRight"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Red Top First Sweep"
@@ -18,12 +24,6 @@
                 "type": "named",
                 "data": {
                   "name": "shoot"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "agitateIntake"
                 }
               },
               {
