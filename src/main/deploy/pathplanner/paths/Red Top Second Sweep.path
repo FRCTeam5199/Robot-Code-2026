@@ -8,72 +8,56 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 12.89900031183149,
+        "x": 10.004,
+        "y": 7.452000000000001
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 10.417817403708987,
+        "y": 5.361212553495007
+      },
+      "prevControl": {
+        "x": 9.77917902478534,
+        "y": 7.559316741418266
+      },
+      "nextControl": {
+        "x": 10.974179743223965,
+        "y": 3.4462910128388025
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.735791726105562,
+        "y": 5.723495007132667
+      },
+      "prevControl": {
+        "x": 8.39648997870361,
+        "y": 4.2233889028153815
+      },
+      "nextControl": {
+        "x": 8.981553850036494,
+        "y": 6.810047803107605
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 10.663651925820256,
         "y": 7.452
       },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.92987161198288,
-        "y": 7.133808844507846
-      },
       "prevControl": {
-        "x": 9.397545919648772,
-        "y": 7.74052145985819
+        "x": 9.356847360912981,
+        "y": 7.4572753209700435
       },
       "nextControl": {
-        "x": 8.451141226818828,
-        "y": 6.512753209700428
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 9.395663338088445,
-        "y": 4.339058487874465
-      },
-      "prevControl": {
-        "x": 8.852239657631953,
-        "y": 4.442567760342367
-      },
-      "nextControl": {
-        "x": 10.07311662897328,
-        "y": 4.210019765801165
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 10.016718972895863,
-        "y": 6.473937232524964
-      },
-      "prevControl": {
-        "x": 10.124375123675382,
-        "y": 5.379433032933196
-      },
-      "nextControl": {
-        "x": 9.939087018544935,
-        "y": 7.263195435092724
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 11.401155492154066,
-        "y": 7.452446428571425
-      },
-      "prevControl": {
-        "x": 11.090627674750356,
-        "y": 7.405520684736091
-      },
-      "nextControl": {
-        "x": 11.667872254891742,
-        "y": 7.492751617940486
+        "x": 12.759634847998873,
+        "y": 7.443538916407897
       },
       "isLocked": false,
       "linkedName": null
@@ -94,20 +78,20 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.40404040404040376,
-      "rotationDegrees": 180.0
+      "waypointRelativePos": 0.3496801705756933,
+      "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.1043771043771065,
-      "rotationDegrees": -70.0
+      "waypointRelativePos": 0.9637526652452028,
+      "rotationDegrees": -78.366
     },
     {
-      "waypointRelativePos": 2.8628548580567843,
-      "rotationDegrees": 90.0
+      "waypointRelativePos": 1.9530916844349682,
+      "rotationDegrees": 104.78000000000002
     },
     {
-      "waypointRelativePos": 3.918432626949242,
-      "rotationDegrees": 180.0
+      "waypointRelativePos": 2.9594882729211265,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -125,19 +109,8 @@
       }
     },
     {
-      "name": "deployIntake",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "deployIntake"
-        }
-      }
-    },
-    {
       "name": "runIntake",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 3.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -145,22 +118,11 @@
           "name": "runIntake"
         }
       }
-    },
-    {
-      "name": "revUp",
-      "waypointRelativePos": 3.3625928426738785,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "revUp"
-        }
-      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -168,13 +130,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Red Score Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

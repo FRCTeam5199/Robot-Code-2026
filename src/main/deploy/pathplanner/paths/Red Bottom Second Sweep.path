@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.602681883024252,
-        "y": 0.6644793152639098
+        "x": 9.603,
+        "y": 0.6640000000000005
       },
       "isLocked": false,
       "linkedName": null
@@ -20,12 +20,12 @@
         "y": 2.838174037089873
       },
       "prevControl": {
-        "x": 10.427735128833133,
-        "y": 0.5872461202630919
+        "x": 10.14610917824552,
+        "y": 0.5869305403772316
       },
       "nextControl": {
-        "x": 10.676590584878744,
-        "y": 4.817788873038516
+        "x": 10.918826961406898,
+        "y": 4.788464930048006
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 2.3594436519258206
       },
       "prevControl": {
-        "x": 8.344784666374569,
-        "y": 3.859296471596945
+        "x": 8.34473534246966,
+        "y": 3.8595497562431054
       },
       "nextControl": {
-        "x": 8.929871611982884,
-        "y": 1.2725962910128399
+        "x": 8.929799213802545,
+        "y": 1.272890855950882
       },
       "isLocked": false,
       "linkedName": null
@@ -52,12 +52,12 @@
         "y": 0.664
       },
       "prevControl": {
-        "x": 9.900165085933953,
-        "y": 0.6679230158260392
+        "x": 9.900154342319855,
+        "y": 0.6679280148252642
       },
       "nextControl": {
-        "x": 12.656205420827387,
-        "y": 0.6515406562054205
+        "x": 12.656105532025265,
+        "y": 0.651525577160979
       },
       "isLocked": false,
       "linkedName": null
@@ -83,11 +83,11 @@
     },
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 78.36636600105953
+      "rotationDegrees": 78.366
     },
     {
       "waypointRelativePos": 1.9872068230277176,
-      "rotationDegrees": -104.77955630878974
+      "rotationDegrees": -104.78000000000002
     },
     {
       "waypointRelativePos": 3.0362473347548087,
@@ -110,34 +110,12 @@
     },
     {
       "name": "runIntake",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.7994598244429421,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "runIntake"
-        }
-      }
-    },
-    {
-      "name": "deployIntake",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "deployIntake"
-        }
-      }
-    },
-    {
-      "name": "revUp",
-      "waypointRelativePos": 3.1330182309250554,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "revUp"
         }
       }
     }
