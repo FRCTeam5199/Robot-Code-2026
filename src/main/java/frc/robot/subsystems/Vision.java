@@ -27,12 +27,12 @@ public class Vision {
         //filters: 1,2,3,4,5,6,7,8,9,10,11,12,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32 - removing outpost
 
         LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_LEFT_NAME,
-                -.316, -.316, .453, 0, 5, 134.782);
-//        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_FRONT_NAME,
-//                -.319, 0.2498, .509, 0, 0, 20); //160
-//        LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_RIGHT_NAME,
-//                -.297, .0534, 0.514, 0, 10, 14.106); //forward and side could be switched around, yaw might be 180
-        //-.182, .156, .445
+                -0.341453, -0.290653, 0.498656, 0, 5, 134.782385);
+       LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_FRONT_NAME,
+               -0.296, 0.049, 0.514, 0, 10, 14.106); //160
+       LimelightHelpers.setCameraPose_RobotSpace(Constants.LIMELIGHT_RIGHT_NAME,
+               -.3182, 0.248110, 0.509, 0, 0, 160); //forward and side could be switched around, yaw might be 180
+        // -.182, .156, .445
         startThread();
     }
 
