@@ -13,7 +13,7 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
                 IntakePivotConstants.ACCELERATION, IntakePivotConstants.JERK,
                 IntakePivotConstants.LOWER_TOLERANCE,
                 IntakePivotConstants.UPPER_TOLERANCE,
-                IntakePivotConstants.GEAR_RATIOA, "Intake Pivot", false, IntakePivotConstants.canbus);
+                IntakePivotConstants.GEAR_RATIOA, "Intake Pivot", true, IntakePivotConstants.canbus);
 
         configureMotor(IntakePivotConstants.INVERTED, IntakePivotConstants.BRAKE,
                 IntakePivotConstants.SUPPLY_CURRENT_LIMIT,
@@ -26,8 +26,8 @@ public class IntakePivotSubsystem extends TemplateSubsystem {
         //         IntakePivotConstants.GEAR_RATIO,
         //         IntakePivotConstants.ENCODER_DIRECTION);
 
-        configurePivot(IntakePivotConstants.MIN,
-                IntakePivotConstants.MAX);
+//        configurePivot(IntakePivotConstants.MIN,
+//                IntakePivotConstants.MAX);
     }
 
     public static IntakePivotSubsystem getInstance() {
