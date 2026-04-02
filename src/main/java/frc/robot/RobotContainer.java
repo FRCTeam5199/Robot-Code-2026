@@ -195,31 +195,33 @@ RobotContainer {
         leftBumperReleased = RobotCommands.idleState();
 
         NamedCommands.registerCommand("shoot", leftTriggerPressed);
-        NamedCommands.registerCommand("hoodZero", hoodZero);
-        NamedCommands.registerCommand("revUp", revUp);
+//        NamedCommands.registerCommand("hoodZero", hoodZero);
+//        NamedCommands.registerCommand("revUp", revUp);
         NamedCommands.registerCommand("stable", leftTriggerReleased);
         NamedCommands.registerCommand("deployIntake", intakeDeploy);
-        NamedCommands.registerCommand("stowIntake", intakeStow);
-        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
+//        NamedCommands.registerCommand("stowIntake", intakeStow);
+//        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
         NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
-        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
+//        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
+
+        //Retest on red
         NamedCommands.registerCommand("startLeft", new ConditionalCommand(
-                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
-                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
                         .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(90d)))),
+                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
+                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
+                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+                                .resetRotation(new Rotation2d(Math.toRadians(-90))))),
                 () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
         ));
         NamedCommands.registerCommand("startRight", new ConditionalCommand(
-                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
-                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(Math.toRadians(-90d))))),
                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
                         .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(-90d)))),
+                                .resetRotation(new Rotation2d(Math.toRadians(-90d))))),
+                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
+                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
                 () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
         ));
 
@@ -413,8 +415,8 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-//        commandXboxController.x().onTrue(intakeDeploy);
-//        commandXboxController.a().onTrue(intakeStow);
+        commandXboxController.x().onTrue(intakeDeploy);
+        commandXboxController.a().onTrue(intakeStow);
 //
 //        commandXboxController.b().onTrue(new PositionCommand(turretSubsystem, 0));
 //
@@ -423,19 +425,6 @@ RobotContainer {
 //        )).onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 0), new VelocityCommand(kickerSubsystem, 0)
 //                )
 //        );
-
-//        commandXboxController.a().onTrue(kickerSubsystem.sysIdDynamicForward());
-//        commandXboxController.b().onTrue(kickerSubsystem.sysIdDynamicReverse());
-//        commandXboxController.y().onTrue(kickerSubsystem.sysIdQuasistaticForward());
-//        commandXboxController.x().onTrue(kickerSubsystem.sysIdQuasistaticReverse());
-
-//        commandXboxController.a().onTrue(new InstantCommand(() -> intakePivotSubsystem.setPercent(.5)))
-//                .onFalse(new InstantCommand(() -> intakePivotSubsystem.setPercent(0)));
-//        commandXboxController.b().onTrue(new InstantCommand(() -> intakePivotSubsystem.setPercent(-.5)))
-//                .onFalse(new InstantCommand(() -> intakePivotSubsystem.setPercent(0)));
-
-        commandXboxController.a().onTrue(new PositionCommand(intakePivotSubsystem, 83));
-        commandXboxController.b().onTrue(new PositionCommand(intakePivotSubsystem, 0));
 
         commandXboxController.rightBumper().onTrue(intakeAgitation)
                 .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
@@ -462,8 +451,8 @@ RobotContainer {
         // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
         // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+//        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+//        commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
 //        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
 //                .onFalse(RobotCommands.idleState());

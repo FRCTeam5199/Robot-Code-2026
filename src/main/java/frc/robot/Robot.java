@@ -224,8 +224,8 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
         RobotContainer.updateLastSpeeds();
-        System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
-        System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
+//        System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
+//        System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
     }
 
     @Override
@@ -286,15 +286,15 @@ public class Robot extends TimedRobot {
         }
         RobotContainer.setIsAutonomous(false);
 
-        CommandScheduler.getInstance().schedule(new ConditionalCommand(
-                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
-                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
-                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
-                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(90d)))),
-                () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
-        ));
+//        CommandScheduler.getInstance().schedule(new ConditionalCommand(
+//                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
+//                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+//                                .resetRotation(new Rotation2d(Math.toRadians(-90d))))),
+//                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
+//                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
+//                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
+//                () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
+//        ));
     }
 
     @Override
