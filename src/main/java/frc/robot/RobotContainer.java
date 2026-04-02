@@ -201,7 +201,7 @@ RobotContainer {
         NamedCommands.registerCommand("deployIntake", intakeDeploy);
 //        NamedCommands.registerCommand("stowIntake", intakeStow);
 //        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
-        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
+//        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
 //        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 

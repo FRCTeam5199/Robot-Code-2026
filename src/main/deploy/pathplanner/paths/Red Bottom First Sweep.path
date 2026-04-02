@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 8.20530670470756,
-        "y": 1.4278601997146938
+        "x": 8.32175463623395,
+        "y": 1.4407988587731824
       },
       "prevControl": {
-        "x": 9.061163483792717,
-        "y": 0.4050069759299917
+        "x": 8.738357908337269,
+        "y": 0.4473602868344939
       },
       "nextControl": {
-        "x": 7.67482168330956,
-        "y": 2.061854493580599
+        "x": 7.648944365192582,
+        "y": 3.045192582025678
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 9.447417974322395,
-        "y": 3.7050641940085596
+        "x": 9.512111269614834,
+        "y": 3.368659058487874
       },
       "prevControl": {
-        "x": 8.561740620477051,
-        "y": 3.75025181410271
+        "x": 8.90352619535462,
+        "y": 3.660166194898228
       },
       "nextControl": {
-        "x": 10.518333636972995,
-        "y": 3.650425639791692
+        "x": 11.051811697574893,
+        "y": 2.6311554921540665
       },
       "isLocked": false,
       "linkedName": null
@@ -52,12 +52,12 @@
         "y": 0.664
       },
       "prevControl": {
-        "x": 9.57319622061189,
-        "y": 0.664
+        "x": 7.8947788873038505,
+        "y": 0.7032952924393733
       },
       "nextControl": {
-        "x": 12.55300086168705,
-        "y": 0.664
+        "x": 12.552762184672869,
+        "y": 0.6325627632721568
       },
       "isLocked": false,
       "linkedName": null
@@ -93,10 +93,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.1235651586765683,
-      "maxWaypointRelativePos": 1.955435516542844,
+      "minWaypointRelativePos": 1.1127616475354472,
+      "maxWaypointRelativePos": 1.879810938555022,
       "constraints": {
-        "maxVelocity": 3.0,
+        "maxVelocity": 2.0,
         "maxAcceleration": 5.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -107,17 +107,6 @@
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
-    {
-      "name": "deployIntake",
-      "waypointRelativePos": 0.43,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "deployIntake"
-        }
-      }
-    },
     {
       "name": "runIntake",
       "waypointRelativePos": 0.4321404456448345,
