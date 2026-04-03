@@ -286,15 +286,7 @@ public class Robot extends TimedRobot {
         }
         RobotContainer.setIsAutonomous(false);
 
-//        CommandScheduler.getInstance().schedule(new ConditionalCommand(
-//                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
-//                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-//                                .resetRotation(new Rotation2d(Math.toRadians(-90d))))),
-//                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
-//                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-//                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
-//                () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
-//        ));
+        CommandScheduler.getInstance().schedule(RobotCommands.idleState());
     }
 
     @Override

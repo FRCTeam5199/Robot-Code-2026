@@ -9,7 +9,7 @@ public class HopperConstants {
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean INVERTED = false;
-    public static final boolean BRAKE = true;
+    public static final boolean BRAKE = false;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(0.5)

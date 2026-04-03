@@ -92,6 +92,9 @@ public class HoodSubsystem extends TemplateSubsystem {
         //Motor Rotations = degrees / 360 / .00694444444444
         //Degrees = motorRot * 360 * .00694444444444
 
+        // System.out.println("HOod Degrese: " + getDegrees());
+        // System.out.println("Goal Degrees: " + ShotCalculator.getInstance().getHoodAnglePhaseDelayed());
+
         if (!stopMoving) followLastProfile();
     }
 

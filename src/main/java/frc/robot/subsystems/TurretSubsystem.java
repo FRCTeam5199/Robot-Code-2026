@@ -145,24 +145,24 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        goalPositionLogging.set(shotCalculator.getHoodAngle());
-        goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());
-        currentPositionLogging.set(HoodSubsystem.getInstance().getDegrees());
+        // goalPositionLogging.set(shotCalculator.getHoodAngle());
+        // goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());
+        // currentPositionLogging.set(HoodSubsystem.getInstance().getDegrees());
 
 //        shooterVelocity.set(ShooterSubsystem.getInstance().getMotorVelocity());
 //        indexerVelocity.set(KickerSubsystem.getInstance().getMotorVelocity());
 //        hopperVelocity.set(HopperSubsystem.getInstance().getMotorVelocity());
 //
-        isMechAtGoal.set(isMechAtGoalAuto());
-        isHoodAtGoal.set(HoodSubsystem.getInstance().isMechAtGoalAuto());
-        isShooterAtGoal.set(ShooterSubsystem.getInstance().isMechAtGoalAuto());
+        // isMechAtGoal.set(isMechAtGoalAuto());
+        // isHoodAtGoal.set(HoodSubsystem.getInstance().isMechAtGoalAuto());
+        // isShooterAtGoal.set(ShooterSubsystem.getInstance().isMechAtGoalAuto());
 //        isIndexerAtGoal.set(KickerSubsystem.getInstance().isMechAtGoalAuto());
 //        areMechanismsAtGoalAuto.set(RobotContainer.areMechanismsAtGoalsAuto());
 //
 //        goalVelocityLogging.set(goalVelocityRotPerSec);
 //        currentVelocityLogging.set(getMotorVelocity());
 //
-        turretToTargetDistance.set(shotCalculator.getTurretToTargetDistance());
+        // turretToTargetDistance.set(shotCalculator.getTurretToTargetDistance());
 //        lateralDistance.set(getLateralDistance());
 //        futureTurretPose.set(shotCalculator.getFutureTurretPositionPhaseDelayed());
 
@@ -174,6 +174,7 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        isMechAtGoal.set(isMechAtGoalAuto());
 
         if (!stopMoving) followLastProfile();
+        // System.out.println(isMechAtGoalAuto());
 //        System.out.println(getDegrees());
 //        System.out.println("goal: " + getGoal());
     }
