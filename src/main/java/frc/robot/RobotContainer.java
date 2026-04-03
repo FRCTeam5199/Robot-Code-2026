@@ -431,12 +431,12 @@ RobotContainer {
                 .onFalse(leftTriggerReleased);
 
 
-        // commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
-        //                 new VelocityCommand(hopperSubsystem, -90)
-        //         ))
-        //         .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
-        //                 new VelocityCommand(hopperSubsystem, 0)
-        //         ));
+        commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
+                        new VelocityCommand(hopperSubsystem, -90)
+                ))
+                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
+                        new VelocityCommand(hopperSubsystem, 0)
+                ));
 
 //        operatorCommandXboxController.y().onTrue(setHubSetpoint);
 //        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
