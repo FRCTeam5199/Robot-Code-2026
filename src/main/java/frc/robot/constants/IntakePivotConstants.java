@@ -9,8 +9,8 @@ public class IntakePivotConstants {
     public static final int MOTOR_ID = 17;
     public static final int ENCODER_ID = 99;
 
-    public static final double STATOR_CURRENT_LIMIT = 60;
-    public static final double SUPPLY_CURRENT_LIMIT = 60;
+    public static final double STATOR_CURRENT_LIMIT = 40;
+    public static final double SUPPLY_CURRENT_LIMIT = 40;
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = true;
 
