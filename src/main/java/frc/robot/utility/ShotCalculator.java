@@ -54,11 +54,11 @@ public class ShotCalculator extends SubsystemBase {
         hoodLookupTable.put(4.0513 + Constants.HUB_RADIUS, 16d);
         hoodLookupTable.put(5d + Constants.HUB_RADIUS, 24d);
 
-        shooterSpeedLookupTable.put(.997 + Constants.HUB_RADIUS, 47d);
-        shooterSpeedLookupTable.put(1.968 + Constants.HUB_RADIUS, 55d);
-        shooterSpeedLookupTable.put(3.049 + Constants.HUB_RADIUS, 56d);
-        shooterSpeedLookupTable.put(4.0513 + Constants.HUB_RADIUS, 62d);
-        shooterSpeedLookupTable.put(5d + Constants.HUB_RADIUS, 68d);
+        shooterSpeedLookupTable.put(.997 + Constants.HUB_RADIUS, 47d + 2.5);
+        shooterSpeedLookupTable.put(1.968 + Constants.HUB_RADIUS, 55d + 2.5);
+        shooterSpeedLookupTable.put(3.049 + Constants.HUB_RADIUS, 56d + 2.5);
+        shooterSpeedLookupTable.put(4.0513 + Constants.HUB_RADIUS, 62d + 2.5);
+        shooterSpeedLookupTable.put(5d + Constants.HUB_RADIUS, 68d + 2.5);
         //Motor Rotations = degrees / 360 / .01255707762557077625570776255708
         //Degrees = motorRot * 360 * .01255707762557077625570776255708
 
@@ -78,6 +78,7 @@ public class ShotCalculator extends SubsystemBase {
         shuttleShooterSpeedLookupTable.put(7.415803, 70d);
         shuttleShooterSpeedLookupTable.put(10.540514, 89d);
         shuttleShooterSpeedLookupTable.put(10.970932, 93d);
+        shuttleShooterSpeedLookupTable.put(12d, 100d);
 
         shuttleTimeOfFlightLookupTable.put(4.726098, 1.3766666667);
         shuttleTimeOfFlightLookupTable.put(7.415803, 1.46);

@@ -49,8 +49,8 @@ public class
 
 RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
-//    public static final CommandXboxController operatorCommandXboxController
-//            = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
+   public static final CommandXboxController operatorCommandXboxController
+           = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -443,8 +443,8 @@ RobotContainer {
 //        operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
 //        operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 
-        // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
 //        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
 //        commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));

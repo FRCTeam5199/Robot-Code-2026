@@ -33,7 +33,7 @@ public class TurretConstants {
 
     public static final double[][] GEAR_RATIO = {{50, 12}, {100, 10}};
 
-    public static final double ENCODER_MAGNET_OFFSET = .2841796875;
+    public static final double ENCODER_MAGNET_OFFSET = .293212890625;
     public static final double SENSOR_TO_MECH_GEAR_RATIO = 100d / 10d;
     public static final double MOTOR_TO_SENSOR_GEAR_RATIO = 50d / 12d;
     public static final boolean CCW_POSITIVE = true;
