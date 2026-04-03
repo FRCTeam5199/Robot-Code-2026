@@ -92,14 +92,14 @@ public final class Autos {
         // autonChooserRed.addOption("Red Left Score Climb", redBottomScore);
         // autonChooserRed.addOption("Red Right Score Climb", redTopScore);
 
-        autonChooserRed.addOption("Red Left Self Shuttle", redBottomSelfShuttle);
-        autonChooserRed.addOption("Red Right Self Shuttle", redTopSelfShuttle);
+//        autonChooserRed.addOption("Red Left Self Shuttle", redBottomSelfShuttle);
+//        autonChooserRed.addOption("Red Right Self Shuttle", redTopSelfShuttle);
 
         autonChooserRed.addOption("Red Left Double Score", redBottomDoubleScore);
         autonChooserRed.addOption("Red Right Double Score", redTopDoubleScore);
 
-        autonChooserBlue.addOption("Blue Left Self Shuttle", blueBottomSelfShuttle);
-        autonChooserBlue.addOption("Blue Right Self Shuttle", blueTopSelfShuttle);
+//        autonChooserBlue.addOption("Blue Left Self Shuttle", blueBottomSelfShuttle);
+//        autonChooserBlue.addOption("Blue Right Self Shuttle", blueTopSelfShuttle);
 
         autonChooserBlue.addOption("Blue Left Double Score", blueBottomDoubleScore);
         autonChooserBlue.addOption("Blue Right Double Score", blueTopDoubleScore);

@@ -27,9 +27,15 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "runIntake"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.5
+                  "waitTime": 4.0
                 }
               }
             ]
@@ -49,6 +55,12 @@
                 "type": "named",
                 "data": {
                   "name": "shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runIntake"
                 }
               }
             ]

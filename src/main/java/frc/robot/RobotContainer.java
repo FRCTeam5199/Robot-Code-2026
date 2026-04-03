@@ -19,12 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HopperConstants;
@@ -201,7 +196,7 @@ RobotContainer {
         NamedCommands.registerCommand("deployIntake", intakeDeploy);
 //        NamedCommands.registerCommand("stowIntake", intakeStow);
 //        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
-//        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
+        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
 //        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
