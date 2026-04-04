@@ -121,6 +121,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "deployIntake",
+      "waypointRelativePos": 0.25928426738690186,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deployIntake"
+        }
+      }
+    },
+    {
       "name": "runIntake",
       "waypointRelativePos": 0.4321404456448345,
       "endWaypointRelativePos": null,
@@ -128,17 +139,6 @@
         "type": "named",
         "data": {
           "name": "runIntake"
-        }
-      }
-    },
-    {
-      "name": "deployIntake",
-      "waypointRelativePos": 0.45,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "deployIntake"
         }
       }
     }

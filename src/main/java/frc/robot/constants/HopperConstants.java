@@ -6,8 +6,8 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class HopperConstants {
     public static final int MOTOR_ID = 14;
-    public static final double STATOR_CURRENT_LIMIT = 60;
-    public static final double SUPPLY_CURRENT_LIMIT = 60;
+    public static final double STATOR_CURRENT_LIMIT = 50;
+    public static final double SUPPLY_CURRENT_LIMIT = 50;
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = false;
 
