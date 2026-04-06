@@ -9,6 +9,7 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.ShotCalculator;
+import frc.robot.utility.ShotMode;
 
 public class RobotCommands {
     //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
@@ -24,7 +25,46 @@ public class RobotCommands {
     private static Timer timer = new Timer();
 
     public static Command indexBallsAuto() {
-        return new FunctionalCommand(
+        return new ConditionalCommand(new FunctionalCommand(
+                () -> {
+                    if (RobotContainer.areMechanismsAtGoalsAuto()) {
+                        kickerSubsystem.setVelocity(KickerConstants.SHUTTLE_INDEXING_SPEED);
+                    }
+                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
+                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+                    }
+                },
+                () -> {
+//                    if (!RobotContainer.areMechanismsExceptShooterAtGoalsAuto() && !hasStartedTimer) {
+//                        timer.restart();
+//                        hasStartedTimer = true;
+//                    }
+//                    if (hasStartedTimer && timer.get() > .1) {
+//                        kickerSubsystem.setVelocity(0);
+//                        hopperSubsystem.setVelocity(0);
+//                    }
+//                    if (RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
+//                        hasStartedTimer = false;
+//                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
+//                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+//                    }
+
+                    if (!RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
+//                        kickerSubsystem.setVelocity(0);
+                        hopperSubsystem.setVelocity(0);
+                    } else {
+                        kickerSubsystem.setVelocity(KickerConstants.SHUTTLE_INDEXING_SPEED);
+                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+                    }
+
+                },
+                (interrupted) -> {
+                    kickerSubsystem.setVelocity(0);
+                    hopperSubsystem.setVelocity(0);
+                },
+                () -> false,
+                hopperSubsystem, kickerSubsystem
+        ), new FunctionalCommand(
                 () -> {
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
                         kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
@@ -63,7 +103,7 @@ public class RobotCommands {
                 },
                 () -> false,
                 hopperSubsystem, kickerSubsystem
-        );
+        ), () ->RobotContainer.getShotMode()==ShotMode.SHUTTLING_LEFT||RobotContainer.getShotMode()==ShotMode.SHUTTLING_RIGHT);
     }
 
     public static Command indexBalls() {
@@ -114,13 +154,13 @@ public class RobotCommands {
 //                new InstantCommand(() -> hoodSubsystem.setStopMoving(true)),
 //                new PositionCommand(hoodSubsystem, 0),
 //                new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
-                new InstantCommand(() -> hoodSubsystem.setPositionProfiling(0, 0))
+                new InstantCommand(() -> hoodSubsystem.setPositionProfiling(0.05, 0))
         );
     }
 
     public static Command idleState() {
         return new ParallelCommandGroup(
-                zeroTurret(),
+                zeroTurret().onlyIf(() -> !turretSubsystem.fullStop),
                 moveHoodToZero(),
                 new VelocityCommand(hopperSubsystem, 0),
                 new VelocityCommand(shooterSubsystem, 0),

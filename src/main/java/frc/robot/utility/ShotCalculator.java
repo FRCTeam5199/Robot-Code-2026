@@ -48,23 +48,23 @@ public class ShotCalculator extends SubsystemBase {
         shuttleShooterSpeedLookupTable = new InterpolatingDoubleTreeMap();
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
-        hoodLookupTable.put(.997 + Constants.HUB_RADIUS, 4d);
-        hoodLookupTable.put(1.968 + Constants.HUB_RADIUS, 6d);
-        hoodLookupTable.put(3.049 + Constants.HUB_RADIUS, 12d);
+        hoodLookupTable.put(1.001 + Constants.HUB_RADIUS, 4d);
+        hoodLookupTable.put(2.151 + Constants.HUB_RADIUS, 6d);
+        hoodLookupTable.put(3.045 + Constants.HUB_RADIUS, 12d);
         hoodLookupTable.put(4.0513 + Constants.HUB_RADIUS, 16d);
         hoodLookupTable.put(5d + Constants.HUB_RADIUS, 24d);
 
-        shooterSpeedLookupTable.put(.997 + Constants.HUB_RADIUS, 47d);
-        shooterSpeedLookupTable.put(1.968 + Constants.HUB_RADIUS, 55d - 2d);
-        shooterSpeedLookupTable.put(3.049 + Constants.HUB_RADIUS, 56d + 1.5);
+        shooterSpeedLookupTable.put(1.001 + Constants.HUB_RADIUS, 47d);
+        shooterSpeedLookupTable.put(2.151 + Constants.HUB_RADIUS, 56d);
+        shooterSpeedLookupTable.put(3.045 + Constants.HUB_RADIUS, 57d);
         shooterSpeedLookupTable.put(4.0513 + Constants.HUB_RADIUS, 62d + 2d);
-        shooterSpeedLookupTable.put(5d + Constants.HUB_RADIUS, 68d + 3d + 1d);
+        shooterSpeedLookupTable.put(5d + Constants.HUB_RADIUS, 70d);
         //Motor Rotations = degrees / 360 / .01255707762557077625570776255708
         //Degrees = motorRot * 360 * .01255707762557077625570776255708
 
-        timeOfFlightLookupTable.put(.997 + Constants.HUB_RADIUS, 1.05);
-        timeOfFlightLookupTable.put(1.968 + Constants.HUB_RADIUS, 1.05);
-        timeOfFlightLookupTable.put(3.049 + Constants.HUB_RADIUS, 0.99);
+        timeOfFlightLookupTable.put(1.001 + Constants.HUB_RADIUS, 1.05);
+        timeOfFlightLookupTable.put(2.151 + Constants.HUB_RADIUS, 1.05);
+        timeOfFlightLookupTable.put(3.045 + Constants.HUB_RADIUS, 0.99);
         timeOfFlightLookupTable.put(4.0513 + Constants.HUB_RADIUS, 0.99);
         timeOfFlightLookupTable.put(5d + Constants.HUB_RADIUS, 1.1);
 

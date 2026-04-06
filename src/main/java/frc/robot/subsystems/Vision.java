@@ -84,35 +84,35 @@ public class Vision {
             }
         }
 
-        if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
-            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-            limelightRightData = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
+        // if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
+        //     LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,
+        //             commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
+        //     limelightRightData = LimelightHelpers
+        //             .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
 
-            if (limelightRightData != null) {
-                double xyStdev = .5;
+        //     if (limelightRightData != null) {
+        //         double xyStdev = .5;
 
-                if (limelightRightData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
-                } else {
-                    xyStdev *= limelightRightData.avgTagDist;
-                }
+        //         if (limelightRightData.tagCount < 2) {
+        //             xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
+        //         } else {
+        //             xyStdev *= limelightRightData.avgTagDist;
+        //         }
 
-                if (RobotContainer.isClimbing() && limelightRightData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) > .05)
-                    return;
+        //         if (RobotContainer.isClimbing() && limelightRightData.pose.getTranslation()
+        //                 .getDistance(RobotContainer.getPose().getTranslation()) > .05)
+        //             return;
 
-                if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
-                    if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
-                        commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-                                limelightRightData.timestampSeconds, VecBuilder
-                                        .fill(xyStdev, xyStdev, 9999999999d));
-                    }
-                }
-            }
-        }
+        //         if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
+        //                 .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
+        //             if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
+        //                 commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
+        //                         limelightRightData.timestampSeconds, VecBuilder
+        //                                 .fill(xyStdev, xyStdev, 9999999999d));
+        //             }
+        //         }
+        //     }
+        // }
 
         if (LimelightHelpers.getTV(Constants.LIMELIGHT_FRONT_NAME)) {
             LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_FRONT_NAME,

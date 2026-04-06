@@ -291,7 +291,7 @@ RobotContainer {
         // calculateAutoClimbVelocities();
 
         // Logging
-        // logger.telemeterize(currentState);
+        logger.telemeterize(currentState);
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
@@ -446,13 +446,16 @@ RobotContainer {
         operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
         operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
+        operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
+        operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
+
 //        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
 //        commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
 //        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
 //                .onFalse(RobotCommands.idleState());
 //        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+       commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {

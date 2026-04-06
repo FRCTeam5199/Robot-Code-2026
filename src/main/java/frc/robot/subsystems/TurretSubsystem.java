@@ -59,6 +59,7 @@ public class TurretSubsystem extends TemplateSubsystem {
     private StructPublisher<Pose2d> futureTurretPose;
 
     private SimpleMotorFeedforward simpleMotorFeedforward;
+    public boolean fullStop = false;
 
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -126,7 +127,7 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        isIndexerAtGoal = networkTable.getBooleanTopic("Indexer Is Mech At Goal").publish();
 //        areMechanismsAtGoalAuto = networkTable.getBooleanTopic("Mechanisms Are At Goal").publish();
 //        turretPose = networkTable.getStructTopic("Turret Pose", Pose2d.struct).publish();
-//        futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
+       futureTurretPose = networkTable.getStructTopic("Future Turret Pose", Pose2d.struct).publish();
 //        velocity = networkTable.getDoubleTopic("Velocity").publish();
 //        acceleration = networkTable.getDoubleTopic("Acceleration").publish();
 
@@ -173,7 +174,7 @@ public class TurretSubsystem extends TemplateSubsystem {
 
 //        isMechAtGoal.set(isMechAtGoalAuto());
 
-        if (!stopMoving) followLastProfile();
+        if (!stopMoving && !fullStop) followLastProfile();
         // System.out.println(isMechAtGoalAuto());
 //        System.out.println(getDegrees());
 //        System.out.println("goal: " + getGoal());
