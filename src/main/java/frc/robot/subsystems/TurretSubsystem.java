@@ -147,9 +147,9 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        goalPositionLogging.set(shotCalculator.getHoodAngle());
-        goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());
-        currentPositionLogging.set(HoodSubsystem.getInstance().getDegrees());
+        goalPositionLogging.set(shotCalculator.getTurretAngle());
+        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+        currentPositionLogging.set(TurretSubsystem.getInstance().getDegrees());
 
 //        shooterVelocity.set(ShooterSubsystem.getInstance().getMotorVelocity());
 //        indexerVelocity.set(KickerSubsystem.getInstance().getMotorVelocity());
