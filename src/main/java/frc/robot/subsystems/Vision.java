@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.utility.LimelightHelpers;
@@ -15,6 +16,7 @@ public class Vision {
     public volatile static LimelightHelpers.PoseEstimate limelightLeftData;
     public volatile static LimelightHelpers.PoseEstimate limelightFrontData;
     private static Vision vision;
+    public static Timer originTimer = new Timer();
     private final TimeInterpolatableBuffer<Rotation3d> turretAngleBuffer =
             TimeInterpolatableBuffer.createBuffer(Constants.TURRET_BUFFER_SIZE);
 //    private final LinearFilter poseFilter =
@@ -70,12 +72,17 @@ public class Vision {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
 
+                if (RobotContainer.getPose().getTranslation()
+                        .getDistance(new Translation2d(0, 0)) < .25)
+                    originTimer.restart();
+
 //                System.out.println(limelightLeftData.pose.getTranslation().getDistance(RobotContainer.getPose().getTranslation()));
 
                 if (!RobotContainer.isAutonomous() || limelightLeftData.pose.getTranslation()
                         .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
-                    if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
-                            && !RobotContainer.isClimbing()) {
+                    if (RobotContainer.getPose().getTranslation()
+                        .getDistance(limelightLeftData.pose.getTranslation()) < 3d
+                        || originTimer.get() < 7) {
                         commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
                                 limelightLeftData.timestampSeconds, VecBuilder
                                         .fill(xyStdev, xyStdev, 9999999999d));
@@ -84,35 +91,37 @@ public class Vision {
             }
         }
 
-        // if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
-        //     LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,
-        //             commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-        //     limelightRightData = LimelightHelpers
-        //             .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
+        if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
+            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,
+                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
+            limelightRightData = LimelightHelpers
+                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
 
-        //     if (limelightRightData != null) {
-        //         double xyStdev = .5;
+            if (limelightRightData != null) {
+                double xyStdev = .5;
 
-        //         if (limelightRightData.tagCount < 2) {
-        //             xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
-        //         } else {
-        //             xyStdev *= limelightRightData.avgTagDist;
-        //         }
+                if (limelightRightData.tagCount < 2) {
+                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
+                } else {
+                    xyStdev *= limelightRightData.avgTagDist;
+                }
 
-        //         if (RobotContainer.isClimbing() && limelightRightData.pose.getTranslation()
-        //                 .getDistance(RobotContainer.getPose().getTranslation()) > .05)
-        //             return;
+                if (RobotContainer.getPose().getTranslation()
+                        .getDistance(new Translation2d(0, 0)) < .25)
+                    originTimer.restart();
 
-        //         if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
-        //                 .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
-        //             if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
-        //                 commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-        //                         limelightRightData.timestampSeconds, VecBuilder
-        //                                 .fill(xyStdev, xyStdev, 9999999999d));
-        //             }
-        //         }
-        //     }
-        // }
+                if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
+                    if (RobotContainer.getPose().getTranslation()
+                        .getDistance(limelightRightData.pose.getTranslation()) < 3d
+                        || originTimer.get() < 7) {
+                        commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
+                                limelightRightData.timestampSeconds, VecBuilder
+                                        .fill(xyStdev, xyStdev, 9999999999d));
+                    }
+                }
+            }
+        }
 
         if (LimelightHelpers.getTV(Constants.LIMELIGHT_FRONT_NAME)) {
             LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_FRONT_NAME,
@@ -129,10 +138,15 @@ public class Vision {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
 
+                if (RobotContainer.getPose().getTranslation()
+                        .getDistance(new Translation2d(0, 0)) < .25)
+                    originTimer.restart();
+
                 if (!RobotContainer.isAutonomous() || limelightFrontData.pose.getTranslation()
                         .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
-                    if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0)))
-                            && !RobotContainer.isClimbing()) {
+                    if (RobotContainer.getPose().getTranslation()
+                        .getDistance(limelightFrontData.pose.getTranslation()) < 3d
+                        || originTimer.get() < 7) {
                         commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
                                 limelightFrontData.timestampSeconds, VecBuilder
                                         .fill(xyStdev, xyStdev, 9999999999d));
