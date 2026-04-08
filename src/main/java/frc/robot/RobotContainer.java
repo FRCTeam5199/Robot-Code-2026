@@ -21,11 +21,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.constants.Constants;
-import frc.robot.constants.HopperConstants;
-import frc.robot.constants.IntakePivotConstants;
-import frc.robot.constants.IntakeRollerConstants;
-import frc.robot.constants.TunerConstants;
+import frc.robot.constants.*;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
@@ -290,9 +286,6 @@ RobotContainer {
 
         // calculateAutoClimbVelocities();
 
-        // Logging
-        logger.telemeterize(currentState);
-
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
     }
@@ -413,7 +406,14 @@ RobotContainer {
         commandXboxController.x().onTrue(intakeDeploy);
         commandXboxController.a().onTrue(intakeStow);
 //
-//        commandXboxController.b().onTrue(new PositionCommand(turretSubsystem, 0));
+        commandXboxController.b().onTrue(new SequentialCommandGroup(
+                        new VelocityCommand(kickerSubsystem, KickerConstants.INDEXING_SPEED),
+                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED)
+                ))
+                .onFalse(new ParallelCommandGroup(
+                        new VelocityCommand(kickerSubsystem, 0),
+                        new VelocityCommand(hopperSubsystem, 0)
+                ));
 //
 //        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),
 //                new VelocityCommand(hopperSubsystem, 90)
@@ -455,7 +455,7 @@ RobotContainer {
 //        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
 //                .onFalse(RobotCommands.idleState());
 //        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-       commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {

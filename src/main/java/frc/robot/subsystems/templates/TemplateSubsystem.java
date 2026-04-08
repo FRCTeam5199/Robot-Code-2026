@@ -186,6 +186,9 @@ public class TemplateSubsystem extends SubsystemBase {
             motorConfig.MotorOutput.ControlTimesyncFreqHz = 200;
             positionStatusSignal.setUpdateFrequency(200);
             velocityStatusSignal.setUpdateFrequency(200);
+        } else {
+//            positionStatusSignal.setUpdateFrequency(50);
+            velocityStatusSignal.setUpdateFrequency(50);
         }
 
         motor.optimizeBusUtilization();

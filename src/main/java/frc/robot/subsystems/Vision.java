@@ -71,23 +71,11 @@ public class Vision {
                 } else {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
-
-                if (RobotContainer.getPose().getTranslation()
-                        .getDistance(new Translation2d(0, 0)) < .25)
-                    originTimer.restart();
-
-//                System.out.println(limelightLeftData.pose.getTranslation().getDistance(RobotContainer.getPose().getTranslation()));
-
-                if (!RobotContainer.isAutonomous() || limelightLeftData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
-                    if (RobotContainer.getPose().getTranslation()
-                        .getDistance(limelightLeftData.pose.getTranslation()) < 3d
-                        || originTimer.get() < 7) {
-                        commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                                limelightLeftData.timestampSeconds, VecBuilder
-                                        .fill(xyStdev, xyStdev, 9999999999d));
-                    }
-                }
+                
+                if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
+                            limelightLeftData.timestampSeconds, VecBuilder
+                                    .fill(xyStdev, xyStdev, 9999999999d));
             }
         }
 
@@ -106,20 +94,10 @@ public class Vision {
                     xyStdev *= limelightRightData.avgTagDist;
                 }
 
-                if (RobotContainer.getPose().getTranslation()
-                        .getDistance(new Translation2d(0, 0)) < .25)
-                    originTimer.restart();
-
-                if (!RobotContainer.isAutonomous() || limelightRightData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
-                    if (RobotContainer.getPose().getTranslation()
-                        .getDistance(limelightRightData.pose.getTranslation()) < 3d
-                        || originTimer.get() < 7) {
-                        commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-                                limelightRightData.timestampSeconds, VecBuilder
-                                        .fill(xyStdev, xyStdev, 9999999999d));
-                    }
-                }
+                if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+                    commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
+                            limelightRightData.timestampSeconds, VecBuilder
+                                    .fill(xyStdev, xyStdev, 9999999999d));
             }
         }
 
@@ -138,20 +116,10 @@ public class Vision {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
 
-                if (RobotContainer.getPose().getTranslation()
-                        .getDistance(new Translation2d(0, 0)) < .25)
-                    originTimer.restart();
-
-                if (!RobotContainer.isAutonomous() || limelightFrontData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) < .25) {
-                    if (RobotContainer.getPose().getTranslation()
-                        .getDistance(limelightFrontData.pose.getTranslation()) < 3d
-                        || originTimer.get() < 7) {
-                        commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
-                                limelightFrontData.timestampSeconds, VecBuilder
-                                        .fill(xyStdev, xyStdev, 9999999999d));
-                    }
-                }
+                if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+                    commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
+                            limelightFrontData.timestampSeconds, VecBuilder
+                                    .fill(xyStdev, xyStdev, 9999999999d));
             }
         }
     }

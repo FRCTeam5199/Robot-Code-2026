@@ -25,7 +25,7 @@ public class RobotCommands {
     private static Timer timer = new Timer();
 
     public static Command indexBallsAuto() {
-        return new ConditionalCommand(new FunctionalCommand(
+        return new FunctionalCommand(
                 () -> {
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
                         kickerSubsystem.setVelocity(KickerConstants.SHUTTLE_INDEXING_SPEED);
@@ -64,46 +64,7 @@ public class RobotCommands {
                 },
                 () -> false,
                 hopperSubsystem, kickerSubsystem
-        ), new FunctionalCommand(
-                () -> {
-                    if (RobotContainer.areMechanismsAtGoalsAuto()) {
-                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
-                    }
-                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
-                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-                    }
-                },
-                () -> {
-//                    if (!RobotContainer.areMechanismsExceptShooterAtGoalsAuto() && !hasStartedTimer) {
-//                        timer.restart();
-//                        hasStartedTimer = true;
-//                    }
-//                    if (hasStartedTimer && timer.get() > .1) {
-//                        kickerSubsystem.setVelocity(0);
-//                        hopperSubsystem.setVelocity(0);
-//                    }
-//                    if (RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
-//                        hasStartedTimer = false;
-//                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
-//                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-//                    }
-
-                    if (!RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
-//                        kickerSubsystem.setVelocity(0);
-                        hopperSubsystem.setVelocity(0);
-                    } else {
-                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
-                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-                    }
-
-                },
-                (interrupted) -> {
-                    kickerSubsystem.setVelocity(0);
-                    hopperSubsystem.setVelocity(0);
-                },
-                () -> false,
-                hopperSubsystem, kickerSubsystem
-        ), () ->RobotContainer.getShotMode()==ShotMode.SHUTTLING_LEFT||RobotContainer.getShotMode()==ShotMode.SHUTTLING_RIGHT);
+        );
     }
 
     public static Command indexBalls() {

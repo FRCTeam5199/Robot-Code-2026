@@ -14,11 +14,11 @@ public class KickerConstants {
     public static final boolean UPPER_INVERTED = false;
     public static final boolean UPPER_BRAKE = false;
 
-    public static final double INDEXING_SPEED = 40;
+    public static final double INDEXING_SPEED = 25;
     public static final double SHUTTLE_INDEXING_SPEED = 90;
- 
+
     public static final Slot0Configs UPPER_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0)
+            .withKP(0d)
             .withKI(0)
             .withKD(0)
             .withKS(.40156)
@@ -31,8 +31,8 @@ public class KickerConstants {
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;
 
-    public static final double LOWER_TOLERANCE = 5d + 3d;
-    public static final double UPPER_TOLERANCE = 5d + 3d;
+    public static final double LOWER_TOLERANCE = 5d;
+    public static final double UPPER_TOLERANCE = 5d;
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
     public static final double SCALE_FACTOR = (1d);
