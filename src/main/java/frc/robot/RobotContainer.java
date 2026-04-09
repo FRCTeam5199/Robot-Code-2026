@@ -175,16 +175,16 @@ RobotContainer {
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
-                        turretHub, hoodHub, shooterHub, kickerHub
+                        turretHub, hoodHub, shooterHub
                 )),
                 Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
-                        turretTower, hoodTower, shooterTower, kickerTower
+                        turretTower, hoodTower, shooterTower
                 )),
                 Map.entry(Setpoint.OUTPOST, new ParallelCommandGroup(
-                        turretOutpost, hoodOutpost, shooterOutpost, kickerOutpost
+                        turretOutpost, hoodOutpost, shooterOutpost
                 )),
                 Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
-                        turretLeftCorner, hoodLeftCorner, shooterLeftCorner, kickerLeftCorner
+                        turretLeftCorner, hoodLeftCorner, shooterLeftCorner
                 ))
         ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
         leftBumperReleased = RobotCommands.idleState();
@@ -259,8 +259,14 @@ RobotContainer {
             shotMode = ShotMode.SHUTTLING_LEFT;
         }
 
-        if (forceShuttleLeft) shotMode = ShotMode.SHUTTLING_LEFT;
-        if (forceShuttleRight) shotMode = ShotMode.SHUTTLING_RIGHT;
+        if (forceShuttleLeft) {
+            shotMode = Robot.getAlliance().equals(DriverStation.Alliance.Blue) ? ShotMode.SHUTTLING_RIGHT
+                    : ShotMode.SHUTTLING_LEFT;
+        }
+        if (forceShuttleRight) {
+            shotMode = Robot.getAlliance().equals(DriverStation.Alliance.Blue) ? ShotMode.SHUTTLING_LEFT
+                    : ShotMode.SHUTTLING_RIGHT;
+        }
 
         for (Translation2d robotCorner : robotCorners) {
             if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
@@ -418,8 +424,18 @@ RobotContainer {
         commandXboxController.y().onTrue(intakeDeploy);
         commandXboxController.a().onTrue(intakeStow);
 
-        commandXboxController.x().onTrue(new InstantCommand(() -> forceShuttleLeft = !forceShuttleLeft));
-        commandXboxController.b().onTrue(new InstantCommand(() -> forceShuttleRight = !forceShuttleRight));
+        commandXboxController.x().onTrue(new ConditionalCommand(
+                new InstantCommand(() -> forceShuttleLeft = true),
+                new InstantCommand(() -> forceShuttleLeft = false)
+                        .alongWith(new InstantCommand(() -> forceShuttleRight = false)),
+                () -> !forceShuttleLeft
+        ));
+        commandXboxController.b().onTrue(new ConditionalCommand(
+                new InstantCommand(() -> forceShuttleRight = true),
+                new InstantCommand(() -> forceShuttleRight = false)
+                        .alongWith(new InstantCommand(() -> forceShuttleLeft = false)),
+                () -> !forceShuttleRight
+        ));
 
 //
 //        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),

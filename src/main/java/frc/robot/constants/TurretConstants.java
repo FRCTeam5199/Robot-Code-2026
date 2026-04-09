@@ -42,7 +42,7 @@ public class TurretConstants {
     public static final double MIN = -200d;
     public static final double MAX = 180; //160d
 
-    public static final double INDEXING_TIME = .3;
+    public static final double INDEXING_TIME = .15;
 
     public static final CANBus CANBUS = new CANBus("Shooter");
 }
