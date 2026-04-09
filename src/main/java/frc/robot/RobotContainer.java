@@ -41,12 +41,14 @@ import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 
+import javax.swing.text.Position;
+
 public class
 
 RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
-//    public static final CommandXboxController operatorCommandXboxController
-//            = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
+    public static final CommandXboxController operatorCommandXboxController
+            = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -81,10 +83,10 @@ RobotContainer {
     private static final LinearFilter accelerationOmegaFilter = LinearFilter.movingAverage(30);
     //Turret Commands
 //    private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
-//    private static final TurretCommand turretHub = new TurretCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
-//    private static final TurretCommand turretTower = new TurretCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
-//    private static final TurretCommand turretLeftCorner = new TurretCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
-//    private static final TurretCommand turretOutpost = new TurretCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
+    private static final PositionCommand turretHub = new PositionCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
+    private static final PositionCommand turretTower = new PositionCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
+    private static final PositionCommand turretLeftCorner = new PositionCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
+    private static final PositionCommand turretOutpost = new PositionCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
     //Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
     private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
@@ -169,7 +171,7 @@ RobotContainer {
 
         leftTriggerReleased = RobotCommands.idleState();
 
-        leftBumperPressed = /*new SelectCommand<>(Map.ofEntries(
+        leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
                         turretHub, hoodHub, shooterHub, kickerHub
                 )),
@@ -182,7 +184,7 @@ RobotContainer {
                 Map.entry(Setpoint.LEFT_CORNER, new ParallelCommandGroup(
                         turretLeftCorner, hoodLeftCorner, shooterLeftCorner, kickerLeftCorner
                 ))
-        ), RobotContainer::getCurrentSetpoint).alongWith(*/RobotCommands.indexBalls();
+        ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
         leftBumperReleased = RobotCommands.idleState();
 
         NamedCommands.registerCommand("shoot", leftTriggerPressed);
@@ -249,20 +251,20 @@ RobotContainer {
 
         // Sets Enums, default is Shooting
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
-//       if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-//           shotMode = ShotMode.SHUTTLING_RIGHT;
-//       } else {
-//           shotMode = ShotMode.SHUTTLING_LEFT;
-//       }
-//       for (Translation2d robotCorner : robotCorners) {
-//           if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
-//               if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .15)
-//                   shotMode = ShotMode.SHOOTING;
-//           } else {
-//               if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .15)
-//                   shotMode = ShotMode.SHOOTING;
-//           }
-//       }
+        if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
+            shotMode = ShotMode.SHUTTLING_RIGHT;
+        } else {
+            shotMode = ShotMode.SHUTTLING_LEFT;
+        }
+        for (Translation2d robotCorner : robotCorners) {
+            if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .15)
+                    shotMode = ShotMode.SHOOTING;
+            } else {
+                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .15)
+                    shotMode = ShotMode.SHOOTING;
+            }
+        }
         shotMode = ShotMode.SHOOTING;
         double scalingFactor = 1.25;
 
@@ -431,7 +433,7 @@ RobotContainer {
         commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);
 
-
+        //Outtake
         commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
                         new VelocityCommand(hopperSubsystem, -90)
                 ))
@@ -439,10 +441,10 @@ RobotContainer {
                         new VelocityCommand(hopperSubsystem, 0)
                 ));
 
-//        operatorCommandXboxController.y().onTrue(setHubSetpoint);
-//        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
-//        operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
-//        operatorCommandXboxController.a().onTrue(setTowerSetpoint);
+        operatorCommandXboxController.y().onTrue(setHubSetpoint);
+        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
+        operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
+        operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 
         // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
         // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
@@ -455,8 +457,8 @@ RobotContainer {
 
 //        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
 //                .onFalse(RobotCommands.idleState());
-//        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
+//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
