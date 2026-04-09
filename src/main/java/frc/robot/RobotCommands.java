@@ -32,7 +32,10 @@ public class RobotCommands {
                     }
                     if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-                    }
+                    }/* else {
+                        System.out.println("hi");
+                        hopperSubsystem.setVelocity(-10);
+                    }*/
                 },
                 () -> {
 //                    if (!RobotContainer.areMechanismsExceptShooterAtGoalsAuto() && !hasStartedTimer) {
@@ -49,8 +52,10 @@ public class RobotCommands {
 //                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
 //                    }
 
-                    if (!RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
-//                        kickerSubsystem.setVelocity(0);
+
+                    if (!RobotContainer.areMechanismsExceptShooterAtGoalsAuto()
+                            && !kickerSubsystem.isMechAtGoal(true)) {
+                        kickerSubsystem.setVelocity(0);
                         hopperSubsystem.setVelocity(0);
                     } else {
                         kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
