@@ -3,7 +3,7 @@ package frc.robot.utility;
 import frc.robot.constants.KickerConstants;
 
 public enum Setpoint {
-    HUB(0, 0, 47), //28 //intake against hub
+    HUB(0, 0, 47), //intake against hub
     TOWER(-10, 13, 60.5),
     LEFT_CORNER(-40, 20, 68.5),
     OUTPOST(38, 20, 67);
