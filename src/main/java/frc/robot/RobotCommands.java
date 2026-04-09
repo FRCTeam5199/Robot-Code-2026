@@ -28,7 +28,7 @@ public class RobotCommands {
         return new FunctionalCommand(
                 () -> {
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
-                        kickerSubsystem.setVelocity(KickerConstants.SHUTTLE_INDEXING_SPEED);
+                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
                     }
                     if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
@@ -53,7 +53,7 @@ public class RobotCommands {
 //                        kickerSubsystem.setVelocity(0);
                         hopperSubsystem.setVelocity(0);
                     } else {
-                        kickerSubsystem.setVelocity(KickerConstants.SHUTTLE_INDEXING_SPEED);
+                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     }
 

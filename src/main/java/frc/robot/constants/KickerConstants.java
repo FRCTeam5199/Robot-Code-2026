@@ -14,11 +14,11 @@ public class KickerConstants {
     public static final boolean UPPER_INVERTED = false;
     public static final boolean UPPER_BRAKE = false;
 
-    public static final double INDEXING_SPEED = 25; //25
+    public static final double INDEXING_SPEED = 25;
     public static final double SHUTTLE_INDEXING_SPEED = 90;
 
     public static final Slot0Configs UPPER_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(999999)
+            .withKP(0)
             .withKI(0)
             .withKD(0)
             .withKS(.40156)
@@ -26,7 +26,6 @@ public class KickerConstants {
             .withKV(.12621)
             .withKA(0.0056143)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
-
 
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;

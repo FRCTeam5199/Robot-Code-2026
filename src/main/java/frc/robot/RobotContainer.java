@@ -249,20 +249,21 @@ RobotContainer {
 
         // Sets Enums, default is Shooting
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
-        if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-            shotMode = ShotMode.SHUTTLING_RIGHT;
-        } else {
-            shotMode = ShotMode.SHUTTLING_LEFT;
-        }
-        for (Translation2d robotCorner : robotCorners) {
-            if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
-                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .15)
-                    shotMode = ShotMode.SHOOTING;
-            } else {
-                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .15)
-                    shotMode = ShotMode.SHOOTING;
-            }
-        }
+//        if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
+//            shotMode = ShotMode.SHUTTLING_RIGHT;
+//        } else {
+//            shotMode = ShotMode.SHUTTLING_LEFT;
+//        }
+//        for (Translation2d robotCorner : robotCorners) {
+//            if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+//                if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .15)
+//                    shotMode = ShotMode.SHOOTING;
+//            } else {
+//                if (Constants.BLUE_HUB_FRONT_CENTER.getX() - robotCorner.getX() > .15)
+//                    shotMode = ShotMode.SHOOTING;
+//            }
+//        }
+        shotMode = ShotMode.SHOOTING;
         double scalingFactor = 1.25;
 
         if (commandXboxController.getLeftY() < 0)
