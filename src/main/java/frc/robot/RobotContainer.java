@@ -161,6 +161,8 @@ RobotContainer {
     private static ShotMode shotMode = ShotMode.SHOOTING;
     private static Translation2d[] robotCorners = new Translation2d[4];
     private static boolean filtersInitialized = false;
+    private static boolean forceShuttleLeft = false;
+    private static boolean forceShuttleRight = false;
 
 
     public RobotContainer() {
@@ -256,6 +258,10 @@ RobotContainer {
         } else {
             shotMode = ShotMode.SHUTTLING_LEFT;
         }
+
+        if (forceShuttleLeft) shotMode = ShotMode.SHUTTLING_LEFT;
+        if (forceShuttleRight) shotMode = ShotMode.SHUTTLING_RIGHT;
+
         for (Translation2d robotCorner : robotCorners) {
             if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
                 if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .15)
@@ -265,7 +271,6 @@ RobotContainer {
                     shotMode = ShotMode.SHOOTING;
             }
         }
-        shotMode = ShotMode.SHOOTING;
         double scalingFactor = 1.25;
 
         if (commandXboxController.getLeftY() < 0)
@@ -306,6 +311,10 @@ RobotContainer {
     public static boolean areMechanismsAtGoals() {
         return turretSubsystem.isMechAtGoal() && hoodSubsystem.isMechAtGoal()
                 && shooterSubsystem.isMechAtGoal(true);
+    }
+
+    public static boolean areMechanismsExceptShooterAtGoals() {
+        return turretSubsystem.isMechAtGoal() && hoodSubsystem.isMechAtGoal();
     }
 
     public static ChassisSpeeds getSpeeds() {
@@ -406,17 +415,12 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        commandXboxController.x().onTrue(intakeDeploy);
+        commandXboxController.y().onTrue(intakeDeploy);
         commandXboxController.a().onTrue(intakeStow);
-//
-        commandXboxController.b().onTrue(new SequentialCommandGroup(
-                        new VelocityCommand(kickerSubsystem, KickerConstants.INDEXING_SPEED),
-                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED)
-                ))
-                .onFalse(new ParallelCommandGroup(
-                        new VelocityCommand(kickerSubsystem, 0),
-                        new VelocityCommand(hopperSubsystem, 0)
-                ));
+
+        commandXboxController.x().onTrue(new InstantCommand(() -> forceShuttleLeft = !forceShuttleLeft));
+        commandXboxController.b().onTrue(new InstantCommand(() -> forceShuttleRight = !forceShuttleRight));
+
 //
 //        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),
 //                new VelocityCommand(hopperSubsystem, 90)
@@ -452,11 +456,11 @@ RobotContainer {
         // operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
         // operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
 
-//        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-//        commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-//        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
-//                .onFalse(RobotCommands.idleState());
+        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
+                .onFalse(RobotCommands.idleState());
         operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
 //        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }

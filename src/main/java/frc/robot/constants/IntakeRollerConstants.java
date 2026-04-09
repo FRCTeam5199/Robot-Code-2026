@@ -7,8 +7,8 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 public class IntakeRollerConstants {
     public static final int MOTOR_ID = 18;
     public static final int FOLLOWER_MOTOR_ID = 24;
-    public static final double STATOR_CURRENT_LIMIT = 75;
-    public static final double SUPPLY_CURRENT_LIMIT = 75;
+    public static final double STATOR_CURRENT_LIMIT = 60;
+    public static final double SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = false;
     public static final boolean FOLLOWER_INVERTED = true;
