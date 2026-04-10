@@ -29,8 +29,8 @@ public class KickerConstants {
     public static final double ACCELERATION = 400;
     public static final double JERK = 4000;
 
-    public static final double LOWER_TOLERANCE = 15d;
-    public static final double UPPER_TOLERANCE = 15d;
+    public static final double LOWER_TOLERANCE = 8d;
+    public static final double UPPER_TOLERANCE = 8d;
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
     public static final double SCALE_FACTOR = (1d);
