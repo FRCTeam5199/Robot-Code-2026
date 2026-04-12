@@ -73,6 +73,7 @@ RobotContainer {
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
     //Misc
     public static final Telemetry logger = new Telemetry(Constants.MAX_SPEED);
@@ -460,6 +461,8 @@ RobotContainer {
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
                         new VelocityCommand(hopperSubsystem, 0)
                 ));
+
+        commandXboxController.rightBumper().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
         operatorCommandXboxController.y().onTrue(setHubSetpoint);
         operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);

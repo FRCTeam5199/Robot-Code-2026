@@ -218,7 +218,7 @@ public class TurretSubsystem extends TemplateSubsystem {
     }
 
     public boolean isMechAtGoalAuto() {
-        if (predictWrapAround()) return false;
+        // if (predictWrapAround()) return false;
 
         if (RobotContainer.getShotMode() != ShotMode.SHOOTING) {
             return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
