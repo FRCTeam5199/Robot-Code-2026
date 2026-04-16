@@ -50,6 +50,7 @@ public final class Autos {
     private static PathPlannerAuto redTopScore;
     private static PathPlannerAuto redBottomDoubleScore;
     private static PathPlannerAuto redTopDoubleScore;
+    private static PathPlannerAuto redBottomBumpDoubleScore;
     private static PathPlannerAuto redBottomSelfShuttle;
     private static PathPlannerAuto redTopSelfShuttle;
     private static PathPlannerAuto blueBottomScore;
@@ -68,6 +69,7 @@ public final class Autos {
 
         redBottomDoubleScore = new PathPlannerAuto("Red Bottom Double Score");
         redTopDoubleScore = new PathPlannerAuto("Red Top Double Score");
+        redBottomBumpDoubleScore = new PathPlannerAuto("Red Bottom Bump Double Score"); 
 
         redBottomSelfShuttle = new PathPlannerAuto("Red Bottom Self Shuttle");
         redTopSelfShuttle = new PathPlannerAuto("Red Top Self Shuttle");
@@ -97,6 +99,7 @@ public final class Autos {
 
         autonChooserRed.addOption("Red Left Double Score", redBottomDoubleScore);
         autonChooserRed.addOption("Red Right Double Score", redTopDoubleScore);
+        autonChooserRed.addOption("Red Left Double Bump Score", redBottomBumpDoubleScore);
 
 //        autonChooserBlue.addOption("Blue Left Self Shuttle", blueBottomSelfShuttle);
 //        autonChooserBlue.addOption("Blue Right Self Shuttle", blueTopSelfShuttle);
