@@ -170,7 +170,8 @@ RobotContainer {
 //        optimizeDrivetrain();
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(shooterAuto,
-                        hoodControlAuto, new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
+                        new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
+                        new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
 
         leftTriggerReleased = RobotCommands.idleState();
 

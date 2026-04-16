@@ -32,6 +32,8 @@ public class RobotCommands {
                     }
                     if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+                    } else {
+                        hopperSubsystem.setVelocity(-10);
                     }
                 },
                 () -> {
@@ -44,7 +46,7 @@ public class RobotCommands {
                     if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
-                        hopperSubsystem.setVelocity(0);
+                        hopperSubsystem.setVelocity(-10);
                     }
                 },
                 (interrupted) -> {
@@ -101,10 +103,10 @@ public class RobotCommands {
 
     public static Command moveHoodToZero() {
         return new SequentialCommandGroup(
-//                new InstantCommand(() -> hoodSubsystem.setStopMoving(true)),
-//                new PositionCommand(hoodSubsystem, 0),
+                new InstantCommand(() -> hoodSubsystem.setStopMoving(true)),
+                new PositionCommand(hoodSubsystem, 0),
 //                new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
-                new InstantCommand(() -> hoodSubsystem.setPositionProfiling(0.05, 0))
+                new InstantCommand(() -> hoodSubsystem.setPositionProfiling(0, 0))
         );
     }
 

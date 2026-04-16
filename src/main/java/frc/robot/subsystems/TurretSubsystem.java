@@ -150,6 +150,14 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
+//        goalPositionLogging.set(shotCalculator.getTurretAngle());
+//        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+//        currentPositionLogging.set(getDegrees());
+
+//        goalPositionLogging.set(shotCalculator.getHoodAngle());
+//        goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());
+//        currentPositionLogging.set(HoodSubsystem.getInstance().getDegrees());
+
 //        goalPositionLogging.set(shotCalculator.getShooterSpeed());
 //        goalPositionPhaseDelayed.set(shotCalculator.getShooterSpeedPhaseDelayed());
 //        currentPositionLogging.set(ShooterSubsystem.getInstance().getMotorVelocity());
@@ -162,11 +170,11 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        indexerVelocity.set(KickerSubsystem.getInstance().getMotorVelocity());
 //        hopperVelocity.set(HopperSubsystem.getInstance().getMotorVelocity());
 //
-        // isMechAtGoal.set(isMechAtGoalAuto());
-        // isHoodAtGoal.set(HoodSubsystem.getInstance().isMechAtGoalAuto());
+//        isMechAtGoal.set(isMechAtGoalAuto());
+//        isHoodAtGoal.set(HoodSubsystem.getInstance().isMechAtGoalAuto());
         // isShooterAtGoal.set(ShooterSubsystem.getInstance().isMechAtGoalAuto());
 //        isIndexerAtGoal.set(KickerSubsystem.getInstance().isMechAtGoalAuto());
-//        areMechanismsAtGoalAuto.set(RobotContainer.areMechanismsAtGoalsAuto());
+//        areMechanismsAtGoalAuto.set(RobotContainer.areMechanismsExceptShooterAtGoalsAuto());
 //
 //        goalVelocityLogging.set(goalVelocityRotPerSec);
 //        currentVelocityLogging.set(getMotorVelocity());
@@ -224,7 +232,7 @@ public class TurretSubsystem extends TemplateSubsystem {
             return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
                     && getDegrees() <= shotCalculator.getTurretAngle() + TurretConstants.UPPER_TOLERANCE;
         }
-        return getLateralDistance() < Constants.HUB_RADIUS - .1;
+        return getLateralDistance() < Constants.HUB_RADIUS;
     }
 
     public boolean isMechAtGoal() {
