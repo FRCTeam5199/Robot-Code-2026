@@ -27,17 +27,17 @@ public class HoodCommand extends Command {
 
     @Override
     public void initialize() {
-        hoodSubsystem.setPositionProfiling(goal, goalVelocity);
-        hoodSubsystem.setCommandRunning(true);
-        hoodSubsystem.setStopMoving(false);
+//        hoodSubsystem.setPositionProfiling(goal, goalVelocity);
+//        hoodSubsystem.setCommandRunning(true);
+//        hoodSubsystem.setStopMoving(false);
     }
 
     @Override
     public void execute() {
-        if (updateGoalPosition) {
-            hoodSubsystem.updateGoalPosition(goal, goalVelocity);
-            updateGoalPosition = false;
-        }
+//        if (updateGoalPosition) {
+//            hoodSubsystem.updateGoalPosition(goal, goalVelocity);
+//            updateGoalPosition = false;
+//        }
     }
 
     @Override

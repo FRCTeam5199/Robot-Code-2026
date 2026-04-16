@@ -23,7 +23,7 @@ public class HoodSubsystem extends TemplateSubsystem {
     private double goalVelocityRotPerSec;
     private boolean continuousMotion = false;
 
-    private boolean stopMoving = false;
+    private boolean stopMoving = true;
 
     private NetworkTable hoodTable;
     private DoublePublisher goalPosition;

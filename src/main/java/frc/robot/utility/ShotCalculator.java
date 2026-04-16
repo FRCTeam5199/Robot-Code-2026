@@ -12,8 +12,10 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.KickerConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.utility.AllianceFlipper;
 
@@ -37,6 +39,8 @@ public class ShotCalculator extends SubsystemBase {
     private double hoodAnglePhaseDelayed, lastHoodAnglePhaseDelayed, hoodAngle, lastHoodAngle, hoodVelocityPhaseDelayed, hoodVelocity;
     private double shooterSpeed, shooterSpeedPhaseDelayed;
     private TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
+    private HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    private ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     private double futureTurretToTargetDistance, futureTurretToTargetDistancePhaseDelayed = 0;
 
     private ShotCalculator() {
@@ -238,8 +242,10 @@ public class ShotCalculator extends SubsystemBase {
         turretSubsystem.updateGoalPosition(getTurretAnglePhaseDelayed(), getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
-        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),
-                shotCalculator.getHoodVelocityPhaseDelayed());
+//        shooterSubsystem.setVelocity(shotCalculator.getShooterSpeedPhaseDelayed());
+//        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),
+//                shotCalculator.getHoodVelocityPhaseDelayed());
+        hoodSubsystem.updateGoalPosition(getHoodAnglePhaseDelayed(), getHoodAngle());
 
     }
 
