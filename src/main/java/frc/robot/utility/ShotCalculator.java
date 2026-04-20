@@ -180,7 +180,7 @@ public class ShotCalculator extends SubsystemBase {
 
 
             //Wraps to within bounds
-            while (turretAnglePhaseDelayed <= TurretConstants.MIN) turretAnglePhaseDelayed += 360;
+            while (turretAnglePhaseDelayed <= TurretConstants.MIN) turretAnglePhaseDelayed += 360; //360
             while (turretAnglePhaseDelayed >= TurretConstants.MAX) turretAnglePhaseDelayed -= 360;
 
             turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
@@ -216,8 +216,8 @@ public class ShotCalculator extends SubsystemBase {
             turretAngle -= RobotContainer.getPose().getRotation().getDegrees();
 
             //Wraps to within bounds
-            while (turretAngle <= TurretConstants.MIN) turretAngle += 360;
-            while (turretAngle >= TurretConstants.MAX) turretAngle -= 360;
+            while (turretAngle <= TurretConstants.MIN) turretAngle += 360; //360
+            while (turretAngle >= TurretConstants.MAX) turretAngle -= 360;  //360
 
             turretVelocity -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 

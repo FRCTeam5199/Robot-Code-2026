@@ -138,13 +138,13 @@ public class TurretSubsystem extends TemplateSubsystem {
         return turretSubsystem;
     }
 
-    public static boolean predictWrapAround() {
-        double predictedTurretPosition = turretSubsystem.getDegrees()
-                + turretSubsystem.getDegreesFromMotorRot(turretSubsystem.getMotorVelocity())
-                * TurretConstants.INDEXING_TIME;
-        return predictedTurretPosition >= TurretConstants.MAX
-                || predictedTurretPosition <= TurretConstants.MIN;
-    }
+    // public static boolean predictWrapAround() {
+    //     double predictedTurretPosition = turretSubsystem.getDegrees()
+    //             + turretSubsystem.getDegreesFromMotorRot(turretSubsystem.getMotorVelocity())
+    //             * TurretConstants.INDEXING_TIME;
+    //     return predictedTurretPosition >= TurretConstants.MAX
+    //             || predictedTurretPosition <= TurretConstants.MIN;
+    // }
 
     @Override
     public void periodic() {
@@ -193,7 +193,7 @@ public class TurretSubsystem extends TemplateSubsystem {
 
         if (!stopMoving && !fullStop) followLastProfile();
         // System.out.println(isMechAtGoalAuto());
-//        System.out.println(getDegrees());
+       System.out.println(getDegrees());
 //        System.out.println("goal: " + getGoal());
     }
 

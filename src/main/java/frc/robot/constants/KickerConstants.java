@@ -14,7 +14,7 @@ public class KickerConstants {
     public static final boolean UPPER_INVERTED = false;
     public static final boolean UPPER_BRAKE = false;
 
-    public static final double INDEXING_SPEED = 25;
+    public static final double INDEXING_SPEED = 40;
 
     public static final Slot0Configs UPPER_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(0)
