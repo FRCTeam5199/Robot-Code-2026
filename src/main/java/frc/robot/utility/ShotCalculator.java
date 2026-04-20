@@ -28,6 +28,7 @@ public class ShotCalculator extends SubsystemBase {
 //            LinearFilter.movingAverage((int) (0.1 / 0.02));
     private Pose2d futureTurretPosition, futureTurretPositionPhaseDelayed;
     private double turretAngle, turretAnglePhaseDelayed;
+    private double lastTurretAngle, lastTurretAnglePhaseDelayed;
     private Rotation2d lastTurretRotation, lastTurretRotationPhaseDelayed, turretRotation, turretRotationPhaseDelayed;
     private double turretVelocity, turretVelocityPhaseDelayed;
     private InterpolatingDoubleTreeMap hoodLookupTable;
@@ -103,6 +104,8 @@ public class ShotCalculator extends SubsystemBase {
         shuttleTimeOfFlightLookupTable.put(10.540514, 1.55 + .075);
         shuttleTimeOfFlightLookupTable.put(10.970932, 1.56 + .075);
 
+        lastTurretAngle = turretSubsystem.getDegrees();
+        lastTurretAnglePhaseDelayed = turretSubsystem.getDegrees();
     }
 
 
@@ -180,8 +183,15 @@ public class ShotCalculator extends SubsystemBase {
 
 
             //Wraps to within bounds
-            while (turretAnglePhaseDelayed <= TurretConstants.MIN) turretAnglePhaseDelayed += 360; //360
-            while (turretAnglePhaseDelayed >= TurretConstants.MAX) turretAnglePhaseDelayed -= 360;
+            if (turretAnglePhaseDelayed - lastTurretAnglePhaseDelayed > 180) {
+    turretAnglePhaseDelayed -= 360;
+} else if (turretAnglePhaseDelayed - lastTurretAnglePhaseDelayed < -180) {
+    turretAnglePhaseDelayed += 360;
+}
+
+lastTurretAnglePhaseDelayed = turretAnglePhaseDelayed;
+if (turretAnglePhaseDelayed > TurretConstants.MAX) turretAnglePhaseDelayed -= 360;
+else if (turretAnglePhaseDelayed < TurretConstants.MIN) turretAnglePhaseDelayed += 360;
 
             turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 
@@ -216,8 +226,14 @@ public class ShotCalculator extends SubsystemBase {
             turretAngle -= RobotContainer.getPose().getRotation().getDegrees();
 
             //Wraps to within bounds
-            while (turretAngle <= TurretConstants.MIN) turretAngle += 360; //360
-            while (turretAngle >= TurretConstants.MAX) turretAngle -= 360;  //360
+            if (turretAngle - lastTurretAngle > 180) {
+    turretAngle -= 360;
+} else if (turretAngle - lastTurretAngle < -180) {
+    turretAngle += 360;
+}
+lastTurretAngle = turretAngle;
+if (turretAngle > TurretConstants.MAX) turretAngle -= 360;
+else if (turretAngle < TurretConstants.MIN) turretAngle += 360;
 
             turretVelocity -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 
@@ -235,6 +251,7 @@ public class ShotCalculator extends SubsystemBase {
         lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
         lastHoodAnglePhaseDelayed = hoodAnglePhaseDelayed;
         lastHoodAngle = hoodAngle;
+
 
         // Sets continuous control for turret, shooter, kicker
 //        RobotContainer.getTurretControlAuto().setGoal(shotCalculator.getTurretAnglePhaseDelayed(),
