@@ -47,7 +47,7 @@ public class Vision {
             while (!Thread.interrupted()) {
                 updatePoses();
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(3);
                 } catch (InterruptedException ignored) {
 
                 }
@@ -71,7 +71,7 @@ public class Vision {
                 } else {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
-                
+
                 if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
                     commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
                             limelightLeftData.timestampSeconds, VecBuilder
