@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.constants.HopperConstants;
+//import frc.robot.constants.HopperConstants;
 import frc.robot.constants.IntakePivotConstants;
 import frc.robot.constants.KickerConstants;
 import frc.robot.subsystems.*;
@@ -17,7 +17,7 @@ public class RobotCommands {
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
-    private static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    /// /    private static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     private static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
@@ -31,9 +31,9 @@ public class RobotCommands {
                         kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
                     }
                     if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
-                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+////                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
-                        hopperSubsystem.setVelocity(-10);
+////                        hopperSubsystem.setVelocity(-10);
                     }
                 },
                 () -> {
@@ -44,17 +44,17 @@ public class RobotCommands {
                     }
 
                     if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
-                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+////                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
-                        hopperSubsystem.setVelocity(-10);
+////                        hopperSubsystem.setVelocity(-10);
                     }
                 },
                 (interrupted) -> {
                     kickerSubsystem.setVelocity(0);
-                    hopperSubsystem.setVelocity(0);
+//                    hopperSubsystem.setVelocity(0);
                 },
                 () -> false,
-                hopperSubsystem, kickerSubsystem
+                /*hopperSubsystem,*/ kickerSubsystem
         );
     }
 
@@ -65,7 +65,7 @@ public class RobotCommands {
                         kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
                     }
                     if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
-                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+//                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     }
                 },
                 () -> {
@@ -76,18 +76,18 @@ public class RobotCommands {
                     }
 
                     if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
-                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+//                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
-                        hopperSubsystem.setVelocity(0);
+//                        hopperSubsystem.setVelocity(0);
                     }
 
                 },
                 (interrupted) -> {
                     kickerSubsystem.setVelocity(0);
-                    hopperSubsystem.setVelocity(0);
+//                    hopperSubsystem.setVelocity(0);
                 },
                 () -> false,
-                hopperSubsystem, kickerSubsystem
+                /*hopperSubsystem,*/ kickerSubsystem
         );
     }
 
@@ -114,7 +114,7 @@ public class RobotCommands {
         return new ParallelCommandGroup(
                 zeroTurret().onlyIf(() -> !turretSubsystem.fullStop),
                 moveHoodToZero(),
-                new VelocityCommand(hopperSubsystem, 0),
+//                new VelocityCommand(hopperSubsystem, 0),
                 new VelocityCommand(shooterSubsystem, 0),
                 new VelocityCommand(kickerSubsystem, 0)
         );
@@ -122,7 +122,7 @@ public class RobotCommands {
 
     public static Command outtake() {
         return new ParallelCommandGroup(
-                new VelocityCommand(hopperSubsystem, -50),
+//                new VelocityCommand(hopperSubsystem, -50),
                 new VelocityCommand(shooterSubsystem, -50),
                 new VelocityCommand(kickerSubsystem, -50),
                 new VelocityCommand(intakeRollerSubsystem, -50)

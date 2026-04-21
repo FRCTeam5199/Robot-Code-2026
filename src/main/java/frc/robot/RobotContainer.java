@@ -55,7 +55,7 @@ RobotContainer {
     public static final Autos auton = Autos.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
-    public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    //    public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
@@ -115,9 +115,9 @@ RobotContainer {
     private static final Command revUp = new ParallelCommandGroup(shooterRevUp, kickerRevUp);
     //Indexer Commands
     //Hopper Commands
-    private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
-    private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
-    private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
+//    private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
+//    private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
+//    private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
     //Intake Roller Commands
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
@@ -464,12 +464,12 @@ RobotContainer {
                 .onFalse(leftTriggerReleased);
 
         //Outtake
-        commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
-                        new VelocityCommand(hopperSubsystem, -90)
-                ))
-                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
-                        new VelocityCommand(hopperSubsystem, 0)
-                ));
+//        commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
+//                        new VelocityCommand(hopperSubsystem, -90)
+//                ))
+//                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
+//                        new VelocityCommand(hopperSubsystem, 0)
+//                ));
 
         commandXboxController.rightBumper().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
