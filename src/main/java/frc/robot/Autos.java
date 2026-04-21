@@ -26,7 +26,7 @@ public final class Autos {
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
-    //    public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
@@ -69,7 +69,7 @@ public final class Autos {
 
         redBottomDoubleScore = new PathPlannerAuto("Red Bottom Double Score");
         redTopDoubleScore = new PathPlannerAuto("Red Top Double Score");
-        redBottomBumpDoubleScore = new PathPlannerAuto("Red Bottom Bump Double Score");
+        redBottomBumpDoubleScore = new PathPlannerAuto("Red Bottom Bump Double Score"); 
 
         redBottomSelfShuttle = new PathPlannerAuto("Red Bottom Self Shuttle");
         redTopSelfShuttle = new PathPlannerAuto("Red Top Self Shuttle");

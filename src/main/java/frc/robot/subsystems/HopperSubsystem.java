@@ -21,7 +21,7 @@ public class HopperSubsystem extends TemplateSubsystem {
                 HopperConstants.SLOT0_CONFIGS, false);
     }
 
-    private static HopperSubsystem getInstance() {
+    public static HopperSubsystem getInstance() {
         if (hopperSubsystem == null) {
             hopperSubsystem = new HopperSubsystem();
         }
