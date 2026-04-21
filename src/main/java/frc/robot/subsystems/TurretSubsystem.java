@@ -107,9 +107,9 @@ public class TurretSubsystem extends TemplateSubsystem {
         networkTable = NetworkTableInstance.getDefault().getTable("AutoTracking/");
         turretNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Turret/");
 //
-//        goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
-//        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
-//        currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
+        goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
+        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
+        currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
 //
 //        shooterVelocity = networkTable.getDoubleTopic("Shooter Velocity").publish();
 //        indexerVelocity = networkTable.getDoubleTopic("Indexer Velocity").publish();
@@ -130,8 +130,8 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        acceleration = networkTable.getDoubleTopic("Acceleration").publish();
 //        controllerInput = networkTable.getDoubleTopic("Controller").publish();
 
-        velocityY = networkTable.getDoubleTopic("Chassis Velocity Y").publish();
-        poseVelocityY = networkTable.getDoubleTopic("Pose Velocity Y").publish();
+//        velocityY = networkTable.getDoubleTopic("Chassis Velocity Y").publish();
+//        poseVelocityY = networkTable.getDoubleTopic("Pose Velocity Y").publish();
 
         simpleMotorFeedforward = new SimpleMotorFeedforward(TurretConstants.SLOT0_CONFIGS.kS,
                 TurretConstants.SLOT0_CONFIGS.kV, TurretConstants.SLOT0_CONFIGS.kA);
@@ -156,12 +156,12 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-        velocityY.set(RobotContainer.getSpeeds().vyMetersPerSecond);
-        poseVelocityY.set(RobotContainer.poseVelocity);
+//        velocityY.set(RobotContainer.getSpeeds().vyMetersPerSecond);
+//        poseVelocityY.set(RobotContainer.poseVelocity);
 
-//        goalPositionLogging.set(shotCalculator.getTurretAngle());
-//        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
-//        currentPositionLogging.set(getDegrees());
+        goalPositionLogging.set(shotCalculator.getTurretAngle());
+        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+        currentPositionLogging.set(getDegrees());
 
 //        goalPositionLogging.set(shotCalculator.getHoodAngle());
 //        goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());

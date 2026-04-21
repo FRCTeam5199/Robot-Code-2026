@@ -490,7 +490,7 @@ RobotContainer {
         // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
         // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
