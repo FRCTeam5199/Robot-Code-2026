@@ -134,13 +134,15 @@ RobotContainer {
     public static double requestXVelocity;
     public static double requestYVelocity;
     public static double requestRotationalVelocity;
-    public static double lastVelocity = 0, velocity = 0;
+    public static double lastVelocity = 0, velocity = 0, poseVelocity = 0;
+    public static LinearFilter poseVelocityYFilter = LinearFilter.movingAverage(25);
     public static double acceleration = 0;
     public static boolean isClimbing = false;
     public static boolean isClimberRetracting = false;
     public static double goalX;
     private static Setpoint currentSetpoint = Setpoint.HUB;
     private static ChassisSpeeds lastSpeeds;
+    private static Pose2d lastPose = new Pose2d();
     private static double accelerationX;
     private static double accelerationY;
     private static double accelerationOmega;
@@ -250,6 +252,12 @@ RobotContainer {
                 + Math.pow(RobotContainer.getSpeeds().vyMetersPerSecond, 2));
         acceleration = (velocity - lastVelocity) / .02;
         lastVelocity = velocity;
+
+        poseVelocity = (lastPose.getY() - getPose().getY()) / .02; //TODO: above
+        poseVelocity = poseVelocityYFilter.calculate(poseVelocity);
+//        velocity = Math.sqrt(Math.pow(pigeonVelocityX, 2)
+//                + Math.pow(pigeonVelocityY, 2));
+
 
         updateRobotCorners();
 
@@ -504,6 +512,7 @@ RobotContainer {
 
     public static void updateLastSpeeds() {
         lastSpeeds = currentState.Speeds;
+        lastPose = currentState.Pose;
     }
 
 

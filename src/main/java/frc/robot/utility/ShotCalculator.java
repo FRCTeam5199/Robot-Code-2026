@@ -181,17 +181,20 @@ public class ShotCalculator extends SubsystemBase {
             turretAnglePhaseDelayed = turretRotationPhaseDelayed.getDegrees();
             turretAnglePhaseDelayed -= futureTurretPositionPhaseDelayed.getRotation().getDegrees();
 
-
             //Wraps to within bounds
-            if (turretAnglePhaseDelayed - lastTurretAnglePhaseDelayed > 180) {
-    turretAnglePhaseDelayed -= 360;
-} else if (turretAnglePhaseDelayed - lastTurretAnglePhaseDelayed < -180) {
-    turretAnglePhaseDelayed += 360;
-}
-
-lastTurretAnglePhaseDelayed = turretAnglePhaseDelayed;
-if (turretAnglePhaseDelayed > TurretConstants.MAX) turretAnglePhaseDelayed -= 360;
-else if (turretAnglePhaseDelayed < TurretConstants.MIN) turretAnglePhaseDelayed += 360;
+            double[] turretAngles = new double[]{turretAnglePhaseDelayed - 360,
+                    turretAnglePhaseDelayed, turretAnglePhaseDelayed + 360};
+            int smallestValidDistanceIndex = -1;
+            double smallestDistance = 99999d;
+            for (int i = 0; i < 3; i++) {
+                double angle = turretAngles[i];
+                if (angle <= TurretConstants.MIN || angle >= TurretConstants.MAX) continue;
+                if (Math.abs(angle - turretSubsystem.getDegrees()) < smallestDistance) {
+                    smallestDistance = Math.abs(angle - turretSubsystem.getDegrees());
+                    smallestValidDistanceIndex = i;
+                }
+            }
+            turretAnglePhaseDelayed = turretAngles[smallestValidDistanceIndex];
 
             turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 
@@ -226,14 +229,18 @@ else if (turretAnglePhaseDelayed < TurretConstants.MIN) turretAnglePhaseDelayed 
             turretAngle -= RobotContainer.getPose().getRotation().getDegrees();
 
             //Wraps to within bounds
-            if (turretAngle - lastTurretAngle > 180) {
-    turretAngle -= 360;
-} else if (turretAngle - lastTurretAngle < -180) {
-    turretAngle += 360;
-}
-lastTurretAngle = turretAngle;
-if (turretAngle > TurretConstants.MAX) turretAngle -= 360;
-else if (turretAngle < TurretConstants.MIN) turretAngle += 360;
+            turretAngles = new double[]{turretAngle - 360, turretAngle, turretAngle + 360};
+            smallestValidDistanceIndex = -1;
+            smallestDistance = 99999d;
+            for (int i = 0; i < 3; i++) {
+                double angle = turretAngles[i];
+                if (angle <= TurretConstants.MIN || angle >= TurretConstants.MAX) continue;
+                if (Math.abs(angle - turretSubsystem.getDegrees()) < smallestDistance) {
+                    smallestDistance = Math.abs(angle - turretSubsystem.getDegrees());
+                    smallestValidDistanceIndex = i;
+                }
+            }
+            turretAngle = turretAngles[smallestValidDistanceIndex];
 
             turretVelocity -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 
