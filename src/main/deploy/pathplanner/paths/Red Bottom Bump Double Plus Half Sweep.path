@@ -321,6 +321,17 @@
       }
     },
     {
+      "name": "runIntake",
+      "waypointRelativePos": 5.185685347738086,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runIntake"
+        }
+      }
+    },
+    {
       "name": "shoot",
       "waypointRelativePos": 8.945307224848104,
       "endWaypointRelativePos": null,
@@ -339,6 +350,17 @@
         "type": "named",
         "data": {
           "name": "stable"
+        }
+      }
+    },
+    {
+      "name": "runIntake",
+      "waypointRelativePos": 10.176907494935852,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runIntake"
         }
       }
     }

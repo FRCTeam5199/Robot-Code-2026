@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "startRight"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Red Top Bump Double Sweep"

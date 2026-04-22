@@ -7,13 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "startLeft"
+            "name": "startRight"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Bump Double Sweep Plus Depot"
+            "pathName": "Red Top Bump Double Sweep Plus Half"
           }
         }
       ]

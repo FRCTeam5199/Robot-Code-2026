@@ -260,37 +260,78 @@
       "name": "deployIntake",
       "waypointRelativePos": 0.2,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deployIntake"
+        }
+      }
     },
     {
       "name": "runIntake",
       "waypointRelativePos": 0.28,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runIntake"
+        }
+      }
     },
     {
       "name": "shoot",
       "waypointRelativePos": 4.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
     },
     {
       "name": "stable",
       "waypointRelativePos": 4.85,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stable"
+        }
+      }
+    },
+    {
+      "name": "runIntake",
+      "waypointRelativePos": 5.139770425388292,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runIntake"
+        }
+      }
     },
     {
       "name": "shoot",
       "waypointRelativePos": 10.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
     },
     {
       "name": "stable",
       "waypointRelativePos": 10.9,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stable"
+        }
+      }
     }
   ],
   "globalConstraints": {
