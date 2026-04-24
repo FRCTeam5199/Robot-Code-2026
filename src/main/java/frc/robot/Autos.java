@@ -48,7 +48,10 @@ public final class Autos {
     private static Autos autos;
     private static PathPlannerAuto redBottomScore;
     private static PathPlannerAuto redTopScore;
+    private static PathPlannerAuto redBottomTrenchDelayedScore;
+    private static PathPlannerAuto redTopTrenchDelayedScore;
     private static PathPlannerAuto redBottomDoubleScore;
+    private static PathPlannerAuto redTopBumpDoubleScore;
     private static PathPlannerAuto redTopDoubleScore;
     private static PathPlannerAuto redBottomBumpDoubleScore;
     private static PathPlannerAuto redBottomSelfShuttle;
@@ -69,7 +72,11 @@ public final class Autos {
 
         redBottomDoubleScore = new PathPlannerAuto("Red Bottom Double Score");
         redTopDoubleScore = new PathPlannerAuto("Red Top Double Score");
-        redBottomBumpDoubleScore = new PathPlannerAuto("Red Bottom Bump Double Score"); 
+        redBottomBumpDoubleScore = new PathPlannerAuto("Red Bottom Bump Double Score Plus Half");
+        redTopBumpDoubleScore = new PathPlannerAuto("Red Top Bump Double Score Plus Half");
+
+        redBottomTrenchDelayedScore = new PathPlannerAuto("Red Bottom Trench Delayed Plus Half");
+        redTopTrenchDelayedScore = new PathPlannerAuto("Red Top Trench Delayed Plus Half");
 
         redBottomSelfShuttle = new PathPlannerAuto("Red Bottom Self Shuttle");
         redTopSelfShuttle = new PathPlannerAuto("Red Top Self Shuttle");
@@ -87,7 +94,7 @@ public final class Autos {
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
                 .withSize(2, 1);
         Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
-                .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
+                .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
                 .withSize(2, 1);
 
 
@@ -100,6 +107,9 @@ public final class Autos {
         autonChooserRed.addOption("Red Left Double Score", redBottomDoubleScore);
         autonChooserRed.addOption("Red Right Double Score", redTopDoubleScore);
         autonChooserRed.addOption("Red Left Double Bump Score", redBottomBumpDoubleScore);
+        autonChooserRed.addOption("Red Right Double Bump Score", redTopBumpDoubleScore);
+        autonChooserRed.addOption("Red Left Single Delayed Score", redBottomTrenchDelayedScore);
+        autonChooserRed.addOption("Red Right Single Delayed Score", redTopTrenchDelayedScore);
 
 //        autonChooserBlue.addOption("Blue Left Self Shuttle", blueBottomSelfShuttle);
 //        autonChooserBlue.addOption("Blue Right Self Shuttle", blueTopSelfShuttle);

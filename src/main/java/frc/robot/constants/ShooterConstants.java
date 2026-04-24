@@ -14,13 +14,13 @@ public class ShooterConstants {
     public static final boolean BRAKE = false;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(.00096084) 
+            .withKP(0.0055117)
             .withKI(0)
             .withKD(0)
-            .withKS(.26163)    //.26163
+            .withKS(.27846)
             .withKG(0)
-            .withKV(.12255)    //.12255
-            .withKA(.0036266)    //.0036266
+            .withKV(.12402)
+            .withKA(.0045365)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double ACCELERATION = 80000;

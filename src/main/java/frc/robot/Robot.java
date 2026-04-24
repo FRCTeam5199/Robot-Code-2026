@@ -100,7 +100,6 @@ public class Robot extends TimedRobot {
 //                -.316, -.316, .453, 0, 5, 135.218);
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
 //                -.317, .317, .436, 180, 5, -135.218);
-//        DataLogManager.start("/u/logs");
 
         Logger.addDataReceiver(new WPILOGWriter());
 

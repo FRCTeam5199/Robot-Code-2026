@@ -104,12 +104,12 @@ public class TurretSubsystem extends TemplateSubsystem {
         currentState = new TrapezoidProfile.State(0, 0);
         goalState = new TrapezoidProfile.State(0, 0);
 
-        networkTable = NetworkTableInstance.getDefault().getTable("AutoTracking/");
-        turretNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Turret/");
-//
-        goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
-        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
-        currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
+//        networkTable = NetworkTableInstance.getDefault().getTable("AutoTracking/");
+//        turretNetworkTable = NetworkTableInstance.getDefault().getTable("Subsystems/Turret/");
+////
+//        goalPositionLogging = networkTable.getDoubleTopic("Goal Position").publish();
+//        goalPositionPhaseDelayed = networkTable.getDoubleTopic("Goal Position Phase Delay").publish();
+//        currentPositionLogging = networkTable.getDoubleTopic("Current Position").publish();
 //
 //        shooterVelocity = networkTable.getDoubleTopic("Shooter Velocity").publish();
 //        indexerVelocity = networkTable.getDoubleTopic("Indexer Velocity").publish();
@@ -159,9 +159,9 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        velocityY.set(RobotContainer.getSpeeds().vyMetersPerSecond);
 //        poseVelocityY.set(RobotContainer.poseVelocity);
 
-        goalPositionLogging.set(shotCalculator.getTurretAngle());
-        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
-        currentPositionLogging.set(getDegrees());
+//        goalPositionLogging.set(shotCalculator.getTurretAngle());
+//        goalPositionPhaseDelayed.set(shotCalculator.getTurretAnglePhaseDelayed());
+//        currentPositionLogging.set(getDegrees());
 
 //        goalPositionLogging.set(shotCalculator.getHoodAngle());
 //        goalPositionPhaseDelayed.set(shotCalculator.getHoodAnglePhaseDelayed());

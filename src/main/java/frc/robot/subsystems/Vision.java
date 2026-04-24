@@ -57,27 +57,27 @@ public class Vision {
     }
 
     public void updatePoses() {
-        if (LimelightHelpers.getTV(Constants.LIMELIGHT_LEFT_NAME)) {
-            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_LEFT_NAME,
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-            limelightLeftData = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT_NAME);
-
-            if (limelightLeftData != null) {
-                double xyStdev = .5;
-
-                if (limelightLeftData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
-                } else {
-                    xyStdev *= limelightLeftData.avgTagDist;
-                }
-
-                if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                            limelightLeftData.timestampSeconds, VecBuilder
-                                    .fill(xyStdev, xyStdev, 9999999999d));
-            }
-        }
+//        if (LimelightHelpers.getTV(Constants.LIMELIGHT_LEFT_NAME)) {
+//            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_LEFT_NAME,
+//                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
+//            limelightLeftData = LimelightHelpers
+//                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT_NAME);
+//
+//            if (limelightLeftData != null) {
+//                double xyStdev = .5;
+//
+//                if (limelightLeftData.tagCount < 2) {
+//                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
+//                } else {
+//                    xyStdev *= limelightLeftData.avgTagDist;
+//                }
+//
+//                if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+//                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
+//                            limelightLeftData.timestampSeconds, VecBuilder
+//                                    .fill(xyStdev, xyStdev, 9999999999d));
+//            }
+//        }
 
         if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
             LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,

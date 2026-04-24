@@ -14,26 +14,26 @@ public class IntakePivotConstants {
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 92;
+    public static final double DEPLOY = 98;
     public static final double UPAGITATE = 70;
     public static final double DOWNAGITATE = 90;
     public static final double STOW = -1;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(10)
+            .withKP(10) //10
             .withKI(0)
             .withKD(0)
             .withKS(0.3)
-            .withKG(0)
-            .withKV(.08)
+            .withKG(0.04)
+            .withKV(.14858841010401188707280832095097)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
             .withGravityType(GravityTypeValue.Arm_Cosine)
             .withGravityArmPositionOffset(.0);
 
-    public static final double VELOCITY = 125;
-    public static final double ACCELERATION = 200;
-    public static final double JERK = 3000;
+    public static final double VELOCITY = 50; //125
+    public static final double ACCELERATION = 100; //200
+    public static final double JERK = 1500; //3000
 
     public static final double LOWER_TOLERANCE = 4;
     public static final double UPPER_TOLERANCE = 4;

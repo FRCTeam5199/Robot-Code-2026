@@ -7,19 +7,25 @@
         {
           "type": "named",
           "data": {
-            "name": "startRight"
+            "name": "startLeft"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red Top Bump Double Sweep"
+            "pathName": "Red Bottom Trench Delayed Plus Half"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Red Double Score",
+  "folder": "Red Delayed Score",
   "choreoAuto": false
 }
