@@ -26,6 +26,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Type;
 
 public class TemplateSubsystem extends SubsystemBase {
+    public StatusSignal<Angle> positionStatusSignal;
+    public StatusSignal<AngularVelocity> velocityStatusSignal;
+    public StatusSignal<Angle> followerPositionStatusSignal;
+    public StatusSignal<AngularVelocity> followerVelocityStatusSignal;
     private NetworkTable networkTable;
     private DoublePublisher poseData;
     private DoublePublisher velocityData;
@@ -68,12 +72,6 @@ public class TemplateSubsystem extends SubsystemBase {
     private double drumCircumference;
     private Type type;
     private String name;
-
-    public StatusSignal<Angle> positionStatusSignal;
-    public StatusSignal<AngularVelocity> velocityStatusSignal;
-
-    public StatusSignal<Angle> followerPositionStatusSignal;
-    public StatusSignal<AngularVelocity> followerVelocityStatusSignal;
 
 
     public TemplateSubsystem(Type type, int id, double velocity, double acceleration, double jerk,
@@ -235,6 +233,21 @@ public class TemplateSubsystem extends SubsystemBase {
         motor.getDutyCycle().setUpdateFrequency(100);
         motor.getMotorVoltage().setUpdateFrequency(100);
         motor.getTorqueCurrent().setUpdateFrequency(100);
+
+        follower = new Follower(motor.getDeviceID(),
+                opposeMasterDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned);
+        followerMotor.setControl(follower);
+    }
+
+    public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection, CANBus canbus, boolean special) {
+        followerMotor = new TalonFX(followerMotorId, canbus);
+
+        motor.getDutyCycle().setUpdateFrequency(100);
+        motor.getMotorVoltage().setUpdateFrequency(100);
+        motor.getTorqueCurrent().setUpdateFrequency(100);
+
+        followerMotor.getRotorVelocity().setUpdateFrequency(50);
+        followerMotor.optimizeBusUtilization();
 
         follower = new Follower(motor.getDeviceID(),
                 opposeMasterDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned);
@@ -468,14 +481,14 @@ public class TemplateSubsystem extends SubsystemBase {
         return offset;
     }
 
-    public void changeOffset(double deltaOffset) {
-        this.offset += deltaOffset;
-        this.changedOffset = true;
-    }
-
     public void setOffset(double offset) {
         this.offset = offset;
         changedOffset = true;
+    }
+
+    public void changeOffset(double deltaOffset) {
+        this.offset += deltaOffset;
+        this.changedOffset = true;
     }
 
     public double getGoal() {
