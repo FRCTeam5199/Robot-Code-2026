@@ -435,6 +435,12 @@ RobotContainer {
                         .alongWith(new InstantCommand(() -> forceShuttleRight = false)),
                 () -> !forceShuttleLeft
         ));
+
+//        commandXboxController.b().onTrue(new InstantCommand(RobotCommands::indexBallsAuto
+//        )).onFalse(new ParallelCommandGroup(
+//                new VelocityCommand(hopperSubsystem, 0),
+//                new VelocityCommand(kickerSubsystem, 0)
+//        ));
         commandXboxController.b().onTrue(new ConditionalCommand(
                 new InstantCommand(() -> forceShuttleRight = true),
                 new InstantCommand(() -> forceShuttleRight = false)
