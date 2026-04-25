@@ -87,10 +87,10 @@ public final class Autos {
 
         autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
         autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
-        autonChooserRed.addOption("Blue Left Double Bump", redBottomDoubleBump);
-        autonChooserRed.addOption("Blue Right Double Bump", redTopDoubleBump);
-        autonChooserRed.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
-        autonChooserRed.addOption("Blue Right Delayed Bump", redTopDelayedBump);
+        autonChooserBlue.addOption("Blue Left Double Bump", redBottomDoubleBump);
+        autonChooserBlue.addOption("Blue Right Double Bump", redTopDoubleBump);
+        autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
+        autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
 
         // autonChooserBlue.addOption("Blue Left Score Climb", blueBottomScore);
         // autonChooserBlue.addOption("Blue Right Score Climb", blueTopScore);

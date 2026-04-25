@@ -526,4 +526,8 @@ RobotContainer {
     public static double getAccelerationX() {
         return accelerationX;
     }
+
+    public static SwerveDrivetrain.SwerveDriveState getState() {
+        return currentState;
+    }
 }

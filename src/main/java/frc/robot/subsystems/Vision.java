@@ -2,13 +2,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.utility.LimelightHelpers;
-
-import java.awt.geom.Ellipse2D;
 
 public class Vision {
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
@@ -16,11 +14,10 @@ public class Vision {
     public volatile static LimelightHelpers.PoseEstimate limelightLeftData;
     public volatile static LimelightHelpers.PoseEstimate limelightFrontData;
     private static Vision vision;
-    public static Timer originTimer = new Timer();
-    private final TimeInterpolatableBuffer<Rotation3d> turretAngleBuffer =
-            TimeInterpolatableBuffer.createBuffer(Constants.TURRET_BUFFER_SIZE);
-//    private final LinearFilter poseFilter =
-//            LinearFilter.movingAverage((int) (0.1 / 0.02));
+    private static Timer rightTimer = new Timer();
+    private static Timer leftTimer = new Timer();
+    private static Timer frontTimer = new Timer();
+    private static double minWrongTime = 1;
 
     private Vision() {
         //all numbers: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
@@ -47,9 +44,9 @@ public class Vision {
             while (!Thread.interrupted()) {
                 updatePoses();
                 try {
-                    Thread.sleep(3);
+                    Thread.sleep(10);
                 } catch (InterruptedException ignored) {
-
+                    throw new RuntimeException();
                 }
             }
         });
@@ -57,27 +54,43 @@ public class Vision {
     }
 
     public void updatePoses() {
-//        if (LimelightHelpers.getTV(Constants.LIMELIGHT_LEFT_NAME)) {
-//            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_LEFT_NAME,
-//                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-//            limelightLeftData = LimelightHelpers
-//                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT_NAME);
-//
-//            if (limelightLeftData != null) {
-//                double xyStdev = .5;
-//
-//                if (limelightLeftData.tagCount < 2) {
-//                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
-//                } else {
-//                    xyStdev *= limelightLeftData.avgTagDist;
-//                }
-//
-//                if (!limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
-//                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-//                            limelightLeftData.timestampSeconds, VecBuilder
-//                                    .fill(xyStdev, xyStdev, 9999999999d));
-//            }
-//        }
+        if (RobotContainer.getState() == null) return;
+        if (LimelightHelpers.getTV(Constants.LIMELIGHT_LEFT_NAME)) {
+            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_LEFT_NAME,
+                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
+            limelightLeftData = LimelightHelpers
+                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT_NAME);
+
+            if (limelightLeftData != null) {
+                double xyStdev = .75;
+
+                boolean shouldAddPose = true;
+                if (limelightLeftData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) > .5) {
+                    if (!leftTimer.isRunning()) leftTimer.start();
+
+                    if (!leftTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
+                } else {
+                    leftTimer.stop();
+                    leftTimer.reset();
+                }
+
+                if (limelightLeftData.tagCount < 2) {
+                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
+                } else {
+                    xyStdev *= limelightLeftData.avgTagDist;
+                }
+
+                if (limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+                    shouldAddPose = false;
+
+                if (shouldAddPose) {
+                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
+                            limelightLeftData.timestampSeconds, VecBuilder
+                                    .fill(xyStdev, xyStdev, 9999999999d));
+                }
+            }
+        }
 
         if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
             LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,
@@ -86,7 +99,18 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
 
             if (limelightRightData != null) {
-                double xyStdev = .5;
+                double xyStdev = 1d;
+
+                boolean shouldAddPose = true;
+                if (limelightRightData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) > .5) {
+                    if (!rightTimer.isRunning()) rightTimer.start();
+
+                    if (!rightTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
+                } else {
+                    rightTimer.stop();
+                    rightTimer.reset();
+                }
 
                 if (limelightRightData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
@@ -94,10 +118,14 @@ public class Vision {
                     xyStdev *= limelightRightData.avgTagDist;
                 }
 
-                if (!limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+                if (limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+                    shouldAddPose = false;
+
+                if (shouldAddPose) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
                             limelightRightData.timestampSeconds, VecBuilder
                                     .fill(xyStdev, xyStdev, 9999999999d));
+                }
             }
         }
 
@@ -108,7 +136,18 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_FRONT_NAME);
 
             if (limelightFrontData != null) {
-                double xyStdev = .5;
+                double xyStdev = .75;
+
+                boolean shouldAddPose = true;
+                if (RobotContainer.getPose() != null && limelightFrontData.pose.getTranslation()
+                        .getDistance(RobotContainer.getPose().getTranslation()) > .5) {
+                    if (!frontTimer.isRunning()) frontTimer.start();
+
+                    if (!frontTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
+                } else {
+                    frontTimer.stop();
+                    frontTimer.reset();
+                }
 
                 if (limelightFrontData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightFrontData.avgTagDist, 3);
@@ -116,10 +155,14 @@ public class Vision {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
 
-                if (!limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+                if (limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+                    shouldAddPose = false;
+
+                if (shouldAddPose) {
                     commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
                             limelightFrontData.timestampSeconds, VecBuilder
                                     .fill(xyStdev, xyStdev, 9999999999d));
+                }
             }
         }
     }
