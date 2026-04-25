@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "startLeft"
+            "name": "startRight"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Trench Delayed Plus Half"
+            "pathName": "Red Top Delayed Trench Bump"
           }
         }
       ]

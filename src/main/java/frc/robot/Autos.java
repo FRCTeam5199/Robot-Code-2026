@@ -8,11 +8,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import com.pathplanner.lib.path.PathConstraints;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -48,12 +43,12 @@ public final class Autos {
     private static Autos autos;
     private static PathPlannerAuto redBottomScore;
     private static PathPlannerAuto redTopScore;
-    private static PathPlannerAuto redBottomTrenchDelayedScore;
-    private static PathPlannerAuto redTopTrenchDelayedScore;
-    private static PathPlannerAuto redBottomDoubleScore;
-    private static PathPlannerAuto redTopBumpDoubleScore;
-    private static PathPlannerAuto redTopDoubleScore;
-    private static PathPlannerAuto redBottomBumpDoubleScore;
+    private static PathPlannerAuto redBottomDelayedBump;
+    private static PathPlannerAuto redTopDelayedBump;
+    private static PathPlannerAuto redBottomDoubleTrench;
+    private static PathPlannerAuto redTopDoubleBump;
+    private static PathPlannerAuto redTopDoubleTrench;
+    private static PathPlannerAuto redBottomDoubleBump;
     private static PathPlannerAuto redBottomSelfShuttle;
     private static PathPlannerAuto redTopSelfShuttle;
     private static PathPlannerAuto blueBottomScore;
@@ -67,28 +62,14 @@ public final class Autos {
 
     public static void initializeAutos() {
 
-        redBottomScore = new PathPlannerAuto("Red Bottom Score");
-        redTopScore = new PathPlannerAuto("Red Top Score");
+        redBottomDoubleTrench = new PathPlannerAuto("Red Bottom Double Trench");
+        redTopDoubleTrench = new PathPlannerAuto("Red Top Double Trench");
 
-        redBottomDoubleScore = new PathPlannerAuto("Red Bottom Double Score");
-        redTopDoubleScore = new PathPlannerAuto("Red Top Double Score");
-        redBottomBumpDoubleScore = new PathPlannerAuto("Red Bottom Bump Double Score Plus Half");
-        redTopBumpDoubleScore = new PathPlannerAuto("Red Top Bump Double Score Plus Half");
+        redBottomDoubleBump = new PathPlannerAuto("Red Bottom Double Bump");
+        redTopDoubleBump = new PathPlannerAuto("Red Top Double Bump");
 
-        redBottomTrenchDelayedScore = new PathPlannerAuto("Red Bottom Trench Delayed Plus Half");
-        redTopTrenchDelayedScore = new PathPlannerAuto("Red Top Trench Delayed Plus Half");
-
-        redBottomSelfShuttle = new PathPlannerAuto("Red Bottom Self Shuttle");
-        redTopSelfShuttle = new PathPlannerAuto("Red Top Self Shuttle");
-
-        blueBottomSelfShuttle = new PathPlannerAuto("Copy of Red Bottom Self Shuttle").andThen(RobotCommands.indexBallsAuto());
-        blueTopSelfShuttle = new PathPlannerAuto("Copy of Red Top Self Shuttle").andThen(RobotCommands.indexBallsAuto());
-
-        blueBottomDoubleScore = new PathPlannerAuto("Copy of Red Bottom Double Score");
-        blueTopDoubleScore = new PathPlannerAuto("Copy of Red Top Double Score");
-
-        blueBottomScore = new PathPlannerAuto("Copy of Red Bottom Score");
-        blueTopScore = new PathPlannerAuto("Copy of Red Top Score");
+        redBottomDelayedBump = new PathPlannerAuto("Red Bottom Delayed Bump");
+        redTopDelayedBump = new PathPlannerAuto("Red Top Delayed Bump");
 
         Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
@@ -97,25 +78,19 @@ public final class Autos {
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
                 .withSize(2, 1);
 
+        autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
+        autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
+        autonChooserRed.addOption("Red Left Double Bump", redBottomDoubleBump);
+        autonChooserRed.addOption("Red Right Double Bump", redTopDoubleBump);
+        autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
+        autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
 
-        // autonChooserRed.addOption("Red Left Score Climb", redBottomScore);
-        // autonChooserRed.addOption("Red Right Score Climb", redTopScore);
-
-//        autonChooserRed.addOption("Red Left Self Shuttle", redBottomSelfShuttle);
-//        autonChooserRed.addOption("Red Right Self Shuttle", redTopSelfShuttle);
-
-        autonChooserRed.addOption("Red Left Double Score", redBottomDoubleScore);
-        autonChooserRed.addOption("Red Right Double Score", redTopDoubleScore);
-        autonChooserRed.addOption("Red Left Double Bump Score", redBottomBumpDoubleScore);
-        autonChooserRed.addOption("Red Right Double Bump Score", redTopBumpDoubleScore);
-        autonChooserRed.addOption("Red Left Single Delayed Score", redBottomTrenchDelayedScore);
-        autonChooserRed.addOption("Red Right Single Delayed Score", redTopTrenchDelayedScore);
-
-//        autonChooserBlue.addOption("Blue Left Self Shuttle", blueBottomSelfShuttle);
-//        autonChooserBlue.addOption("Blue Right Self Shuttle", blueTopSelfShuttle);
-
-        autonChooserBlue.addOption("Blue Left Double Score", blueBottomDoubleScore);
-        autonChooserBlue.addOption("Blue Right Double Score", blueTopDoubleScore);
+        autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
+        autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
+        autonChooserRed.addOption("Blue Left Double Bump", redBottomDoubleBump);
+        autonChooserRed.addOption("Blue Right Double Bump", redTopDoubleBump);
+        autonChooserRed.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
+        autonChooserRed.addOption("Blue Right Delayed Bump", redTopDelayedBump);
 
         // autonChooserBlue.addOption("Blue Left Score Climb", blueBottomScore);
         // autonChooserBlue.addOption("Blue Right Score Climb", blueTopScore);

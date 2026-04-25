@@ -144,12 +144,12 @@
     },
     {
       "anchor": {
-        "x": 8.7,
-        "y": 3.679
+        "x": 8.645,
+        "y": 3.317
       },
       "prevControl": {
-        "x": 8.7,
-        "y": 2.179
+        "x": 8.645,
+        "y": 1.8170000000000002
       },
       "nextControl": null,
       "isLocked": false,
@@ -167,19 +167,11 @@
     },
     {
       "waypointRelativePos": 2.9360341151385927,
-      "rotationDegrees": -49.036
-    },
-    {
-      "waypointRelativePos": 4.0,
-      "rotationDegrees": -90.0
+      "rotationDegrees": -45.0
     },
     {
       "waypointRelativePos": 5.123667377398719,
-      "rotationDegrees": -90.0
-    },
-    {
-      "waypointRelativePos": 5.9,
-      "rotationDegrees": 180.0
+      "rotationDegrees": -45.0
     },
     {
       "waypointRelativePos": 6.65,
@@ -201,7 +193,7 @@
       "maxWaypointRelativePos": 6.628287841191068,
       "constraints": {
         "maxVelocity": 1.0,
-        "maxAcceleration": 3.0,
+        "maxAcceleration": 5.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -213,7 +205,7 @@
       "minWaypointRelativePos": 0.8218362282878413,
       "maxWaypointRelativePos": 3.7518610421836307,
       "constraints": {
-        "maxVelocity": 1.5,
+        "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -226,7 +218,7 @@
   "eventMarkers": [
     {
       "name": "deployIntake",
-      "waypointRelativePos": 0.19,
+      "waypointRelativePos": 0.2,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -281,8 +273,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 5.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
