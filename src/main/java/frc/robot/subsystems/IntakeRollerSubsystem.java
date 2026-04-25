@@ -45,7 +45,7 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
                 IntakeRollerConstants.SLOT0_CONFIGS, false);
 
         configureFollowerMotor(IntakeRollerConstants.FOLLOWER_MOTOR_ID,
-                IntakeRollerConstants.FOLLOWER_INVERTED, IntakeRollerConstants.CAN_BUS);
+                IntakeRollerConstants.FOLLOWER_INVERTED, IntakeRollerConstants.CAN_BUS, true);
     }
 
     public static IntakeRollerSubsystem getInstance() {
