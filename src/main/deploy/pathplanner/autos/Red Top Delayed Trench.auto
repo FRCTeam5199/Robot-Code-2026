@@ -7,13 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "startLeft"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Bottom First Sweep"
+            "name": "startRight"
           }
         },
         {
@@ -21,15 +15,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "shoot"
+                  "waitTime": 3.0
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 4.0
+                  "name": "shoot"
                 }
               }
             ]
@@ -38,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Second Sweep"
+            "pathName": "Red Top Delayed Trench"
           }
         },
         {
@@ -63,13 +57,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Half"
+            "pathName": "Red Top Half"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Red Double Score",
+  "folder": "Red Delayed Score",
   "choreoAuto": false
 }

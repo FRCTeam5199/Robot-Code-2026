@@ -195,10 +195,11 @@ RobotContainer {
 //        NamedCommands.registerCommand("hoodZero", hoodZero);
 //        NamedCommands.registerCommand("revUp", revUp);
         NamedCommands.registerCommand("stable", leftTriggerReleased);
-        NamedCommands.registerCommand("deployIntake", intakeDeploy);
+        NamedCommands.registerCommand("deployIntake", new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY)
+                .andThen(new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED)));
 //        NamedCommands.registerCommand("stowIntake", intakeStow);
 //        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
-        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
+//        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
 //        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
@@ -436,11 +437,14 @@ RobotContainer {
                 () -> !forceShuttleLeft
         ));
 
-//        commandXboxController.b().onTrue(new InstantCommand(RobotCommands::indexBallsAuto
-//        )).onFalse(new ParallelCommandGroup(
-//                new VelocityCommand(hopperSubsystem, 0),
-//                new VelocityCommand(kickerSubsystem, 0)
-//        ));
+//        commandXboxController.b().onTrue(new ParallelCommandGroup(
+//                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED),
+//                        new VelocityCommand(kickerSubsystem, 25)
+//                ))
+//                .onFalse(new ParallelCommandGroup(
+//                        new VelocityCommand(hopperSubsystem, 0),
+//                        new VelocityCommand(kickerSubsystem, 0)
+//                ));
         commandXboxController.b().onTrue(new ConditionalCommand(
                 new InstantCommand(() -> forceShuttleRight = true),
                 new InstantCommand(() -> forceShuttleRight = false)
@@ -496,7 +500,7 @@ RobotContainer {
         // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
         // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {

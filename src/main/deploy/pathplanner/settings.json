@@ -4,9 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "Red Score Bottom",
-    "Red Score Top",
-    "Red Self Shuttle Bottom",
-    "Red Self Shuttle Top"
+    "Red Score Top"
   ],
   "autoFolders": [
     "Red Delayed Score",

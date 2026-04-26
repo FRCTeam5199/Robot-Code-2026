@@ -35,8 +35,8 @@ public class IntakePivotConstants {
     public static final double ACCELERATION = 100; //200
     public static final double JERK = 1500; //3000
 
-    public static final double LOWER_TOLERANCE = 4;
-    public static final double UPPER_TOLERANCE = 4;
+    public static final double LOWER_TOLERANCE = 10;
+    public static final double UPPER_TOLERANCE = 10;
 
     public static final double MAGNET_OFFSET = .34912109375;
     public static final boolean ENCODER_DIRECTION = true;

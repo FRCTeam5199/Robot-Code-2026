@@ -55,10 +55,10 @@ public class ShotCalculator extends SubsystemBase {
         shuttleShooterSpeedLookupTable = new InterpolatingDoubleTreeMap();
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
-//        hoodLookupTable.put(1.045 + Constants.HUB_RADIUS, 2d);
-//        hoodLookupTable.put(1.491 + Constants.HUB_RADIUS, 5d);
-//        hoodLookupTable.put(2.007 + Constants.HUB_RADIUS, 6d);
-//        hoodLookupTable.put(2.511 + Constants.HUB_RADIUS, 9d); //here
+        hoodLookupTable.put(1.01 + Constants.HUB_RADIUS, 4d);
+        hoodLookupTable.put(1.528 + Constants.HUB_RADIUS, 6d);
+        hoodLookupTable.put(2.05 + Constants.HUB_RADIUS, 8d);
+        hoodLookupTable.put(2.466 + Constants.HUB_RADIUS, 10d);
         hoodLookupTable.put(2.97 + Constants.HUB_RADIUS, 12d);
         hoodLookupTable.put(3.517 + Constants.HUB_RADIUS, 13d);
         hoodLookupTable.put(3.968 + Constants.HUB_RADIUS, 15d);
@@ -66,10 +66,10 @@ public class ShotCalculator extends SubsystemBase {
         hoodLookupTable.put(5.074 + Constants.HUB_RADIUS, 19d);
         hoodLookupTable.put(5.474 + Constants.HUB_RADIUS, 21d);
 
-//        shooterSpeedLookupTable.put(1.045 + Constants.HUB_RADIUS, 47d);
-//        shooterSpeedLookupTable.put(1.491 + Constants.HUB_RADIUS, 47d);
-//        shooterSpeedLookupTable.put(2.007 + Constants.HUB_RADIUS, 53.5);
-//        shooterSpeedLookupTable.put(2.511 + Constants.HUB_RADIUS, 54d); //here
+        shooterSpeedLookupTable.put(1.01 + Constants.HUB_RADIUS, 42d);
+        shooterSpeedLookupTable.put(1.528 + Constants.HUB_RADIUS, 45d);
+        shooterSpeedLookupTable.put(2.05 + Constants.HUB_RADIUS, 48d);
+        shooterSpeedLookupTable.put(2.466 + Constants.HUB_RADIUS, 50.5);
         shooterSpeedLookupTable.put(2.97 + Constants.HUB_RADIUS, 54d);
         shooterSpeedLookupTable.put(3.517 + Constants.HUB_RADIUS, 57d);
         shooterSpeedLookupTable.put(3.968 + Constants.HUB_RADIUS, 60d);
@@ -78,8 +78,10 @@ public class ShotCalculator extends SubsystemBase {
         shooterSpeedLookupTable.put(5.474 + Constants.HUB_RADIUS, 69d);
 
         //New table done right before going to Code Orange
-//        timeOfFlightLookupTable.put(.970 + Constants.HUB_RADIUS, .98);
-//        timeOfFlightLookupTable.put(2.06 + Constants.HUB_RADIUS, 1.07);
+        timeOfFlightLookupTable.put(1.01 + Constants.HUB_RADIUS, .95);
+        timeOfFlightLookupTable.put(1.528 + Constants.HUB_RADIUS, .94);
+        timeOfFlightLookupTable.put(2.05 + Constants.HUB_RADIUS, 1.03);
+        timeOfFlightLookupTable.put(2.466 + Constants.HUB_RADIUS, 1.01);
         timeOfFlightLookupTable.put(2.97 + Constants.HUB_RADIUS, 1.04);
         timeOfFlightLookupTable.put(3.517 + Constants.HUB_RADIUS, 1.197);
         timeOfFlightLookupTable.put(3.968 + Constants.HUB_RADIUS, 1.10);
@@ -93,8 +95,8 @@ public class ShotCalculator extends SubsystemBase {
         shuttleHoodLookupTable.put(10.540514, 24d);
         shuttleHoodLookupTable.put(10.970932, 24d);
 
-        shuttleShooterSpeedLookupTable.put(4.726098, 55d + 3d + 3d);
-        shuttleShooterSpeedLookupTable.put(7.415803, 70d + 3d + 3d);
+        shuttleShooterSpeedLookupTable.put(4.726098, 50d);
+        shuttleShooterSpeedLookupTable.put(7.415803, 79d);
         shuttleShooterSpeedLookupTable.put(10.540514, 100d);
         shuttleShooterSpeedLookupTable.put(10.970932, 100d);
         shuttleShooterSpeedLookupTable.put(12d, 100d);
