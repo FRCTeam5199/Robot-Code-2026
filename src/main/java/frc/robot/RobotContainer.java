@@ -156,6 +156,8 @@ RobotContainer {
     private static Command leftTriggerReleased;
     private static Command leftBumperPressed;
     private static Command leftBumperReleased;
+    private static Command rightBumperPressed;
+    private static Command rightBumperReleased;
     private static Command extend;
     private static Command retract;
     private static Command stop;
@@ -174,6 +176,13 @@ RobotContainer {
                         new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
 
         leftTriggerReleased = RobotCommands.idleState();
+
+        rightBumperPressed = RobotCommands.indexBallsAuto().alongWith(
+                new ParallelCommandGroup(shooterAuto,
+                        new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
+                        new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
+
+        rightBumperReleased = RobotCommands.idleState();
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
@@ -430,12 +439,12 @@ RobotContainer {
         commandXboxController.y().onTrue(intakeDeploy);
         commandXboxController.a().onTrue(intakeStow);
 
-        commandXboxController.x().onTrue(new ConditionalCommand(
-                new InstantCommand(() -> forceShuttleLeft = true),
-                new InstantCommand(() -> forceShuttleLeft = false)
-                        .alongWith(new InstantCommand(() -> forceShuttleRight = false)),
-                () -> !forceShuttleLeft
-        ));
+        // commandXboxController.x().onTrue(new ConditionalCommand(
+        //         new InstantCommand(() -> forceShuttleLeft = true),
+        //         new InstantCommand(() -> forceShuttleLeft = false)
+        //                 .alongWith(new InstantCommand(() -> forceShuttleRight = false)),
+        //         () -> !forceShuttleLeft
+        // ));
 
 //        commandXboxController.b().onTrue(new ParallelCommandGroup(
 //                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED),
@@ -445,12 +454,12 @@ RobotContainer {
 //                        new VelocityCommand(hopperSubsystem, 0),
 //                        new VelocityCommand(kickerSubsystem, 0)
 //                ));
-        commandXboxController.b().onTrue(new ConditionalCommand(
-                new InstantCommand(() -> forceShuttleRight = true),
-                new InstantCommand(() -> forceShuttleRight = false)
-                        .alongWith(new InstantCommand(() -> forceShuttleLeft = false)),
-                () -> !forceShuttleRight
-        ));
+        // commandXboxController.b().onTrue(new ConditionalCommand(
+        //         new InstantCommand(() -> forceShuttleRight = true),
+        //         new InstantCommand(() -> forceShuttleRight = false)
+        //                 .alongWith(new InstantCommand(() -> forceShuttleLeft = false)),
+        //         () -> !forceShuttleRight
+        // ));
 
 //        commandXboxController.a().onTrue(intakeRollerSubsystem.sysIdQuasistaticForward());
 //        commandXboxController.b().onTrue(intakeRollerSubsystem.sysIdQuasistaticReverse());
@@ -481,7 +490,16 @@ RobotContainer {
                         new VelocityCommand(hopperSubsystem, 0)
                 ));
 
-        commandXboxController.rightBumper().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
+        // Outtake and Shoot
+        commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116)
+                .alongWith(rightBumperPressed
+                ))
+                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
+                        rightBumperReleased
+                ));
+        
+        // X-drive
+        commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
         // operatorCommandXboxController.y().onTrue(setHubSetpoint);
         // operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
