@@ -491,10 +491,12 @@ RobotContainer {
                 ));
 
         // Outtake and Shoot
-        commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116)
-                .alongWith(rightBumperPressed
+        commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
+                    new VelocityCommand(hopperSubsystem, 100)).alongWith(
+                        rightBumperPressed
                 ))
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
+                    new VelocityCommand(hopperSubsystem, 0)).alongWith(
                         rightBumperReleased
                 ));
         
