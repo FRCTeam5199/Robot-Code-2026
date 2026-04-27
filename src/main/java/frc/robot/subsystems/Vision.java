@@ -46,7 +46,6 @@ public class Vision {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ignored) {
-                    throw new RuntimeException();
                 }
             }
         });

@@ -196,7 +196,8 @@ public class ShotCalculator extends SubsystemBase {
                     smallestValidDistanceIndex = i;
                 }
             }
-            turretAnglePhaseDelayed = turretAngles[smallestValidDistanceIndex];
+            if (smallestValidDistanceIndex == -1) turretAnglePhaseDelayed = turretAngles[1];
+            else turretAnglePhaseDelayed = turretAngles[smallestValidDistanceIndex];
 
             turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 
@@ -242,7 +243,8 @@ public class ShotCalculator extends SubsystemBase {
                     smallestValidDistanceIndex = i;
                 }
             }
-            turretAngle = turretAngles[smallestValidDistanceIndex];
+            if (smallestValidDistanceIndex == -1) turretAngle = turretAngles[1];
+            else turretAngle = turretAngles[smallestValidDistanceIndex];
 
             turretVelocity -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
 
@@ -267,11 +269,12 @@ public class ShotCalculator extends SubsystemBase {
 //                shotCalculator.getTurretVelocityPhaseDelayed());
         turretSubsystem.updateGoalPosition(getTurretAnglePhaseDelayed(), getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
+        RobotContainer.getShooterControlAutoRB().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
 //        shooterSubsystem.setVelocity(shotCalculator.getShooterSpeedPhaseDelayed());
 //        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),
 //                shotCalculator.getHoodVelocityPhaseDelayed());
-        hoodSubsystem.updateGoalPosition(getHoodAnglePhaseDelayed(), getHoodAngle());
+        hoodSubsystem.updateGoalPosition(getHoodAnglePhaseDelayed(), getHoodVelocityPhaseDelayed());
 
     }
 

@@ -47,8 +47,8 @@ public class
 
 RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
-    // public static final CommandXboxController operatorCommandXboxController
-    //         = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
+    public static final CommandXboxController operatorCommandXboxController
+            = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -73,7 +73,6 @@ RobotContainer {
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
     //Misc
     public static final Telemetry logger = new Telemetry(Constants.MAX_SPEED);
@@ -97,6 +96,7 @@ RobotContainer {
     private static final HoodCommand hoodOutpost = new HoodCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle());
     //Shooter Commands
     private static final VelocityCommand shooterAuto = new VelocityCommand(shooterSubsystem, 0);
+    private static final VelocityCommand shooterAutoRB = new VelocityCommand(shooterSubsystem, 0);
     private static final VelocityCommand shooterStop = new VelocityCommand(shooterSubsystem, 0);
     private static final VelocityCommand shooterHub = new VelocityCommand(shooterSubsystem, Setpoint.HUB.getShooterSpeed());
     private static final VelocityCommand shooterTower = new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed());
@@ -140,16 +140,15 @@ RobotContainer {
     public static boolean isClimberRetracting = false;
     public static double goalX;
     private static Setpoint currentSetpoint = Setpoint.HUB;
-    private static ChassisSpeeds lastSpeeds;
-    private static double accelerationX;
-    private static double accelerationY;
-    private static double accelerationOmega;
-
     //Mode Commands
     private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
     private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
     private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
     private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
+    private static ChassisSpeeds lastSpeeds;
+    private static double accelerationX;
+    private static double accelerationY;
+    private static double accelerationOmega;
     private static boolean isAutonomous = false;
     //Button Bindings
     private static Command leftTriggerPressed;
@@ -166,6 +165,7 @@ RobotContainer {
     private static boolean filtersInitialized = false;
     private static boolean forceShuttleLeft = false;
     private static boolean forceShuttleRight = false;
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
 
     public RobotContainer() {
@@ -178,7 +178,7 @@ RobotContainer {
         leftTriggerReleased = RobotCommands.idleState();
 
         rightBumperPressed = RobotCommands.indexBallsAuto().alongWith(
-                new ParallelCommandGroup(shooterAuto,
+                new ParallelCommandGroup(shooterAutoRB,
                         new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
                         new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
 
@@ -370,6 +370,10 @@ RobotContainer {
         return shooterAuto;
     }
 
+    public static VelocityCommand getShooterControlAutoRB() {
+        return shooterAutoRB;
+    }
+
     public static VelocityCommand getKickerControlAuto() {
         return kickerAuto;
     }
@@ -420,6 +424,26 @@ RobotContainer {
         RobotContainer.isAutonomous = isClimbing;
     }
 
+    public static void updateLastSpeeds() {
+        lastSpeeds = currentState.Speeds;
+    }
+
+    public static double getAccelerationOmega() {
+        return accelerationOmega;
+    }
+
+    public static double getAccelerationY() {
+        return accelerationY;
+    }
+
+    public static double getAccelerationX() {
+        return accelerationX;
+    }
+
+    public static SwerveDrivetrain.SwerveDriveState getState() {
+        return currentState;
+    }
+
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
@@ -466,16 +490,6 @@ RobotContainer {
 //        commandXboxController.y().onTrue(intakeRollerSubsystem.sysIdDynamicForward());
 //        commandXboxController.x().onTrue(intakeRollerSubsystem.sysIdDynamicReverse());
 
-//
-//        commandXboxController.y().onTrue(new ParallelCommandGroup(new VelocityCommand(kickerSubsystem, 90),
-//                new VelocityCommand(hopperSubsystem, 90)
-//        )).onFalse(new SequentialCommandGroup(new VelocityCommand(hopperSubsystem, 0), new VelocityCommand(kickerSubsystem, 0)
-//                )
-//        );
-
-        // commandXboxController.rightBumper().onTrue(intakeAgitation)
-        //         .onFalse(new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY));
-
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
 
@@ -492,34 +506,34 @@ RobotContainer {
 
         // Outtake and Shoot
         commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
-                    new VelocityCommand(hopperSubsystem, 100)).alongWith(
+                        new VelocityCommand(hopperSubsystem, 100)).alongWith(
                         rightBumperPressed
                 ))
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
-                    new VelocityCommand(hopperSubsystem, 0)).alongWith(
+                        new VelocityCommand(hopperSubsystem, 0)).alongWith(
                         rightBumperReleased
                 ));
-        
+
         // X-drive
         commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
-        // operatorCommandXboxController.y().onTrue(setHubSetpoint);
-        // operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
-        // operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
-        // operatorCommandXboxController.a().onTrue(setTowerSetpoint);
+        operatorCommandXboxController.y().onTrue(setHubSetpoint);
+        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
+        operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
+        operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 
-        // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-        // operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
-        // operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
+        operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
+        operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
 
-        // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-        // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
-        //         .onFalse(RobotCommands.idleState());
-        // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
+        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
+                .onFalse(RobotCommands.idleState());
+        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
 //        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
@@ -538,26 +552,5 @@ RobotContainer {
             commandSwerveDrivetrain.getModules()[i].getSteerMotor().optimizeBusUtilization();
             commandSwerveDrivetrain.getModules()[i].getEncoder().optimizeBusUtilization();
         }
-    }
-
-    public static void updateLastSpeeds() {
-        lastSpeeds = currentState.Speeds;
-    }
-
-
-    public static double getAccelerationOmega() {
-        return accelerationOmega;
-    }
-
-    public static double getAccelerationY() {
-        return accelerationY;
-    }
-
-    public static double getAccelerationX() {
-        return accelerationX;
-    }
-
-    public static SwerveDrivetrain.SwerveDriveState getState() {
-        return currentState;
     }
 }
