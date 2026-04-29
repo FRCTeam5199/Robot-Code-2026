@@ -47,8 +47,8 @@ public class
 
 RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
-    public static final CommandXboxController operatorCommandXboxController
-            = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
+    // public static final CommandXboxController operatorCommandXboxController
+    //         = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -292,7 +292,7 @@ RobotContainer {
                     shotMode = ShotMode.SHOOTING;
             }
         }
-        double scalingFactor = 1.25;
+        double scalingFactor = 1.5;
 
         if (commandXboxController.getLeftY() < 0)
             requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
@@ -505,35 +505,30 @@ RobotContainer {
                 ));
 
         // Outtake and Shoot
-        commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
-                        new VelocityCommand(hopperSubsystem, 100)).alongWith(
-                        rightBumperPressed
-                ))
-                .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
-                        new VelocityCommand(hopperSubsystem, 0)).alongWith(
-                        rightBumperReleased
-                ));
+        commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116)
+            .alongWith(rightBumperPressed))
+                .onFalse(RobotCommands.idleState().alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
 
         // X-drive
         commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
-        operatorCommandXboxController.y().onTrue(setHubSetpoint);
-        operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
-        operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
-        operatorCommandXboxController.a().onTrue(setTowerSetpoint);
+        // operatorCommandXboxController.y().onTrue(setHubSetpoint);
+        // operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
+        // operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
+        // operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 
-        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-        operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
-        operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
+        // operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
+        // operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
 
-        operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-        operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
-                .onFalse(RobotCommands.idleState());
-        operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
+        // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
+        //         .onFalse(RobotCommands.idleState());
+        // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
 //        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
