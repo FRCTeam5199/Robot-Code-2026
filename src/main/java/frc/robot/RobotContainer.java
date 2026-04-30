@@ -505,9 +505,9 @@ RobotContainer {
                 ));
 
         // Outtake and Shoot
-        commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116)
-            .alongWith(rightBumperPressed))
-                .onFalse(RobotCommands.idleState().alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+        // commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116)
+        //     .alongWith(rightBumperPressed))
+        //         .onFalse(RobotCommands.idleState().alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
 
         // X-drive
         commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
