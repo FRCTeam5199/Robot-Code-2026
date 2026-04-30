@@ -76,7 +76,7 @@ public class Vision {
                 }
 
                 if (limelightLeftData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
+                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 4);
                 } else {
                     xyStdev *= limelightLeftData.avgTagDist;
                 }
@@ -113,7 +113,7 @@ public class Vision {
                 }
 
                 if (limelightRightData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
+                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 4);
                 } else {
                     xyStdev *= limelightRightData.avgTagDist;
                 }
@@ -150,7 +150,7 @@ public class Vision {
                 }
 
                 if (limelightFrontData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightFrontData.avgTagDist, 3);
+                    xyStdev *= Math.pow(limelightFrontData.avgTagDist, 4);
                 } else {
                     xyStdev *= limelightFrontData.avgTagDist;
                 }
