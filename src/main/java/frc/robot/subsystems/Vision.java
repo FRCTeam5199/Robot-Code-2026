@@ -17,7 +17,8 @@ public class Vision {
     private static Timer rightTimer = new Timer();
     private static Timer leftTimer = new Timer();
     private static Timer frontTimer = new Timer();
-    private static double minWrongTime = 1;
+    private static double minWrongTime = 1d;
+    private static double maxWrongDistance = 1.5;
 
     private Vision() {
         //all numbers: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
@@ -61,11 +62,11 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT_NAME);
 
             if (limelightLeftData != null) {
-                double xyStdev = .75;
+                double xyStdev = .5;
 
                 boolean shouldAddPose = true;
                 if (limelightLeftData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) > .5) {
+                        .getDistance(RobotContainer.getPose().getTranslation()) > maxWrongDistance) {
                     if (!leftTimer.isRunning()) leftTimer.start();
 
                     if (!leftTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
@@ -98,11 +99,11 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
 
             if (limelightRightData != null) {
-                double xyStdev = 1d;
+                double xyStdev = .5;
 
                 boolean shouldAddPose = true;
                 if (limelightRightData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) > .5) {
+                        .getDistance(RobotContainer.getPose().getTranslation()) > maxWrongDistance) {
                     if (!rightTimer.isRunning()) rightTimer.start();
 
                     if (!rightTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
@@ -135,11 +136,11 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_FRONT_NAME);
 
             if (limelightFrontData != null) {
-                double xyStdev = .75;
+                double xyStdev = .5;
 
                 boolean shouldAddPose = true;
                 if (RobotContainer.getPose() != null && limelightFrontData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) > .5) {
+                        .getDistance(RobotContainer.getPose().getTranslation()) > maxWrongDistance) {
                     if (!frontTimer.isRunning()) frontTimer.start();
 
                     if (!frontTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
