@@ -210,6 +210,8 @@ RobotContainer {
 //        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
 //        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
+        NamedCommands.registerCommand("outtake", new VelocityCommand(intakeRollerSubsystem, -116));
+        NamedCommands.registerCommand("intake", new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED));
 //        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
         //Retest on red

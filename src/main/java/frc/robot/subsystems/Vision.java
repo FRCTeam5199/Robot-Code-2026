@@ -19,6 +19,9 @@ public class Vision {
     private static Timer frontTimer = new Timer();
     private static double minWrongTime = 1d;
     private static double maxWrongDistance = 1.5;
+    private static double maxSingleTagDistance = 1.5;
+    private static double maxDoubleTagDistance = 4.15;
+    private static double stdDev = .35;
 
     private Vision() {
         //all numbers: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
@@ -62,7 +65,7 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT_NAME);
 
             if (limelightLeftData != null) {
-                double xyStdev = .5;
+                double xyStdev = stdDev;
 
                 boolean shouldAddPose = true;
                 if (limelightLeftData.pose.getTranslation()
@@ -77,8 +80,10 @@ public class Vision {
 
                 if (limelightLeftData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightLeftData.avgTagDist, 4);
+                    if (limelightLeftData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
                 } else {
                     xyStdev *= limelightLeftData.avgTagDist;
+                    if (limelightLeftData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
                 }
 
                 if (limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
@@ -99,7 +104,7 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
 
             if (limelightRightData != null) {
-                double xyStdev = .5;
+                double xyStdev = stdDev;
 
                 boolean shouldAddPose = true;
                 if (limelightRightData.pose.getTranslation()
@@ -114,8 +119,10 @@ public class Vision {
 
                 if (limelightRightData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightRightData.avgTagDist, 4);
+                    if (limelightRightData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
                 } else {
                     xyStdev *= limelightRightData.avgTagDist;
+                    if (limelightRightData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
                 }
 
                 if (limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
@@ -136,7 +143,7 @@ public class Vision {
                     .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_FRONT_NAME);
 
             if (limelightFrontData != null) {
-                double xyStdev = .5;
+                double xyStdev = stdDev;
 
                 boolean shouldAddPose = true;
                 if (RobotContainer.getPose() != null && limelightFrontData.pose.getTranslation()
@@ -151,8 +158,10 @@ public class Vision {
 
                 if (limelightFrontData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightFrontData.avgTagDist, 4);
+                    if (limelightFrontData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
                 } else {
                     xyStdev *= limelightFrontData.avgTagDist;
+                    if (limelightFrontData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
                 }
 
                 if (limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))

@@ -138,6 +138,28 @@
           "name": "stable"
         }
       }
+    },
+    {
+      "name": "outtake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "outtake"
+        }
+      }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 0.1,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
+        }
+      }
     }
   ],
   "globalConstraints": {
