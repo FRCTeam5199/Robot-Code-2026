@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.0,
-        "y": 0.613
+        "x": 12.061,
+        "y": 0.664
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.3,
-        "y": 0.6130000000000004
+        "x": 9.395663338088445,
+        "y": 0.5221540656205419
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.7,
-        "y": 3.291
+        "x": 10.689529243937232,
+        "y": 3.756818830242511
       },
       "prevControl": {
-        "x": 10.67902149196175,
-        "y": 0.29107335052996897
+        "x": 11.032715976385472,
+        "y": 0.7765129958235839
       },
       "nextControl": {
-        "x": 10.712938659058485,
-        "y": 5.1412282453637665
+        "x": 10.443694721825961,
+        "y": 5.89169757489301
       },
       "isLocked": false,
       "linkedName": null
@@ -64,12 +64,12 @@
     },
     {
       "anchor": {
-        "x": 15.774422253922964,
-        "y": 0.613
+        "x": 13.0,
+        "y": 0.65
       },
       "prevControl": {
-        "x": 15.524422253922964,
-        "y": 0.613
+        "x": 12.75,
+        "y": 0.65
       },
       "nextControl": null,
       "isLocked": false,
@@ -128,7 +128,7 @@
     },
     {
       "name": "deployIntake",
-      "waypointRelativePos": 0.18,
+      "waypointRelativePos": 0.12,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
