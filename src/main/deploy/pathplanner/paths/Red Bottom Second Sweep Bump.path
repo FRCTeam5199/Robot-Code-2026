@@ -24,40 +24,40 @@
         "y": 1.0107103360679943
       },
       "nextControl": {
-        "x": 10.895044769125946,
-        "y": 5.520371912489569
+        "x": 10.895054552269258,
+        "y": 5.520483734329327
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.696975748930099,
-        "y": 2.243
+        "x": 8.697,
+        "y": 2.6
       },
       "prevControl": {
-        "x": 8.03709256787673,
-        "y": 3.937959832627171
+        "x": 7.311359353944897,
+        "y": 3.4
       },
       "nextControl": {
-        "x": 9.101130355783697,
-        "y": 1.2048983413176686
+        "x": 8.91350635094611,
+        "y": 2.475
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.560142653352354,
-        "y": 0.65
+        "x": 12.485633802816901,
+        "y": 2.5
       },
       "prevControl": {
-        "x": 9.900154342319855,
-        "y": 0.6539280148252642
+        "x": 11.485633802816901,
+        "y": 2.5
       },
       "nextControl": {
-        "x": 12.656105532025265,
-        "y": 0.637525577160979
+        "x": 13.985633802816901,
+        "y": 2.5
       },
       "isLocked": false,
       "linkedName": null
@@ -68,8 +68,8 @@
         "y": 0.65
       },
       "prevControl": {
-        "x": 12.75,
-        "y": 0.65
+        "x": 14.004,
+        "y": 0.6499999999999999
       },
       "nextControl": null,
       "isLocked": false,
@@ -78,33 +78,50 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.12793176972281525,
+      "waypointRelativePos": 0.13,
       "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 0.6567164179104458,
+      "waypointRelativePos": 0.66,
       "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 0.9296375266524516,
+      "waypointRelativePos": 0.93,
       "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 1.7484008528784627,
+      "waypointRelativePos": 1.75,
       "rotationDegrees": -110.0
     },
     {
-      "waypointRelativePos": 3.0362473347548087,
-      "rotationDegrees": 180.0
+      "waypointRelativePos": 2.55,
+      "rotationDegrees": -135.0
+    },
+    {
+      "waypointRelativePos": 3.1,
+      "rotationDegrees": -135.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.5172180958811508,
-      "maxWaypointRelativePos": 3.295070898041856,
+      "minWaypointRelativePos": 0.95,
+      "maxWaypointRelativePos": 1.2,
       "constraints": {
         "maxVelocity": 2.5,
+        "maxAcceleration": 5.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 2.45,
+      "maxWaypointRelativePos": 3.05,
+      "constraints": {
+        "maxVelocity": 2.0,
         "maxAcceleration": 5.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -117,7 +134,7 @@
   "eventMarkers": [
     {
       "name": "stable",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -127,24 +144,13 @@
       }
     },
     {
-      "name": "outtake",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "outtake"
-        }
-      }
-    },
-    {
-      "name": "intake",
+      "name": "runIntake",
       "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "intake"
+          "name": "runIntake"
         }
       }
     }
@@ -164,7 +170,7 @@
   "reversed": false,
   "folder": "Red Score Bottom",
   "idealStartingState": {
-    "velocity": 0.0,
+    "velocity": 0,
     "rotation": 180.0
   },
   "useDefaultConstraints": false
