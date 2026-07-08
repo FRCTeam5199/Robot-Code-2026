@@ -7,25 +7,25 @@
         {
           "type": "named",
           "data": {
-            "name": "startLeft"
+            "name": "startRight"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom First Sweep Bump"
+            "pathName": "Red Top First Sweep Bump"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Second Sweep Bump"
+            "pathName": "Red Top Second Sweep Bump"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red Bottom Half"
+            "pathName": "Red Top Half"
           }
         }
       ]

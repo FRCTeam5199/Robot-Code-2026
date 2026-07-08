@@ -68,7 +68,7 @@ public final class Autos {
         redTopDoubleTrench = new PathPlannerAuto("Red Top Double Trench");
 
        redBottomDoubleBump = new PathPlannerAuto("Red Bottom Double Bump");
-//        redTopDoubleBump = new PathPlannerAuto("Red Top Double Bump");
+       redTopDoubleBump = new PathPlannerAuto("Red Top Double Bump");
 
         redBottomDelayedBump = new PathPlannerAuto("Red Bottom Delayed Bump");
         redTopDelayedBump = new PathPlannerAuto("Red Top Delayed Bump");
@@ -86,7 +86,7 @@ public final class Autos {
         autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
         autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
        autonChooserRed.addOption("Red Left Double Bump", redBottomDoubleBump);
-//        autonChooserRed.addOption("Red Right Double Bump", redTopDoubleBump);
+       autonChooserRed.addOption("Red Right Double Bump", redTopDoubleBump);
         autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
         autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
         autonChooserRed.addOption("Red Left Delayed Trench", redBottomDelayedTrench);
@@ -95,7 +95,7 @@ public final class Autos {
         autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
         autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
        autonChooserBlue.addOption("Blue Left Double Bump", redBottomDoubleBump);
-//        autonChooserBlue.addOption("Blue Right Double Bump", redTopDoubleBump);
+       autonChooserBlue.addOption("Blue Right Double Bump", redTopDoubleBump);
         autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
         autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
         autonChooserBlue.addOption("Blue Left Delayed Trench", redBottomDelayedTrench);

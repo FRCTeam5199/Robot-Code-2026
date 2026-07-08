@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 13.0,
-        "y": 7.5
+        "y": 7.3500000000000005
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.8,
-        "y": 7.500000000000001
+        "x": 9.413699086869716,
+        "y": 7.66376067389157
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 9.809700427960056,
-        "y": 5.089500713266761
+        "x": 9.065,
+        "y": 4.948
       },
       "prevControl": {
-        "x": 9.69322897907134,
-        "y": 6.681245165618885
+        "x": 8.84498952996233,
+        "y": 6.695202447649901
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,15 +30,29 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2345415778251608,
+      "waypointRelativePos": 0.22,
       "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 0.7356076759061843,
+      "waypointRelativePos": 0.78,
       "rotationDegrees": -90.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 0.45,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 5.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -49,6 +63,17 @@
         "type": "named",
         "data": {
           "name": "stable"
+        }
+      }
+    },
+    {
+      "name": "runIntake",
+      "waypointRelativePos": 0.1,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runIntake"
         }
       }
     }
@@ -62,13 +87,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 5.0,
     "rotation": -90.0
   },
   "reversed": false,
   "folder": "Red Score Top",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 180.0
   },
   "useDefaultConstraints": false

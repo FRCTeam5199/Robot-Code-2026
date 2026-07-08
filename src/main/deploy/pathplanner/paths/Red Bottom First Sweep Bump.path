@@ -21,26 +21,26 @@
       },
       "prevControl": {
         "x": 9.321204801252179,
-        "y": 0.4895797758576612
+        "y": 0.4895797758576609
       },
       "nextControl": {
         "x": 8.270303132842885,
-        "y": 2.165315340717035
+        "y": 2.1653153407170356
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 9.211073345259392,
+        "x": 9.211,
         "y": 2.45
       },
       "prevControl": {
-        "x": 8.850073345259393,
+        "x": 8.850000000000001,
         "y": 2.45
       },
       "nextControl": {
-        "x": 10.500661150409472,
+        "x": 10.501000000000001,
         "y": 2.45
       },
       "isLocked": false,
@@ -48,15 +48,15 @@
     },
     {
       "anchor": {
-        "x": 12.677253521126762,
+        "x": 12.677,
         "y": 2.45
       },
       "prevControl": {
-        "x": 11.72534950805959,
+        "x": 11.725095986932825,
         "y": 2.45
       },
       "nextControl": {
-        "x": 14.177253521126763,
+        "x": 14.876999999999999,
         "y": 2.45
       },
       "isLocked": false,
@@ -68,8 +68,8 @@
         "y": 0.7
       },
       "prevControl": {
-        "x": 14.0038192985802,
-        "y": 0.6999999999999998
+        "x": 15.2,
+        "y": 0.6999999999999996
       },
       "nextControl": null,
       "isLocked": false,
@@ -97,7 +97,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.2,
+      "minWaypointRelativePos": 2.43,
       "maxWaypointRelativePos": 2.9,
       "constraints": {
         "maxVelocity": 1.75,
@@ -110,8 +110,8 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7,
-      "maxWaypointRelativePos": 1.55,
+      "minWaypointRelativePos": 0.8,
+      "maxWaypointRelativePos": 1.4,
       "constraints": {
         "maxVelocity": 1.25,
         "maxAcceleration": 5.0,
@@ -161,7 +161,7 @@
     },
     {
       "name": "shoot",
-      "waypointRelativePos": 3.03,
+      "waypointRelativePos": 3.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -180,7 +180,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 180.0
   },
   "reversed": false,
