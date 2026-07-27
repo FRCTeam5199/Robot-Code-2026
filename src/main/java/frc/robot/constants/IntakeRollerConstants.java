@@ -14,13 +14,13 @@ public class IntakeRollerConstants {
     public static final boolean FOLLOWER_INVERTED = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(.0096438)
+            .withKP(0.0029856)
             .withKI(0)
             .withKD(0)
-            .withKS(.42357)
+            .withKS(0.050384)
             .withKG(0)
-            .withKV(.098062)
-            .withKA(.004291)
+            .withKV(0.11462)
+            .withKA(0.0033524)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double ACCELERATION = 400;
@@ -31,7 +31,7 @@ public class IntakeRollerConstants {
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
-    public static final double INTAKE_SPEED = 116;
+    public static final double INTAKE_SPEED = 100; //116
 
     public static final CANBus CAN_BUS = new CANBus("rio");
 }

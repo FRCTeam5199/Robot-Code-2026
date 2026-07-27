@@ -487,10 +487,10 @@ RobotContainer {
         //         () -> !forceShuttleRight
         // ));
 
-//        commandXboxController.a().onTrue(intakeRollerSubsystem.sysIdQuasistaticForward());
-//        commandXboxController.b().onTrue(intakeRollerSubsystem.sysIdQuasistaticReverse());
-//        commandXboxController.y().onTrue(intakeRollerSubsystem.sysIdDynamicForward());
-//        commandXboxController.x().onTrue(intakeRollerSubsystem.sysIdDynamicReverse());
+    //    commandXboxController.a().onTrue(intakeRollerSubsystem.sysIdQuasistaticForward());
+    //    commandXboxController.b().onTrue(intakeRollerSubsystem.sysIdQuasistaticReverse());
+    //    commandXboxController.y().onTrue(intakeRollerSubsystem.sysIdDynamicForward());
+    //    commandXboxController.x().onTrue(intakeRollerSubsystem.sysIdDynamicReverse());
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
