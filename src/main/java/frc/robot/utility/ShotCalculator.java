@@ -95,8 +95,8 @@ public class ShotCalculator extends SubsystemBase {
         shuttleHoodLookupTable.put(10.540514, 24d);
         shuttleHoodLookupTable.put(10.970932, 24d);
 
-        shuttleShooterSpeedLookupTable.put(4.726098, 50d);
-        shuttleShooterSpeedLookupTable.put(7.415803, 79d);
+        shuttleShooterSpeedLookupTable.put(4.726098, 50d - 5d);
+        shuttleShooterSpeedLookupTable.put(7.415803, 79d - 5d);
         shuttleShooterSpeedLookupTable.put(10.540514, 100d);
         shuttleShooterSpeedLookupTable.put(10.970932, 100d);
         shuttleShooterSpeedLookupTable.put(12d, 100d);
