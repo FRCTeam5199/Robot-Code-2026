@@ -18,7 +18,7 @@ public class Vision {
     private static Timer leftTimer = new Timer();
     private static Timer frontTimer = new Timer();
     private static double minWrongTime = 1d;
-    private static double maxWrongDistance = 1.5;
+    private static double maxWrongDistance = .25;
     private static double maxSingleTagDistance = 1.5;
     private static double maxDoubleTagDistance = 4.15;
     private static double stdDev = .35;
@@ -80,10 +80,11 @@ public class Vision {
 
                 if (limelightLeftData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
-                    if (limelightLeftData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
+//                    shouldAddPose = false;
+//                    if (limelightLeftData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
                 } else {
                     xyStdev *= limelightLeftData.avgTagDist;
-                    if (limelightLeftData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
+//                    if (limelightLeftData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
                 }
 
                 if (limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
@@ -119,10 +120,11 @@ public class Vision {
 
                 if (limelightRightData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
-                    if (limelightRightData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
+//                    shouldAddPose = false;
+//                    if (limelightRightData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
                 } else {
                     xyStdev *= limelightRightData.avgTagDist;
-                    if (limelightRightData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
+//                    if (limelightRightData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
                 }
 
                 if (limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
@@ -158,10 +160,11 @@ public class Vision {
 
                 if (limelightFrontData.tagCount < 2) {
                     xyStdev *= Math.pow(limelightFrontData.avgTagDist, 3);
-                    if (limelightFrontData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
+//                    shouldAddPose = false;
+//                    if (limelightFrontData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
                 } else {
                     xyStdev *= limelightFrontData.avgTagDist;
-                    if (limelightFrontData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
+//                    if (limelightFrontData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
                 }
 
                 if (limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))

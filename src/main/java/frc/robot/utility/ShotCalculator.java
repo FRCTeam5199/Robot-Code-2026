@@ -49,7 +49,7 @@ public class ShotCalculator extends SubsystemBase {
         shuttleShooterSpeedLookupTable = new InterpolatingDoubleTreeMap();
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
-                hoodLookupTable.put(1.00, 0d);
+        hoodLookupTable.put(1.00, 0d);
         hoodLookupTable.put(1.05, 1d);
         hoodLookupTable.put(1.10, 1d);
         hoodLookupTable.put(1.15, 2d);
