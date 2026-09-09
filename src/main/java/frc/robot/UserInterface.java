@@ -3,13 +3,13 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.networktables.GenericEntry;
+import org.wpilib.util.sendable.Sendable;
+import org.wpilib.shuffleboard.Shuffleboard;
+import org.wpilib.shuffleboard.ShuffleboardTab;
+import org.wpilib.shuffleboard.SimpleWidget;
+import org.wpilib.shuffleboard.WidgetType;
+import org.wpilib.smartdashboard.SmartDashboard;
 
 public class UserInterface {
     private static UserInterface self;

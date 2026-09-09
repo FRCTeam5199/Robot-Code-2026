@@ -1,13 +1,13 @@
 package frc.robot.utility;
 
-import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.math.util.Pair;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.geometry.Twist2d;
+import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.command2.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.KickerConstants;
@@ -509,18 +509,18 @@ public class ShotCalculator extends SubsystemBase {
             Pose2d estimatedPosePhaseDelayed =
                     estimatedPose.exp(
                             new Twist2d(
-                                    RobotContainer.getSpeeds().vxMetersPerSecond * Constants.PHASE_DELAY
+                                    RobotContainer.getSpeeds().vx * Constants.PHASE_DELAY
                                             + RobotContainer.getAccelerationX() * Constants.ACCELERATION_PHASE_DELAY,
-                                    RobotContainer.getSpeeds().vyMetersPerSecond * Constants.PHASE_DELAY
+                                    RobotContainer.getSpeeds().vy * Constants.PHASE_DELAY
                                             + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
-                                    RobotContainer.getSpeeds().omegaRadiansPerSecond * Constants.PHASE_DELAY
+                                    RobotContainer.getSpeeds().omega * Constants.PHASE_DELAY
                                             + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY));
 
             Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
-                    ChassisSpeeds.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
+                    ChassisVelocities.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
                             RobotContainer.getPose().getRotation()));
             Pair<Pose2d, Double> turret = createFutureTurretPose(estimatedPose,
-                    ChassisSpeeds.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
+                    ChassisVelocities.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
                             RobotContainer.getPose().getRotation()));
 
             futureTurretPositionPhaseDelayed = turretPhaseDelayed.getFirst();
@@ -585,7 +585,7 @@ public class ShotCalculator extends SubsystemBase {
             if (smallestValidDistanceIndex == -1) turretAnglePhaseDelayed = turretAngles[1];
             else turretAnglePhaseDelayed = turretAngles[smallestValidDistanceIndex];
 
-            turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
+            turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getSpeeds().omega));
 
             //Turret Angle Calculations
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
@@ -632,7 +632,7 @@ public class ShotCalculator extends SubsystemBase {
             if (smallestValidDistanceIndex == -1) turretAngle = turretAngles[1];
             else turretAngle = turretAngles[smallestValidDistanceIndex];
 
-            turretVelocity -= (Math.toDegrees(RobotContainer.getSpeeds().omegaRadiansPerSecond));
+            turretVelocity -= (Math.toDegrees(RobotContainer.getSpeeds().omega));
 
             // Based on Future Pose
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
@@ -665,7 +665,7 @@ public class ShotCalculator extends SubsystemBase {
     }
 
 
-    public Pair<Pose2d, Double> createFutureTurretPose(Pose2d pose2d, ChassisSpeeds fieldRelativeVelocity) {
+    public Pair<Pose2d, Double> createFutureTurretPose(Pose2d pose2d, ChassisVelocities fieldRelativeVelocity) {
         Pose2d turretPosition = pose2d.transformBy(Constants.ROBOT_TO_TURRET);
 
         // Sets distance values for lookup tables based on ShotMode
@@ -696,13 +696,13 @@ public class ShotCalculator extends SubsystemBase {
 
         //Turret's current velocity imparted from robot
         double turretVelocityX =
-                fieldRelativeVelocity.vxMetersPerSecond
-                        + fieldRelativeVelocity.omegaRadiansPerSecond
+                fieldRelativeVelocity.vx
+                        + fieldRelativeVelocity.omega
                         * (-Constants.ROBOT_TO_TURRET.getY() * Math.cos(robotAngleRadians)
                         - Constants.ROBOT_TO_TURRET.getX() * Math.sin(robotAngleRadians));
         double turretVelocityY =
-                fieldRelativeVelocity.vyMetersPerSecond
-                        + fieldRelativeVelocity.omegaRadiansPerSecond
+                fieldRelativeVelocity.vy
+                        + fieldRelativeVelocity.omega
                         * (Constants.ROBOT_TO_TURRET.getX() * Math.cos(robotAngleRadians)
                         - Constants.ROBOT_TO_TURRET.getY() * Math.sin(robotAngleRadians));
 
