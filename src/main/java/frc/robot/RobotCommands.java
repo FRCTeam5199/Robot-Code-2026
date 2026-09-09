@@ -1,7 +1,7 @@
 package frc.robot;
 
-import org.wpilib.system.Timer;
-import org.wpilib.command2.*;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.HopperConstants;
 import frc.robot.constants.IntakePivotConstants;
 import frc.robot.constants.KickerConstants;

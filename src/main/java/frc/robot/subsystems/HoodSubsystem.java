@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
-import org.wpilib.math.controller.SimpleMotorFeedforward;
-import org.wpilib.math.trajectory.TrapezoidProfile;
-import org.wpilib.networktables.BooleanPublisher;
-import org.wpilib.networktables.DoublePublisher;
-import org.wpilib.networktables.NetworkTable;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.RobotContainer;
 import frc.robot.constants.HoodConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;

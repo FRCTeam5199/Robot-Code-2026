@@ -1,14 +1,14 @@
 package frc.robot.subsystems;
 
-import org.wpilib.math.controller.SimpleMotorFeedforward;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.math.trajectory.TrapezoidProfile;
-import org.wpilib.networktables.*;
-import org.wpilib.units.measure.Velocity;
-import org.wpilib.simulation.DriverStationSim;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.sysid.SysIdRoutine;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.*;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TurretConstants;
@@ -18,7 +18,7 @@ import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
 
-import static org.wpilib.units.Units.*;
+import static edu.wpi.first.units.Units.*;
 
 public class TurretSubsystem extends TemplateSubsystem {
     private static TurretSubsystem turretSubsystem;
@@ -156,7 +156,7 @@ public class TurretSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
 
-//        velocityY.set(RobotContainer.getSpeeds().vy);
+//        velocityY.set(RobotContainer.getSpeeds().vyMetersPerSecond);
 //        poseVelocityY.set(RobotContainer.poseVelocity);
 
 //        goalPositionLogging.set(shotCalculator.getTurretAngle());

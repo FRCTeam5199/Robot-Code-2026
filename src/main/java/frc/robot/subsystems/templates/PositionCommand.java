@@ -1,6 +1,6 @@
 package frc.robot.subsystems.templates;
 
-import org.wpilib.command2.Command;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class PositionCommand extends Command {
     private double velocity;

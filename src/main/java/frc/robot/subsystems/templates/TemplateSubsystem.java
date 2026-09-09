@@ -17,12 +17,12 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import org.wpilib.math.controller.SimpleMotorFeedforward;
-import org.wpilib.networktables.DoublePublisher;
-import org.wpilib.networktables.NetworkTable;
-import org.wpilib.units.measure.Angle;
-import org.wpilib.units.measure.AngularVelocity;
-import org.wpilib.command2.SubsystemBase;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Type;
 
 public class TemplateSubsystem extends SubsystemBase {

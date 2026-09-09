@@ -6,16 +6,12 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
 
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.system.DataLogManager;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.system.Timer;
-import org.wpilib.command2.ConditionalCommand;
-import org.wpilib.command2.InstantCommand;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.constants.HopperConstants;
 import frc.robot.subsystems.*;
 
@@ -24,9 +20,9 @@ import frc.robot.utility.ShotCalculator;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import org.wpilib.framework.TimedRobot;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.CommandScheduler;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
@@ -48,7 +44,7 @@ public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
     // private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
-    private static Alliance alliance;
+    private static DriverStation.Alliance alliance;
 
     public Robot() {
         commandSwerveDrivetrain.configureAutoBuilder();
@@ -119,7 +115,7 @@ public class Robot extends TimedRobot {
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
         CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
-//        if (getAlliance().equals(Alliance.RED)) commandSwerveDrivetrain.getPigeon2().setYaw(180);
+//        if (getAlliance().equals(DriverStation.Alliance.Red)) commandSwerveDrivetrain.getPigeon2().setYaw(180);
     }
 
     @Override
@@ -241,7 +237,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        if (MatchState.getAlliance().isPresent()) alliance = MatchState.getAlliance().get();
+        if (DriverStation.getAlliance().isPresent()) alliance = DriverStation.getAlliance().get();
     }
 
     @Override
@@ -253,7 +249,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        if (getAlliance() != null && getAlliance().equals(Alliance.RED)) {
+        if (getAlliance() != null && getAlliance().equals(DriverStation.Alliance.Red)) {
             commandSwerveDrivetrain.getPigeon2().setYaw(180d);
         } else {
             commandSwerveDrivetrain.getPigeon2().setYaw(0);
@@ -302,23 +298,23 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void utilityInit() {
+    public void testInit() {
         CommandScheduler.getInstance().cancelAll();
     }
 
     @Override
-    public void utilityPeriodic() {
+    public void testPeriodic() {
     }
 
     @Override
-    public void utilityExit() {
+    public void testExit() {
     }
 
     @Override
     public void simulationPeriodic() {
     }
 
-    public static Alliance getAlliance() {
+    public static DriverStation.Alliance getAlliance() {
         return alliance;
     }
 

@@ -8,11 +8,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import org.wpilib.system.Timer;
-import org.wpilib.shuffleboard.BuiltInWidgets;
-import org.wpilib.shuffleboard.Shuffleboard;
-import org.wpilib.smartdashboard.SendableChooser;
-import org.wpilib.command2.*;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.utility.ShotCalculator;

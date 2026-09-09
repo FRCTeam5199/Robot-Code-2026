@@ -1,6 +1,6 @@
 package frc.robot.constants;
 
-import org.wpilib.math.geometry.*;
+import edu.wpi.first.math.geometry.*;
 
 public class Constants {
     public static final int XBOX_PORT = 0;
