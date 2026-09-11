@@ -8,6 +8,8 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.utility.LimelightHelpers;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class Vision {
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public volatile static LimelightHelpers.PoseEstimate limelightRightData;
@@ -58,124 +60,50 @@ public class Vision {
 
     public void updatePoses() {
         if (RobotContainer.getState() == null) return;
-        if (LimelightHelpers.getTV(Constants.LIMELIGHT_LEFT_NAME)) {
-            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_LEFT_NAME,
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-            limelightLeftData = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT_NAME);
 
-            if (limelightLeftData != null) {
-                double xyStdev = stdDev;
+        updateCameraPose(Constants.LIMELIGHT_LEFT_NAME, leftTimer);
+        updateCameraPose(Constants.LIMELIGHT_RIGHT_NAME, rightTimer);
+        updateCameraPose(Constants.LIMELIGHT_FRONT_NAME, frontTimer);
+    }
 
-                boolean shouldAddPose = true;
-                if (limelightLeftData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) > maxWrongDistance) {
-                    if (!leftTimer.isRunning()) leftTimer.start();
+    public static final ConcurrentLinkedQueue<VisionMeasurement> pendingMeasurements = new ConcurrentLinkedQueue<>();
 
-                    if (!leftTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
-                } else {
-                    leftTimer.stop();
-                    leftTimer.reset();
-                }
+    public record VisionMeasurement(Pose2d pose, double timestampSeconds, double xyStdev) {}
 
-                if (limelightLeftData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightLeftData.avgTagDist, 3);
-//                    shouldAddPose = false;
-//                    if (limelightLeftData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
-                } else {
-                    xyStdev *= limelightLeftData.avgTagDist;
-//                    if (limelightLeftData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
-                }
+    private void updateCameraPose(String limelightName, Timer wrongPoseTimer) {
+        if (!LimelightHelpers.getTV(limelightName)) return;
 
-                if (limelightLeftData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
-                    shouldAddPose = false;
+        LimelightHelpers.SetRobotOrientation(limelightName,
+                commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
 
-                if (shouldAddPose) {
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightLeftData.pose,
-                            limelightLeftData.timestampSeconds, VecBuilder
-                                    .fill(xyStdev, xyStdev, 9999999999d));
-                }
-            }
+        LimelightHelpers.PoseEstimate data = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+        if (data == null) return;
+
+        boolean shouldAddPose = true;
+
+        Pose2d currentPose = RobotContainer.getPose();
+        if (currentPose != null && data.pose.getTranslation()
+                .getDistance(currentPose.getTranslation()) > maxWrongDistance) {
+            if (!wrongPoseTimer.isRunning()) wrongPoseTimer.start();
+            if (!wrongPoseTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
+        } else {
+            wrongPoseTimer.stop();
+            wrongPoseTimer.reset();
         }
 
-        if (LimelightHelpers.getTV(Constants.LIMELIGHT_RIGHT_NAME)) {
-            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_RIGHT_NAME,
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-            limelightRightData = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT_NAME);
+//        if (data.tagCount < 2) {
+//            xyStdev *= Math.pow(data.avgTagDist, 3);
+//        } else {
+//            xyStdev *= data.avgTagDist;
+//        }
 
-            if (limelightRightData != null) {
-                double xyStdev = stdDev;
+        double xyStdev = .01 * Math.pow(data.avgTagDist, 2) / Math.pow(data.tagCount, 2);
 
-                boolean shouldAddPose = true;
-                if (limelightRightData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) > maxWrongDistance) {
-                    if (!rightTimer.isRunning()) rightTimer.start();
+        if (data.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
+            shouldAddPose = false;
 
-                    if (!rightTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
-                } else {
-                    rightTimer.stop();
-                    rightTimer.reset();
-                }
-
-                if (limelightRightData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightRightData.avgTagDist, 3);
-//                    shouldAddPose = false;
-//                    if (limelightRightData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
-                } else {
-                    xyStdev *= limelightRightData.avgTagDist;
-//                    if (limelightRightData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
-                }
-
-                if (limelightRightData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
-                    shouldAddPose = false;
-
-                if (shouldAddPose) {
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightRightData.pose,
-                            limelightRightData.timestampSeconds, VecBuilder
-                                    .fill(xyStdev, xyStdev, 9999999999d));
-                }
-            }
-        }
-
-        if (LimelightHelpers.getTV(Constants.LIMELIGHT_FRONT_NAME)) {
-            LimelightHelpers.SetRobotOrientation(Constants.LIMELIGHT_FRONT_NAME,
-                    commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0, 0, 0, 0);
-            limelightFrontData = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_FRONT_NAME);
-
-            if (limelightFrontData != null) {
-                double xyStdev = stdDev;
-
-                boolean shouldAddPose = true;
-                if (RobotContainer.getPose() != null && limelightFrontData.pose.getTranslation()
-                        .getDistance(RobotContainer.getPose().getTranslation()) > maxWrongDistance) {
-                    if (!frontTimer.isRunning()) frontTimer.start();
-
-                    if (!frontTimer.hasElapsed(minWrongTime)) shouldAddPose = false;
-                } else {
-                    frontTimer.stop();
-                    frontTimer.reset();
-                }
-
-                if (limelightFrontData.tagCount < 2) {
-                    xyStdev *= Math.pow(limelightFrontData.avgTagDist, 3);
-//                    shouldAddPose = false;
-//                    if (limelightFrontData.avgTagDist > maxSingleTagDistance) shouldAddPose = false;
-                } else {
-                    xyStdev *= limelightFrontData.avgTagDist;
-//                    if (limelightFrontData.avgTagDist > maxDoubleTagDistance) shouldAddPose = false;
-                }
-
-                if (limelightFrontData.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
-                    shouldAddPose = false;
-
-                if (shouldAddPose) {
-                    commandSwerveDrivetrain.addVisionMeasurement(limelightFrontData.pose,
-                            limelightFrontData.timestampSeconds, VecBuilder
-                                    .fill(xyStdev, xyStdev, 9999999999d));
-                }
-            }
+        if (shouldAddPose) {
+            pendingMeasurements.add(new VisionMeasurement(data.pose, data.timestampSeconds, xyStdev));
         }
     }
 }

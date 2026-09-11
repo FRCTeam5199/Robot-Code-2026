@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -29,6 +30,11 @@ import frc.robot.utility.LimelightHelpers;
 
 import javax.xml.crypto.Data;
 import java.sql.Driver;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import static frc.robot.subsystems.Vision.pendingMeasurements;
 
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
@@ -218,7 +224,17 @@ public class Robot extends TimedRobot {
         //     userInterface.setComponentData("Reset Voltage (F)", false);
         //     motorFollower.setVoltage(0);
         // }
+        List<Vision.VisionMeasurement> batch = new ArrayList<>();
+        Vision.VisionMeasurement m;
+        while ((m = pendingMeasurements.poll()) != null) {
+            batch.add(m);
+        }
+        batch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
 
+        for (Vision.VisionMeasurement measurement : batch) {
+            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(),
+                    VecBuilder.fill(measurement.xyStdev(), measurement.xyStdev(), 9999999999d));
+        }
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
 
