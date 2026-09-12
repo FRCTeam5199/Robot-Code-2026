@@ -28,8 +28,8 @@ public class TurretConstants {
     public static final double ACCELERATION = 400;
     public static final double JERK = 8000;
 
-    public static final double LOWER_TOLERANCE = 5;
-    public static final double UPPER_TOLERANCE = 5;
+    public static final double LOWER_TOLERANCE = 10;
+    public static final double UPPER_TOLERANCE = 10;
 
     public static final double[][] GEAR_RATIO = {{50, 12}, {100, 10}};
 

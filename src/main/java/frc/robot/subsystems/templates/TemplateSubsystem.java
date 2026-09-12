@@ -27,9 +27,9 @@ import frc.robot.utility.Type;
 
 public class TemplateSubsystem extends SubsystemBase {
     public StatusSignal<Angle> positionStatusSignal;
+    public StatusSignal<Angle> secondaryPositionStatusSignal;
     public StatusSignal<AngularVelocity> velocityStatusSignal;
-    public StatusSignal<Angle> followerPositionStatusSignal;
-    public StatusSignal<AngularVelocity> followerVelocityStatusSignal;
+    public StatusSignal<AngularVelocity> secondaryVelocityStatusSignal;
     private NetworkTable networkTable;
     private DoublePublisher poseData;
     private DoublePublisher velocityData;
@@ -162,7 +162,7 @@ public class TemplateSubsystem extends SubsystemBase {
     //Configurations
     public void configureMotor(boolean isInverted, boolean isBrakeMode,
                                double supplyCurrentLimit, double statorCurrentLimit,
-                               Slot0Configs slot0Configs, boolean faster) {
+                               Slot0Configs slot0Configs, boolean updateFaster) {
         motorConfig.MotorOutput.Inverted =
                 isInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
         motorConfig.MotorOutput.NeutralMode = isBrakeMode ? NeutralModeValue.Brake : NeutralModeValue.Coast;
@@ -180,7 +180,7 @@ public class TemplateSubsystem extends SubsystemBase {
         positionStatusSignal = motor.getRotorPosition();
         velocityStatusSignal = motor.getRotorVelocity();
 
-        if (faster) {
+        if (updateFaster) {
             motorConfig.MotorOutput.ControlTimesyncFreqHz = 200;
             positionStatusSignal.setUpdateFrequency(200);
             velocityStatusSignal.setUpdateFrequency(200);
@@ -274,6 +274,9 @@ public class TemplateSubsystem extends SubsystemBase {
         secondaryMotorConfig.MotionMagic.MotionMagicCruiseVelocity = velocity;
         secondaryMotorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
         secondaryMotorConfig.MotionMagic.MotionMagicJerk = jerk;
+
+        secondaryMotor.getRotorVelocity().setUpdateFrequency(50);
+        secondaryMotor.optimizeBusUtilization();
 
         secondaryMotor.getConfigurator().apply(secondaryMotorConfig);
         secondaryMotor.setPosition(0);
