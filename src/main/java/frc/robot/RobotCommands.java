@@ -122,7 +122,7 @@ public class RobotCommands {
                 moveHoodToZero(),
                 new VelocityCommand(hopperSubsystem, 0),
                 new VelocityCommand(shooterSubsystem, 0),
-                new VelocityCommand(indexerSubsystem, 0, 0),
+                new VelocityCommand(indexerSubsystem, 0, 0)
         );
     }
 
