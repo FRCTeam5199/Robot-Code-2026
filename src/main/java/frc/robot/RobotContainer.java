@@ -420,7 +420,7 @@ RobotContainer {
     }
 
     public static void setIsAutonomous(boolean isAutonomous) {
-        RobotContainer.isAutonomous = isClimbing;
+        RobotContainer.isAutonomous = isAutonomous;
     }
 
     public static void updateLastSpeeds() {
