@@ -171,12 +171,12 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        goalPositionPhaseDelayed.set(shotCalculator.getShooterSpeedPhaseDelayed());
 //        currentPositionLogging.set(ShooterSubsystem.getInstance().getMotorVelocity());
 
-//        goalPositionLogging.set(KickerSubsystem.getInstance().getMotorVelocity());
-//        goalPositionPhaseDelayed.set(KickerSubsystem.getInstance().getSupplyCurrent());
-//        currentPositionLogging.set(KickerSubsystem.getInstance().getStatorCurrent());
+//        goalPositionLogging.set(IndexerSubsystem.getInstance().getMotorVelocity());
+//        goalPositionPhaseDelayed.set(IndexerSubsystem.getInstance().getSupplyCurrent());
+//        currentPositionLogging.set(IndexerSubsystem.getInstance().getStatorCurrent());
 
 //        shooterVelocity.set(ShooterSubsystem.getInstance().getMotorVelocity());
-//        indexerVelocity.set(KickerSubsystem.getInstance().getMotorVelocity());
+//        indexerVelocity.set(IndexerSubsystem.getInstance().getMotorVelocity());
 //        hopperVelocity.set(HopperSubsystem.getInstance().getMotorVelocity());
 //
 //        isMechAtGoal.set(isMechAtGoalAuto());

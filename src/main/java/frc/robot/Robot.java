@@ -229,9 +229,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        LimelightHelpers.SetThrottle("limelight-right", 200);
-        LimelightHelpers.SetThrottle("limelight-left", 200);
-        LimelightHelpers.SetThrottle("limelight-front", 200);
+        LimelightHelpers.SetThrottle("limelight-right", 2000);
+        LimelightHelpers.SetThrottle("limelight-left", 2000);
+        LimelightHelpers.SetThrottle("limelight-front", 2000);
         RobotContainer.setIsAutonomous(false);
     }
 

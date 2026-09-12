@@ -14,13 +14,13 @@ public class IntakeRollerConstants {
     public static final boolean FOLLOWER_INVERTED = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0.0029856)
+            .withKP(.0012331)
             .withKI(0)
             .withKD(0)
-            .withKS(0.050384)
+            .withKS(0.055467)
             .withKG(0)
-            .withKV(0.11462)
-            .withKA(0.0033524)
+            .withKV(.11466)
+            .withKA(0.1)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double ACCELERATION = 400;

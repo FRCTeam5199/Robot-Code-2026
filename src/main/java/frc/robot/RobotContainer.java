@@ -27,7 +27,7 @@ import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.Vision;
@@ -35,13 +35,10 @@ import frc.robot.subsystems.templates.HoodCommand;
 import frc.robot.subsystems.templates.PositionCommand;
 // import frc.robot.subsystems.templates.ShooterCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
-import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
-
-import javax.swing.text.Position;
 
 public class
 
@@ -57,7 +54,7 @@ RobotContainer {
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-    public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
+    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
@@ -103,16 +100,16 @@ RobotContainer {
     private static final VelocityCommand shooterLeftCorner = new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed());
     private static final VelocityCommand shooterOutpost = new VelocityCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed());
     private static final VelocityCommand shooterRevUp = new VelocityCommand(shooterSubsystem, shotCalculator.getShooterSpeed());
-    //Kicker Commands
-    private static final VelocityCommand kickerAuto = new VelocityCommand(kickerSubsystem, 0);
-    private static final VelocityCommand kickerZero = new VelocityCommand(kickerSubsystem, 0);
-    private static final VelocityCommand kickerHub = new VelocityCommand(kickerSubsystem, Setpoint.HUB.getKickerSpeed());
-    private static final VelocityCommand kickerTower = new VelocityCommand(kickerSubsystem, Setpoint.TOWER.getKickerSpeed());
-    private static final VelocityCommand kickerLeftCorner = new VelocityCommand(kickerSubsystem, Setpoint.LEFT_CORNER.getKickerSpeed());
-    private static final VelocityCommand kickerOutpost = new VelocityCommand(kickerSubsystem, Setpoint.OUTPOST.getKickerSpeed());
-    private static final VelocityCommand kickerRevUp = new VelocityCommand(kickerSubsystem, (shotCalculator.getShooterSpeed() * 5 / 3));
+    //Indexer Commands
+    private static final VelocityCommand indexerAuto = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
+    private static final VelocityCommand indexerZero = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
+    private static final VelocityCommand indexerHub = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
+    private static final VelocityCommand indexerTower = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
+    private static final VelocityCommand indexerLeftCorner = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
+    private static final VelocityCommand indexerOutpost = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
+    private static final VelocityCommand indexerRevUp = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
     //    Auton commands
-    private static final Command revUp = new ParallelCommandGroup(shooterRevUp, kickerRevUp);
+    private static final Command revUp = new ParallelCommandGroup(shooterRevUp, indexerRevUp);
     //Indexer Commands
     //Hopper Commands
     private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
@@ -376,8 +373,8 @@ RobotContainer {
         return shooterAutoRB;
     }
 
-    public static VelocityCommand getKickerControlAuto() {
-        return kickerAuto;
+    public static VelocityCommand getIndexerControlAuto() {
+        return indexerAuto;
     }
 
     public static double getRequestRotationalVelocity() {
@@ -462,8 +459,8 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        commandXboxController.y().onTrue(intakeDeploy);
-        commandXboxController.a().onTrue(intakeStow);
+//        commandXboxController.y().onTrue(intakeDeploy);
+//        commandXboxController.a().onTrue(intakeStow);
 
         // commandXboxController.x().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleLeft = true),
@@ -473,12 +470,12 @@ RobotContainer {
         // ));
 
 //        commandXboxController.b().onTrue(new ParallelCommandGroup(
-//                        new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED),
-//                        new VelocityCommand(kickerSubsystem, 25)
+//                        new VelocityCommand(hopperSubsystem, HopperConstants.UPPER_INDEXER_SPEED),
+//                        new VelocityCommand(indexerSubsystem, 25)
 //                ))
 //                .onFalse(new ParallelCommandGroup(
 //                        new VelocityCommand(hopperSubsystem, 0),
-//                        new VelocityCommand(kickerSubsystem, 0)
+//                        new VelocityCommand(indexerSubsystem, 0)
 //                ));
         // commandXboxController.b().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleRight = true),
@@ -487,10 +484,10 @@ RobotContainer {
         //         () -> !forceShuttleRight
         // ));
 
-    //    commandXboxController.a().onTrue(intakeRollerSubsystem.sysIdQuasistaticForward());
-    //    commandXboxController.b().onTrue(intakeRollerSubsystem.sysIdQuasistaticReverse());
-    //    commandXboxController.y().onTrue(intakeRollerSubsystem.sysIdDynamicForward());
-    //    commandXboxController.x().onTrue(intakeRollerSubsystem.sysIdDynamicReverse());
+        commandXboxController.a().onTrue(hopperSubsystem.sysIdQuasistaticForward());
+        commandXboxController.b().onTrue(hopperSubsystem.sysIdQuasistaticReverse());
+        commandXboxController.y().onTrue(hopperSubsystem.sysIdDynamicForward());
+        commandXboxController.x().onTrue(hopperSubsystem.sysIdDynamicReverse());
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);

@@ -54,7 +54,7 @@ public class TemplateSubsystem extends SubsystemBase {
     private boolean isCommandRunning = false;
     private MotionMagicVoltage motionMagicVoltage;
     private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
-    private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
+    private VelocityVoltage secondaryVelocityVoltage;
     private PositionVoltage positionVoltage;
     private VelocityVoltage velocityVoltage;
     private Slot0Configs slot0Configs;
@@ -254,14 +254,12 @@ public class TemplateSubsystem extends SubsystemBase {
         followerMotor.setControl(follower);
     }
 
-    public void configureSecondaryMotor(int motorID, double secondaryVelocity,
-                                        double secondaryAcceleration, double secondaryJerk,
-                                        boolean isInverted, boolean isBrakeMode,
+    public void configureSecondaryMotor(int motorID, boolean isInverted, boolean isBrakeMode,
                                         double supplyCurrentLimit, double statorCurrentLimit,
                                         Slot0Configs slot0Configs) {
         secondaryMotor = new TalonFX(motorID);
         secondaryMotorConfig = new TalonFXConfiguration();
-        secondaryMotionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0)
+        secondaryVelocityVoltage = new VelocityVoltage(0)
                 .withSlot(0).withEnableFOC(true);
 
         secondaryMotorConfig.MotorOutput.Inverted =
@@ -273,9 +271,9 @@ public class TemplateSubsystem extends SubsystemBase {
         secondaryMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         secondaryMotorConfig.Slot0 = slot0Configs;
 
-//        secondaryMotorConfig.MotionMagic.MotionMagicCruiseVelocity = secondaryVelocity;
-//        secondaryMotorConfig.MotionMagic.MotionMagicAcceleration = secondaryAcceleration;
-//        secondaryMotorConfig.MotionMagic.MotionMagicJerk = secondaryJerk;
+        secondaryMotorConfig.MotionMagic.MotionMagicCruiseVelocity = velocity;
+        secondaryMotorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
+        secondaryMotorConfig.MotionMagic.MotionMagicJerk = jerk;
 
         secondaryMotor.getConfigurator().apply(secondaryMotorConfig);
         secondaryMotor.setPosition(0);
@@ -353,12 +351,11 @@ public class TemplateSubsystem extends SubsystemBase {
         else motor.setControl(velocityVoltage.withVelocity(rps + offset));
     }
 
-    //TODO: change to velocityVoltage
     public void setSecondaryVelocity(double rps) {
         this.secondaryGoal = rps;
         followLastMechProfile = false;
         if (rps == 0) setPercent(0);
-        else secondaryMotor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps + offset));
+        else secondaryMotor.setControl(secondaryVelocityVoltage.withVelocity(rps + offset));
     }
 
     public void setPosition(double goal) {
@@ -595,6 +592,10 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public TalonFX getMotor() {
+        return motor;
+    }
+
+    public TalonFX getSecondaryMotor() {
         return motor;
     }
 

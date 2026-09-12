@@ -10,7 +10,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
-import frc.robot.constants.KickerConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -650,13 +649,12 @@ public class ShotCalculator extends SubsystemBase {
         lastHoodAngle = hoodAngle;
 
 
-        // Sets continuous control for turret, shooter, kicker
+        // Sets continuous control for turret, shooter, and hood
 //        RobotContainer.getTurretControlAuto().setGoal(shotCalculator.getTurretAnglePhaseDelayed(),
 //                shotCalculator.getTurretVelocityPhaseDelayed());
         turretSubsystem.updateGoalPosition(getTurretAnglePhaseDelayed(), getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getShooterControlAutoRB().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
-        RobotContainer.getKickerControlAuto().setGoal(shotCalculator.getKickerSpeedPhaseDelayed());
 //        shooterSubsystem.setVelocity(shotCalculator.getShooterSpeedPhaseDelayed());
 //        RobotContainer.getHoodControlAuto().setGoal(shotCalculator.getHoodAnglePhaseDelayed(),
 //                shotCalculator.getHoodVelocityPhaseDelayed());
@@ -764,16 +762,8 @@ public class ShotCalculator extends SubsystemBase {
         return shooterSpeed;
     }
 
-    public double getKickerSpeed() {
-        return KickerConstants.INDEXING_SPEED;  //shooterSpeed * KickerConstants.SCALE_FACTOR
-    }
-
     public double getShooterSpeedPhaseDelayed() {
         return shooterSpeedPhaseDelayed;
-    }
-
-    public double getKickerSpeedPhaseDelayed() {
-        return KickerConstants.INDEXING_SPEED;
     }
 
     public double getTurretAngle() {
