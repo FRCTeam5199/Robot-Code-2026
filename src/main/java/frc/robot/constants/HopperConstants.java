@@ -5,20 +5,20 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class HopperConstants {
-    public static final int MOTOR_ID = 0; //14
+    public static final int MOTOR_ID = 14;
     public static final double STATOR_CURRENT_LIMIT = 50;
     public static final double SUPPLY_CURRENT_LIMIT = 50;
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = false;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0.2)
+            .withKP(0.1)
             .withKI(0)
             .withKD(0)
-            .withKS(0.76025)
+            .withKS(.41423)
             .withKG(0)
-            .withKV(0.12274)
-            .withKA(0)
+            .withKV(.1263)
+            .withKA(0.1)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double ACCELERATION = 400;

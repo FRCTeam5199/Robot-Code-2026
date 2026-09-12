@@ -15,8 +15,8 @@ public class HopperSubsystem extends TemplateSubsystem {
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
                     Volts.of(1).per(Second), // ramp rate - slow for a turret
-                    Volts.of(6),                       // max voltage - keep low for turret safety
-                    Seconds.of(8),                     // test timeout
+                    Volts.of(5),                       // max voltage - keep low for turret safety
+                    Seconds.of(6),                     // test timeout
                     null
             ),
             new SysIdRoutine.Mechanism(

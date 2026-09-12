@@ -25,12 +25,12 @@ public class IndexerConstants {
     public static final double LOWER_INDEXER_SPEED = UPPER_INDEXER_SPEED * 2.5;
 
     public static final Slot0Configs UPPER_SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0)
+            .withKP(0.0014654)
             .withKI(0)
             .withKD(0)
-            .withKS(.40156)
+            .withKS(.44707)
             .withKG(0)
-            .withKV(.12621)
+            .withKV(.12379)
             .withKA(0.15)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
@@ -38,9 +38,9 @@ public class IndexerConstants {
             .withKP(0)
             .withKI(0)
             .withKD(0)
-            .withKS(.40156)
+            .withKS(.42)
             .withKG(0)
-            .withKV(.12621)
+            .withKV(.1)
             .withKA(0.15)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 

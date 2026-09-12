@@ -14,26 +14,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 public class IndexerSubsystem extends TemplateSubsystem {
     private static IndexerSubsystem indexerSubsystem;
-    private static ShotCalculator shotCalculator = ShotCalculator.getInstance();
-
-    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(
-                    Volts.of(1).per(Second), // ramp rate - slow for a turret
-                    Volts.of(6),                       // max voltage - keep low for turret safety
-                    Seconds.of(8),                     // test timeout
-                    null
-            ),
-            new SysIdRoutine.Mechanism(
-                    (voltage) -> setVoltage(voltage.in(Volts)),
-                    log -> {
-                        log.motor("indexer")
-                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
-                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
-                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
-                    },
-                    this
-            )
-    );
 
 //    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
 //            new SysIdRoutine.Config(
@@ -46,13 +26,32 @@ public class IndexerSubsystem extends TemplateSubsystem {
 //                    (voltage) -> setVoltage(voltage.in(Volts)),
 //                    log -> {
 //                        log.motor("indexer")
-//                                .voltage(Volts.of(getSecondaryMotor().getMotorVoltage().getValueAsDouble()))
-//                                .angularPosition(Rotations.of(getSecondaryMotor().getRotorPosition().getValueAsDouble()))
-//                                .angularVelocity(RotationsPerSecond.of(getSecondaryMotor().getRotorVelocity().getValueAsDouble()));
+//                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
+//                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
+//                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
 //                    },
 //                    this
 //            )
 //    );
+
+    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    Volts.of(1).per(Second), // ramp rate - slow for a turret
+                    Volts.of(5),                       // max voltage - keep low for turret safety
+                    Seconds.of(10),                     // test timeout
+                    null
+            ),
+            new SysIdRoutine.Mechanism(
+                    (voltage) -> setSecondaryVoltage(voltage.in(Volts)),
+                    log -> {
+                        log.motor("indexer")
+                                .voltage(Volts.of(getSecondaryMotor().getMotorVoltage().getValueAsDouble()))
+                                .angularPosition(Rotations.of(getSecondaryMotor().getRotorPosition().getValueAsDouble()))
+                                .angularVelocity(RotationsPerSecond.of(getSecondaryMotor().getRotorVelocity().getValueAsDouble()));
+                    },
+                    this
+            )
+    );
 
     private IndexerSubsystem() {
         super(Type.ROLLER, IndexerConstants.UPPER_MOTOR_ID,
