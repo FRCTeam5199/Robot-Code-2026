@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
     // private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
     private static DriverStation.Alliance alliance;
+    private final List<Vision.VisionMeasurement> visionBatch = new ArrayList<>(3);
 
     public Robot() {
         commandSwerveDrivetrain.configureAutoBuilder();
@@ -224,14 +225,14 @@ public class Robot extends TimedRobot {
         //     userInterface.setComponentData("Reset Voltage (F)", false);
         //     motorFollower.setVoltage(0);
         // }
-        List<Vision.VisionMeasurement> batch = new ArrayList<>();
+        visionBatch.clear();
         Vision.VisionMeasurement m;
         while ((m = pendingMeasurements.poll()) != null) {
-            batch.add(m);
+            visionBatch.add(m);
         }
-        batch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
+        visionBatch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
 
-        for (Vision.VisionMeasurement measurement : batch) {
+        for (Vision.VisionMeasurement measurement : visionBatch) {
             commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(),
                     VecBuilder.fill(measurement.xyStdev(), measurement.xyStdev(), 9999999999d));
         }
