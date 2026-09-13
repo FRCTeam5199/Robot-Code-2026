@@ -196,14 +196,13 @@ public class TurretSubsystem extends TemplateSubsystem {
 //        velocity.set(RobotContainer.velocity);
 //        acceleration.set(RobotContainer.acceleration);
 
-//        vision.addSample(getDegrees());
-
 //        isMechAtGoal.set(isMechAtGoalAuto());
 
         if (!stopMoving && !fullStop) followLastProfile();
         // System.out.println(isMechAtGoalAuto());
 //       System.out.println(getDegrees());
 //        System.out.println("goal: " + getGoal());
+//        System.out.println(shotCalculator.getTurretToTargetDistance());
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {
