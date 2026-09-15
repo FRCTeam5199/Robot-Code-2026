@@ -207,7 +207,6 @@ RobotContainer {
 //        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
 //        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
-        NamedCommands.registerCommand("outtake", new VelocityCommand(intakeRollerSubsystem, -116));
         NamedCommands.registerCommand("intake", new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED));
 //        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
@@ -459,8 +458,8 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-//        commandXboxController.y().onTrue(intakeDeploy);
-//        commandXboxController.a().onTrue(intakeStow);
+        commandXboxController.y().onTrue(intakeDeploy);
+        commandXboxController.a().onTrue(intakeStow);
 
         // commandXboxController.x().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleLeft = true),
@@ -484,10 +483,10 @@ RobotContainer {
         //         () -> !forceShuttleRight
         // ));
 
-        commandXboxController.a().onTrue(hopperSubsystem.sysIdQuasistaticForward());
-        commandXboxController.b().onTrue(hopperSubsystem.sysIdQuasistaticReverse());
-        commandXboxController.y().onTrue(hopperSubsystem.sysIdDynamicForward());
-        commandXboxController.x().onTrue(hopperSubsystem.sysIdDynamicReverse());
+//        commandXboxController.a().onTrue(hopperSubsystem.sysIdQuasistaticForward());
+//        commandXboxController.b().onTrue(hopperSubsystem.sysIdQuasistaticReverse());
+//        commandXboxController.y().onTrue(hopperSubsystem.sysIdDynamicForward());
+//        commandXboxController.x().onTrue(hopperSubsystem.sysIdDynamicReverse());
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
