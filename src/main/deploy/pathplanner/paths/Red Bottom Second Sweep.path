@@ -101,11 +101,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.1,
-      "maxWaypointRelativePos": 3.0,
+      "minWaypointRelativePos": 2.5172180958811508,
+      "maxWaypointRelativePos": 3.295070898041856,
       "constraints": {
         "maxVelocity": 2.5,
-        "maxAcceleration": 3.0,
+        "maxAcceleration": 5.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -123,6 +123,17 @@
         "type": "named",
         "data": {
           "name": "stable"
+        }
+      }
+    },
+    {
+      "name": "outtake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "outtake"
         }
       }
     },

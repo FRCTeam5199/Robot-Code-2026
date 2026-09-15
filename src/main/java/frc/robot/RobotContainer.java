@@ -205,7 +205,7 @@ RobotContainer {
                 .andThen(new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED)));
 //        NamedCommands.registerCommand("stowIntake", intakeStow);
 //        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
-        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
+//        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
         NamedCommands.registerCommand("outtake", new VelocityCommand(intakeRollerSubsystem, -116));
         NamedCommands.registerCommand("intake", new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED));
@@ -484,10 +484,10 @@ RobotContainer {
         //         () -> !forceShuttleRight
         // ));
 
-//        commandXboxController.a().onTrue(hopperSubsystem.sysIdQuasistaticForward());
-//        commandXboxController.b().onTrue(hopperSubsystem.sysIdQuasistaticReverse());
-//        commandXboxController.y().onTrue(hopperSubsystem.sysIdDynamicForward());
-//        commandXboxController.x().onTrue(hopperSubsystem.sysIdDynamicReverse());
+        commandXboxController.a().onTrue(hopperSubsystem.sysIdQuasistaticForward());
+        commandXboxController.b().onTrue(hopperSubsystem.sysIdQuasistaticReverse());
+        commandXboxController.y().onTrue(hopperSubsystem.sysIdDynamicForward());
+        commandXboxController.x().onTrue(hopperSubsystem.sysIdDynamicReverse());
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);

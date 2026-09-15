@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 9.166072289156626,
-        "y": 2.756457831325301
+        "x": 9.214522111269615,
+        "y": 2.3335663338088444
       },
       "prevControl": {
-        "x": 8.823698647440594,
-        "y": 2.870582378563978
+        "x": 8.873482773906423,
+        "y": 2.451618412126872
       },
       "nextControl": {
-        "x": 9.952867469879518,
-        "y": 2.4941927710843377
+        "x": 10.560142653352354,
+        "y": 1.8677746077032817
       },
       "isLocked": false,
       "linkedName": null
@@ -65,11 +65,11 @@
     {
       "anchor": {
         "x": 13.0,
-        "y": 0.6
+        "y": 0.65
       },
       "prevControl": {
         "x": 12.741226598065413,
-        "y": 0.5746042465589005
+        "y": 0.6246042465589006
       },
       "nextControl": null,
       "isLocked": false,
@@ -93,11 +93,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.207444168734488,
-      "maxWaypointRelativePos": 2.8,
+      "minWaypointRelativePos": 2.517218095881166,
+      "maxWaypointRelativePos": 3.1870357866306507,
       "constraints": {
-        "maxVelocity": 2.25,
-        "maxAcceleration": 3.0,
+        "maxVelocity": 3.0,
+        "maxAcceleration": 5.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -106,10 +106,10 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7,
-      "maxWaypointRelativePos": 1.3,
+      "minWaypointRelativePos": 0.8426738690074274,
+      "maxWaypointRelativePos": 1.6529372045914903,
       "constraints": {
-        "maxVelocity": 2.5,
+        "maxVelocity": 1.25,
         "maxAcceleration": 5.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -124,16 +124,10 @@
       "name": "deployIntake",
       "waypointRelativePos": 0.15,
       "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "runIntake",
-      "waypointRelativePos": 0.32,
-      "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "runIntake"
+          "name": "deployIntake"
         }
       }
     }
