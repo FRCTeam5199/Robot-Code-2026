@@ -21,6 +21,12 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "deployIntake"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 5.0
