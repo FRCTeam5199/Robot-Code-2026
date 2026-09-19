@@ -688,6 +688,8 @@ public class ShotCalculator {
                         && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
                     turretAngle += .25;
                     turretAnglePhaseDelayed += .25;
+                    shooterSpeed += .25;
+                    shooterSpeedPhaseDelayed += .25;
                 }
             }
             if (futureTurretToTargetDistance >= 4.5) {
@@ -697,6 +699,8 @@ public class ShotCalculator {
                         && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
                     turretAngle += 1.25;
                     turretAnglePhaseDelayed += 1.25;
+                    shooterSpeed += .75;
+                    shooterSpeedPhaseDelayed += .75;
                 }
             }
         }
