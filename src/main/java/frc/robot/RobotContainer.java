@@ -290,7 +290,8 @@ RobotContainer {
                     shotMode = ShotMode.SHOOTING;
             }
         }
-        double scalingFactor = 1.5;
+        double scalingFactor = 1.7;
+        double rotationScalingFactor = 1.5;
 
         if (commandXboxController.getLeftY() < 0)
             requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
@@ -303,9 +304,9 @@ RobotContainer {
             requestYVelocity = Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
 
         if (commandXboxController.getRightX() < 0)
-            requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), scalingFactor) * Constants.MAX_ANGULAR_RATE;
+            requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
         else
-            requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), scalingFactor) * Constants.MAX_ANGULAR_RATE;
+            requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
 
 //        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
 //        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
