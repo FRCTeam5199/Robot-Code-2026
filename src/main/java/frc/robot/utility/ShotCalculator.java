@@ -695,8 +695,8 @@ public class ShotCalculator {
                         && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
                         || (Robot.getAlliance().equals(DriverStation.Alliance.Blue)
                         && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                    turretAngle += .75;
-                    turretAnglePhaseDelayed += .75;
+                    turretAngle += 1.25;
+                    turretAnglePhaseDelayed += 1.25;
                 }
             }
         }

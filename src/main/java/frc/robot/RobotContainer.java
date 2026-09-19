@@ -290,7 +290,7 @@ RobotContainer {
                     shotMode = ShotMode.SHOOTING;
             }
         }
-        double scalingFactor = 1.7;
+        double scalingFactor = 1.5;
         double rotationScalingFactor = 1.5;
 
         if (commandXboxController.getLeftY() < 0)
@@ -484,10 +484,10 @@ RobotContainer {
         //         () -> !forceShuttleRight
         // ));
 
-//        commandXboxController.a().onTrue(hopperSubsystem.sysIdQuasistaticForward());
-//        commandXboxController.b().onTrue(hopperSubsystem.sysIdQuasistaticReverse());
-//        commandXboxController.y().onTrue(hopperSubsystem.sysIdDynamicForward());
-//        commandXboxController.x().onTrue(hopperSubsystem.sysIdDynamicReverse());
+//        commandXboxController.a().onTrue(shooterSubsystem.sysIdQuasistaticForward());
+//        commandXboxController.b().onTrue(shooterSubsystem.sysIdQuasistaticReverse());
+//        commandXboxController.y().onTrue(shooterSubsystem.sysIdDynamicForward());
+//        commandXboxController.x().onTrue(shooterSubsystem.sysIdDynamicReverse());
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
