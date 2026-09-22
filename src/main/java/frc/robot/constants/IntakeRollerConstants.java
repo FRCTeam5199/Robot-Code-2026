@@ -33,5 +33,5 @@ public class IntakeRollerConstants {
 
     public static final double INTAKE_SPEED = 100; //116
 
-    public static final CANBus CAN_BUS = new CANBus("rio");
+    public static final CANBus CAN_BUS = new CANBus("can2");
 }

@@ -53,7 +53,6 @@ public class PositionCommand extends Command {
     public void initialize() {
         if (changeConstraints) {
             templateSubsystem.setPosition(goal);
-            templateSubsystem.setConstraints(velocity, acceleration, jerk);
             changeConstraints = false;
         } else {
             templateSubsystem.setPosition(goal);
@@ -66,10 +65,6 @@ public class PositionCommand extends Command {
         if (updateGoalPosition) {
             templateSubsystem.setPosition(goal);
             updateGoalPosition = false;
-        }
-        if (changeConstraints) {
-            templateSubsystem.setConstraints(velocity, acceleration, jerk);
-            changeConstraints = false;
         }
     }
 

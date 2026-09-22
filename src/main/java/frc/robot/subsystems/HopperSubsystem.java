@@ -2,18 +2,18 @@ package frc.robot.subsystems;
 
 import frc.robot.constants.HopperConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
-import frc.robot.utility.Type;
+import frc.robot.utility.SubsystemType;
 
 public class HopperSubsystem extends TemplateSubsystem {
     private static HopperSubsystem hopperSubsystem;
 
     private HopperSubsystem() {
-        super(Type.ROLLER, HopperConstants.MOTOR_ID,
+        super(SubsystemType.ROLLER, HopperConstants.MOTOR_ID, HopperConstants.CANBUS,
                 0, HopperConstants.ACCELERATION,
                 HopperConstants.JERK,
                 HopperConstants.LOWER_TOLERANCE,
                 HopperConstants.UPPER_TOLERANCE,
-                HopperConstants.GEAR_RATIO, "Hopper", true, HopperConstants.canbus);
+                HopperConstants.GEAR_RATIO, "Hopper", true);
 
         configureMotor(HopperConstants.INVERTED, HopperConstants.BRAKE,
                 HopperConstants.SUPPLY_CURRENT_LIMIT,
@@ -31,7 +31,5 @@ public class HopperSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        //    System.out.println("Velocity: " + getMotorVelocity());
-//        System.out.println(isMechAtGoal(true));
     }
 }

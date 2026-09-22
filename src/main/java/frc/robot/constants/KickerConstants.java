@@ -2,7 +2,6 @@ package frc.robot.constants;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class KickerConstants {
@@ -35,5 +34,5 @@ public class KickerConstants {
     public static final double[][] GEAR_RATIO = {{1, 1}};
     public static final double SCALE_FACTOR = (1d);
 
-    public static final CANBus canbus = new CANBus("rio");
+    public static final CANBus CANBUS = new CANBus("can2");
 }

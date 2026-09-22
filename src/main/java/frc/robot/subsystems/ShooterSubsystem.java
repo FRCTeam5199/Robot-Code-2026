@@ -1,24 +1,21 @@
 package frc.robot.subsystems;
 
-import org.wpilib.networktables.BooleanPublisher;
-import org.wpilib.networktables.DoublePublisher;
-import org.wpilib.networktables.NetworkTable;
+import static org.wpilib.units.Units.Rotations;
+import static org.wpilib.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.Second;
+import static org.wpilib.units.Units.Seconds;
+import static org.wpilib.units.Units.Volts;
+
 import org.wpilib.command2.Command;
 import org.wpilib.command2.sysid.SysIdRoutine;
+
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
-import frc.robot.utility.Type;
-
-import static org.wpilib.units.Units.*;
-import static org.wpilib.units.Units.RotationsPerSecond;
+import frc.robot.utility.SubsystemType;
 
 public class ShooterSubsystem extends TemplateSubsystem {
     private static ShooterSubsystem shooterSubsystem;
-    private static BooleanPublisher isMechAtGoal;
-    private static DoublePublisher goalSpeed;
-    private static DoublePublisher currentSpeed;
-    private static NetworkTable shooterNetworkTable;
     private static ShotCalculator shotCalculator = ShotCalculator.getInstance();
 
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
@@ -41,24 +38,22 @@ public class ShooterSubsystem extends TemplateSubsystem {
     );
 
     private ShooterSubsystem() {
-        super(Type.ROLLER, ShooterConstants.MOTOR_ID,
+        super(SubsystemType.ROLLER, ShooterConstants.MOTOR_ID, ShooterConstants.CANBUS,
                 0, ShooterConstants.ACCELERATION,
                 ShooterConstants.JERK,
                 ShooterConstants.LOWER_TOLERANCE,
                 ShooterConstants.UPPER_TOLERANCE,
-                ShooterConstants.GEAR_RATIO, "Shooter", true, ShooterConstants.CANBUS);
+                ShooterConstants.GEAR_RATIO, "Shooter", true);
 
         configureMotor(ShooterConstants.INVERTED, ShooterConstants.BRAKE,
                 ShooterConstants.SUPPLY_CURRENT_LIMIT,
                 ShooterConstants.STATOR_CURRENT_LIMIT,
                 ShooterConstants.SLOT0_CONFIGS, true);
 
-        configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID,
-                ShooterConstants.SECOND_INVERTED,
-                ShooterConstants.CANBUS
+        configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID, 
+                ShooterConstants.CANBUS, 
+                ShooterConstants.SECOND_INVERTED
         );
-        
-//        shooterNetworkTable.getDoubleTopic("Current Speed").publish();
     }
 
     public static ShooterSubsystem getInstance() {
@@ -71,11 +66,6 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-//        isMechAtGoal.set(isMechAtGoalAuto());
-//        goalSpeed.set(shotCalculator.getShooterSpeed());
-//        currentSpeed.set(getMotorVelocity());
-
-//        System.out.println("shooter: " + isMechAtGoal(true));
     }
 
     public boolean isMechAtGoalAuto() {
@@ -84,18 +74,18 @@ public class ShooterSubsystem extends TemplateSubsystem {
     }
 
     public Command sysIdQuasistaticForward() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdQuasistaticReverse() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.REVERSE);
     }
 
     public Command sysIdDynamicForward() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdDynamicReverse() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.REVERSE);
     }
 }

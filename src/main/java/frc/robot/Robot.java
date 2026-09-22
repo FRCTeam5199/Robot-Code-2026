@@ -4,35 +4,20 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
-
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.system.DataLogManager;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.system.Timer;
-import org.wpilib.command2.ConditionalCommand;
-import org.wpilib.command2.InstantCommand;
-import frc.robot.constants.HopperConstants;
-import frc.robot.subsystems.*;
-
-import frc.robot.subsystems.templates.PositionCommand;
-import frc.robot.utility.ShotCalculator;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import org.wpilib.framework.TimedRobot;
-import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
-import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.LimelightHelpers;
+import org.wpilib.command2.Command;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.framework.TimedRobot;
+import org.wpilib.system.Timer;
 
-import javax.xml.crypto.Data;
-import java.sql.Driver;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.utility.LimelightHelpers;
+import frc.robot.utility.ShotCalculator;
 
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
@@ -103,23 +88,13 @@ public class Robot extends TimedRobot {
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
 //                -.316, -.316, .453, 0, 5, 135.218);
 //        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
-//                -.317, .317, .436, 180, 5, -135.218);
-
-        Logger.addDataReceiver(new WPILOGWriter());
+//                -.317, .317, .436, 180, 5, -135.218);;
 
         addPeriodic(() -> {
 //                    turretSubsystem.periodic();
                     shotCalculator.periodic();
                 }, .005
         );
-    }
-
-    @Override
-    public void robotInit() {
-        DataLogManager.start();
-        DriverStation.startDataLog(DataLogManager.getLog());
-        CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
-//        if (getAlliance().equals(Alliance.RED)) commandSwerveDrivetrain.getPigeon2().setYaw(180);
     }
 
     @Override
@@ -226,7 +201,7 @@ public class Robot extends TimedRobot {
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
 
-        RobotContainer.updateLastSpeeds();
+        RobotContainer.updateLastVelocity();
 //        System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
 //        System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
     }

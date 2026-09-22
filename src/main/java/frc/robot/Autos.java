@@ -1,20 +1,30 @@
 package frc.robot;
 
+import java.util.ArrayList;
+
+import org.wpilib.command2.Command;
+import org.wpilib.command2.SequentialCommandGroup;
+// import org.wpilib.smartdashboard.SendableChooser;
+import org.wpilib.system.Timer;
+import org.wpilib.telemetry.TelemetryLoggable;
+
 /// / Copyright (c) FIRST and other WPILib contributors.
 /// / Open Source Software; you can modify and/or share it under the terms of
 /// / the WPILib BSD license file in the root directory of this project.
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import org.wpilib.system.Timer;
-import org.wpilib.shuffleboard.BuiltInWidgets;
-import org.wpilib.shuffleboard.Shuffleboard;
-import org.wpilib.smartdashboard.SendableChooser;
-import org.wpilib.command2.*;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Vision;
 import frc.robot.utility.ShotCalculator;
 
 public final class Autos {
@@ -35,11 +45,11 @@ public final class Autos {
     //    private static PathPlannerAuto blueBottomShuttle;
 //    private static PathPlannerAuto blueTopShuttle;
     public static final Vision vision = Vision.getInstance();
-    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
+    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelVelocities(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
-    public static SendableChooser<Command> autonChooserRed = new SendableChooser<>();
-    public static SendableChooser<Command> autonChooserBlue = new SendableChooser<>();
+    public static ArrayList<Command> autonChooserRed = new ArrayList<>();
+    public static ArrayList<Command> autonChooserBlue = new ArrayList<>();
     private static Autos autos;
     private static PathPlannerAuto redBottomScore;
     private static PathPlannerAuto redTopScore;
@@ -60,7 +70,7 @@ public final class Autos {
     private static PathPlannerAuto blueBottomDoubleScore;
     private static PathPlannerAuto blueTopDoubleScore;
     private static Timer pidAlignmentTimer = new Timer();
-    private SendableChooser<Command> autoChooser;
+    private TelemetryLoggable autoChooser;
 
     public static void initializeAutos() {
 
@@ -76,30 +86,31 @@ public final class Autos {
         redBottomDelayedTrench = new PathPlannerAuto("Red Bottom Delayed Trench");
         redTopDelayedTrench = new PathPlannerAuto("Red Top Delayed Trench");
 
-        Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
-                .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
-                .withSize(2, 1);
-        Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
-                .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
-                .withSize(2, 1);
+        // Elastic
+        // .getTab("Autons").add("Red Autons", autonChooserRed)
+        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
+        //         .withSize(2, 1);
+        // Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
+        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
+        //         .withSize(2, 1);
 
-        autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
-        autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
-       autonChooserRed.addOption("Red Left Double Bump", redBottomDoubleBump);
-       autonChooserRed.addOption("Red Right Double Bump", redTopDoubleBump);
-        autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
-        autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
-        autonChooserRed.addOption("Red Left Delayed Trench", redBottomDelayedTrench);
-        autonChooserRed.addOption("Red Right Delayed Trench", redTopDelayedTrench);
+    //     autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
+    //     autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
+    //    autonChooserRed.addOption("Red Left Double Bump", redBottomDoubleBump);
+    //    autonChooserRed.addOption("Red Right Double Bump", redTopDoubleBump);
+    //     autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
+    //     autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
+    //     autonChooserRed.addOption("Red Left Delayed Trench", redBottomDelayedTrench);
+    //     autonChooserRed.addOption("Red Right Delayed Trench", redTopDelayedTrench);
 
-        autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
-        autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
-       autonChooserBlue.addOption("Blue Left Double Bump", redBottomDoubleBump);
-       autonChooserBlue.addOption("Blue Right Double Bump", redTopDoubleBump);
-        autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
-        autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
-        autonChooserBlue.addOption("Blue Left Delayed Trench", redBottomDelayedTrench);
-        autonChooserBlue.addOption("Blue Right Delayed Trench", redTopDelayedTrench);
+    //     autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
+    //     autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
+    //    autonChooserBlue.addOption("Blue Left Double Bump", redBottomDoubleBump);
+    //    autonChooserBlue.addOption("Blue Right Double Bump", redTopDoubleBump);
+    //     autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
+    //     autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
+    //     autonChooserBlue.addOption("Blue Left Delayed Trench", redBottomDelayedTrench);
+    //     autonChooserBlue.addOption("Blue Right Delayed Trench", redTopDelayedTrench);
 
         // autonChooserBlue.addOption("Blue Left Score Climb", blueBottomScore);
         // autonChooserBlue.addOption("Blue Right Score Climb", blueTopScore);
@@ -116,16 +127,12 @@ public final class Autos {
     /**
      * Gets or creates the AutoChooser (Singleton Method)
      */
-    public SendableChooser<Command> getAutoChooser() {
-        if (autoChooser == null) {
-            autoChooser = AutoBuilder.buildAutoChooser();
-//            UserInterface.getTab("Auton").add("AutoChooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
-        }
+    public TelemetryLoggable getAutoChooser() {
+//         if (autoChooser == null) {
+//             autoChooser = TelemetryLoggable;
+// //            UserInterface.getTab("Auton").add("AutoChooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
+//         }
 
         return autoChooser;
     }
-
-
 }
-
-

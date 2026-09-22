@@ -5,12 +5,13 @@ import org.wpilib.math.trajectory.TrapezoidProfile;
 import org.wpilib.networktables.BooleanPublisher;
 import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTable;
+
 import frc.robot.RobotContainer;
 import frc.robot.constants.HoodConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
-import frc.robot.utility.Type;
+import frc.robot.utility.SubsystemType;
 
 public class HoodSubsystem extends TemplateSubsystem {
     private static HoodSubsystem hoodSubsystem;
@@ -33,23 +34,16 @@ public class HoodSubsystem extends TemplateSubsystem {
     private SimpleMotorFeedforward simpleMotorFeedforward;
 
     private HoodSubsystem() {
-        super(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
+        super(SubsystemType.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.CANBUS, HoodConstants.VELOCITY,
                 HoodConstants.ACCELERATION, HoodConstants.JERK,
                 HoodConstants.LOWER_TOLERANCE,
                 HoodConstants.UPPER_TOLERANCE,
-                HoodConstants.GEAR_RATIO, "Hood", true, HoodConstants.CANBUS);
+                HoodConstants.GEAR_RATIO, "Hood", true);
 
         configureMotor(HoodConstants.INVERTED, HoodConstants.BRAKE,
                 HoodConstants.SUPPLY_CURRENT_LIMIT,
                 HoodConstants.STATOR_CURRENT_LIMIT,
                 HoodConstants.SLOT0_CONFIGS, true);
-
-        // configureSometimesEncoder(HoodConstants.ENCODER_ID,
-        //         HoodConstants.CANBUS, HoodConstants.MAGNET_OFFSET,
-        //         HoodConstants.SENSOR_TO_MECH_GEAR_RATIO,
-        //         HoodConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
-        //         HoodConstants.IS_CCW_POS,
-        //         HoodConstants.ABSOLUTE_DISCONTINUITY_POINT);
 
         configurePivot(HoodConstants.MIN,
                 HoodConstants.MAX);
@@ -58,13 +52,6 @@ public class HoodSubsystem extends TemplateSubsystem {
                 .Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
         currentState = new TrapezoidProfile.State(0, 0);
         goalState = new TrapezoidProfile.State(0, 0);
-
-//        hoodTable = NetworkTableInstance.getDefault().getTable("Hood/");
-//        goalPosition = hoodTable.getDoubleTopic("Goal Position").publish();
-//        goalPositionPhaseDelay = hoodTable.getDoubleTopic("Goal Position Phase Delay").publish();
-//        currentPosition = hoodTable.getDoubleTopic("Current Position").publish();
-//
-//        isMechAtGoal = hoodTable.getBooleanTopic("Hood Is Mech At Goal").publish();
 
         simpleMotorFeedforward = new SimpleMotorFeedforward(HoodConstants.SLOT0_CONFIGS.kS,
                 HoodConstants.SLOT0_CONFIGS.kV, HoodConstants.SLOT0_CONFIGS.kA);
@@ -79,22 +66,6 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-//        System.out.println("Hood Degrees: " + getDegrees());
-//        System.out.println(getGoal());
-//        System.out.println("Hood is at goal: " + isMechAtGoal(true));
-//        System.out.println(getGearRatio());
-
-//        goalPosition.set(ShotCalculator.getInstance().getHoodAngle());
-//        goalPositionPhaseDelay.set(ShotCalculator.getInstance().getHoodAnglePhaseDelayed());
-//        currentPosition.set(getDegrees());
-//        isMechAtGoal.set(isMechAtGoalAuto());
-
-        //Motor Rotations = degrees / 360 / .00694444444444
-        //Degrees = motorRot * 360 * .00694444444444
-
-        // System.out.println("HOod Degrese: " + getDegrees());
-        // System.out.println("Goal Degrees: " + ShotCalculator.getInstance().getHoodAnglePhaseDelayed());
-
         if (!stopMoving) followLastProfile();
     }
 

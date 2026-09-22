@@ -7,10 +7,14 @@ package frc.robot;
 
 import java.util.Map;
 
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.NamedCommands;
-
+import org.wpilib.command2.Command;
+import org.wpilib.command2.ConditionalCommand;
+import org.wpilib.command2.InstantCommand;
+import org.wpilib.command2.ParallelCommandGroup;
+import org.wpilib.command2.SelectCommand;
+import org.wpilib.command2.SequentialCommandGroup;
+import org.wpilib.command2.button.CommandXboxController;
+import org.wpilib.driverstation.Alliance;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.LinearFilter;
 import org.wpilib.math.geometry.Pose2d;
@@ -18,14 +22,16 @@ import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.TrapezoidProfile;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.command2.*;
-import org.wpilib.command2.button.CommandXboxController;
-import frc.robot.constants.*;
+
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
+
+import frc.robot.constants.Constants;
+import frc.robot.constants.HopperConstants;
+import frc.robot.constants.IntakePivotConstants;
+import frc.robot.constants.IntakeRollerConstants;
+import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
@@ -37,15 +43,10 @@ import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.templates.HoodCommand;
 import frc.robot.subsystems.templates.PositionCommand;
-// import frc.robot.subsystems.templates.ShooterCommand;
-//import frc.robot.subsystems.templates.ShooterCommand;
-import frc.robot.subsystems.templates.TurretCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
-
-import javax.swing.text.Position;
 
 public class
 
@@ -74,7 +75,7 @@ RobotContainer {
     public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DOWNAGITATE);
     private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.4), intakeDownAgitate.withTimeout(.4)).repeatedly();
     //Drive
-    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
+    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelVelocities(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
@@ -251,10 +252,10 @@ RobotContainer {
 
     public static void periodic() {
         currentState = commandSwerveDrivetrain.getStateCopy();
-        if (lastSpeeds == null) lastSpeeds = getSpeeds();
-        accelerationX = (getSpeeds().vx - lastSpeeds.vx) / .02;
-        accelerationY = (getSpeeds().vy - lastSpeeds.vy) / .02;
-        accelerationOmega = (getSpeeds().omega - lastSpeeds.omega) / .02;
+        if (lastSpeeds == null) lastSpeeds = getVelocity();
+        accelerationX = (getVelocity().vx - lastSpeeds.vx) / .02;
+        accelerationY = (getVelocity().vy - lastSpeeds.vy) / .02;
+        accelerationOmega = (getVelocity().omega - lastSpeeds.omega) / .02;
 
         accelerationX = accelerationXFilter.calculate(accelerationX);
         accelerationY = accelerationYFilter.calculate(accelerationY);
@@ -262,8 +263,8 @@ RobotContainer {
 
         if (currentState == null || currentState.Pose == null) return;
 
-        velocity = Math.sqrt(Math.pow(RobotContainer.getSpeeds().vx, 2)
-                + Math.pow(RobotContainer.getSpeeds().vy, 2));
+        velocity = Math.sqrt(Math.pow(RobotContainer.getVelocity().vx, 2)
+                + Math.pow(RobotContainer.getVelocity().vy, 2));
         acceleration = (velocity - lastVelocity) / .02;
         lastVelocity = velocity;
 //        velocity = Math.sqrt(Math.pow(pigeonVelocityX, 2)
@@ -344,8 +345,8 @@ RobotContainer {
         return turretSubsystem.isMechAtGoal() && hoodSubsystem.isMechAtGoal();
     }
 
-    public static ChassisVelocities getSpeeds() {
-        return currentState.Speeds;
+    public static ChassisVelocities getVelocity() {
+        return currentState.Velocity;
     }
 
     public static ShotMode getShotMode() {
@@ -430,8 +431,8 @@ RobotContainer {
         RobotContainer.isAutonomous = isClimbing;
     }
 
-    public static void updateLastSpeeds() {
-        lastSpeeds = currentState.Speeds;
+    public static void updateLastVelocity() {
+        lastSpeeds = currentState.Velocity;
     }
 
     public static double getAccelerationOmega() {
@@ -458,7 +459,7 @@ RobotContainer {
                 ));
 
         // Field Centric
-        commandXboxController.button(8).onTrue(commandSwerveDrivetrain
+        commandXboxController.menu().onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
                         new ConditionalCommand(
                                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
@@ -523,8 +524,8 @@ RobotContainer {
         // operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
         // operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 
-        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        commandXboxController.dpadUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        commandXboxController.dpadDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
         // operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
         // operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
@@ -539,12 +540,13 @@ RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        var alliance = MatchState.getAlliance();
-        if (alliance.isPresent() && alliance.get() == Alliance.RED) {
-            return Autos.autonChooserRed.getSelected();
-        } else {
-            return Autos.autonChooserBlue.getSelected();
-        }
+        // var alliance = MatchState.getAlliance();
+        // if (alliance.isPresent() && alliance.get() == Alliance.RED) {
+        //     return Autos.autonChooserRed.getSelected();
+        // } else {
+        //     return Autos.autonChooserBlue.getSelected();
+        // }
+        return null;
     }
 
     public void optimizeDrivetrain() {

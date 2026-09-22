@@ -31,5 +31,5 @@ public class ShooterConstants {
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
-    public static final CANBus CANBUS = new CANBus("Shooter");
+    public static final CANBus CANBUS = new CANBus("can3");
 }

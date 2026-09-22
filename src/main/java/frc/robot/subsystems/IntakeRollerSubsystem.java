@@ -1,13 +1,17 @@
 package frc.robot.subsystems;
 
+import static org.wpilib.units.Units.Rotations;
+import static org.wpilib.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.Second;
+import static org.wpilib.units.Units.Seconds;
+import static org.wpilib.units.Units.Volts;
+
 import org.wpilib.command2.Command;
 import org.wpilib.command2.sysid.SysIdRoutine;
-import frc.robot.constants.IntakeRollerConstants;
-import frc.robot.subsystems.templates.TemplateSubsystem;
-import frc.robot.utility.Type;
 
-import static org.wpilib.units.Units.*;
-import static org.wpilib.units.Units.RotationsPerSecond;
+import frc.robot.subsystems.templates.TemplateSubsystem;
+import frc.robot.utility.SubsystemType;
+import frc.robot.constants.IntakeRollerConstants;
 
 public class IntakeRollerSubsystem extends TemplateSubsystem {
     private static IntakeRollerSubsystem intakeRollerSubsystem;
@@ -32,20 +36,20 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
     );
 
     private IntakeRollerSubsystem() {
-        super(Type.ROLLER, IntakeRollerConstants.MOTOR_ID,
+        super(SubsystemType.ROLLER, IntakeRollerConstants.MOTOR_ID, IntakeRollerConstants.CAN_BUS, 
                 0, IntakeRollerConstants.ACCELERATION,
                 IntakeRollerConstants.JERK,
                 IntakeRollerConstants.LOWER_TOLERANCE,
                 IntakeRollerConstants.UPPER_TOLERANCE,
-                IntakeRollerConstants.GEAR_RATIO, "Intake Roller", false, IntakeRollerConstants.CAN_BUS);
+                IntakeRollerConstants.GEAR_RATIO, "Intake Roller", false);
 
         configureMotor(IntakeRollerConstants.INVERTED, IntakeRollerConstants.BRAKE,
                 IntakeRollerConstants.SUPPLY_CURRENT_LIMIT,
                 IntakeRollerConstants.STATOR_CURRENT_LIMIT,
                 IntakeRollerConstants.SLOT0_CONFIGS, false);
 
-        configureFollowerMotor(IntakeRollerConstants.FOLLOWER_MOTOR_ID,
-                IntakeRollerConstants.FOLLOWER_INVERTED, IntakeRollerConstants.CAN_BUS, true);
+        configureFollowerMotor(IntakeRollerConstants.FOLLOWER_MOTOR_ID, IntakeRollerConstants.CAN_BUS, 
+                IntakeRollerConstants.FOLLOWER_INVERTED);
     }
 
     public static IntakeRollerSubsystem getInstance() {
@@ -58,23 +62,21 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        //    System.out.println("Velocity: " + getMotorVelocity());
-        // System.out.println("Goal: " + getGoal());
     }
 
     public Command sysIdQuasistaticForward() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdQuasistaticReverse() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.REVERSE);
     }
 
     public Command sysIdDynamicForward() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdDynamicReverse() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.REVERSE);
     }
 }

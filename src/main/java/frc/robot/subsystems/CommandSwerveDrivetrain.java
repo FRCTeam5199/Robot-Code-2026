@@ -3,35 +3,35 @@ package frc.robot.subsystems;
 import static org.wpilib.units.Units.Second;
 import static org.wpilib.units.Units.Volts;
 
+// import static edu.wpi.first.units.Units.Second;
+// import static edu.wpi.first.units.Units.Volts;
+
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Subsystem;
+import org.wpilib.command2.sysid.SysIdRoutine;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.system.Notifier;
+import org.wpilib.system.RobotController;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import org.wpilib.math.linalg.Matrix;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.numbers.N1;
-import org.wpilib.math.numbers.N3;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.system.Notifier;
-import org.wpilib.system.RobotController;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Subsystem;
-import org.wpilib.command2.sysid.SysIdRoutine;
+
 import frc.robot.RobotContainer;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 
@@ -45,14 +45,15 @@ import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.004; // 4 ms
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
+    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.ZERO;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
-    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+    // Used in AutoBuilder
+    private final SwerveRequest.ApplyRobotVelocity m_pathApplyRobotVelocity = new SwerveRequest.ApplyRobotVelocity();
 
 
     public void configureAutoBuilder() {
@@ -61,29 +62,29 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
             // Configure AutoBuilder last
             AutoBuilder.configure(
-                    RobotContainer::getPose, // Robot pose supplier
-                    this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                    RobotContainer::getSpeeds, // ChassisVelocities supplier. MUST BE ROBOT RELATIVE
-                    (speeds, feedforwards) -> setControl(
-                            m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                                    .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                                    .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())), // Method that will drive the robot given ROBOT RELATIVE ChassisVelocities. Also optionally outputs individual module feedforwards
-                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                            new PIDConstants(5.5, 0.0, 0.0), // 7, Translation PID constants
-                            new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
-                    ),
-                    config, // The robot configuration
-                    () -> {
-                        // Boolean supplier that controls when the path will be mirrored for the red alliance
-                        // This will flip the path being followed to the red side of the field.
-                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-                        var alliance = MatchState.getAlliance();
-                        if (alliance.isPresent()) {
-                            return alliance.get() == Alliance.BLUE;
-                        }
-                        return false;
-                    },
-                    this // Reference to this subsystem to set requirements
+                RobotContainer::getPose, // Robot pose supplier
+                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                RobotContainer::getVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (velocity, feedforwards) -> setControl(
+                    m_pathApplyRobotVelocity.withVelocity(velocity)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(5.5, 0.0, 0.0), // 7, Translation PID constants
+                        new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
+                ),
+                config, // The robot configuration
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+                    var alliance = MatchState.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == Alliance.BLUE;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
             );
         } catch (Exception ignored) {
         }
@@ -108,18 +109,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
     /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
     private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
-            new SysIdRoutine.Config(
-                    null,        // Use default ramp rate (1 V/s)
-                    Volts.of(7), // Use dynamic voltage of 7 V
-                    null,        // Use default timeout (10 s)
-                    // Log state with SignalLogger class
-                    state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
-            ),
-            new SysIdRoutine.Mechanism(
-                    volts -> setControl(m_steerCharacterization.withVolts(volts)),
-                    null,
-                    this
-            )
+        new SysIdRoutine.Config(
+            null,        // Use default ramp rate (1 V/s)
+            Volts.of(7), // Use dynamic voltage of 7 V
+            null,        // Use default timeout (10 s)
+            // Log state with SignalLogger class
+            state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
+        ),
+        new SysIdRoutine.Mechanism(
+                volts -> setControl(m_steerCharacterization.withVolts(volts)),
+                null,
+                this
+        )
     );
     /*
      * SysId routine for characterizing rotation.
@@ -272,16 +273,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
-        if (!m_hasAppliedOperatorPerspective || RobotState.isDisabled()) {
-            MatchState.getAlliance().ifPresent(allianceColor -> {
-                setOperatorPerspectiveForward(
-                        allianceColor == Alliance.RED
-                                ? kRedAlliancePerspectiveRotation
-                                : kBlueAlliancePerspectiveRotation
-                );
-                m_hasAppliedOperatorPerspective = true;
-            });
-        }
+        // if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+        //     DriverStation.getAlliance().ifPresent(allianceColor -> {
+        //         setOperatorPerspectiveForward(
+        //                 allianceColor == Alliance.Red
+        //                         ? kRedAlliancePerspectiveRotation
+        //                         : kBlueAlliancePerspectiveRotation
+        //         );
+        //         m_hasAppliedOperatorPerspective = true;
+        //     });
+        // }
     }
 
     private void startSimThread() {
@@ -308,7 +309,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     @Override
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
+        // Utils.fpgaToCurrentTime(timestampSeconds) changed to timestampSeconds
+        super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
     }
 
     /**
@@ -330,7 +332,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             double timestampSeconds,
             Matrix<N3, N1> visionMeasurementStdDevs
     ) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+        // Utils.fpgaToCurrentTime(timestampSeconds) changed to timestampSeconds
+        super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
     }
 
     /**
@@ -341,6 +344,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     @Override
     public Optional<Pose2d> samplePoseAt(double timestampSeconds) {
-        return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
+        // Utils.fpgaToCurrentTime(timestampSeconds) changed to timestampSeconds
+        return super.samplePoseAt(timestampSeconds);
     }
 }

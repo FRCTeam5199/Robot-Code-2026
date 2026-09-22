@@ -1,6 +1,6 @@
 package frc.robot.utility;
 
-public enum Type {
+public enum SubsystemType {
     ROLLER,
     LINEAR,
     PIVOT

@@ -32,5 +32,5 @@ public class HopperConstants {
     public static final double INDEXING_SPEED = 100;
     public static final double IDLING_SPEED = -5;
 
-    public static final CANBus canbus = new CANBus("rio");
+    public static final CANBus CANBUS = new CANBus("can2");
 }

@@ -48,5 +48,5 @@ public class IntakePivotConstants {
     public static final double[][] GEAR_RATIOA = {{48, 1}};
     public static final double INTAKE_SENSOR_MECH_RATIO = 1d;
 
-    public static final CANBus canbus = new CANBus("rio");
+    public static final CANBus CANBUS = new CANBus("can2");
 }

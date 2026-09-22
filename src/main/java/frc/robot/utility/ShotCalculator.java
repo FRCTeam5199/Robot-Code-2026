@@ -1,28 +1,28 @@
 package frc.robot.utility;
 
-import org.wpilib.math.util.Pair;
+import java.util.List;
+
+import org.wpilib.command2.SubsystemBase;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.geometry.Twist2d;
 import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
 import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.command2.SubsystemBase;
+import org.wpilib.util.Pair;
+
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.KickerConstants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class ShotCalculator extends SubsystemBase {
     private static ShotCalculator shotCalculator;
-    //    private final LinearFilter turretAngleFilter =
-//            LinearFilter.movingAverage((int) (0.1 / 0.02));
     private Pose2d futureTurretPosition, futureTurretPositionPhaseDelayed;
     private double turretAngle, turretAnglePhaseDelayed;
-    private double lastTurretAngle, lastTurretAnglePhaseDelayed;
+    // private double lastTurretAngle, lastTurretAnglePhaseDelayed;
     private Rotation2d lastTurretRotation, lastTurretRotationPhaseDelayed, turretRotation, turretRotationPhaseDelayed;
     private double turretVelocity, turretVelocityPhaseDelayed;
     private InterpolatingDoubleTreeMap hoodLookupTable;
@@ -35,8 +35,44 @@ public class ShotCalculator extends SubsystemBase {
     private double shooterSpeed, shooterSpeedPhaseDelayed;
     private TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     private HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-    private ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
+    // private ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     private double futureTurretToTargetDistance, futureTurretToTargetDistancePhaseDelayed = 0;
+
+    public static final List<Double> DISTANCES = List.of(
+        1.00, 1.05, 1.10, 1.15, 1.20, 1.25, 1.30, 1.35, 1.40, 1.45, 1.50, 1.55, 1.60, 1.65, 1.70, 1.75, 1.80, 1.85, 1.90, 1.95,
+        2.00, 2.05, 2.10, 2.15, 2.20, 2.25, 2.30, 2.35, 2.40, 2.45, 2.50, 2.55, 2.60, 2.65, 2.70, 2.75, 2.80, 2.85, 2.90, 2.95,
+        3.00, 3.05, 3.10, 3.15, 3.20, 3.25, 3.30, 3.35, 3.40, 3.45, 3.50, 3.55, 3.60, 3.65, 3.70, 3.75, 3.80, 3.85, 3.90, 3.95,
+        4.00, 4.05, 4.10, 4.15, 4.20, 4.25, 4.30, 4.35, 4.40, 4.45, 4.50, 4.55, 4.60, 4.65, 4.70, 4.75, 4.80, 4.85, 4.90, 4.95,
+        5.00, 5.05, 5.10, 5.15, 5.20, 5.25, 5.30, 5.35, 5.40, 5.45, 5.50, 5.55, 5.60, 5.65, 5.70, 5.75, 5.80, 5.85, 5.90, 5.95,
+        6.00, 6.05, 6.10, 6.15, 6.20, 6.25, 6.30, 6.35, 6.40, 6.45, 6.50, 6.55, 6.60, 6.65, 6.70, 6.75, 6.80, 6.85, 6.90, 6.95,
+        7.00, 7.05, 7.10, 7.15, 7.20, 7.25, 7.30, 7.35, 7.40, 7.45, 7.50, 7.55, 7.60, 7.65, 7.70, 7.75, 7.80, 7.85, 7.90, 7.95, 8.00);
+ 
+    public static final List<Double> HOOD_ANGLES = List.of(
+        0.0, 1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0, 7.0, 7.0, 8.0, 8.0, 8.0,
+        9.0, 11.0, 13.0, 13.0, 13.0, 13.0, 13.0, 16.0, 16.0, 15.0, 15.0, 15.0, 15.0, 15.0, 18.0, 17.0, 17.0, 17.0, 17.0, 16.0,
+        16.0, 19.0, 18.0, 18.0, 18.0, 18.0, 17.0, 20.0, 20.0, 19.0, 19.0, 19.0, 18.0, 21.0, 21.0, 20.0, 20.0, 19.0, 19.0, 22.0,
+        21.0, 21.0, 20.0, 20.0, 22.0, 22.0, 21.0, 21.0, 20.0, 22.0, 22.0, 22.0, 21.0, 21.0, 23.0, 23.0, 22.0, 22.0, 21.0, 23.0,
+        23.0, 22.0, 22.0, 23.0, 24.0, 23.0, 22.0, 24.0, 23.0, 24.0, 23.0, 22.0, 24.0, 24.0, 23.0, 23.0, 24.0, 24.0, 24.0, 23.0,
+        24.0, 25.0, 24.0, 23.0, 24.0, 25.0, 24.0, 23.0, 24.0, 25.0, 24.0, 25.0, 24.0, 25.0, 24.0, 25.0, 24.0, 25.0, 24.0, 25.0,
+        24.0, 25.0, 24.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 24.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0);
+ 
+    public static final List<Double> SHOOTER_SPEEDS = List.of(
+        38.5, 38.5, 38.8, 39.1, 39.4, 39.4, 39.6, 39.6, 40.2, 40.2, 40.5, 41.0, 41.1, 41.4, 41.7, 41.7, 42.0, 42.1, 42.6, 42.9,
+        42.9, 42.6, 42.6, 42.9, 43.2, 43.5, 43.8, 43.8, 44.0, 44.3, 44.6, 44.9, 45.2, 45.5, 45.5, 45.8, 46.1, 46.4, 46.7, 47.0,
+        47.3, 47.3, 47.6, 47.9, 48.1, 48.4, 48.7, 48.9, 49.0, 49.3, 49.6, 49.9, 50.2, 50.3, 50.5, 50.8, 51.1, 51.4, 51.7, 51.7,
+        52.0, 52.2, 52.5, 52.8, 53.0, 53.1, 53.4, 53.7, 54.0, 54.2, 54.3, 54.6, 54.9, 55.2, 55.3, 55.5, 55.8, 56.1, 56.3, 56.5,
+        56.6, 56.9, 57.2, 57.4, 57.5, 57.8, 58.1, 58.3, 58.5, 58.7, 59.0, 59.3, 59.4, 59.6, 59.9, 60.2, 60.3, 60.4, 60.7, 61.0,
+        61.2, 61.3, 61.6, 61.9, 62.1, 62.2, 62.5, 62.8, 62.9, 63.1, 63.4, 63.5, 63.8, 64.0, 64.3, 64.4, 64.7, 64.8, 65.1, 65.3,
+        65.6, 65.7, 66.0, 66.2, 66.3, 66.6, 66.7, 67.0, 67.2, 67.5, 67.6, 67.9, 68.1, 68.4, 68.5, 68.7, 68.9, 69.1, 69.4, 69.5, 69.8);
+ 
+    public static final List<Double> TIME_OF_FLIGHT = List.of(
+        0.711, 0.701, 0.729, 0.713, 0.74, 0.729, 0.753, 0.742, 0.759, 0.749, 0.77, 0.787, 0.773, 0.792, 0.811, 0.799, 0.817, 0.802, 0.816, 0.832,
+        0.82, 0.785, 0.75, 0.763, 0.776, 0.789, 0.802, 0.746, 0.757, 0.792, 0.804, 0.815, 0.826, 0.838, 0.782, 0.815, 0.825, 0.835, 0.845, 0.881,
+        0.891, 0.833, 0.865, 0.874, 0.883, 0.892, 0.927, 0.866, 0.877, 0.908, 0.917, 0.925, 0.959, 0.897, 0.907, 0.938, 0.946, 0.979, 0.987, 0.927,
+        0.958, 0.965, 0.997, 1.004, 0.965, 0.975, 1.006, 1.013, 1.046, 1.004, 1.014, 1.02, 1.052, 1.059, 1.018, 1.027, 1.057, 1.064, 1.097, 1.054,
+        1.062, 1.094, 1.1, 1.083, 1.067, 1.097, 1.129, 1.086, 1.117, 1.1, 1.131, 1.163, 1.118, 1.126, 1.158, 1.163, 1.145, 1.153, 1.158, 1.19,
+        1.171, 1.153, 1.184, 1.216, 1.196, 1.178, 1.209, 1.242, 1.221, 1.202, 1.234, 1.214, 1.246, 1.226, 1.258, 1.238, 1.27, 1.249, 1.282, 1.261,
+        1.294, 1.272, 1.306, 1.284, 1.291, 1.295, 1.302, 1.306, 1.313, 1.317, 1.324, 1.329, 1.335, 1.37, 1.346, 1.353, 1.357, 1.364, 1.368, 1.375, 1.379);
 
     private ShotCalculator() {
         //Motor Rotations = degrees / 360 / .01255707762557077625570776255708
@@ -48,432 +84,18 @@ public class ShotCalculator extends SubsystemBase {
         shuttleHoodLookupTable = new InterpolatingDoubleTreeMap();
         shuttleShooterSpeedLookupTable = new InterpolatingDoubleTreeMap();
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
+        
+        for(int i=0; i<DISTANCES.size(); i++) {
+            hoodLookupTable.put(DISTANCES.get(i), HOOD_ANGLES.get(i));
+        }
 
-        hoodLookupTable.put(1.00, 0d);
-        hoodLookupTable.put(1.05, 1d);
-        hoodLookupTable.put(1.10, 1d);
-        hoodLookupTable.put(1.15, 2d);
-        hoodLookupTable.put(1.20, 2d);
-        hoodLookupTable.put(1.25, 3d);
-        hoodLookupTable.put(1.30, 3d);
-        hoodLookupTable.put(1.35, 4d);
-        hoodLookupTable.put(1.40, 4d);
-        hoodLookupTable.put(1.45, 5d);
-        hoodLookupTable.put(1.50, 5d);
-        hoodLookupTable.put(1.55, 5d);
-        hoodLookupTable.put(1.60, 6d);
-        hoodLookupTable.put(1.65, 6d);
-        hoodLookupTable.put(1.70, 6d);
-        hoodLookupTable.put(1.75, 7d);
-        hoodLookupTable.put(1.80, 7d);
-        hoodLookupTable.put(1.85, 8d);
-        hoodLookupTable.put(1.90, 8d);
-        hoodLookupTable.put(1.95, 8d);
-        hoodLookupTable.put(2.00, 9d);
-        hoodLookupTable.put(2.05, 11d);
-        hoodLookupTable.put(2.10, 13d);
-        hoodLookupTable.put(2.15, 13d);
-        hoodLookupTable.put(2.20, 13d);
-        hoodLookupTable.put(2.25, 13d);
-        hoodLookupTable.put(2.30, 13d);
-        hoodLookupTable.put(2.35, 16d);
-        hoodLookupTable.put(2.40, 16d);
-        hoodLookupTable.put(2.45, 15d);
-        hoodLookupTable.put(2.50, 15d);
-        hoodLookupTable.put(2.55, 15d);
-        hoodLookupTable.put(2.60, 15d);
-        hoodLookupTable.put(2.65, 15d);
-        hoodLookupTable.put(2.70, 18d);
-        hoodLookupTable.put(2.75, 17d);
-        hoodLookupTable.put(2.80, 17d);
-        hoodLookupTable.put(2.85, 17d);
-        hoodLookupTable.put(2.90, 17d);
-        hoodLookupTable.put(2.95, 16d);
-        hoodLookupTable.put(3.00, 16d);
-        hoodLookupTable.put(3.05, 19d);
-        hoodLookupTable.put(3.10, 18d);
-        hoodLookupTable.put(3.15, 18d);
-        hoodLookupTable.put(3.20, 18d);
-        hoodLookupTable.put(3.25, 18d);
-        hoodLookupTable.put(3.30, 17d);
-        hoodLookupTable.put(3.35, 20d);
-        hoodLookupTable.put(3.40, 20d);
-        hoodLookupTable.put(3.45, 19d);
-        hoodLookupTable.put(3.50, 19d);
-        hoodLookupTable.put(3.55, 19d);
-        hoodLookupTable.put(3.60, 18d);
-        hoodLookupTable.put(3.65, 21d);
-        hoodLookupTable.put(3.70, 21d);
-        hoodLookupTable.put(3.75, 20d);
-        hoodLookupTable.put(3.80, 20d);
-        hoodLookupTable.put(3.85, 19d);
-        hoodLookupTable.put(3.90, 19d);
-        hoodLookupTable.put(3.95, 22d);
-        hoodLookupTable.put(4.00, 21d);
-        hoodLookupTable.put(4.05, 21d);
-        hoodLookupTable.put(4.10, 20d);
-        hoodLookupTable.put(4.15, 20d);
-        hoodLookupTable.put(4.20, 22d);
-        hoodLookupTable.put(4.25, 22d);
-        hoodLookupTable.put(4.30, 21d);
-        hoodLookupTable.put(4.35, 21d);
-        hoodLookupTable.put(4.40, 20d);
-        hoodLookupTable.put(4.45, 22d);
-        hoodLookupTable.put(4.50, 22d);
-        hoodLookupTable.put(4.55, 22d);
-        hoodLookupTable.put(4.60, 21d);
-        hoodLookupTable.put(4.65, 21d);
-        hoodLookupTable.put(4.70, 23d);
-        hoodLookupTable.put(4.75, 23d);
-        hoodLookupTable.put(4.80, 22d);
-        hoodLookupTable.put(4.85, 22d);
-        hoodLookupTable.put(4.90, 21d);
-        hoodLookupTable.put(4.95, 23d);
-        hoodLookupTable.put(5.00, 23d);
-        hoodLookupTable.put(5.05, 22d);
-        hoodLookupTable.put(5.10, 22d);
-        hoodLookupTable.put(5.15, 23d);
-        hoodLookupTable.put(5.20, 24d);
-        hoodLookupTable.put(5.25, 23d);
-        hoodLookupTable.put(5.30, 22d);
-        hoodLookupTable.put(5.35, 24d);
-        hoodLookupTable.put(5.40, 23d);
-        hoodLookupTable.put(5.45, 24d);
-        hoodLookupTable.put(5.50, 23d);
-        hoodLookupTable.put(5.55, 22d);
-        hoodLookupTable.put(5.60, 24d);
-        hoodLookupTable.put(5.65, 24d);
-        hoodLookupTable.put(5.70, 23d);
-        hoodLookupTable.put(5.75, 23d);
-        hoodLookupTable.put(5.80, 24d);
-        hoodLookupTable.put(5.85, 24d);
-        hoodLookupTable.put(5.90, 24d);
-        hoodLookupTable.put(5.95, 23d);
-        hoodLookupTable.put(6.00, 24d);
-        hoodLookupTable.put(6.05, 25d);
-        hoodLookupTable.put(6.10, 24d);
-        hoodLookupTable.put(6.15, 23d);
-        hoodLookupTable.put(6.20, 24d);
-        hoodLookupTable.put(6.25, 25d);
-        hoodLookupTable.put(6.30, 24d);
-        hoodLookupTable.put(6.35, 23d);
-        hoodLookupTable.put(6.40, 24d);
-        hoodLookupTable.put(6.45, 25d);
-        hoodLookupTable.put(6.50, 24d);
-        hoodLookupTable.put(6.55, 25d);
-        hoodLookupTable.put(6.60, 24d);
-        hoodLookupTable.put(6.65, 25d);
-        hoodLookupTable.put(6.70, 24d);
-        hoodLookupTable.put(6.75, 25d);
-        hoodLookupTable.put(6.80, 24d);
-        hoodLookupTable.put(6.85, 25d);
-        hoodLookupTable.put(6.90, 24d);
-        hoodLookupTable.put(6.95, 25d);
-        hoodLookupTable.put(7.00, 24d);
-        hoodLookupTable.put(7.05, 25d);
-        hoodLookupTable.put(7.10, 24d);
-        hoodLookupTable.put(7.15, 25d);
-        hoodLookupTable.put(7.20, 25d);
-        hoodLookupTable.put(7.25, 25d);
-        hoodLookupTable.put(7.30, 25d);
-        hoodLookupTable.put(7.35, 25d);
-        hoodLookupTable.put(7.40, 25d);
-        hoodLookupTable.put(7.45, 25d);
-        hoodLookupTable.put(7.50, 25d);
-        hoodLookupTable.put(7.55, 25d);
-        hoodLookupTable.put(7.60, 25d);
-        hoodLookupTable.put(7.65, 24d);
-        hoodLookupTable.put(7.70, 25d);
-        hoodLookupTable.put(7.75, 25d);
-        hoodLookupTable.put(7.80, 25d);
-        hoodLookupTable.put(7.85, 25d);
-        hoodLookupTable.put(7.90, 25d);
-        hoodLookupTable.put(7.95, 25d);
-        hoodLookupTable.put(8.00, 25d);
+        for(int i=0; i<DISTANCES.size(); i++) {
+            shooterSpeedLookupTable.put(DISTANCES.get(i), SHOOTER_SPEEDS.get(i));
+        }
 
-        shooterSpeedLookupTable.put(1.00, 38.5);
-        shooterSpeedLookupTable.put(1.05, 38.5);
-        shooterSpeedLookupTable.put(1.10, 38.8);
-        shooterSpeedLookupTable.put(1.15, 39.1);
-        shooterSpeedLookupTable.put(1.20, 39.4);
-        shooterSpeedLookupTable.put(1.25, 39.4);
-        shooterSpeedLookupTable.put(1.30, 39.6);
-        shooterSpeedLookupTable.put(1.35, 39.6);
-        shooterSpeedLookupTable.put(1.40, 40.2);
-        shooterSpeedLookupTable.put(1.45, 40.2);
-        shooterSpeedLookupTable.put(1.50, 40.5);
-        shooterSpeedLookupTable.put(1.55, 41d);
-        shooterSpeedLookupTable.put(1.60, 41.1);
-        shooterSpeedLookupTable.put(1.65, 41.4);
-        shooterSpeedLookupTable.put(1.70, 41.7);
-        shooterSpeedLookupTable.put(1.75, 41.7);
-        shooterSpeedLookupTable.put(1.80, 42d);
-        shooterSpeedLookupTable.put(1.85, 42.1);
-        shooterSpeedLookupTable.put(1.90, 42.6);
-        shooterSpeedLookupTable.put(1.95, 42.9);
-        shooterSpeedLookupTable.put(2.00, 42.9);
-        shooterSpeedLookupTable.put(2.05, 42.6);
-        shooterSpeedLookupTable.put(2.10, 42.6);
-        shooterSpeedLookupTable.put(2.15, 42.9);
-        shooterSpeedLookupTable.put(2.20, 43.2);
-        shooterSpeedLookupTable.put(2.25, 43.5);
-        shooterSpeedLookupTable.put(2.30, 43.8);
-        shooterSpeedLookupTable.put(2.35, 43.8);
-        shooterSpeedLookupTable.put(2.40, 44d);
-        shooterSpeedLookupTable.put(2.45, 44.3);
-        shooterSpeedLookupTable.put(2.50, 44.6);
-        shooterSpeedLookupTable.put(2.55, 44.9);
-        shooterSpeedLookupTable.put(2.60, 45.2);
-        shooterSpeedLookupTable.put(2.65, 45.5);
-        shooterSpeedLookupTable.put(2.70, 45.5);
-        shooterSpeedLookupTable.put(2.75, 45.8);
-        shooterSpeedLookupTable.put(2.80, 46.1);
-        shooterSpeedLookupTable.put(2.85, 46.4);
-        shooterSpeedLookupTable.put(2.90, 46.7);
-        shooterSpeedLookupTable.put(2.95, 47d);
-        shooterSpeedLookupTable.put(3.00, 47.3);
-        shooterSpeedLookupTable.put(3.05, 47.3);
-        shooterSpeedLookupTable.put(3.10, 47.6);
-        shooterSpeedLookupTable.put(3.15, 47.9);
-        shooterSpeedLookupTable.put(3.20, 48.1);
-        shooterSpeedLookupTable.put(3.25, 48.4);
-        shooterSpeedLookupTable.put(3.30, 48.7);
-        shooterSpeedLookupTable.put(3.35, 48.9);
-        shooterSpeedLookupTable.put(3.40, 49d);
-        shooterSpeedLookupTable.put(3.45, 49.3);
-        shooterSpeedLookupTable.put(3.50, 49.6);
-        shooterSpeedLookupTable.put(3.55, 49.9);
-        shooterSpeedLookupTable.put(3.60, 50.2);
-        shooterSpeedLookupTable.put(3.65, 50.3);
-        shooterSpeedLookupTable.put(3.70, 50.5);
-        shooterSpeedLookupTable.put(3.75, 50.8);
-        shooterSpeedLookupTable.put(3.80, 51.1);
-        shooterSpeedLookupTable.put(3.85, 51.4);
-        shooterSpeedLookupTable.put(3.90, 51.7);
-        shooterSpeedLookupTable.put(3.95, 51.7);
-        shooterSpeedLookupTable.put(4.00, 52d);
-        shooterSpeedLookupTable.put(4.05, 52.2);
-        shooterSpeedLookupTable.put(4.10, 52.5);
-        shooterSpeedLookupTable.put(4.15, 52.8);
-        shooterSpeedLookupTable.put(4.20, 53d);
-        shooterSpeedLookupTable.put(4.25, 53.1);
-        shooterSpeedLookupTable.put(4.30, 53.4);
-        shooterSpeedLookupTable.put(4.35, 53.7);
-        shooterSpeedLookupTable.put(4.40, 54d);
-        shooterSpeedLookupTable.put(4.45, 54.2);
-        shooterSpeedLookupTable.put(4.50, 54.3);
-        shooterSpeedLookupTable.put(4.55, 54.6);
-        shooterSpeedLookupTable.put(4.60, 54.9);
-        shooterSpeedLookupTable.put(4.65, 55.2);
-        shooterSpeedLookupTable.put(4.70, 55.3);
-        shooterSpeedLookupTable.put(4.75, 55.5);
-        shooterSpeedLookupTable.put(4.80, 55.8);
-        shooterSpeedLookupTable.put(4.85, 56.1);
-        shooterSpeedLookupTable.put(4.90, 56.3);
-        shooterSpeedLookupTable.put(4.95, 56.5);
-        shooterSpeedLookupTable.put(5.00, 56.6);
-        shooterSpeedLookupTable.put(5.05, 56.9);
-        shooterSpeedLookupTable.put(5.10, 57.2);
-        shooterSpeedLookupTable.put(5.15, 57.4);
-        shooterSpeedLookupTable.put(5.20, 57.5);
-        shooterSpeedLookupTable.put(5.25, 57.8);
-        shooterSpeedLookupTable.put(5.30, 58.1);
-        shooterSpeedLookupTable.put(5.35, 58.3);
-        shooterSpeedLookupTable.put(5.40, 58.5);
-        shooterSpeedLookupTable.put(5.45, 58.7);
-        shooterSpeedLookupTable.put(5.50, 59d);
-        shooterSpeedLookupTable.put(5.55, 59.3);
-        shooterSpeedLookupTable.put(5.60, 59.4);
-        shooterSpeedLookupTable.put(5.65, 59.6);
-        shooterSpeedLookupTable.put(5.70, 59.9);
-        shooterSpeedLookupTable.put(5.75, 60.2);
-        shooterSpeedLookupTable.put(5.80, 60.3);
-        shooterSpeedLookupTable.put(5.85, 60.4);
-        shooterSpeedLookupTable.put(5.90, 60.7);
-        shooterSpeedLookupTable.put(5.95, 61d);
-        shooterSpeedLookupTable.put(6.00, 61.2);
-        shooterSpeedLookupTable.put(6.05, 61.3);
-        shooterSpeedLookupTable.put(6.10, 61.6);
-        shooterSpeedLookupTable.put(6.15, 61.9);
-        shooterSpeedLookupTable.put(6.20, 62.1);
-        shooterSpeedLookupTable.put(6.25, 62.2);
-        shooterSpeedLookupTable.put(6.30, 62.5);
-        shooterSpeedLookupTable.put(6.35, 62.8);
-        shooterSpeedLookupTable.put(6.40, 62.9);
-        shooterSpeedLookupTable.put(6.45, 63.1);
-        shooterSpeedLookupTable.put(6.50, 63.4);
-        shooterSpeedLookupTable.put(6.55, 63.5);
-        shooterSpeedLookupTable.put(6.60, 63.8);
-        shooterSpeedLookupTable.put(6.65, 64d);
-        shooterSpeedLookupTable.put(6.70, 64.3);
-        shooterSpeedLookupTable.put(6.75, 64.4);
-        shooterSpeedLookupTable.put(6.80, 64.7);
-        shooterSpeedLookupTable.put(6.85, 64.8);
-        shooterSpeedLookupTable.put(6.90, 65.1);
-        shooterSpeedLookupTable.put(6.95, 65.3);
-        shooterSpeedLookupTable.put(7.00, 65.6);
-        shooterSpeedLookupTable.put(7.05, 65.7);
-        shooterSpeedLookupTable.put(7.10, 66d);
-        shooterSpeedLookupTable.put(7.15, 66.2);
-        shooterSpeedLookupTable.put(7.20, 66.3);
-        shooterSpeedLookupTable.put(7.25, 66.6);
-        shooterSpeedLookupTable.put(7.30, 66.7);
-        shooterSpeedLookupTable.put(7.35, 67d);
-        shooterSpeedLookupTable.put(7.40, 67.2);
-        shooterSpeedLookupTable.put(7.45, 67.5);
-        shooterSpeedLookupTable.put(7.50, 67.6);
-        shooterSpeedLookupTable.put(7.55, 67.9);
-        shooterSpeedLookupTable.put(7.60, 68.1);
-        shooterSpeedLookupTable.put(7.65, 68.4);
-        shooterSpeedLookupTable.put(7.70, 68.5);
-        shooterSpeedLookupTable.put(7.75, 68.7);
-        shooterSpeedLookupTable.put(7.80, 68.9);
-        shooterSpeedLookupTable.put(7.85, 69.1);
-        shooterSpeedLookupTable.put(7.90, 69.4);
-        shooterSpeedLookupTable.put(7.95, 69.5);
-        shooterSpeedLookupTable.put(8.00, 69.8);
-
-        timeOfFlightLookupTable.put(1.00, 0.711);
-        timeOfFlightLookupTable.put(1.05, 0.701);
-        timeOfFlightLookupTable.put(1.10, 0.729);
-        timeOfFlightLookupTable.put(1.15, 0.713);
-        timeOfFlightLookupTable.put(1.20, 0.74);
-        timeOfFlightLookupTable.put(1.25, 0.729);
-        timeOfFlightLookupTable.put(1.30, 0.753);
-        timeOfFlightLookupTable.put(1.35, 0.742);
-        timeOfFlightLookupTable.put(1.40, 0.759);
-        timeOfFlightLookupTable.put(1.45, 0.749);
-        timeOfFlightLookupTable.put(1.50, 0.77);
-        timeOfFlightLookupTable.put(1.55, 0.787);
-        timeOfFlightLookupTable.put(1.60, 0.773);
-        timeOfFlightLookupTable.put(1.65, 0.792);
-        timeOfFlightLookupTable.put(1.70, 0.811);
-        timeOfFlightLookupTable.put(1.75, 0.799);
-        timeOfFlightLookupTable.put(1.80, 0.817);
-        timeOfFlightLookupTable.put(1.85, 0.802);
-        timeOfFlightLookupTable.put(1.90, 0.816);
-        timeOfFlightLookupTable.put(1.95, 0.832);
-        timeOfFlightLookupTable.put(2.00, 0.82);
-        timeOfFlightLookupTable.put(2.05, 0.785);
-        timeOfFlightLookupTable.put(2.10, 0.75);
-        timeOfFlightLookupTable.put(2.15, 0.763);
-        timeOfFlightLookupTable.put(2.20, 0.776);
-        timeOfFlightLookupTable.put(2.25, 0.789);
-        timeOfFlightLookupTable.put(2.30, 0.802);
-        timeOfFlightLookupTable.put(2.35, 0.746);
-        timeOfFlightLookupTable.put(2.40, 0.757);
-        timeOfFlightLookupTable.put(2.45, 0.792);
-        timeOfFlightLookupTable.put(2.50, 0.804);
-        timeOfFlightLookupTable.put(2.55, 0.815);
-        timeOfFlightLookupTable.put(2.60, 0.826);
-        timeOfFlightLookupTable.put(2.65, 0.838);
-        timeOfFlightLookupTable.put(2.70, 0.782);
-        timeOfFlightLookupTable.put(2.75, 0.815);
-        timeOfFlightLookupTable.put(2.80, 0.825);
-        timeOfFlightLookupTable.put(2.85, 0.835);
-        timeOfFlightLookupTable.put(2.90, 0.845);
-        timeOfFlightLookupTable.put(2.95, 0.881);
-        timeOfFlightLookupTable.put(3.00, 0.891);
-        timeOfFlightLookupTable.put(3.05, 0.833);
-        timeOfFlightLookupTable.put(3.10, 0.865);
-        timeOfFlightLookupTable.put(3.15, 0.874);
-        timeOfFlightLookupTable.put(3.20, 0.883);
-        timeOfFlightLookupTable.put(3.25, 0.892);
-        timeOfFlightLookupTable.put(3.30, 0.927);
-        timeOfFlightLookupTable.put(3.35, 0.866);
-        timeOfFlightLookupTable.put(3.40, 0.877);
-        timeOfFlightLookupTable.put(3.45, 0.908);
-        timeOfFlightLookupTable.put(3.50, 0.917);
-        timeOfFlightLookupTable.put(3.55, 0.925);
-        timeOfFlightLookupTable.put(3.60, 0.959);
-        timeOfFlightLookupTable.put(3.65, 0.897);
-        timeOfFlightLookupTable.put(3.70, 0.907);
-        timeOfFlightLookupTable.put(3.75, 0.938);
-        timeOfFlightLookupTable.put(3.80, 0.946);
-        timeOfFlightLookupTable.put(3.85, 0.979);
-        timeOfFlightLookupTable.put(3.90, 0.987);
-        timeOfFlightLookupTable.put(3.95, 0.927);
-        timeOfFlightLookupTable.put(4.00, 0.958);
-        timeOfFlightLookupTable.put(4.05, 0.965);
-        timeOfFlightLookupTable.put(4.10, 0.997);
-        timeOfFlightLookupTable.put(4.15, 1.004);
-        timeOfFlightLookupTable.put(4.20, 0.965);
-        timeOfFlightLookupTable.put(4.25, 0.975);
-        timeOfFlightLookupTable.put(4.30, 1.006);
-        timeOfFlightLookupTable.put(4.35, 1.013);
-        timeOfFlightLookupTable.put(4.40, 1.046);
-        timeOfFlightLookupTable.put(4.45, 1.004);
-        timeOfFlightLookupTable.put(4.50, 1.014);
-        timeOfFlightLookupTable.put(4.55, 1.02);
-        timeOfFlightLookupTable.put(4.60, 1.052);
-        timeOfFlightLookupTable.put(4.65, 1.059);
-        timeOfFlightLookupTable.put(4.70, 1.018);
-        timeOfFlightLookupTable.put(4.75, 1.027);
-        timeOfFlightLookupTable.put(4.80, 1.057);
-        timeOfFlightLookupTable.put(4.85, 1.064);
-        timeOfFlightLookupTable.put(4.90, 1.097);
-        timeOfFlightLookupTable.put(4.95, 1.054);
-        timeOfFlightLookupTable.put(5.00, 1.062);
-        timeOfFlightLookupTable.put(5.05, 1.094);
-        timeOfFlightLookupTable.put(5.10, 1.1);
-        timeOfFlightLookupTable.put(5.15, 1.083);
-        timeOfFlightLookupTable.put(5.20, 1.067);
-        timeOfFlightLookupTable.put(5.25, 1.097);
-        timeOfFlightLookupTable.put(5.30, 1.129);
-        timeOfFlightLookupTable.put(5.35, 1.086);
-        timeOfFlightLookupTable.put(5.40, 1.117);
-        timeOfFlightLookupTable.put(5.45, 1.1);
-        timeOfFlightLookupTable.put(5.50, 1.131);
-        timeOfFlightLookupTable.put(5.55, 1.163);
-        timeOfFlightLookupTable.put(5.60, 1.118);
-        timeOfFlightLookupTable.put(5.65, 1.126);
-        timeOfFlightLookupTable.put(5.70, 1.158);
-        timeOfFlightLookupTable.put(5.75, 1.163);
-        timeOfFlightLookupTable.put(5.80, 1.145);
-        timeOfFlightLookupTable.put(5.85, 1.153);
-        timeOfFlightLookupTable.put(5.90, 1.158);
-        timeOfFlightLookupTable.put(5.95, 1.19);
-        timeOfFlightLookupTable.put(6.00, 1.171);
-        timeOfFlightLookupTable.put(6.05, 1.153);
-        timeOfFlightLookupTable.put(6.10, 1.184);
-        timeOfFlightLookupTable.put(6.15, 1.216);
-        timeOfFlightLookupTable.put(6.20, 1.196);
-        timeOfFlightLookupTable.put(6.25, 1.178);
-        timeOfFlightLookupTable.put(6.30, 1.209);
-        timeOfFlightLookupTable.put(6.35, 1.242);
-        timeOfFlightLookupTable.put(6.40, 1.221);
-        timeOfFlightLookupTable.put(6.45, 1.202);
-        timeOfFlightLookupTable.put(6.50, 1.234);
-        timeOfFlightLookupTable.put(6.55, 1.214);
-        timeOfFlightLookupTable.put(6.60, 1.246);
-        timeOfFlightLookupTable.put(6.65, 1.226);
-        timeOfFlightLookupTable.put(6.70, 1.258);
-        timeOfFlightLookupTable.put(6.75, 1.238);
-        timeOfFlightLookupTable.put(6.80, 1.27);
-        timeOfFlightLookupTable.put(6.85, 1.249);
-        timeOfFlightLookupTable.put(6.90, 1.282);
-        timeOfFlightLookupTable.put(6.95, 1.261);
-        timeOfFlightLookupTable.put(7.00, 1.294);
-        timeOfFlightLookupTable.put(7.05, 1.272);
-        timeOfFlightLookupTable.put(7.10, 1.306);
-        timeOfFlightLookupTable.put(7.15, 1.284);
-        timeOfFlightLookupTable.put(7.20, 1.291);
-        timeOfFlightLookupTable.put(7.25, 1.295);
-        timeOfFlightLookupTable.put(7.30, 1.302);
-        timeOfFlightLookupTable.put(7.35, 1.306);
-        timeOfFlightLookupTable.put(7.40, 1.313);
-        timeOfFlightLookupTable.put(7.45, 1.317);
-        timeOfFlightLookupTable.put(7.50, 1.324);
-        timeOfFlightLookupTable.put(7.55, 1.329);
-        timeOfFlightLookupTable.put(7.60, 1.335);
-        timeOfFlightLookupTable.put(7.65, 1.37);
-        timeOfFlightLookupTable.put(7.70, 1.346);
-        timeOfFlightLookupTable.put(7.75, 1.353);
-        timeOfFlightLookupTable.put(7.80, 1.357);
-        timeOfFlightLookupTable.put(7.85, 1.364);
-        timeOfFlightLookupTable.put(7.90, 1.368);
-        timeOfFlightLookupTable.put(7.95, 1.375);
-        timeOfFlightLookupTable.put(8.00, 1.379);
+        for(int i=0; i<DISTANCES.size(); i++) {
+            timeOfFlightLookupTable.put(DISTANCES.get(i), TIME_OF_FLIGHT.get(i));
+        }
 
         //----------------
         shuttleHoodLookupTable.put(4.726098, 10d + 2d + 2d);
@@ -492,8 +114,8 @@ public class ShotCalculator extends SubsystemBase {
         shuttleTimeOfFlightLookupTable.put(10.540514, 1.55 + .075);
         shuttleTimeOfFlightLookupTable.put(10.970932, 1.56 + .075);
 
-        lastTurretAngle = turretSubsystem.getDegrees();
-        lastTurretAnglePhaseDelayed = turretSubsystem.getDegrees();
+        // lastTurretAngle = turretSubsystem.getDegrees();
+        // lastTurretAnglePhaseDelayed = turretSubsystem.getDegrees();
     }
 
 
@@ -506,22 +128,20 @@ public class ShotCalculator extends SubsystemBase {
     public void periodic() {
         if (RobotContainer.getPose() != null) {
             Pose2d estimatedPose = RobotContainer.getPose();
-            Pose2d estimatedPosePhaseDelayed =
-                    estimatedPose.exp(
-                            new Twist2d(
-                                    RobotContainer.getSpeeds().vx * Constants.PHASE_DELAY
-                                            + RobotContainer.getAccelerationX() * Constants.ACCELERATION_PHASE_DELAY,
-                                    RobotContainer.getSpeeds().vy * Constants.PHASE_DELAY
-                                            + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
-                                    RobotContainer.getSpeeds().omega * Constants.PHASE_DELAY
-                                            + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY));
+            Pose2d estimatedPosePhaseDelayed = estimatedPose.plus(new Twist2d(
+                RobotContainer.getVelocity().vx * Constants.PHASE_DELAY + RobotContainer.getAccelerationX() * Constants.ACCELERATION_PHASE_DELAY,
+                RobotContainer.getVelocity().vy * Constants.PHASE_DELAY + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
+                RobotContainer.getVelocity().omega * Constants.PHASE_DELAY + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY).exp());
 
-            Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed,
-                    ChassisVelocities.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
-                            RobotContainer.getPose().getRotation()));
-            Pair<Pose2d, Double> turret = createFutureTurretPose(estimatedPose,
-                    ChassisVelocities.fromRobotRelativeSpeeds(RobotContainer.getSpeeds(),
-                            RobotContainer.getPose().getRotation()));
+            // TODO: Test
+            Pair<Pose2d, Double> turretPhaseDelayed = createFutureTurretPose(estimatedPosePhaseDelayed, new ChassisVelocities(
+                new Translation2d(RobotContainer.getVelocity().vx, RobotContainer.getVelocity().vy).rotateBy(RobotContainer.getPose().getRotation()).getX(),
+                new Translation2d(RobotContainer.getVelocity().vx, RobotContainer.getVelocity().vy).rotateBy(RobotContainer.getPose().getRotation()).getY(),
+                RobotContainer.getVelocity().omega));
+            Pair<Pose2d, Double> turret = createFutureTurretPose(estimatedPose, new ChassisVelocities(
+                new Translation2d(RobotContainer.getVelocity().vx, RobotContainer.getVelocity().vy).rotateBy(RobotContainer.getPose().getRotation()).getX(),
+                new Translation2d(RobotContainer.getVelocity().vx, RobotContainer.getVelocity().vy).rotateBy(RobotContainer.getPose().getRotation()).getY(),
+                RobotContainer.getVelocity().omega));
 
             futureTurretPositionPhaseDelayed = turretPhaseDelayed.getFirst();
             futureTurretToTargetDistancePhaseDelayed = turretPhaseDelayed.getSecond();
@@ -543,27 +163,18 @@ public class ShotCalculator extends SubsystemBase {
             hoodVelocity = (hoodAngle - lastHoodAngle) / .005;
 
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
-                Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
-                        Constants.RED_HUB_CENTER);
-
-                turretRotationPhaseDelayed = hubCenter
-                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
+                Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER, Constants.RED_HUB_CENTER);
+                turretRotationPhaseDelayed = hubCenter.minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle().get();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
-                Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
-                        Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
-
-                turretRotationPhaseDelayed = shuttlingLeftCorner
-                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
+                Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
+                turretRotationPhaseDelayed = shuttlingLeftCorner.minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle().get();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
-                Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
-                        Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
-
-                turretRotationPhaseDelayed = shuttlingRightCorner
-                        .minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle();
+                Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
+                turretRotationPhaseDelayed = shuttlingRightCorner.minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle().get();
             }
+
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
-            turretVelocityPhaseDelayed = turretRotationPhaseDelayed
-                    .minus(lastTurretRotationPhaseDelayed).getDegrees() / .005;
+            turretVelocityPhaseDelayed = turretRotationPhaseDelayed.minus(lastTurretRotationPhaseDelayed).getDegrees() / .005;
 
             // Sets turret angle and then adjusts it based on robot's rotation in relation to target
             turretAnglePhaseDelayed = turretRotationPhaseDelayed.getDegrees();
@@ -585,33 +196,30 @@ public class ShotCalculator extends SubsystemBase {
             if (smallestValidDistanceIndex == -1) turretAnglePhaseDelayed = turretAngles[1];
             else turretAnglePhaseDelayed = turretAngles[smallestValidDistanceIndex];
 
-            turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getSpeeds().omega));
+            turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getVelocity().omega));
 
             //Turret Angle Calculations
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
                 Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
                         Constants.RED_HUB_CENTER);
 
-//                hubCenter = Constants.RED_HUB_FRONT_CENTER;
+            // hubCenter = Constants.RED_HUB_FRONT_CENTER;
 
-                turretRotation = hubCenter
-                        .minus(futureTurretPosition.getTranslation()).getAngle();
+                turretRotation = hubCenter.minus(futureTurretPosition.getTranslation()).getAngle().get();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
                 Translation2d shuttlingLeftCorner = AllianceFlipper.getCorrectAlliance(
                         Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER);
 
-                turretRotation = shuttlingLeftCorner
-                        .minus(futureTurretPosition.getTranslation()).getAngle();
+                turretRotation = shuttlingLeftCorner.minus(futureTurretPosition.getTranslation()).getAngle().get();
             } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_RIGHT) {
                 Translation2d shuttlingRightCorner = AllianceFlipper.getCorrectAlliance(
                         Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER);
 
-                turretRotation = shuttlingRightCorner
-                        .minus(futureTurretPosition.getTranslation()).getAngle();
+                turretRotation = shuttlingRightCorner.minus(futureTurretPosition.getTranslation()).getAngle().get();
             }
+
             if (lastTurretRotation == null) lastTurretRotation = turretRotation;
-            turretVelocity = turretRotation
-                    .minus(lastTurretRotation).getDegrees() / .005;
+            turretVelocity = turretRotation.minus(lastTurretRotation).getDegrees() / .005;
 
             // Sets turret angle and then adjusts it based on robot's rotation in relation to target
             turretAngle = turretRotation.getDegrees();
@@ -632,7 +240,7 @@ public class ShotCalculator extends SubsystemBase {
             if (smallestValidDistanceIndex == -1) turretAngle = turretAngles[1];
             else turretAngle = turretAngles[smallestValidDistanceIndex];
 
-            turretVelocity -= (Math.toDegrees(RobotContainer.getSpeeds().omega));
+            turretVelocity -= (Math.toDegrees(RobotContainer.getVelocity().omega));
 
             // Based on Future Pose
             if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
@@ -649,10 +257,10 @@ public class ShotCalculator extends SubsystemBase {
         lastHoodAnglePhaseDelayed = hoodAnglePhaseDelayed;
         lastHoodAngle = hoodAngle;
 
-
         // Sets continuous control for turret, shooter, kicker
 //        RobotContainer.getTurretControlAuto().setGoal(shotCalculator.getTurretAnglePhaseDelayed(),
 //                shotCalculator.getTurretVelocityPhaseDelayed());
+        
         turretSubsystem.updateGoalPosition(getTurretAnglePhaseDelayed(), getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
         RobotContainer.getShooterControlAutoRB().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
@@ -706,12 +314,12 @@ public class ShotCalculator extends SubsystemBase {
                         * (Constants.ROBOT_TO_TURRET.getX() * Math.cos(robotAngleRadians)
                         - Constants.ROBOT_TO_TURRET.getY() * Math.sin(robotAngleRadians));
 
-        //Account for velocity
+        // Account for velocity
         double timeOfFlight;
         Pose2d futureTurretPosition = turretPosition;
         double lookaheadTurretToTargetDistance = turretToTargetDistance;
 
-//        Iterate to converge on a final future position
+        // Iterate to converge on a final future position
         for (int i = 0; i < 10; i++) {
             timeOfFlight = timeOfFlightLookupTable.get(lookaheadTurretToTargetDistance);
             double offsetX = turretVelocityX * timeOfFlight;

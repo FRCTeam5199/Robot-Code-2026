@@ -1,23 +1,20 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.RobotCentric;
-import com.fasterxml.jackson.databind.EnumNamingStrategies.KebabCaseStrategy;
+import static org.wpilib.units.Units.Rotations;
+import static org.wpilib.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.Second;
+import static org.wpilib.units.Units.Seconds;
+import static org.wpilib.units.Units.Volts;
 
 import org.wpilib.command2.Command;
 import org.wpilib.command2.sysid.SysIdRoutine;
+
 import frc.robot.RobotContainer;
 import frc.robot.constants.KickerConstants;
-import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
-import frc.robot.utility.Type;
-
-import static org.wpilib.units.Units.*;
-import static org.wpilib.units.Units.RotationsPerSecond;
+import frc.robot.utility.SubsystemType;
 
 public class KickerSubsystem extends TemplateSubsystem {
     private static KickerSubsystem kickerSubsystem;
@@ -43,19 +40,19 @@ public class KickerSubsystem extends TemplateSubsystem {
     );
 
     private KickerSubsystem() {
-        super(Type.ROLLER, KickerConstants.UPPER_MOTOR_ID,
+        super(SubsystemType.ROLLER, KickerConstants.UPPER_MOTOR_ID, KickerConstants.CANBUS, 
                 0, KickerConstants.ACCELERATION,
                 KickerConstants.JERK,
                 KickerConstants.LOWER_TOLERANCE,
                 KickerConstants.UPPER_TOLERANCE,
-                KickerConstants.GEAR_RATIO, "Kicker", true, KickerConstants.canbus);
+                KickerConstants.GEAR_RATIO, "Kicker", true);
 
         configureMotor(KickerConstants.UPPER_INVERTED, KickerConstants.UPPER_BRAKE,
                 KickerConstants.SUPPLY_CURRENT_LIMIT,
                 KickerConstants.STATOR_CURRENT_LIMIT,
                 KickerConstants.UPPER_SLOT0_CONFIGS, false);
 
-        configureFollowerMotor(KickerConstants.LOWER_MOTOR_ID, KickerConstants.LOWER_INVERTED, KickerConstants.canbus);
+        configureFollowerMotor(KickerConstants.LOWER_MOTOR_ID, KickerConstants.CANBUS, KickerConstants.LOWER_INVERTED);
     }
 
     public static KickerSubsystem getInstance() {
@@ -68,9 +65,6 @@ public class KickerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-//        System.out.println("Kicker Velocity: " + isMechAtGoal(true));
-//        System.out.println("Kicker Goal: " + getGoal());
-
     }
 
     public boolean isMechAtGoalAuto() {
@@ -80,18 +74,18 @@ public class KickerSubsystem extends TemplateSubsystem {
     }
 
     public Command sysIdQuasistaticForward() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdQuasistaticReverse() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.REVERSE);
     }
 
     public Command sysIdDynamicForward() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdDynamicReverse() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.REVERSE);
     }
 }

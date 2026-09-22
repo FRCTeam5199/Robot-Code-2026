@@ -1,15 +1,24 @@
 package frc.robot;
 
+import org.wpilib.command2.Command;
+import org.wpilib.command2.FunctionalCommand;
+import org.wpilib.command2.InstantCommand;
+import org.wpilib.command2.ParallelCommandGroup;
+import org.wpilib.command2.SequentialCommandGroup;
 import org.wpilib.system.Timer;
-import org.wpilib.command2.*;
+
 import frc.robot.constants.HopperConstants;
-import frc.robot.constants.IntakePivotConstants;
 import frc.robot.constants.KickerConstants;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.ShotCalculator;
-import frc.robot.utility.ShotMode;
 
 public class RobotCommands {
     //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
