@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.command2.Command;
 import org.wpilib.driverstation.Alliance;
@@ -38,6 +39,11 @@ public class Robot extends TimedRobot {
     public Robot() {
         commandSwerveDrivetrain.configureAutoBuilder();
         m_robotContainer = new RobotContainer();
+        //For sysid:
+//        DataLogManager.start();
+//        DriverStation.startDataLog(DataLogManager.getLog());
+
+        CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 
         // userInterface.createComponent("Motor ID (L)", "Control", BuiltInWidgets.kTextView, 0, 0, 1, 1, 0);
         // userInterface.createComponent("Set (L)", "Control", BuiltInWidgets.kToggleButton, 0, 1, 1, 1, false);
@@ -201,7 +207,7 @@ public class Robot extends TimedRobot {
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
 
-        RobotContainer.updateLastVelocity();
+        RobotContainer.updateLastVelocities();
 //        System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
 //        System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
     }

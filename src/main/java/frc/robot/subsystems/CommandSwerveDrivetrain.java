@@ -14,6 +14,7 @@ import org.wpilib.command2.Subsystem;
 import org.wpilib.command2.sysid.SysIdRoutine;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.linalg.Matrix;
@@ -62,29 +63,29 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
             // Configure AutoBuilder last
             AutoBuilder.configure(
-                RobotContainer::getPose, // Robot pose supplier
-                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                RobotContainer::getVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                (velocity, feedforwards) -> setControl(
-                    m_pathApplyRobotVelocity.withVelocity(velocity)
-                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(5.5, 0.0, 0.0), // 7, Translation PID constants
-                        new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
-                ),
-                config, // The robot configuration
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-                    var alliance = MatchState.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == Alliance.BLUE;
-                    }
-                    return false;
-                },
-                this // Reference to this subsystem to set requirements
+                    RobotContainer::getPose, // Robot pose supplier
+                    this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                    RobotContainer::getVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                    (velocity, feedforwards) -> setControl(
+                            m_pathApplyRobotVelocity.withVelocity(velocity)
+                                    .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                                    .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                            new PIDConstants(5.5, 0.0, 0.0), // 7, Translation PID constants
+                            new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
+                    ),
+                    config, // The robot configuration
+                    () -> {
+                        // Boolean supplier that controls when the path will be mirrored for the red alliance
+                        // This will flip the path being followed to the red side of the field.
+                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+                        var alliance = MatchState.getAlliance();
+                        if (alliance.isPresent()) {
+                            return alliance.get() == Alliance.BLUE;
+                        }
+                        return false;
+                    },
+                    this // Reference to this subsystem to set requirements
             );
         } catch (Exception ignored) {
         }
@@ -109,18 +110,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
     /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
     private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(7), // Use dynamic voltage of 7 V
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-                volts -> setControl(m_steerCharacterization.withVolts(volts)),
-                null,
-                this
-        )
+            new SysIdRoutine.Config(
+                    null,        // Use default ramp rate (1 V/s)
+                    Volts.of(7), // Use dynamic voltage of 7 V
+                    null,        // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
+            ),
+            new SysIdRoutine.Mechanism(
+                    volts -> setControl(m_steerCharacterization.withVolts(volts)),
+                    null,
+                    this
+            )
     );
     /*
      * SysId routine for characterizing rotation.
@@ -273,16 +274,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
-        // if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-        //     DriverStation.getAlliance().ifPresent(allianceColor -> {
-        //         setOperatorPerspectiveForward(
-        //                 allianceColor == Alliance.Red
-        //                         ? kRedAlliancePerspectiveRotation
-        //                         : kBlueAlliancePerspectiveRotation
-        //         );
-        //         m_hasAppliedOperatorPerspective = true;
-        //     });
-        // }
+        if (!m_hasAppliedOperatorPerspective || RobotState.isDisabled()) {
+            MatchState.getAlliance().ifPresent(allianceColor -> {
+                setOperatorForwardDirection(
+                        allianceColor == Alliance.RED
+                                ? kRedAlliancePerspectiveRotation
+                                : kBlueAlliancePerspectiveRotation
+                );
+                m_hasAppliedOperatorPerspective = true;
+            });
+        }
     }
 
     private void startSimThread() {
@@ -309,7 +310,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     @Override
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-        // Utils.fpgaToCurrentTime(timestampSeconds) changed to timestampSeconds
+//         Utils.fpgaToCurrentTime(timestampSeconds) changed to timestampSeconds
         super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
     }
 

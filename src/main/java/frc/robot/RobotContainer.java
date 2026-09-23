@@ -150,7 +150,7 @@ RobotContainer {
     private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
     private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
     private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
-    private static ChassisVelocities lastSpeeds;
+    private static ChassisVelocities lastVelocities;
     private static double accelerationX;
     private static double accelerationY;
     private static double accelerationOmega;
@@ -252,10 +252,10 @@ RobotContainer {
 
     public static void periodic() {
         currentState = commandSwerveDrivetrain.getStateCopy();
-        if (lastSpeeds == null) lastSpeeds = getVelocity();
-        accelerationX = (getVelocity().vx - lastSpeeds.vx) / .02;
-        accelerationY = (getVelocity().vy - lastSpeeds.vy) / .02;
-        accelerationOmega = (getVelocity().omega - lastSpeeds.omega) / .02;
+        if (lastVelocities == null) lastVelocities = getVelocity();
+        accelerationX = (getVelocity().vx - lastVelocities.vx) / .02;
+        accelerationY = (getVelocity().vy - lastVelocities.vy) / .02;
+        accelerationOmega = (getVelocity().omega - lastVelocities.omega) / .02;
 
         accelerationX = accelerationXFilter.calculate(accelerationX);
         accelerationY = accelerationYFilter.calculate(accelerationY);
@@ -431,8 +431,8 @@ RobotContainer {
         RobotContainer.isAutonomous = isClimbing;
     }
 
-    public static void updateLastVelocity() {
-        lastSpeeds = currentState.Velocity;
+    public static void updateLastVelocities() {
+        lastVelocities = currentState.Velocity;
     }
 
     public static double getAccelerationOmega() {
@@ -492,10 +492,10 @@ RobotContainer {
         //         () -> !forceShuttleRight
         // ));
 
-    //    commandXboxController.a().onTrue(intakeRollerSubsystem.sysIdQuasistaticForward());
-    //    commandXboxController.b().onTrue(intakeRollerSubsystem.sysIdQuasistaticReverse());
-    //    commandXboxController.y().onTrue(intakeRollerSubsystem.sysIdDynamicForward());
-    //    commandXboxController.x().onTrue(intakeRollerSubsystem.sysIdDynamicReverse());
+        //    commandXboxController.a().onTrue(intakeRollerSubsystem.sysIdQuasistaticForward());
+        //    commandXboxController.b().onTrue(intakeRollerSubsystem.sysIdQuasistaticReverse());
+        //    commandXboxController.y().onTrue(intakeRollerSubsystem.sysIdDynamicForward());
+        //    commandXboxController.x().onTrue(intakeRollerSubsystem.sysIdDynamicReverse());
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);

@@ -8,6 +8,7 @@ import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTable;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.command2.SubsystemBase;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
@@ -31,7 +32,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import frc.robot.utility.SubsystemType;
 
-public class TemplateSubsystem extends org.wpilib.command2.SubsystemBase {
+public class TemplateSubsystem extends SubsystemBase {
     public StatusSignal<Angle> positionStatusSignal;
     public StatusSignal<AngularVelocity> velocityStatusSignal;
     public StatusSignal<Angle> followerPositionStatusSignal;
@@ -78,8 +79,6 @@ public class TemplateSubsystem extends org.wpilib.command2.SubsystemBase {
     private double drumCircumference;
     private SubsystemType type;
     private String name;
-    
-    double goalRotations;
 
     public TemplateSubsystem(SubsystemType type, int id, CANBus canbus, double velocity, double acceleration, double jerk,
                              double lowerTolerance, double upperTolerance,
@@ -312,14 +311,16 @@ public class TemplateSubsystem extends org.wpilib.command2.SubsystemBase {
     public void setSecondaryVelocity(double rps) {
         this.secondaryGoal = rps;
         followLastMechProfile = false;
-        
+
         if (rps == 0) setPercent(0);
         else secondaryMotor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps + offset));
     }
 
     public void setPosition(double goal) {
+        double goalRotations;
         if (type == SubsystemType.LINEAR) goalRotations = getMotorRotFromMechM(goal + offset);
-        else goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset) : getEncoderRotFromDegrees(goal + offset);
+        else
+            goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset) : getEncoderRotFromDegrees(goal + offset);
 
         this.goal = goal;
         motor.setControl(motionMagicVoltage.withPosition(goalRotations));
@@ -334,7 +335,8 @@ public class TemplateSubsystem extends org.wpilib.command2.SubsystemBase {
         double goalRotations;
 
         if (type == SubsystemType.LINEAR) goalRotations = getMotorRotFromMechM(goal + offset);
-        else goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset) : getEncoderRotFromDegrees(goal + offset);
+        else
+            goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset) : getEncoderRotFromDegrees(goal + offset);
 
         this.goal = goal;
         motor.setControl(motionMagicVoltage.withPosition(goalRotations).withFeedForward(feedforward));
@@ -354,7 +356,8 @@ public class TemplateSubsystem extends org.wpilib.command2.SubsystemBase {
         double goalRotations;
 
         if (type == SubsystemType.LINEAR) goalRotations = getMotorRotFromMechM(goal + offset);
-        else goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset) : getEncoderRotFromDegrees(goal + offset);
+        else
+            goalRotations = encoder == null ? getMotorRotFromDegrees(goal + offset) : getEncoderRotFromDegrees(goal + offset);
 
         this.goal = goal;
         motor.setControl(motionMagicVoltage.withPosition(goalRotations));
@@ -417,10 +420,6 @@ public class TemplateSubsystem extends org.wpilib.command2.SubsystemBase {
 
     public double getGoal() {
         return goal;
-    }
-
-    public double getGoalRotations() {
-        return goalRotations;
     }
 
     public double getSecondaryGoal() {
@@ -605,19 +604,5 @@ public class TemplateSubsystem extends org.wpilib.command2.SubsystemBase {
 
     public double getGearRatio() {
         return gearRatio;
-    }
-
-    public Command setVelocityCommand(double goal) {
-      return runOnce(
-        () -> {
-          this.setVelocity(goal);
-        });
-    }
-
-    public Command setPositionCommand(double goal) {
-      return run(
-        () -> {
-          this.setPositionVoltage(goal);
-        });
     }
 }

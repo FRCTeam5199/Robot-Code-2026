@@ -4,6 +4,7 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.kinematics.SwerveModulePosition;
 // import org.wpilib.math.kinematics.SwerveModuleState;
+import org.wpilib.math.kinematics.SwerveModuleVelocity;
 import org.wpilib.networktables.DoubleArrayPublisher;
 import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTable;
@@ -39,8 +40,8 @@ public class Telemetry {
     private final NetworkTable driveStateTable = inst.getTable("DriveState");
     private final StructPublisher<Pose2d> drivePose = driveStateTable.getStructTopic("Pose", Pose2d.struct).publish();
     private final StructPublisher<ChassisVelocities> driveSpeeds = driveStateTable.getStructTopic("Speeds", ChassisVelocities.struct).publish();
-//     private final StructArrayPublisher<SwerveModuleState> driveModuleStates = driveStateTable.getStructArrayTopic("ModuleStates", SwerveModuleState.struct).publish();
-//     private final StructArrayPublisher<SwerveModuleState> driveModuleTargets = driveStateTable.getStructArrayTopic("ModuleTargets", SwerveModuleState.struct).publish();
+    private final StructArrayPublisher<SwerveModuleVelocity> driveModuleVelocities = driveStateTable.getStructArrayTopic("ModuleStates", SwerveModuleVelocity.struct).publish();
+    private final StructArrayPublisher<SwerveModuleVelocity> driveModuleTargets = driveStateTable.getStructArrayTopic("ModuleTargets", SwerveModuleVelocity.struct).publish();
     private final StructArrayPublisher<SwerveModulePosition> driveModulePositions = driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
@@ -85,8 +86,8 @@ public class Telemetry {
         /* Telemeterize the swerve drive state */
         drivePose.set(state.Pose);
         driveSpeeds.set(state.Velocity);
-        // driveModuleStates.set(state.ModuleStates);
-        // driveModuleTargets.set(state.ModuleTargets);
+        driveModuleVelocities.set(state.ModuleVelocities);
+        driveModuleTargets.set(state.ModuleTargets);
         driveModulePositions.set(state.ModulePositions);
         driveTimestamp.set(state.Timestamp);
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
@@ -94,8 +95,8 @@ public class Telemetry {
         /* Also write to log file */
         SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
         SignalLogger.writeStruct("DriveState/Speeds", ChassisVelocities.struct, state.Velocity);
-        // SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
-        // SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
+        SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleVelocity.struct, state.ModuleVelocities);
+        SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleVelocity.struct, state.ModuleTargets);
         SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
 
@@ -108,10 +109,10 @@ public class Telemetry {
         fieldPub.set(m_poseArray);
 
         /* Telemeterize each module state to a Mechanism2d */
-        // for (int i = 0; i < 4; ++i) {
-        //     m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
-        //     m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
-        //     m_moduleSpeeds[i].setLength(state.ModuleStates[i].velocity / (2 * MaxSpeed));
-        // }
+        for (int i = 0; i < 4; ++i) {
+            m_moduleSpeeds[i].setAngle(state.ModuleVelocities[i].angle);
+            m_moduleDirections[i].setAngle(state.ModuleVelocities[i].angle);
+            m_moduleSpeeds[i].setLength(state.ModuleVelocities[i].velocity / (2 * MaxSpeed));
+        }
     }
 }
