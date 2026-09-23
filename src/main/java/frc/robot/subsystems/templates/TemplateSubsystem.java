@@ -61,14 +61,13 @@ public class TemplateSubsystem extends SubsystemBase {
     private boolean isCommandRunning = false;
     private MotionMagicVoltage motionMagicVoltage;
     private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
-    private MotionMagicVelocityVoltage secondaryMotionMagicVelocityVoltage;
+    private VelocityVoltage secondaryVelocityVoltage;
     private PositionVoltage positionVoltage;
     private VelocityVoltage velocityVoltage;
     private Slot0Configs slot0Configs;
     private double velocity;
     private double acceleration;
     private double jerk;
-    private SimpleMotorFeedforward secondarySimpleMotorFF;
     private double lowerTolerance;
     private double upperTolerance;
     private double sensorToMechRatio;
@@ -215,7 +214,7 @@ public class TemplateSubsystem extends SubsystemBase {
                                         Slot0Configs slot0Configs) {
         secondaryMotor = new TalonFX(motorID, canBus);
         secondaryMotorConfig = new TalonFXConfiguration();
-        secondaryMotionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0)
+        secondaryVelocityVoltage = new VelocityVoltage(0)
                 .withSlot(0).withEnableFOC(true);
 
         secondaryMotorConfig.MotorOutput.Inverted =
@@ -307,13 +306,12 @@ public class TemplateSubsystem extends SubsystemBase {
         else motor.setControl(velocityVoltage.withVelocity(rps + offset));
     }
 
-    //TODO: change to velocityVoltage
     public void setSecondaryVelocity(double rps) {
         this.secondaryGoal = rps;
         followLastMechProfile = false;
 
-        if (rps == 0) setPercent(0);
-        else secondaryMotor.setControl(secondaryMotionMagicVelocityVoltage.withVelocity(rps + offset));
+        if (rps == 0) setSecondaryPercent(0);
+        else secondaryMotor.setControl(secondaryVelocityVoltage.withVelocity(rps + offset));
     }
 
     public void setPosition(double goal) {
