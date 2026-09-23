@@ -1,6 +1,6 @@
 package frc.robot.utility;
 
-import frc.robot.constants.KickerConstants;
+import frc.robot.constants.IndexerConstants;
 
 public enum Setpoint {
     HUB(0, 0, 47), //intake against hub
@@ -28,7 +28,11 @@ public enum Setpoint {
         return shooterSpeed;
     }
 
-    public double getKickerSpeed() {
-        return KickerConstants.INDEXING_SPEED;
+    public double getUpperIndexerSpeed() {
+        return IndexerConstants.UPPER_INDEXER_SPEED;
+    }
+
+    public double getLowerIndexerSpeed() {
+        return IndexerConstants.LOWER_INDEXER_SPEED;
     }
 }

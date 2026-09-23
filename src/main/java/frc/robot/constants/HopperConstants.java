@@ -12,13 +12,13 @@ public class HopperConstants {
     public static final boolean BRAKE = false;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(0.5)
+            .withKP(0.1)
             .withKI(0)
             .withKD(0)
-            .withKS(.5)
+            .withKS(.41423)
             .withKG(0)
-            .withKV(.11494252873563218390804597701149)
-            .withKA(0)
+            .withKV(.1263)
+            .withKA(0.1)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double ACCELERATION = 400;
@@ -29,7 +29,7 @@ public class HopperConstants {
 
     public static final double[][] GEAR_RATIO = {{1, 2.5}};
 
-    public static final double INDEXING_SPEED = 100;
+    public static final double INDEXING_SPEED = 90;
     public static final double IDLING_SPEED = -5;
 
     public static final CANBus CANBUS = new CANBus("can2");

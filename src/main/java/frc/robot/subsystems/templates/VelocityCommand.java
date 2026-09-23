@@ -1,6 +1,6 @@
 package frc.robot.subsystems.templates;
 
-import org.wpilib.command2.Command;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class VelocityCommand extends Command {
     private double goal;
@@ -46,7 +46,7 @@ public class VelocityCommand extends Command {
     @Override
     public boolean isFinished() {
         // return templateSubsystem.isMechAtGoal(true);
-       return false;
+        return false;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class VelocityCommand extends Command {
         updateVelocity = true;
     }
 
-    public void setBothGoals(double goal, double secondaryGoal) {
+    public void setGoal(double goal, double secondaryGoal) {
         this.goal = goal;
         this.secondaryGoal = secondaryGoal;
         updateVelocity = true;

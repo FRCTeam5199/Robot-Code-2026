@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 12.061,
-        "y": 0.664
+        "x": 13.0,
+        "y": 0.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.395663338088445,
-        "y": 0.5221540656205419
+        "x": 8.073301204819277,
+        "y": 0.42885542168674784
       },
       "isLocked": false,
       "linkedName": null
@@ -128,7 +128,7 @@
     },
     {
       "name": "deployIntake",
-      "waypointRelativePos": 0.12,
+      "waypointRelativePos": 0.09,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
