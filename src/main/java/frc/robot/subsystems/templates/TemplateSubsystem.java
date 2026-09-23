@@ -207,12 +207,10 @@ public class TemplateSubsystem extends SubsystemBase {
         followerMotor.setControl(follower);
     }
 
-    public void configureSecondaryMotor(int motorID, CANBus canbus, double secondaryVelocity,
-                                        double secondaryAcceleration, double secondaryJerk,
-                                        boolean isInverted, boolean isBrakeMode,
+    public void configureSecondaryMotor(int motorID, boolean isInverted, boolean isBrakeMode,
                                         double supplyCurrentLimit, double statorCurrentLimit,
                                         Slot0Configs slot0Configs) {
-        secondaryMotor = new TalonFX(motorID, canBus);
+        secondaryMotor = new TalonFX(motorID);
         secondaryMotorConfig = new TalonFXConfiguration();
         secondaryVelocityVoltage = new VelocityVoltage(0)
                 .withSlot(0).withEnableFOC(true);
@@ -226,9 +224,12 @@ public class TemplateSubsystem extends SubsystemBase {
         secondaryMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         secondaryMotorConfig.Slot0 = slot0Configs;
 
-//        secondaryMotorConfig.MotionMagic.MotionMagicCruiseVelocity = secondaryVelocity;
-//        secondaryMotorConfig.MotionMagic.MotionMagicAcceleration = secondaryAcceleration;
-//        secondaryMotorConfig.MotionMagic.MotionMagicJerk = secondaryJerk;
+        secondaryMotorConfig.MotionMagic.MotionMagicCruiseVelocity = velocity;
+        secondaryMotorConfig.MotionMagic.MotionMagicAcceleration = acceleration;
+        secondaryMotorConfig.MotionMagic.MotionMagicJerk = jerk;
+
+        secondaryMotor.getRotorVelocity().setUpdateFrequency(50);
+        secondaryMotor.optimizeBusUtilization();
 
         secondaryMotor.getConfigurator().apply(secondaryMotorConfig);
         secondaryMotor.setPosition(0);
