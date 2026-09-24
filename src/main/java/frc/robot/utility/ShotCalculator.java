@@ -675,6 +675,8 @@ public class ShotCalculator {
                         && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
                     turretAngle += .25;
                     turretAnglePhaseDelayed += .25;
+                    shooterSpeed += .25;
+                    shooterSpeedPhaseDelayed += .25;
                 }
             }
             if (futureTurretToTargetDistance >= 4.5) {
@@ -682,8 +684,19 @@ public class ShotCalculator {
                         && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
                         || (Robot.getAlliance().equals(Alliance.BLUE)
                         && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                    turretAngle += .75;
-                    turretAnglePhaseDelayed += .75;
+                    turretAngle += 1d;
+                    turretAnglePhaseDelayed += 1d;
+                    shooterSpeed += .75;
+                    shooterSpeedPhaseDelayed += .75;
+                }
+            }
+            if (futureTurretToTargetDistance >= 4.65) {
+                if ((Robot.getAlliance().equals(DriverStation.Alliance.Red)
+                        && futureTurretPosition.getY() > Constants.RED_HUB_CENTER.getY())
+                        || (Robot.getAlliance().equals(DriverStation.Alliance.Blue)
+                        && futureTurretPosition.getY() < Constants.BLUE_HUB_CENTER.getY())) {
+                    shooterSpeed += .75;
+                    shooterSpeedPhaseDelayed += .75;
                 }
             }
         }

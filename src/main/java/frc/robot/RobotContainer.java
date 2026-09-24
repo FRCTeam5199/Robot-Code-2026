@@ -300,6 +300,7 @@ RobotContainer {
             }
         }
         double scalingFactor = 1.5;
+        double rotationScalingFactor = 1.5;
 
         if (commandXboxController.getLeftY() < 0)
             requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
@@ -492,10 +493,6 @@ RobotContainer {
         //         () -> !forceShuttleRight
         // ));
 
-        //    commandXboxController.a().onTrue(intakeRollerSubsystem.sysIdQuasistaticForward());
-        //    commandXboxController.b().onTrue(intakeRollerSubsystem.sysIdQuasistaticReverse());
-        //    commandXboxController.y().onTrue(intakeRollerSubsystem.sysIdDynamicForward());
-        //    commandXboxController.x().onTrue(intakeRollerSubsystem.sysIdDynamicReverse());
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
