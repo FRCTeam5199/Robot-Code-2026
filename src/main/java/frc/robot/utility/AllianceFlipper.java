@@ -1,14 +1,18 @@
 package frc.robot.utility;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchType;
+import org.wpilib.driverstation.DriverStationErrors;
 import frc.robot.Robot;
 
 public class AllianceFlipper {
     public static Translation2d getCorrectAlliance(Translation2d blueTranslation,
                                                    Translation2d redTranslation) {
-        DriverStation.Alliance alliance = Robot.getAlliance();
-        if (alliance == null || alliance.equals(DriverStation.Alliance.Red))
+        Alliance alliance = Robot.getAlliance();
+        if (alliance == null || alliance.equals(Alliance.RED))
             return redTranslation;
         return blueTranslation;
     }
