@@ -8,12 +8,12 @@ import org.wpilib.command2.SequentialCommandGroup;
 import org.wpilib.system.Timer;
 
 import frc.robot.constants.HopperConstants;
-import frc.robot.constants.KickerConstants;
+import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
@@ -25,7 +25,7 @@ public class RobotCommands {
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    private static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
+    private static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     private static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     private static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
@@ -37,9 +37,10 @@ public class RobotCommands {
         return new FunctionalCommand(
                 () -> {
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
-                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
+                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
+                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
                     }
-                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
+                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
                         hopperSubsystem.setVelocity(-10);
@@ -47,23 +48,26 @@ public class RobotCommands {
                 },
                 () -> {
                     if (RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
-                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
+                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
+                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
                     } else {
-                        kickerSubsystem.setVelocity(0);
+                        indexerSubsystem.setVelocity(0);
+                        indexerSubsystem.setSecondaryVelocity(0);
                     }
 
-                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
+                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
                         hopperSubsystem.setVelocity(-10);
                     }
                 },
                 (interrupted) -> {
-                    kickerSubsystem.setVelocity(0);
+                    indexerSubsystem.setVelocity(0);
+                    indexerSubsystem.setSecondaryVelocity(0);
                     hopperSubsystem.setVelocity(0);
                 },
                 () -> false,
-                hopperSubsystem, kickerSubsystem
+                hopperSubsystem, indexerSubsystem
         );
     }
 
@@ -71,20 +75,23 @@ public class RobotCommands {
         return new FunctionalCommand(
                 () -> {
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
-                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
+                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
+                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
                     }
-                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
+                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     }
                 },
                 () -> {
                     if (RobotContainer.areMechanismsExceptShooterAtGoals()) {
-                        kickerSubsystem.setVelocity(KickerConstants.INDEXING_SPEED);
+                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
+                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
                     } else {
-                        kickerSubsystem.setVelocity(0);
+                        indexerSubsystem.setVelocity(0);
+                        indexerSubsystem.setSecondaryVelocity(0);
                     }
 
-                    if (kickerSubsystem.isMechAtGoal(true) && kickerSubsystem.getGoal() != 0) {
+                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
                         hopperSubsystem.setVelocity(0);
@@ -92,11 +99,12 @@ public class RobotCommands {
 
                 },
                 (interrupted) -> {
-                    kickerSubsystem.setVelocity(0);
+                    indexerSubsystem.setVelocity(0);
+                    indexerSubsystem.setSecondaryVelocity(0);
                     hopperSubsystem.setVelocity(0);
                 },
                 () -> false,
-                hopperSubsystem, kickerSubsystem
+                hopperSubsystem, indexerSubsystem
         );
     }
 
@@ -125,7 +133,7 @@ public class RobotCommands {
                 moveHoodToZero(),
                 new VelocityCommand(hopperSubsystem, 0),
                 new VelocityCommand(shooterSubsystem, 0),
-                new VelocityCommand(kickerSubsystem, 0)
+                new VelocityCommand(indexerSubsystem, 0, 0)
         );
     }
 
@@ -133,7 +141,7 @@ public class RobotCommands {
         return new ParallelCommandGroup(
                 new VelocityCommand(hopperSubsystem, -50),
                 new VelocityCommand(shooterSubsystem, -50),
-                new VelocityCommand(kickerSubsystem, -50),
+                new VelocityCommand(indexerSubsystem, -50),
                 new VelocityCommand(intakeRollerSubsystem, -50)
         );
     }

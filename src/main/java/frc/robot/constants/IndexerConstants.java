@@ -53,5 +53,5 @@ public class IndexerConstants {
     public static final double[][] GEAR_RATIO = {{1, 1}};
     public static final double SCALE_FACTOR = (1d);
 
-    public static final CANBus canbus = new CANBus("rio");
+    public static final CANBus CANBUS = new CANBus("rio");
 }

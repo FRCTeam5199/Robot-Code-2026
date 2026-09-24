@@ -1,16 +1,19 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import static org.wpilib.units.Units.Rotations;
+import static org.wpilib.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.Second;
+import static org.wpilib.units.Units.Volts;
+import static org.wpilib.units.Units.Seconds;
+
+import org.wpilib.command2.Command;
+import org.wpilib.command2.sysid.SysIdRoutine;
+
 import frc.robot.RobotContainer;
 import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
-import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
-import frc.robot.utility.Type;
-
-import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import frc.robot.utility.SubsystemType;
 
 public class IndexerSubsystem extends TemplateSubsystem {
     private static IndexerSubsystem indexerSubsystem;
@@ -54,19 +57,19 @@ public class IndexerSubsystem extends TemplateSubsystem {
     );
 
     private IndexerSubsystem() {
-        super(Type.ROLLER, IndexerConstants.UPPER_MOTOR_ID,
+        super(SubsystemType.ROLLER, IndexerConstants.UPPER_MOTOR_ID, IndexerConstants.CANBUS,
                 0, IndexerConstants.ACCELERATION,
                 IndexerConstants.JERK,
                 IndexerConstants.LOWER_TOLERANCE,
                 IndexerConstants.UPPER_TOLERANCE,
-                IndexerConstants.GEAR_RATIO, "Indexer", true, IndexerConstants.canbus);
+                IndexerConstants.GEAR_RATIO, "Indexer", true);
 
         configureMotor(IndexerConstants.UPPER_INVERTED, IndexerConstants.UPPER_BRAKE,
                 IndexerConstants.UPPER_SUPPLY_CURRENT_LIMIT,
                 IndexerConstants.UPPER_STATOR_CURRENT_LIMIT,
                 IndexerConstants.UPPER_SLOT0_CONFIGS, false);
 
-        configureFollowerMotor(IndexerConstants.SECOND_UPPER_MOTOR_ID, IndexerConstants.SECONDARY_UPPER_INVERTED, IndexerConstants.canbus);
+        configureFollowerMotor(IndexerConstants.SECOND_UPPER_MOTOR_ID, IndexerConstants.SECONDARY_UPPER_INVERTED, IndexerConstants.CANBUS);
 
         configureSecondaryMotor(IndexerConstants.LOWER_MOTOR_ID, IndexerConstants.LOWER_INVERTED,
                 IndexerConstants.LOWER_BRAKE,
@@ -97,18 +100,18 @@ public class IndexerSubsystem extends TemplateSubsystem {
     }
 
     public Command sysIdQuasistaticForward() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdQuasistaticReverse() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.REVERSE);
     }
 
     public Command sysIdDynamicForward() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdDynamicReverse() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.REVERSE);
     }
 }
