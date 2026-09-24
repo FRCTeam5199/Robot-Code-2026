@@ -13,19 +13,20 @@ import org.wpilib.command2.InstantCommand;
 import org.wpilib.command2.ParallelCommandGroup;
 import org.wpilib.command2.SelectCommand;
 import org.wpilib.command2.SequentialCommandGroup;
+import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.driverstation.DriverStation;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.LinearFilter;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.TrapezoidProfile;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HopperConstants;
 import frc.robot.constants.IndexerConstants;
@@ -46,7 +47,6 @@ import frc.robot.subsystems.templates.PositionCommand;
 // import frc.robot.subsystems.templates.ShooterCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.CommandXboxController;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
@@ -78,7 +78,7 @@ RobotContainer {
     public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DOWNAGITATE);
     private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.4), intakeDownAgitate.withTimeout(.4)).repeatedly();
     //Drive
-    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
+    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelVelocities(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
@@ -142,7 +142,7 @@ RobotContainer {
     public static double requestXVelocity;
     public static double requestYVelocity;
     public static double requestRotationalVelocity;
-    public static double lastVelocity = 0, velocity = 0;
+    public static double velocity = 0;
     public static double acceleration = 0;
     public static boolean isClimbing = false;
     public static boolean isClimberRetracting = false;
@@ -153,7 +153,7 @@ RobotContainer {
     private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
     private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
     private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
-    private static ChassisSpeeds lastSpeeds;
+    private static ChassisVelocities lastVelocity;
     private static double accelerationX;
     private static double accelerationY;
     private static double accelerationOmega;
@@ -254,10 +254,10 @@ RobotContainer {
 
     public static void periodic() {
         currentState = commandSwerveDrivetrain.getStateCopy();
-        if (lastSpeeds == null) lastSpeeds = getSpeeds();
-        accelerationX = (getSpeeds().vxMetersPerSecond - lastSpeeds.vxMetersPerSecond) / .02;
-        accelerationY = (getSpeeds().vyMetersPerSecond - lastSpeeds.vyMetersPerSecond) / .02;
-        accelerationOmega = (getSpeeds().omegaRadiansPerSecond - lastSpeeds.omegaRadiansPerSecond) / .02;
+        if (lastVelocity == null) lastVelocity = getSpeeds();
+        accelerationX = (getSpeeds().vxMetersPerSecond - lastVelocity.vxMetersPerSecond) / .02;
+        accelerationY = (getSpeeds().vyMetersPerSecond - lastVelocity.vyMetersPerSecond) / .02;
+        accelerationOmega = (getSpeeds().omegaRadiansPerSecond - lastVelocity.omegaRadiansPerSecond) / .02;
 
         accelerationX = accelerationXFilter.calculate(accelerationX);
         accelerationY = accelerationYFilter.calculate(accelerationY);
@@ -434,8 +434,8 @@ RobotContainer {
         RobotContainer.isAutonomous = isAutonomous;
     }
 
-    public static void updateLastSpeeds() {
-        lastSpeeds = currentState.Speeds;
+    public static void updateLastVelocity() {
+        lastVelocity = currentState.Velocity;
     }
 
     public static double getAccelerationOmega() {

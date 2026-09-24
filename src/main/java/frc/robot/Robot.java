@@ -207,7 +207,7 @@ public class Robot extends TimedRobot {
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
 
-        RobotContainer.updateLastVelocities();
+        RobotContainer.updateLastVelocity();
 //        System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
 //        System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
     }

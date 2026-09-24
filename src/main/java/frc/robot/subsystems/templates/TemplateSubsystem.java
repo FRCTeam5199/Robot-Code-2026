@@ -2,13 +2,11 @@ package frc.robot.subsystems.templates;
 
 import java.util.function.DoubleSupplier;
 
-import org.wpilib.command2.Command;
-import org.wpilib.math.controller.SimpleMotorFeedforward;
+import org.wpilib.command2.SubsystemBase;
 import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTable;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
-import org.wpilib.command2.SubsystemBase;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
