@@ -194,10 +194,10 @@ public class TemplateSubsystem extends SubsystemBase {
         followerMotor.setControl(follower);
     }
 
-    public void configureSecondaryMotor(int motorID, CANBus canBus, boolean isInverted, boolean isBrakeMode,
+    public void configureSecondaryMotor(int motorID, CANBus canbus, boolean isInverted, boolean isBrakeMode,
                                         double supplyCurrentLimit, double statorCurrentLimit,
                                         Slot0Configs slot0Configs) {
-        secondaryMotor = new TalonFX(motorID, canBus);
+        secondaryMotor = new TalonFX(motorID, canbus);
         secondaryMotorConfig = new TalonFXConfiguration();
         secondaryVelocityVoltage = new VelocityVoltage(0)
                 .withSlot(0).withEnableFOC(true);
@@ -510,6 +510,10 @@ public class TemplateSubsystem extends SubsystemBase {
         return motor;
     }
 
+    public TalonFX getSecondaryMotor() {
+        return secondaryMotor;
+    }
+
     public TalonFX getFollowerMotor() {
         return followerMotor;
     }
@@ -590,9 +594,5 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public double getGearRatio() {
         return gearRatio;
-    }
-
-    public TalonFX getSecondaryMotor() {
-        return secondaryMotor;
     }
 }

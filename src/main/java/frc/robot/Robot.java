@@ -4,10 +4,12 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
-import frc.robot.subsystems.*;
-import frc.robot.utility.LimelightHelpers;
-import frc.robot.utility.ShotCalculator;
+import static frc.robot.subsystems.Vision.pendingMeasurements;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.driverstation.Alliance;
@@ -16,11 +18,14 @@ import org.wpilib.framework.TimedRobot;
 import org.wpilib.math.linalg.VecBuilder;
 import org.wpilib.system.Timer;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import static frc.robot.subsystems.Vision.pendingMeasurements;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Vision;
+import frc.robot.utility.LimelightHelpers;
+import frc.robot.utility.ShotCalculator;
 
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
@@ -41,13 +46,14 @@ public class Robot extends TimedRobot {
 
 
     public Robot() {
-        commandSwerveDrivetrain.configureAutoBuilder();
+        // commandSwerveDrivetrain.configureAutoBuilder();
         m_robotContainer = new RobotContainer();
         //For sysid:
 //        DataLogManager.start();
 //        DriverStation.startDataLog(DataLogManager.getLog());
 
-        CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
+        // TODO: Fix
+        // CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 
         // userInterface.createComponent("Motor ID (L)", "Control", BuiltInWidgets.kTextView, 0, 0, 1, 1, 0);
         // userInterface.createComponent("Set (L)", "Control", BuiltInWidgets.kToggleButton, 0, 1, 1, 1, false);

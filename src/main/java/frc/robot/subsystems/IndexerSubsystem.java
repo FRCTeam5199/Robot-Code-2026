@@ -64,8 +64,7 @@ public class IndexerSubsystem extends TemplateSubsystem {
                 IndexerConstants.UPPER_STATOR_CURRENT_LIMIT,
                 IndexerConstants.UPPER_SLOT0_CONFIGS, false);
 
-        configureFollowerMotor(IndexerConstants.SECOND_UPPER_MOTOR_ID, IndexerConstants.CANBUS,
-                IndexerConstants.SECONDARY_UPPER_INVERTED);
+        configureFollowerMotor(IndexerConstants.SECOND_UPPER_MOTOR_ID, IndexerConstants.CANBUS, IndexerConstants.SECONDARY_UPPER_INVERTED);
 
         configureSecondaryMotor(IndexerConstants.LOWER_MOTOR_ID, IndexerConstants.CANBUS, IndexerConstants.LOWER_INVERTED,
                 IndexerConstants.LOWER_BRAKE,

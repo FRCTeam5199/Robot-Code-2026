@@ -5,20 +5,17 @@
 package frc.robot;
 
 
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.NamedCommands;
-import frc.robot.constants.*;
-import frc.robot.subsystems.*;
-import frc.robot.subsystems.templates.HoodCommand;
-import frc.robot.subsystems.templates.PositionCommand;
-import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.Setpoint;
-import frc.robot.utility.ShotCalculator;
-import frc.robot.utility.ShotMode;
-import org.wpilib.command2.*;
+import java.util.Map;
+
+import org.wpilib.command2.Command;
+import org.wpilib.command2.ConditionalCommand;
+import org.wpilib.command2.InstantCommand;
+import org.wpilib.command2.ParallelCommandGroup;
+import org.wpilib.command2.SelectCommand;
+import org.wpilib.command2.SequentialCommandGroup;
 import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.DriverStation;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.LinearFilter;
 import org.wpilib.math.geometry.Pose2d;
@@ -27,8 +24,33 @@ import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.TrapezoidProfile;
 
-import java.util.Map;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 
+import frc.robot.constants.Constants;
+import frc.robot.constants.HopperConstants;
+import frc.robot.constants.IndexerConstants;
+import frc.robot.constants.IntakePivotConstants;
+import frc.robot.constants.IntakeRollerConstants;
+import frc.robot.constants.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.templates.HoodCommand;
+import frc.robot.subsystems.templates.PositionCommand;
+// import frc.robot.subsystems.templates.ShooterCommand;
+//import frc.robot.subsystems.templates.ShooterCommand;
+import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.Setpoint;
+import frc.robot.utility.ShotCalculator;
+import frc.robot.utility.ShotMode;
 
 public class
 
@@ -221,7 +243,7 @@ RobotContainer {
                 () -> Robot.getAlliance().equals(Alliance.RED)
         ));
 
-        Autos.initializeAutos();
+        // Autos.initializeAutos();
         configureBindings();
     }
 
@@ -519,16 +541,16 @@ RobotContainer {
         // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
         // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+       commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
-//        var alliance = DriverStation.getAlliance();
-//        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-//            return Autos.autonChooserRed.getSelected();
-//        } else {
-//            return Autos.autonChooserBlue.getSelected();
-//        }
+        // var alliance = Robot.getAlliance();
+        // if (alliance != null && alliance == Alliance.RED) {
+        //     return Autos.autonChooserRed.getSelected();
+        // } else {
+        //     return Autos.autonChooserBlue.getSelected();
+        // }
         return null;
     }
 

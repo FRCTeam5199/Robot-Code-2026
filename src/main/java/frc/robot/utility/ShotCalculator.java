@@ -561,6 +561,7 @@ public class ShotCalculator {
                                     RobotContainer.getVelocity().omega * Constants.PHASE_DELAY
                                             + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY).exp());
 
+            System.out.println(estimatedPosePhaseDelayed);
             Translation2d target = getCurrentTarget();
             ChassisVelocities fieldRelativeVelocities = RobotContainer.getVelocity()
                     .toFieldRelative(RobotContainer.getPose().getRotation());
