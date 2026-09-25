@@ -24,7 +24,6 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.Vision;
-import frc.robot.utility.LimelightHelpers;
 import frc.robot.utility.ShotCalculator;
 
 public class Robot extends TimedRobot {
@@ -43,7 +42,7 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
     private static Alliance alliance;
     private final List<Vision.VisionMeasurement> visionBatch = new ArrayList<>(3);
-
+    private final static Vision vision = Vision.getInstance();
 
     public Robot() {
         // commandSwerveDrivetrain.configureAutoBuilder();
@@ -234,9 +233,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        LimelightHelpers.SetThrottle("limelight-right", 2000);
-        LimelightHelpers.SetThrottle("limelight-left", 2000);
-        LimelightHelpers.SetThrottle("limelight-front", 2000);
+        vision.getLeftLimelight().setThrottle(2000);
+        vision.getFrontLimelight().setThrottle(2000);
+        vision.getRightLimelight().setThrottle(2000);
+
         RobotContainer.setIsAutonomous(false);
     }
 
@@ -247,9 +247,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledExit() {
-        LimelightHelpers.SetThrottle("limelight-right", 0);
-        LimelightHelpers.SetThrottle("limelight-left", 0);
-        LimelightHelpers.SetThrottle("limelight-front", 0);
+        vision.getLeftLimelight().setThrottle(0);
+        vision.getFrontLimelight().setThrottle(0);
+        vision.getRightLimelight().setThrottle(0);
     }
 
     @Override
