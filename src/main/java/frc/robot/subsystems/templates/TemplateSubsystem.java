@@ -1,34 +1,23 @@
 package frc.robot.subsystems.templates;
 
-import java.util.function.DoubleSupplier;
-
-import org.wpilib.command2.SubsystemBase;
-import org.wpilib.networktables.DoublePublisher;
-import org.wpilib.networktables.NetworkTable;
-import org.wpilib.units.measure.Angle;
-import org.wpilib.units.measure.AngularVelocity;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-
+import com.ctre.phoenix6.signals.*;
 import frc.robot.utility.SubsystemType;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.networktables.DoublePublisher;
+import org.wpilib.networktables.NetworkTable;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+
+import java.util.function.DoubleSupplier;
 
 public class TemplateSubsystem extends SubsystemBase {
     public StatusSignal<Angle> positionStatusSignal;
@@ -205,10 +194,10 @@ public class TemplateSubsystem extends SubsystemBase {
         followerMotor.setControl(follower);
     }
 
-    public void configureSecondaryMotor(int motorID, boolean isInverted, boolean isBrakeMode,
+    public void configureSecondaryMotor(int motorID, CANBus canBus, boolean isInverted, boolean isBrakeMode,
                                         double supplyCurrentLimit, double statorCurrentLimit,
                                         Slot0Configs slot0Configs) {
-        secondaryMotor = new TalonFX(motorID);
+        secondaryMotor = new TalonFX(motorID, canBus);
         secondaryMotorConfig = new TalonFXConfiguration();
         secondaryVelocityVoltage = new VelocityVoltage(0)
                 .withSlot(0).withEnableFOC(true);
@@ -601,5 +590,9 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public double getGearRatio() {
         return gearRatio;
+    }
+
+    public TalonFX getSecondaryMotor() {
+        return secondaryMotor;
     }
 }

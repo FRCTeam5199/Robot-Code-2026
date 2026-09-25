@@ -1,31 +1,16 @@
 package frc.robot;
 
-import java.util.ArrayList;
-
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.*;
+import frc.robot.utility.ShotCalculator;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.SequentialCommandGroup;
-// import org.wpilib.smartdashboard.SendableChooser;
 import org.wpilib.system.Timer;
 import org.wpilib.telemetry.TelemetryLoggable;
 
-/// / Copyright (c) FIRST and other WPILib contributors.
-/// / Open Source Software; you can modify and/or share it under the terms of
-/// / the WPILib BSD license file in the root directory of this project.
-
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
-import frc.robot.constants.Constants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
-import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.KickerSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.Vision;
-import frc.robot.utility.ShotCalculator;
+import java.util.ArrayList;
 
 public final class Autos {
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
@@ -33,7 +18,7 @@ public final class Autos {
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-    public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
+    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
 
     //    private static PathPlannerAuto redBottomShuttle;

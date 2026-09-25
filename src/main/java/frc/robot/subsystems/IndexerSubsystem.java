@@ -1,19 +1,14 @@
 package frc.robot.subsystems;
 
-import static org.wpilib.units.Units.Rotations;
-import static org.wpilib.units.Units.RotationsPerSecond;
-import static org.wpilib.units.Units.Second;
-import static org.wpilib.units.Units.Volts;
-import static org.wpilib.units.Units.Seconds;
-
-import org.wpilib.command2.Command;
-import org.wpilib.command2.sysid.SysIdRoutine;
-
 import frc.robot.RobotContainer;
 import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.SubsystemType;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.sysid.SysIdRoutine;
+
+import static org.wpilib.units.Units.*;
 
 public class IndexerSubsystem extends TemplateSubsystem {
     private static IndexerSubsystem indexerSubsystem;
@@ -69,9 +64,10 @@ public class IndexerSubsystem extends TemplateSubsystem {
                 IndexerConstants.UPPER_STATOR_CURRENT_LIMIT,
                 IndexerConstants.UPPER_SLOT0_CONFIGS, false);
 
-        configureFollowerMotor(IndexerConstants.SECOND_UPPER_MOTOR_ID, IndexerConstants.SECONDARY_UPPER_INVERTED, IndexerConstants.CANBUS);
+        configureFollowerMotor(IndexerConstants.SECOND_UPPER_MOTOR_ID, IndexerConstants.CANBUS,
+                IndexerConstants.SECONDARY_UPPER_INVERTED);
 
-        configureSecondaryMotor(IndexerConstants.LOWER_MOTOR_ID, IndexerConstants.LOWER_INVERTED,
+        configureSecondaryMotor(IndexerConstants.LOWER_MOTOR_ID, IndexerConstants.CANBUS, IndexerConstants.LOWER_INVERTED,
                 IndexerConstants.LOWER_BRAKE,
                 IndexerConstants.LOWER_SUPPLY_CURRENT_LIMIT,
                 IndexerConstants.LOWER_STATOR_CURRENT_LIMIT,

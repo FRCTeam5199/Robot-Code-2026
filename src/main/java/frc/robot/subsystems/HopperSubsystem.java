@@ -1,13 +1,12 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.HopperConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.SubsystemType;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.sysid.SysIdRoutine;
 
-import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.*;
 
 public class HopperSubsystem extends TemplateSubsystem {
     private static HopperSubsystem hopperSubsystem;
@@ -58,18 +57,18 @@ public class HopperSubsystem extends TemplateSubsystem {
     }
 
     public Command sysIdQuasistaticForward() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdQuasistaticReverse() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.REVERSE);
     }
 
     public Command sysIdDynamicForward() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.FORWARD);
     }
 
     public Command sysIdDynamicReverse() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.REVERSE);
     }
 }

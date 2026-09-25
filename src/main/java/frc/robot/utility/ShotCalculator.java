@@ -1,10 +1,11 @@
 package frc.robot.utility;
 
-import java.util.List;
-import java.util.Optional;
-
 import frc.robot.Robot;
-import org.wpilib.command2.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
+import frc.robot.constants.TurretConstants;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -13,13 +14,6 @@ import org.wpilib.math.geometry.Twist2d;
 import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.util.Pair;
-
-import frc.robot.RobotContainer;
-import frc.robot.constants.Constants;
-import frc.robot.constants.TurretConstants;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
 
 public class ShotCalculator {
     private static ShotCalculator shotCalculator;
@@ -691,9 +685,9 @@ public class ShotCalculator {
                 }
             }
             if (futureTurretToTargetDistance >= 4.65) {
-                if ((Robot.getAlliance().equals(DriverStation.Alliance.Red)
+                if ((Robot.getAlliance().equals(Alliance.RED)
                         && futureTurretPosition.getY() > Constants.RED_HUB_CENTER.getY())
-                        || (Robot.getAlliance().equals(DriverStation.Alliance.Blue)
+                        || (Robot.getAlliance().equals(Alliance.BLUE)
                         && futureTurretPosition.getY() < Constants.BLUE_HUB_CENTER.getY())) {
                     shooterSpeed += .75;
                     shooterSpeedPhaseDelayed += .75;

@@ -1,8 +1,8 @@
 package frc.robot.subsystems.templates;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
+import org.wpilib.command2.Command;
+
 
 public class HoodCommand extends Command {
     private double goal;

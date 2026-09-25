@@ -5,16 +5,20 @@
 package frc.robot;
 
 
-import java.util.Map;
-
-import org.wpilib.command2.Command;
-import org.wpilib.command2.ConditionalCommand;
-import org.wpilib.command2.InstantCommand;
-import org.wpilib.command2.ParallelCommandGroup;
-import org.wpilib.command2.SelectCommand;
-import org.wpilib.command2.SequentialCommandGroup;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
+import frc.robot.constants.*;
+import frc.robot.subsystems.*;
+import frc.robot.subsystems.templates.HoodCommand;
+import frc.robot.subsystems.templates.PositionCommand;
+import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.Setpoint;
+import frc.robot.utility.ShotCalculator;
+import frc.robot.utility.ShotMode;
+import org.wpilib.command2.*;
 import org.wpilib.command2.button.CommandXboxController;
-import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.Alliance;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.LinearFilter;
 import org.wpilib.math.geometry.Pose2d;
@@ -23,33 +27,8 @@ import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.TrapezoidProfile;
 
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.NamedCommands;
+import java.util.Map;
 
-import frc.robot.constants.Constants;
-import frc.robot.constants.HopperConstants;
-import frc.robot.constants.IndexerConstants;
-import frc.robot.constants.IntakePivotConstants;
-import frc.robot.constants.IntakeRollerConstants;
-import frc.robot.constants.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
-import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.templates.HoodCommand;
-import frc.robot.subsystems.templates.PositionCommand;
-// import frc.robot.subsystems.templates.ShooterCommand;
-//import frc.robot.subsystems.templates.ShooterCommand;
-import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.Setpoint;
-import frc.robot.utility.ShotCalculator;
-import frc.robot.utility.ShotMode;
 
 public class
 
@@ -153,6 +132,7 @@ RobotContainer {
     private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
     private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
     private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
+    private static double lastVelocityDouble;
     private static ChassisVelocities lastVelocity;
     private static double accelerationX;
     private static double accelerationY;
@@ -229,7 +209,7 @@ RobotContainer {
                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
                         .andThen(new InstantCommand(() -> commandSwerveDrivetrain
                                 .resetRotation(new Rotation2d(Math.toRadians(-90))))),
-                () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
+                () -> Robot.getAlliance().equals(Alliance.RED)
         ));
         NamedCommands.registerCommand("startRight", new ConditionalCommand(
                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
@@ -238,7 +218,7 @@ RobotContainer {
                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
                         .andThen(new InstantCommand(() -> commandSwerveDrivetrain
                                 .resetRotation(new Rotation2d(Math.toRadians(90d))))),
-                () -> Robot.getAlliance().equals(DriverStation.Alliance.Red)
+                () -> Robot.getAlliance().equals(Alliance.RED)
         ));
 
         Autos.initializeAutos();
@@ -254,10 +234,10 @@ RobotContainer {
 
     public static void periodic() {
         currentState = commandSwerveDrivetrain.getStateCopy();
-        if (lastVelocity == null) lastVelocity = getSpeeds();
-        accelerationX = (getSpeeds().vxMetersPerSecond - lastVelocity.vxMetersPerSecond) / .02;
-        accelerationY = (getSpeeds().vyMetersPerSecond - lastVelocity.vyMetersPerSecond) / .02;
-        accelerationOmega = (getSpeeds().omegaRadiansPerSecond - lastVelocity.omegaRadiansPerSecond) / .02;
+        if (lastVelocity == null) lastVelocity = getVelocity();
+        accelerationX = (getVelocity().vx - lastVelocity.vx) / .02;
+        accelerationY = (getVelocity().vy - lastVelocity.vy) / .02;
+        accelerationOmega = (getVelocity().omega - lastVelocity.omega) / .02;
 
         accelerationX = accelerationXFilter.calculate(accelerationX);
         accelerationY = accelerationYFilter.calculate(accelerationY);
@@ -265,10 +245,10 @@ RobotContainer {
 
         if (currentState == null || currentState.Pose == null) return;
 
-        velocity = Math.sqrt(Math.pow(RobotContainer.getSpeeds().vxMetersPerSecond, 2)
-                + Math.pow(RobotContainer.getSpeeds().vyMetersPerSecond, 2));
-        acceleration = (velocity - lastVelocity) / .02;
-        lastVelocity = velocity;
+        velocity = Math.sqrt(Math.pow(RobotContainer.getVelocity().vx, 2)
+                + Math.pow(RobotContainer.getVelocity().vy, 2));
+        acceleration = (velocity - lastVelocityDouble) / .02;
+        lastVelocityDouble = velocity;
 //        velocity = Math.sqrt(Math.pow(pigeonVelocityX, 2)
 //                + Math.pow(pigeonVelocityY, 2));
 
@@ -284,16 +264,16 @@ RobotContainer {
         }
 
         if (forceShuttleLeft) {
-            shotMode = Robot.getAlliance().equals(DriverStation.Alliance.Blue) ? ShotMode.SHUTTLING_RIGHT
+            shotMode = Robot.getAlliance().equals(Alliance.BLUE) ? ShotMode.SHUTTLING_RIGHT
                     : ShotMode.SHUTTLING_LEFT;
         }
         if (forceShuttleRight) {
-            shotMode = Robot.getAlliance().equals(DriverStation.Alliance.Blue) ? ShotMode.SHUTTLING_LEFT
+            shotMode = Robot.getAlliance().equals(Alliance.BLUE) ? ShotMode.SHUTTLING_LEFT
                     : ShotMode.SHUTTLING_RIGHT;
         }
 
         for (Translation2d robotCorner : robotCorners) {
-            if (Robot.getAlliance() != null && Robot.getAlliance().equals(DriverStation.Alliance.Red)) {
+            if (Robot.getAlliance() != null && Robot.getAlliance().equals(Alliance.RED)) {
                 if (robotCorner.getX() - Constants.RED_HUB_FRONT_CENTER.getX() > .15)
                     shotMode = ShotMode.SHOOTING;
             } else {
@@ -348,8 +328,8 @@ RobotContainer {
         return turretSubsystem.isMechAtGoal() && hoodSubsystem.isMechAtGoal();
     }
 
-    public static ChassisSpeeds getSpeeds() {
-        return currentState.Speeds;
+    public static ChassisVelocities getVelocity() {
+        return currentState.Velocity;
     }
 
     public static ShotMode getShotMode() {
@@ -393,12 +373,12 @@ RobotContainer {
     }
 
     public static double getRequestYVelocity() {
-        if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) return -requestYVelocity;
+        if (Robot.getAlliance().equals(Alliance.RED)) return -requestYVelocity;
         return requestYVelocity;
     }
 
     public static double getRequestXVelocity() {
-        if (Robot.getAlliance().equals(DriverStation.Alliance.Red)) return -requestXVelocity;
+        if (Robot.getAlliance().equals(Alliance.RED)) return -requestXVelocity;
         return requestXVelocity;
     }
 
@@ -462,12 +442,12 @@ RobotContainer {
                 ));
 
         // Field Centric
-        commandXboxController.button(8).onTrue(commandSwerveDrivetrain
+        commandXboxController.menu().onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
                         new ConditionalCommand(
                                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
                                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
-                                () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
+                                () -> Robot.getAlliance() == Alliance.BLUE)
                 ));
 
         commandXboxController.y().onTrue(intakeDeploy);
@@ -527,8 +507,8 @@ RobotContainer {
         // operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
         // operatorCommandXboxController.a().onTrue(setTowerSetpoint);
 
-        commandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        commandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        commandXboxController.dpadUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        commandXboxController.dpadDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
         // operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
         // operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
@@ -543,12 +523,13 @@ RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return Autos.autonChooserRed.getSelected();
-        } else {
-            return Autos.autonChooserBlue.getSelected();
-        }
+//        var alliance = DriverStation.getAlliance();
+//        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+//            return Autos.autonChooserRed.getSelected();
+//        } else {
+//            return Autos.autonChooserBlue.getSelected();
+//        }
+        return null;
     }
 
     public void optimizeDrivetrain() {
