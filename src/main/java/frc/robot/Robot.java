@@ -234,7 +234,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         vision.getLeftLimelight().setThrottle(2000);
-        vision.getFrontLimelight().setThrottle(2000);
+        // vision.getFrontLimelight().setThrottle(2000);
         vision.getRightLimelight().setThrottle(2000);
 
         RobotContainer.setIsAutonomous(false);
@@ -248,7 +248,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledExit() {
         vision.getLeftLimelight().setThrottle(0);
-        vision.getFrontLimelight().setThrottle(0);
+        // vision.getFrontLimelight().setThrottle(0);
         vision.getRightLimelight().setThrottle(0);
     }
 

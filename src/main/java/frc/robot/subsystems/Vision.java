@@ -9,6 +9,7 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Rotation3d;
+import org.wpilib.math.util.Units;
 import org.wpilib.system.Timer;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -18,10 +19,10 @@ public class Vision {
     private static Vision vision;
     private static Timer rightTimer;
     private static Timer leftTimer;
-    private static Timer frontTimer;
+    // private static Timer frontTimer;
 
     private static Limelight leftLimelight;
-    private static Limelight frontLimelight;
+    // private static Limelight frontLimelight;
     private static Limelight rightLimelight;
 
     private static double minWrongTime = 1d;
@@ -37,11 +38,11 @@ public class Vision {
         //filters: 1,2,3,4,5,6,7,8,9,10,11,12,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32 - removing outpost
         rightTimer = new Timer();
         leftTimer = new Timer();
-        frontTimer = new Timer();
+        // frontTimer = new Timer();
 
-        leftLimelight = new Limelight(Constants.LIMELIGHT_LEFT_NAME, new Pose3d(-0.290653, -0.341453, 0.498656, new Rotation3d(0, 5, 134.782385)));
-        frontLimelight = new Limelight(Constants.LIMELIGHT_FRONT_NAME, new Pose3d(-0.049, 0.296, 0.514, new Rotation3d(0, 10, 14.106)));
-        rightLimelight = new Limelight(Constants.LIMELIGHT_RIGHT_NAME, new Pose3d(-0.248110, .3182, 0.509, new Rotation3d(0, 0, -160d)));
+        leftLimelight = new Limelight(Constants.LIMELIGHT_LEFT_NAME, new Pose3d(-0.290653, 0.341453, 0.498656, new Rotation3d(0, Units.degreesToRadians(5), Units.degreesToRadians(134.782385))));
+        // frontLimelight = new Limelight(Constants.LIMELIGHT_FRONT_NAME, new Pose3d(-0.049, 0.296, 0.514, new Rotation3d(0, 10, 14.106)));
+        rightLimelight = new Limelight(Constants.LIMELIGHT_RIGHT_NAME, new Pose3d(-0.248110, -.3182, 0.509, new Rotation3d(0, 0, Units.degreesToRadians(-160d))));
         startThread();
     }
 
@@ -69,8 +70,8 @@ public class Vision {
         Limelight.setSharedRobotOrientation(commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble());
 
         updateCameraPose(leftLimelight, leftTimer);
-        updateCameraPose(frontLimelight, rightTimer);
-        updateCameraPose(rightLimelight, frontTimer);
+        updateCameraPose(rightLimelight, rightTimer);
+        // updateCameraPose(frontLimelight, frontTimer);
     }
 
     public static final ConcurrentLinkedQueue<VisionMeasurement> pendingMeasurements = new ConcurrentLinkedQueue<>();
@@ -113,9 +114,9 @@ public class Vision {
         return leftLimelight;
     }
 
-    public Limelight getFrontLimelight() {
-        return frontLimelight;
-    }
+    // public Limelight getFrontLimelight() {
+    //     return frontLimelight;
+    // }
 
     public Limelight getRightLimelight() {
         return rightLimelight;
