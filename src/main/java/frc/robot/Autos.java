@@ -7,9 +7,8 @@ import frc.robot.subsystems.*;
 import frc.robot.utility.ShotCalculator;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.SequentialCommandGroup;
+import org.wpilib.smartdashboard.SendableChooser;
 import org.wpilib.system.Timer;
-import org.wpilib.telemetry.TelemetryLoggable;
-
 import java.util.ArrayList;
 
 public final class Autos {
@@ -55,7 +54,7 @@ public final class Autos {
     private static PathPlannerAuto blueBottomDoubleScore;
     private static PathPlannerAuto blueTopDoubleScore;
     private static Timer pidAlignmentTimer = new Timer();
-    private TelemetryLoggable autoChooser;
+    private SendableChooser<Command> autoChooser;
 
     public static void initializeAutos() {
 
@@ -112,12 +111,12 @@ public final class Autos {
     /**
      * Gets or creates the AutoChooser (Singleton Method)
      */
-    public TelemetryLoggable getAutoChooser() {
-//         if (autoChooser == null) {
-//             autoChooser = TelemetryLoggable;
-// //            UserInterface.getTab("Auton").add("AutoChooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
-//         }
-
+    public SendableChooser<Command> getAutoChooser() {
+        // if (autoChooser == null) {
+        //     autoChooser = new SendableChooser<>();
+        //     Shuffleboard.getTab("Auton").add("AutoChooser", autoChooser)
+        //             .withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
+        // }
         return autoChooser;
     }
 }

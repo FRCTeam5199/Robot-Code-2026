@@ -13,7 +13,7 @@ import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.geometry.Twist2d;
 import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
 import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.util.Pair;
+import org.wpilib.math.util.Pair;
 
 public class ShotCalculator {
     private static ShotCalculator shotCalculator;
@@ -589,7 +589,10 @@ public class ShotCalculator {
             if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
             hoodVelocity = (hoodAngle - lastHoodAngle) / .005;
 
-            turretRotationPhaseDelayed = target.minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle().orElse(lastTurretRotationPhaseDelayed);
+            Translation2d deltaPhaseDelayed = target.minus(futureTurretPositionPhaseDelayed.getTranslation());
+            turretRotationPhaseDelayed = (deltaPhaseDelayed.getX() == 0 && deltaPhaseDelayed.getY() == 0)
+                ? lastTurretRotationPhaseDelayed
+                : new Rotation2d(deltaPhaseDelayed.getX(), deltaPhaseDelayed.getY());
 
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
             turretVelocityPhaseDelayed = turretRotationPhaseDelayed
@@ -618,7 +621,10 @@ public class ShotCalculator {
             turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getVelocity().omega));
 
             //Turret Angle Calculations
-            turretRotation = target.minus(futureTurretPosition.getTranslation()).getAngle().orElse(lastTurretRotation);
+            Translation2d delta = target.minus(futureTurretPosition.getTranslation());
+            turretRotation = (delta.getX() == 0 && delta.getY() == 0)
+                ? lastTurretRotation
+                : new Rotation2d(delta.getX(), delta.getY());
 
             if (lastTurretRotation == null) lastTurretRotation = turretRotation;
             turretVelocity = turretRotation

@@ -46,7 +46,7 @@ import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.004; // 4 ms
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.ZERO;
+    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Swerve requests to apply during SysId characterization */
@@ -277,7 +277,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          */
         if (!m_hasAppliedOperatorPerspective || RobotState.isDisabled()) {
             MatchState.getAlliance().ifPresent(allianceColor -> {
-                setOperatorForwardDirection(
+                setOperatorPerspectiveForward(
                         allianceColor == Alliance.RED
                                 ? kRedAlliancePerspectiveRotation
                                 : kBlueAlliancePerspectiveRotation

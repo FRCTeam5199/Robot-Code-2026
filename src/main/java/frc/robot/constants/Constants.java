@@ -34,7 +34,7 @@ public class Constants {
     public static final Transform2d BACK_RIGHT_CORNER = new Transform2d(-CENTER_TO_BUMPER_SHORT, -CENTER_TO_BUMPER_LONG, new Rotation2d(0));
     public static final double MAX_SPEED = TunerConstants.kSpeedAt12Volts.baseUnitMagnitude();
     public static final double MAX_ANGULAR_RATE = 2.5 * Math.PI;
-    public static final Pose3d ROBOT_RELATIVE_TURRET_POSE = new Pose3d(ROBOT_TO_TURRET.getX(), -ROBOT_TO_TURRET.getY(), .470, Rotation3d.ZERO);
+    public static final Pose3d ROBOT_RELATIVE_TURRET_POSE = new Pose3d(ROBOT_TO_TURRET.getX(), -ROBOT_TO_TURRET.getY(), .470, Rotation3d.kZero);
     public static final Transform3d TURRET_TO_CAMERA = new Transform3d(.041, .162, 0, new Rotation3d(Math.toRadians(180d), Math.toRadians(14.69), 0));
     public static final double TURRET_BUFFER_SIZE = 20d;
     public static final String LIMELIGHT_LEFT_NAME = "limelight-left"; //10.51.99.11:5801

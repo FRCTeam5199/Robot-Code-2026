@@ -57,18 +57,18 @@ public class HopperSubsystem extends TemplateSubsystem {
     }
 
     public Command sysIdQuasistaticForward() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.FORWARD);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
     }
 
     public Command sysIdQuasistaticReverse() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.REVERSE);
+        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
     }
 
     public Command sysIdDynamicForward() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.FORWARD);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
     }
 
     public Command sysIdDynamicReverse() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.REVERSE);
+        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
     }
 }

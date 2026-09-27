@@ -13,7 +13,7 @@ import org.wpilib.command2.InstantCommand;
 import org.wpilib.command2.ParallelCommandGroup;
 import org.wpilib.command2.SelectCommand;
 import org.wpilib.command2.SequentialCommandGroup;
-import org.wpilib.command2.button.CommandXboxController;
+// import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.DriverStation;
 import org.wpilib.math.controller.ProfiledPIDController;
@@ -51,11 +51,12 @@ import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
+import frc.robot.utility.CommandXboxController;
 
 public class
 
 RobotContainer {
-    public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
+    public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT, false);
     // public static final CommandXboxController operatorCommandXboxController
     //         = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
@@ -464,7 +465,7 @@ RobotContainer {
                 ));
 
         // Field Centric
-        commandXboxController.menu().onTrue(commandSwerveDrivetrain
+        commandXboxController.start().onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
                         new ConditionalCommand(
                                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
