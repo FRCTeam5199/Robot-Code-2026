@@ -15,7 +15,6 @@ import org.wpilib.command2.SelectCommand;
 import org.wpilib.command2.SequentialCommandGroup;
 // import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.DriverStation;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.LinearFilter;
 import org.wpilib.math.geometry.Pose2d;
@@ -76,9 +75,9 @@ RobotContainer {
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
+    public static final PositionCommand intakeDeploy2 = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
     public static final PositionCommand intakeUpAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.UPAGITATE);
-    public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DOWNAGITATE);
-    private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.4), intakeDownAgitate.withTimeout(.4)).repeatedly();
+    public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
     //Drive
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelVelocities(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
@@ -161,6 +160,8 @@ RobotContainer {
     private static double accelerationY;
     private static double accelerationOmega;
     private static boolean isAutonomous = false;
+
+    private static boolean isRightTriggerPressed = false;
     //Button Bindings
     private static Command leftTriggerPressed;
     private static Command leftTriggerReleased;
@@ -184,16 +185,13 @@ RobotContainer {
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(shooterAuto,
                         new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
-                        new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
+                        new InstantCommand(() -> turretSubsystem.setStopMoving(false)))
+                        .alongWith(RobotCommands.agitateIntake()));
 
         leftTriggerReleased = RobotCommands.idleState();
 
-        rightBumperPressed = RobotCommands.indexBallsAuto().alongWith(
-                new ParallelCommandGroup(shooterAutoRB,
-                        new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
-                        new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
-
-        rightBumperReleased = RobotCommands.idleState();
+//        rightBumperPressed = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.5), intakeDownAgitate.withTimeout(.5)).repeatedly();
+//        rightBumperReleased = intakeDeploy2;
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
@@ -503,8 +501,8 @@ RobotContainer {
 //        commandXboxController.y().onTrue(shooterSubsystem.sysIdDynamicForward());
 //        commandXboxController.x().onTrue(shooterSubsystem.sysIdDynamicReverse());
 
-        commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
-                .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
+        commandXboxController.rightTrigger().onTrue(intakeRollerIntake.alongWith(new InstantCommand(() -> setIsRightTriggerPressed(true)))/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
+                .onFalse(intakeRollerStop.alongWith(new InstantCommand(() -> setIsRightTriggerPressed(false)))/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
 
         commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);
@@ -542,7 +540,7 @@ RobotContainer {
         // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
         // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-       commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
@@ -561,5 +559,13 @@ RobotContainer {
             commandSwerveDrivetrain.getModules()[i].getSteerMotor().optimizeBusUtilization();
             commandSwerveDrivetrain.getModules()[i].getEncoder().optimizeBusUtilization();
         }
+    }
+
+    public static boolean isRightTriggerPressed() {
+        return isRightTriggerPressed;
+    }
+
+    public static void setIsRightTriggerPressed(boolean isRightTriggerPressed) {
+        RobotContainer.isRightTriggerPressed = isRightTriggerPressed;
     }
 }

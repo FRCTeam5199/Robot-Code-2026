@@ -16,7 +16,6 @@ public class IntakePivotConstants {
 
     public static final double DEPLOY = 98;
     public static final double UPAGITATE = 70;
-    public static final double DOWNAGITATE = 90;
     public static final double STOW = -1;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
