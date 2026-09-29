@@ -42,6 +42,8 @@ public class HopperSubsystem extends TemplateSubsystem {
                 HopperConstants.SUPPLY_CURRENT_LIMIT,
                 HopperConstants.STATOR_CURRENT_LIMIT,
                 HopperConstants.SLOT0_CONFIGS, false);
+
+        fasterStatorCurrent();
     }
 
     public static HopperSubsystem getInstance() {

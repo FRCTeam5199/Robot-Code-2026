@@ -185,13 +185,12 @@ RobotContainer {
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(shooterAuto,
                         new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
-                        new InstantCommand(() -> turretSubsystem.setStopMoving(false)))
-                        .alongWith(RobotCommands.agitateIntake()));
+                        new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
 
         leftTriggerReleased = RobotCommands.idleState();
 
-//        rightBumperPressed = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.5), intakeDownAgitate.withTimeout(.5)).repeatedly();
-//        rightBumperReleased = intakeDeploy2;
+        rightBumperPressed = new SequentialCommandGroup(intakeUpAgitate.withTimeout(Constants.INTAKE_AGITATION_TIMEOUT), intakeDownAgitate.withTimeout(Constants.INTAKE_AGITATION_TIMEOUT)).repeatedly();
+        rightBumperReleased = intakeDeploy2;
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
@@ -516,9 +515,7 @@ RobotContainer {
                 ));
 
         // Outtake and Shoot
-        // commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116)
-        //     .alongWith(rightBumperPressed))
-        //         .onFalse(RobotCommands.idleState().alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+        commandXboxController.rightBumper().onTrue(rightBumperPressed).onFalse(rightBumperReleased);
 
         // X-drive
         commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));

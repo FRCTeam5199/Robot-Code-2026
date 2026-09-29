@@ -204,7 +204,6 @@ public class TurretSubsystem extends TemplateSubsystem {
 
 //        isMechAtGoal.set(isMechAtGoalAuto());
 
-        if (!stopMoving && !fullStop) followLastProfile();
         // System.out.println(isMechAtGoalAuto());
 //       System.out.println(getDegrees());
 //        System.out.println("goal: " + getGoal());
@@ -226,6 +225,7 @@ public class TurretSubsystem extends TemplateSubsystem {
         goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
 
         goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
+        if (!stopMoving && !fullStop) followLastProfile();
     }
 
     public void followLastProfile() {

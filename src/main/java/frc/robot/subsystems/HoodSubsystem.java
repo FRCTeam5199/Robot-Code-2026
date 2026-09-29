@@ -66,7 +66,6 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     public void periodic() {
         super.periodic();
-        if (!stopMoving) followLastProfile();
     }
 
     public void setPositionProfiling(double degrees, double degreePerSec) {
@@ -82,6 +81,7 @@ public class HoodSubsystem extends TemplateSubsystem {
         goalVelocityRotPerSec = getMotorRotFromDegrees(degreePerSec);
 
         goalState = new TrapezoidProfile.State(goalRotations, goalVelocityRotPerSec);
+        if (!stopMoving) followLastProfile();
     }
 
     public void followLastProfile() {

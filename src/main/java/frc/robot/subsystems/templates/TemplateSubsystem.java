@@ -531,6 +531,10 @@ public class TemplateSubsystem extends SubsystemBase {
         return motor.getStatorCurrent().getValueAsDouble();
     }
 
+    public void fasterStatorCurrent() {
+        motor.getStatorCurrent().setUpdateFrequency(50);
+    }
+
     public double getMechVelocity() {
         return getMechRotFromMotorRot(motor.getVelocity().getValueAsDouble());
     }

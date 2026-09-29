@@ -30,6 +30,7 @@ public class HopperConstants {
     public static final double[][] GEAR_RATIO = {{1, 2.5}};
 
     public static final double INDEXING_SPEED = 50;
+    public static final double REVERSE_SPEED = -50;
     public static final double IDLING_SPEED = -5;
 
     public static final CANBus CANBUS = new CANBus("can_s0");
