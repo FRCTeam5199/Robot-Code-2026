@@ -241,12 +241,19 @@ public class TurretSubsystem extends TemplateSubsystem {
 
     public boolean isMechAtGoalAuto() {
         // if (predictWrapAround()) return false;
-
-        if (RobotContainer.getShotMode() != ShotMode.SHOOTING) {
-            return getDegrees() >= shotCalculator.getTurretAngle() - TurretConstants.LOWER_TOLERANCE
-                    && getDegrees() <= shotCalculator.getTurretAngle() + TurretConstants.UPPER_TOLERANCE;
+        if (RobotContainer.getShotMode() == ShotMode.SHOOTING) {
+            return getLateralDistance(AllianceFlipper
+                    .getCorrectAlliance(Constants.BLUE_HUB_CENTER, Constants.RED_HUB_CENTER))
+                    < Constants.HUB_RADIUS;
+        } else if (RobotContainer.getShotMode() == ShotMode.SHUTTLING_LEFT) {
+            return getLateralDistance(AllianceFlipper
+                    .getCorrectAlliance(Constants.BLUE_SHUTTLE_LEFT_CORNER, Constants.RED_SHUTTLE_LEFT_CORNER))
+                    < Constants.SHUTTLING_DISTANCE_FROM_WALL;
+        } else {
+            return getLateralDistance(AllianceFlipper
+                    .getCorrectAlliance(Constants.BLUE_SHUTTLE_RIGHT_CORNER, Constants.RED_SHUTTLE_RIGHT_CORNER))
+                    < Constants.SHUTTLING_DISTANCE_FROM_WALL;
         }
-        return getLateralDistance() < Constants.HUB_RADIUS;
     }
 
     public boolean isMechAtGoal() {
@@ -262,19 +269,16 @@ public class TurretSubsystem extends TemplateSubsystem {
         this.continuousMotion = continuousMotion;
     }
 
-    public double getLateralDistance() {
+    public double getLateralDistance(Translation2d goalPoint) {
         double degrees = getDegrees() + RobotContainer.getPose().getRotation().getDegrees();
         double slope = Math.tan(Math.toRadians(degrees));
         Pose2d futureTurretPose = shotCalculator.getFutureTurretPosition();
 
-        Translation2d hubCenter = AllianceFlipper.getCorrectAlliance(Constants.BLUE_HUB_CENTER,
-                Constants.RED_HUB_CENTER);
-
-        double deltaX = hubCenter.getX() - futureTurretPose.getX();
+        double deltaX = goalPoint.getX() - futureTurretPose.getX();
         double deltaY = slope * deltaX;
         double projectedY = futureTurretPose.getY() + deltaY;
 
-        return Math.abs(hubCenter.getY() - projectedY);
+        return Math.abs(goalPoint.getY() - projectedY);
     }
 
     public double getFF(double velocity) {

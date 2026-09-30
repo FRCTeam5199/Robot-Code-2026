@@ -11,15 +11,16 @@ public class Constants {
     public static final int XBOX_PORT = 0;
     public static final int OPERATOR_XBOX_PORT = 1;
 
+    public static final double SHUTTLING_DISTANCE_FROM_WALL = 1.75;
     public static final Translation2d RED_HUB_CENTER = new Translation2d(11.916, 4.035);
     public static final Translation2d RED_HUB_FRONT_CENTER = new Translation2d(12.513, 4.035);
-    public static final Translation2d RED_SHUTTLE_LEFT_CORNER = new Translation2d(15.809, 2d);
-    public static final Translation2d RED_SHUTTLE_RIGHT_CORNER = new Translation2d(15.809, 5.75);
+    public static final Translation2d RED_SHUTTLE_LEFT_CORNER = new Translation2d(15.809, SHUTTLING_DISTANCE_FROM_WALL);
+    public static final Translation2d RED_SHUTTLE_RIGHT_CORNER = new Translation2d(15.809, 8.069 - SHUTTLING_DISTANCE_FROM_WALL);
 
     public static final Translation2d BLUE_HUB_CENTER = new Translation2d(4.626, 4.035);
     public static final Translation2d BLUE_HUB_FRONT_CENTER = new Translation2d(4.029, 4.035);
-    public static final Translation2d BLUE_SHUTTLE_LEFT_CORNER = new Translation2d(.740, 2d);   //Right
-    public static final Translation2d BLUE_SHUTTLE_RIGHT_CORNER = new Translation2d(.740, 5.75);   //Left
+    public static final Translation2d BLUE_SHUTTLE_RIGHT_CORNER = new Translation2d(.740, SHUTTLING_DISTANCE_FROM_WALL);
+    public static final Translation2d BLUE_SHUTTLE_LEFT_CORNER = new Translation2d(.740, 8.069 - SHUTTLING_DISTANCE_FROM_WALL);
 
     public static final double HUB_RADIUS = .52959;
     public static final Transform2d ROBOT_TO_TURRET = new Transform2d(-.13335, .13335, new Rotation2d(0));

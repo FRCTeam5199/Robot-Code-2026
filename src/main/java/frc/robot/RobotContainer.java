@@ -277,20 +277,22 @@ RobotContainer {
 
         // Sets Enums, default is Shooting
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
-        if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-            shotMode = ShotMode.SHUTTLING_RIGHT;
+        if (Robot.getAlliance().equals(Alliance.RED)) {
+            if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
+                shotMode = ShotMode.SHUTTLING_LEFT;
+            } else {
+                shotMode = ShotMode.SHUTTLING_RIGHT;
+            }
         } else {
-            shotMode = ShotMode.SHUTTLING_LEFT;
+            if (getPose().getY() - Constants.BLUE_HUB_CENTER.getY() < 0) {
+                shotMode = ShotMode.SHUTTLING_RIGHT;
+            } else {
+                shotMode = ShotMode.SHUTTLING_LEFT;
+            }
         }
 
-        if (forceShuttleLeft) {
-            shotMode = Robot.getAlliance().equals(Alliance.BLUE) ? ShotMode.SHUTTLING_RIGHT
-                    : ShotMode.SHUTTLING_LEFT;
-        }
-        if (forceShuttleRight) {
-            shotMode = Robot.getAlliance().equals(Alliance.BLUE) ? ShotMode.SHUTTLING_LEFT
-                    : ShotMode.SHUTTLING_RIGHT;
-        }
+        if (forceShuttleLeft) shotMode = ShotMode.SHUTTLING_LEFT;
+        if (forceShuttleRight) shotMode = ShotMode.SHUTTLING_RIGHT;
 
         for (Translation2d robotCorner : robotCorners) {
             if (Robot.getAlliance() != null && Robot.getAlliance().equals(Alliance.RED)) {
@@ -354,10 +356,6 @@ RobotContainer {
 
     public static ShotMode getShotMode() {
         return shotMode;
-    }
-
-    public static void setShotMode(ShotMode shotMode) {
-        RobotContainer.shotMode = shotMode;
     }
 
     public static Setpoint getCurrentSetpoint() {

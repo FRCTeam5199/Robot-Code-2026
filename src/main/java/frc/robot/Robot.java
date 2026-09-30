@@ -15,7 +15,6 @@ import org.wpilib.command2.CommandScheduler;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.framework.TimedRobot;
-import org.wpilib.math.linalg.VecBuilder;
 import org.wpilib.system.Timer;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -219,8 +218,7 @@ public class Robot extends TimedRobot {
         visionBatch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
 
         for (Vision.VisionMeasurement measurement : visionBatch) {
-            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(),
-                    VecBuilder.fill(measurement.xyStdev(), measurement.xyStdev(), 9999999999d));
+            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(), measurement.stdDevs());
         }
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();

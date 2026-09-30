@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.limelightvision.Limelight;
 import com.limelightvision.PoseEstimate;
+import com.limelightvision.PoseEstimateConfig;
 import com.limelightvision.PoseEstimateType;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -40,9 +41,34 @@ public class Vision {
         leftTimer = new Timer();
         frontTimer = new Timer();
 
-        leftLimelight = new Limelight(Constants.LIMELIGHT_LEFT_NAME, new Pose3d(-0.290653, 0.341453, 0.498656, new Rotation3d(0, Units.degreesToRadians(5), Units.degreesToRadians(134.782385))));
-        frontLimelight = new Limelight(Constants.LIMELIGHT_FRONT_NAME, new Pose3d(-0.049, -0.296, 0.514, new Rotation3d(0, Units.degreesToRadians(10), Units.degreesToRadians(14.106))));
-        rightLimelight = new Limelight(Constants.LIMELIGHT_RIGHT_NAME, new Pose3d(-0.248110, -.3182, 0.509, new Rotation3d(0, 0, Units.degreesToRadians(-160d))));
+        double untrusted = PoseEstimateConfig.UNTRUSTED;
+        PoseEstimateConfig mt2Config = PoseEstimateConfig.defaultMT2()
+                .withMinTagCount(1)
+                .withMaxSingleTagAmbiguity(.7)
+                .withMaxSingleTagDistance(6.0) // 0 disables this check
+                .withMaxAvgTagDistance(8.0)
+                .withMinAvgTagArea(0.02) //0-100, percentage of image area
+                .withFieldBounds(16.541, 8.069)
+                .withFieldBoundsMargin(0.5)
+                .withStdDevXY(0.01, 0.0001, 2.0) //not sure what the equivalent is
+                .withStdDevTheta(untrusted, untrusted, untrusted)
+                .withStdDevDistanceScaling(2, 0.0, 100.0) // Less aggressive STDDev scaling for MT2. Scale by sqrt(distance) rather than distance^1.
+                .withStdDevTagCountDivision(2); // Enhance trust by a factor equal to the square root of number of contributing tags
+
+
+        leftLimelight = new Limelight(Constants.LIMELIGHT_LEFT_NAME,
+                new Pose3d(-0.290653, 0.341453, 0.498656,
+                        new Rotation3d(0, Units.degreesToRadians(5), Units.degreesToRadians(134.782385))))
+                .withPoseEstimateConfig_MT2(mt2Config);
+        frontLimelight = new Limelight(Constants.LIMELIGHT_FRONT_NAME,
+                new Pose3d(-0.049, -0.296, 0.514,
+                        new Rotation3d(0, Units.degreesToRadians(10), Units.degreesToRadians(14.106))))
+                .withPoseEstimateConfig_MT2(mt2Config);
+        rightLimelight = new Limelight(Constants.LIMELIGHT_RIGHT_NAME,
+                new Pose3d(-0.248110, -.3182, 0.509,
+                        new Rotation3d(0, 0, Units.degreesToRadians(-160d))))
+                .withPoseEstimateConfig_MT2(mt2Config);
+
         startThread();
     }
 
@@ -76,7 +102,8 @@ public class Vision {
 
     public static final ConcurrentLinkedQueue<VisionMeasurement> pendingMeasurements = new ConcurrentLinkedQueue<>();
 
-    public record VisionMeasurement(Pose2d pose, double timestampSeconds, double xyStdev) {
+    public record VisionMeasurement(Pose2d pose, double timestampSeconds,
+                                    org.wpilib.math.linalg.Vector<org.wpilib.math.numbers.N3> stdDevs) {
     }
 
     private void updateCameraPose(Limelight limelight, Timer wrongPoseTimer) {
@@ -99,13 +126,13 @@ public class Vision {
                 wrongPoseTimer.reset();
             }
 
-            double xyStdev = .01 * Math.pow(data.avgTagDistanceMeters, 2) / Math.pow(data.fieldedTagCount, 2);
+//            double stdDevs = .01 * Math.pow(data.avgTagDistanceMeters, 2) / Math.pow(data.fieldedTagCount, 2);
 
             if (data.pose.equals(new Pose2d(0, 0, new Rotation2d(0))))
                 shouldAddPose = false;
 
             if (shouldAddPose) {
-                pendingMeasurements.add(new VisionMeasurement(data.pose, data.timestampSeconds, xyStdev));
+                pendingMeasurements.add(new VisionMeasurement(data.pose, data.timestampSeconds, data.stdDevs));
             }
         }
     }
