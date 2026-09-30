@@ -279,15 +279,15 @@ RobotContainer {
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
         if (Robot.getAlliance().equals(Alliance.RED)) {
             if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-                shotMode = ShotMode.SHUTTLING_LEFT;
-            } else {
                 shotMode = ShotMode.SHUTTLING_RIGHT;
+            } else {
+                shotMode = ShotMode.SHUTTLING_LEFT;
             }
         } else {
-            if (getPose().getY() - Constants.BLUE_HUB_CENTER.getY() < 0) {
-                shotMode = ShotMode.SHUTTLING_RIGHT;
-            } else {
+            if (getPose().getY() - Constants.BLUE_HUB_CENTER.getY() > 0) {
                 shotMode = ShotMode.SHUTTLING_LEFT;
+            } else {
+                shotMode = ShotMode.SHUTTLING_RIGHT;
             }
         }
 
