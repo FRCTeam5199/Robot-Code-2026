@@ -40,7 +40,7 @@ public class RobotCommands {
     private static double hopperReverseCheck = 0;
     private static final double MAX_HOPPER_REVERSAL_TIMES = 3;
     private static double hopperStatorCurrentLimitCheck = 0;
-    private static final double STATOR_CURRENT_TIMES = 5;
+    private static final double STATOR_CURRENT_TIMES = 1;
 
     public static Command indexBallsAuto() {
         return new FunctionalCommand(
@@ -60,7 +60,7 @@ public class RobotCommands {
                         indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
-                        hopperSubsystem.setVelocity(-100);
+                        hopperSubsystem.setVelocity(HopperConstants.REVERSE_SPEED);
                     }
                 },
                 () -> {
@@ -82,8 +82,9 @@ public class RobotCommands {
 //                        hopperSubsystem.setVelocity(-10);
 //                    }
 
-                    if (hopperSubsystem.getStatorCurrent() < 45d) hopperStatorCurrentLimitCheck++;
-                    else hopperStatorCurrentLimitCheck = 0;
+                    if (hopperSubsystem.getStatorCurrent() > 50d && Math.abs(hopperSubsystem.getAcceleration()) < 200) {
+                        hopperStatorCurrentLimitCheck++;
+                    } else hopperStatorCurrentLimitCheck = 0;
 
                     if (hopperStatorCurrentLimitCheck > STATOR_CURRENT_TIMES && hopperReverseCheck < MAX_HOPPER_REVERSAL_TIMES) {
                         if (shooterSubsystem.isMechAtGoal(true)) {

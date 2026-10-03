@@ -50,7 +50,8 @@ public class Vision {
                 .withMinAvgTagArea(0.02) //0-100, percentage of image area
                 .withFieldBounds(16.541, 8.069)
                 .withFieldBoundsMargin(0.5)
-                .withStdDevXY(0.1, 0.0001, 2.0) //not sure what the equivalent is
+                .withStdDevXY(0.01, 0.0001, 2.0) //not sure what the equivalent is
+//                .withStdDevTheta(.1, .001, 2.0)
                 .withStdDevTheta(untrusted, untrusted, untrusted)
                 .withStdDevDistanceScaling(2, 0.0, 100.0) // Less aggressive STDDev scaling for MT2. Scale by sqrt(distance) rather than distance^1.
                 .withStdDevTagCountDivision(2); // Enhance trust by a factor equal to the square root of number of contributing tags
@@ -58,15 +59,15 @@ public class Vision {
 
         leftLimelight = new Limelight(Constants.LIMELIGHT_LEFT_NAME,
                 new Pose3d(-0.290653, 0.341453, 0.498656,
-                        new Rotation3d(0, Units.degreesToRadians(5), Units.degreesToRadians(134.782385))))
+                        new Rotation3d(0, Units.degreesToRadians(-3.6), Units.degreesToRadians(140d)))) //134.782385
                 .withPoseEstimateConfig_MT2(mt2Config);
         frontLimelight = new Limelight(Constants.LIMELIGHT_FRONT_NAME,
                 new Pose3d(-0.049, -0.296, 0.514,
-                        new Rotation3d(0, Units.degreesToRadians(10), Units.degreesToRadians(14.106))))
+                        new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(14.106))))
                 .withPoseEstimateConfig_MT2(mt2Config);
         rightLimelight = new Limelight(Constants.LIMELIGHT_RIGHT_NAME,
                 new Pose3d(-0.248110, -.3182, 0.509,
-                        new Rotation3d(Units.degreesToRadians(.4), 0, Units.degreesToRadians(-157))))
+                        new Rotation3d(Units.degreesToRadians(.4), 0, Units.degreesToRadians(-154d)))) //160d
                 .withPoseEstimateConfig_MT2(mt2Config);
 
         startThread();

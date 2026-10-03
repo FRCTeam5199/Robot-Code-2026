@@ -15,9 +15,9 @@ public class TurretConstants {
     public static final boolean BRAKE = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(.5)
+            .withKP(.25)
             .withKI(0)
-            .withKD(0.2)
+            .withKD(0.1)
             .withKS(.34)
             .withKG(0)
             .withKV(.0943396226415094339622641509434)

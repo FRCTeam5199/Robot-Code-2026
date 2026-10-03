@@ -10,6 +10,8 @@ import static org.wpilib.units.Units.*;
 
 public class HopperSubsystem extends TemplateSubsystem {
     private static HopperSubsystem hopperSubsystem;
+    private double lastVelocity = 0;
+    private double acceleration = 0;
 
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -56,6 +58,10 @@ public class HopperSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        acceleration = (getMotorVelocity() - lastVelocity) / .02;
+        lastVelocity = getMotorVelocity();
+
+//        System.out.println(getGoal());
     }
 
     public Command sysIdQuasistaticForward() {
@@ -72,5 +78,9 @@ public class HopperSubsystem extends TemplateSubsystem {
 
     public Command sysIdDynamicReverse() {
         return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+    }
+
+    public double getAcceleration() {
+        return acceleration;
     }
 }

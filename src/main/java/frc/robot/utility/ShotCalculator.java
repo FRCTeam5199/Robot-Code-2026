@@ -17,7 +17,7 @@ import org.wpilib.math.util.Pair;
 
 public class ShotCalculator {
     private static ShotCalculator shotCalculator;
-    private Pose2d futureTurretPosition, futureTurretPositionPhaseDelayed;
+    private Pose2d futureTurretPosition = new Pose2d(0, 0, new Rotation2d(0)), futureTurretPositionPhaseDelayed = new Pose2d(0, 0, new Rotation2d(0));
     private double turretAngle, turretAnglePhaseDelayed;
     //    private double lastTurretAngle, lastTurretAnglePhaseDelayed;
     private Rotation2d lastTurretRotation, lastTurretRotationPhaseDelayed, turretRotation, turretRotationPhaseDelayed;
@@ -560,6 +560,15 @@ public class ShotCalculator {
                                             + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
                                     RobotContainer.getVelocity().omega * Constants.ROTATIONAL_PHASE_DELAY
                                             + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY).exp());
+//            Pose2d estimatedPosePhaseDelayed =
+//                    estimatedPose.plus(
+//                            new Twist2d(
+//                                    Math.pow(RobotContainer.getVelocity().vx, 2) * Constants.PHASE_DELAY
+//                                            + RobotContainer.getAccelerationX() * Constants.ACCELERATION_PHASE_DELAY,
+//                                    Math.pow(RobotContainer.getVelocity().vy, 2) * Constants.PHASE_DELAY
+//                                            + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
+//                                    Math.pow(RobotContainer.getVelocity().omega, 2) * Constants.ROTATIONAL_PHASE_DELAY
+//                                            + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY).exp());
 
             // System.out.println(estimatedPosePhaseDelayed);
             Translation2d target = getCurrentTarget();
