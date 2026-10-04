@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
 
         addPeriodic(() -> {
                     shotCalculator.periodic();
-                }, .020 //.005
+                }, .020
         );
     }
 

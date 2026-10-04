@@ -321,6 +321,14 @@ RobotContainer {
         else
             requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
 
+        double maxAngularRateShooting = .5;
+        if (shooterSubsystem.getMotorVelocity() > 10d) {
+            if (requestRotationalVelocity > maxAngularRateShooting * Constants.MAX_ANGULAR_RATE)
+                requestRotationalVelocity = maxAngularRateShooting * Constants.MAX_ANGULAR_RATE;
+            else if (requestRotationalVelocity < maxAngularRateShooting * -Constants.MAX_ANGULAR_RATE)
+                requestRotationalVelocity = maxAngularRateShooting * -Constants.MAX_ANGULAR_RATE;
+        }
+
 //        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
 //        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
 //        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
@@ -535,7 +543,7 @@ RobotContainer {
         // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
         // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {

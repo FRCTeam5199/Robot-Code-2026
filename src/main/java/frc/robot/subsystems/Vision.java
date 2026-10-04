@@ -50,11 +50,11 @@ public class Vision {
                 .withMinAvgTagArea(0.02) //0-100, percentage of image area
                 .withFieldBounds(16.541, 8.069)
                 .withFieldBoundsMargin(0.5)
-                .withStdDevXY(0.01, 0.0001, 2.0) //not sure what the equivalent is
+                .withStdDevXY(0.005, 0.0001, 2.0) //not sure what the equivalent is
 //                .withStdDevTheta(.1, .001, 2.0)
                 .withStdDevTheta(untrusted, untrusted, untrusted)
-                .withStdDevDistanceScaling(2, 0.0, 100.0) // Less aggressive STDDev scaling for MT2. Scale by sqrt(distance) rather than distance^1.
-                .withStdDevTagCountDivision(2); // Enhance trust by a factor equal to the square root of number of contributing tags
+                .withStdDevDistanceScaling(.5, 0.0, 100.0) // Less aggressive STDDev scaling for MT2. Scale by sqrt(distance) rather than distance^1.
+                .withStdDevTagCountDivision(.5); // Enhance trust by a factor equal to the square root of number of contributing tags
 
 
         leftLimelight = new Limelight(Constants.LIMELIGHT_LEFT_NAME,
