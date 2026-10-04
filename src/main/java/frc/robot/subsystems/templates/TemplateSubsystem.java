@@ -187,6 +187,7 @@ public class TemplateSubsystem extends SubsystemBase {
         motor.getTorqueCurrent().setUpdateFrequency(100);
 
         followerMotor.getRotorVelocity().setUpdateFrequency(50);
+        followerMotor.getVelocity().setUpdateFrequency(100);
         followerMotor.optimizeBusUtilization();
 
         follower = new Follower(motor.getDeviceID(),
@@ -528,6 +529,10 @@ public class TemplateSubsystem extends SubsystemBase {
 
     public double getStatorCurrent() {
         return motor.getStatorCurrent().getValueAsDouble();
+    }
+
+    public void fasterStatorCurrent() {
+        motor.getStatorCurrent().setUpdateFrequency(50);
     }
 
     public double getMechVelocity() {

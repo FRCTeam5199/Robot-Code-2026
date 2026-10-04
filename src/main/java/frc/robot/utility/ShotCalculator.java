@@ -17,7 +17,7 @@ import org.wpilib.util.Pair;
 
 public class ShotCalculator {
     private static ShotCalculator shotCalculator;
-    private Pose2d futureTurretPosition, futureTurretPositionPhaseDelayed;
+    private Pose2d futureTurretPosition = new Pose2d(0, 0, new Rotation2d(0)), futureTurretPositionPhaseDelayed = new Pose2d(0, 0, new Rotation2d(0));
     private double turretAngle, turretAnglePhaseDelayed;
     //    private double lastTurretAngle, lastTurretAnglePhaseDelayed;
     private Rotation2d lastTurretRotation, lastTurretRotationPhaseDelayed, turretRotation, turretRotationPhaseDelayed;
@@ -47,206 +47,205 @@ public class ShotCalculator {
         shuttleShooterSpeedLookupTable = new InterpolatingDoubleTreeMap();
         shuttleTimeOfFlightLookupTable = new InterpolatingDoubleTreeMap();
 
-        //----------------
-        hoodLookupTable.put(1.10, 0d);
-        hoodLookupTable.put(1.15, 0d);
-        hoodLookupTable.put(1.20, 0d);
-        hoodLookupTable.put(1.25, 1d);
-        hoodLookupTable.put(1.30, 1d);
-        hoodLookupTable.put(1.35, 1d);
-        hoodLookupTable.put(1.40, 2d);
-        hoodLookupTable.put(1.45, 2d);
-        hoodLookupTable.put(1.50, 3d);
-        hoodLookupTable.put(1.55, 3d);
-        hoodLookupTable.put(1.60, 3d);
-        hoodLookupTable.put(1.65, 3d);
-        hoodLookupTable.put(1.70, 4d);
-        hoodLookupTable.put(1.75, 4d);
-        hoodLookupTable.put(1.80, 4d);
-        hoodLookupTable.put(1.85, 5d);
-        hoodLookupTable.put(1.90, 5d);
-        hoodLookupTable.put(1.95, 5d);
-        hoodLookupTable.put(2.00, 5d);
-        hoodLookupTable.put(2.05, 6d);
-        hoodLookupTable.put(2.10, 6d);
-        hoodLookupTable.put(2.15, 6d);
-        hoodLookupTable.put(2.20, 7d);
-        hoodLookupTable.put(2.25, 7d);
-        hoodLookupTable.put(2.30, 8d);
-        hoodLookupTable.put(2.35, 8d);
-        hoodLookupTable.put(2.40, 8d);
-        hoodLookupTable.put(2.45, 9d);
-        hoodLookupTable.put(2.50, 9d);
-        hoodLookupTable.put(2.55, 10d);
-        hoodLookupTable.put(2.60, 10d);
-        hoodLookupTable.put(2.65, 10d);
-        hoodLookupTable.put(2.70, 11d);
-        hoodLookupTable.put(2.75, 11d);
-        hoodLookupTable.put(2.80, 11d);
-        hoodLookupTable.put(2.85, 12d);
-        hoodLookupTable.put(2.90, 12d);
-        hoodLookupTable.put(2.95, 13d);
-        hoodLookupTable.put(3.00, 13d);
-        hoodLookupTable.put(3.05, 13d);
-        hoodLookupTable.put(3.10, 14d);
-        hoodLookupTable.put(3.15, 14d);
-        hoodLookupTable.put(3.20, 15d);
-        hoodLookupTable.put(3.25, 15d);
-        hoodLookupTable.put(3.30, 15d);
-        hoodLookupTable.put(3.35, 16d);
-        hoodLookupTable.put(3.40, 16d);
-        hoodLookupTable.put(3.45, 16d);
-        hoodLookupTable.put(3.50, 17d);
-        hoodLookupTable.put(3.55, 17d);
-        hoodLookupTable.put(3.60, 18d);
-        hoodLookupTable.put(3.65, 18d);
-        hoodLookupTable.put(3.70, 18d);
-        hoodLookupTable.put(3.75, 18d);
-        hoodLookupTable.put(3.80, 19d);
-        hoodLookupTable.put(3.85, 20d);
-        hoodLookupTable.put(3.90, 19d);
-        hoodLookupTable.put(3.95, 19d);
-        hoodLookupTable.put(4.00, 21d);
-        hoodLookupTable.put(4.05, 21d);
-        hoodLookupTable.put(4.10, 21d);
-        hoodLookupTable.put(4.15, 21d);
-        hoodLookupTable.put(4.20, 20d);
-        hoodLookupTable.put(4.25, 20d);
-        hoodLookupTable.put(4.30, 20d);
-        hoodLookupTable.put(4.35, 23d);
-        hoodLookupTable.put(4.40, 22d);
-        hoodLookupTable.put(4.45, 22d);
-        hoodLookupTable.put(4.50, 21d);
-        hoodLookupTable.put(4.55, 21d);
-        hoodLookupTable.put(4.60, 21d);
-        hoodLookupTable.put(4.65, 23d);
-        hoodLookupTable.put(4.70, 23d);
-        hoodLookupTable.put(4.75, 22d);
-        hoodLookupTable.put(4.80, 22d);
-        hoodLookupTable.put(4.85, 22d);
-        hoodLookupTable.put(4.90, 21d);
-        hoodLookupTable.put(4.95, 23d);
-        hoodLookupTable.put(5.00, 23d);
-        hoodLookupTable.put(5.05, 23d);
-        hoodLookupTable.put(5.10, 22d);
-        hoodLookupTable.put(5.15, 22d);
-        hoodLookupTable.put(5.20, 24d);
-        hoodLookupTable.put(5.25, 23d);
-        hoodLookupTable.put(5.30, 24d);
-        hoodLookupTable.put(5.35, 23d);
-        hoodLookupTable.put(5.40, 23d);
-        hoodLookupTable.put(5.45, 22d);
-        hoodLookupTable.put(5.50, 24d);
-        hoodLookupTable.put(5.55, 24d);
-        hoodLookupTable.put(5.60, 24d);
-        hoodLookupTable.put(5.65, 23d);
-        hoodLookupTable.put(5.70, 23d);
-        hoodLookupTable.put(5.75, 24d);
-        hoodLookupTable.put(5.80, 25d);
-        hoodLookupTable.put(5.85, 24d);
-        hoodLookupTable.put(5.90, 23d);
-        hoodLookupTable.put(5.95, 23d);
-        hoodLookupTable.put(6.00, 24d);
-        hoodLookupTable.put(6.05, 25d);
-        hoodLookupTable.put(6.10, 24d);
-        hoodLookupTable.put(6.15, 24d);
-        hoodLookupTable.put(6.20, 25d);
-        hoodLookupTable.put(6.25, 24d);
-        hoodLookupTable.put(6.30, 25d);
-        hoodLookupTable.put(6.35, 24d);
-        hoodLookupTable.put(6.40, 24d);
-        hoodLookupTable.put(6.45, 25d);
-        hoodLookupTable.put(6.50, 24d);
-        hoodLookupTable.put(6.55, 25d);
-        hoodLookupTable.put(6.60, 24d);
-        hoodLookupTable.put(6.65, 24d);
-        hoodLookupTable.put(6.70, 25d);
-        hoodLookupTable.put(6.75, 25d);
-        hoodLookupTable.put(6.80, 25d);
-        hoodLookupTable.put(6.85, 24d);
-        hoodLookupTable.put(6.90, 25d);
-        hoodLookupTable.put(6.95, 25d);
-        hoodLookupTable.put(7.00, 25d);
-        hoodLookupTable.put(7.05, 25d);
-        hoodLookupTable.put(7.10, 24d);
-        hoodLookupTable.put(7.15, 25d);
-        hoodLookupTable.put(7.20, 25d);
-        hoodLookupTable.put(7.25, 25d);
-        hoodLookupTable.put(7.30, 24d);
-        hoodLookupTable.put(7.35, 25d);
-        hoodLookupTable.put(7.40, 25d);
-        hoodLookupTable.put(7.45, 25d);
-        hoodLookupTable.put(7.50, 25d);
-        hoodLookupTable.put(7.55, 25d);
-        hoodLookupTable.put(7.60, 25d);
-        hoodLookupTable.put(7.65, 25d);
-        hoodLookupTable.put(7.70, 25d);
-        hoodLookupTable.put(7.75, 24d);
-        hoodLookupTable.put(7.80, 25d);
-        hoodLookupTable.put(7.85, 25d);
-        hoodLookupTable.put(7.90, 25d);
-        hoodLookupTable.put(7.95, 25d);
-        hoodLookupTable.put(8.00, 25d);
+        hoodLookupTable.put(1.10, 0.0d);
+        hoodLookupTable.put(1.15, 0.2d);
+        hoodLookupTable.put(1.20, 0.6d);
+        hoodLookupTable.put(1.25, 0.9d);
+        hoodLookupTable.put(1.30, 1.7d);
+        hoodLookupTable.put(1.35, 1.7d);
+        hoodLookupTable.put(1.40, 2.4d);
+        hoodLookupTable.put(1.45, 2.7d);
+        hoodLookupTable.put(1.50, 3.0d);
+        hoodLookupTable.put(1.55, 3.3d);
+        hoodLookupTable.put(1.60, 3.6d);
+        hoodLookupTable.put(1.65, 3.9d);
+        hoodLookupTable.put(1.70, 4.2d);
+        hoodLookupTable.put(1.75, 4.5d);
+        hoodLookupTable.put(1.80, 4.7d);
+        hoodLookupTable.put(1.85, 5.0d);
+        hoodLookupTable.put(1.90, 5.2d);
+        hoodLookupTable.put(1.95, 5.5d);
+        hoodLookupTable.put(2.00, 5.7d);
+        hoodLookupTable.put(2.05, 5.9d);
+        hoodLookupTable.put(2.10, 6.6d);
+        hoodLookupTable.put(2.15, 6.8d);
+        hoodLookupTable.put(2.20, 7.0d);
+        hoodLookupTable.put(2.25, 7.8d);
+        hoodLookupTable.put(2.30, 8.0d);
+        hoodLookupTable.put(2.35, 8.2d);
+        hoodLookupTable.put(2.40, 8.8d);
+        hoodLookupTable.put(2.45, 9.1d);
+        hoodLookupTable.put(2.50, 9.3d);
+        hoodLookupTable.put(2.55, 10.1d);
+        hoodLookupTable.put(2.60, 10.3d);
+        hoodLookupTable.put(2.65, 10.4d);
+        hoodLookupTable.put(2.70, 11.3d);
+        hoodLookupTable.put(2.75, 11.4d);
+        hoodLookupTable.put(2.80, 11.5d);
+        hoodLookupTable.put(2.85, 12.3d);
+        hoodLookupTable.put(2.90, 12.6d);
+        hoodLookupTable.put(2.95, 12.7d);
+        hoodLookupTable.put(3.00, 13.5d);
+        hoodLookupTable.put(3.05, 13.8d);
+        hoodLookupTable.put(3.10, 13.8d);
+        hoodLookupTable.put(3.15, 13.9d);
+        hoodLookupTable.put(3.20, 15.0d);
+        hoodLookupTable.put(3.25, 15.0d);
+        hoodLookupTable.put(3.30, 15.1d);
+        hoodLookupTable.put(3.35, 16.3d);
+        hoodLookupTable.put(3.40, 16.3d);
+        hoodLookupTable.put(3.45, 16.3d);
+        hoodLookupTable.put(3.50, 16.3d);
+        hoodLookupTable.put(3.55, 17.8d);
+        hoodLookupTable.put(3.60, 17.8d);
+        hoodLookupTable.put(3.65, 17.8d);
+        hoodLookupTable.put(3.70, 17.8d);
+        hoodLookupTable.put(3.75, 19.1d);
+        hoodLookupTable.put(3.80, 19.2d);
+        hoodLookupTable.put(3.85, 19.2d);
+        hoodLookupTable.put(3.90, 19.2d);
+        hoodLookupTable.put(3.95, 19.2d);
+        hoodLookupTable.put(4.00, 20.8d);
+        hoodLookupTable.put(4.05, 20.9d);
+        hoodLookupTable.put(4.10, 20.9d);
+        hoodLookupTable.put(4.15, 20.9d);
+        hoodLookupTable.put(4.20, 20.9d);
+        hoodLookupTable.put(4.25, 20.9d);
+        hoodLookupTable.put(4.30, 20.9d);
+        hoodLookupTable.put(4.35, 22.6d);
+        hoodLookupTable.put(4.40, 22.6d);
+        hoodLookupTable.put(4.45, 22.6d);
+        hoodLookupTable.put(4.50, 22.6d);
+        hoodLookupTable.put(4.55, 22.6d);
+        hoodLookupTable.put(4.60, 22.6d);
+        hoodLookupTable.put(4.65, 22.6d);
+        hoodLookupTable.put(4.70, 22.6d);
+        hoodLookupTable.put(4.75, 22.6d);
+        hoodLookupTable.put(4.80, 22.6d);
+        hoodLookupTable.put(4.85, 22.6d);
+        hoodLookupTable.put(4.90, 22.6d);
+        hoodLookupTable.put(4.95, 22.6d);
+        hoodLookupTable.put(5.00, 23.0d);
+        hoodLookupTable.put(5.05, 23.0d);
+        hoodLookupTable.put(5.10, 23.0d);
+        hoodLookupTable.put(5.15, 23.0d);
+        hoodLookupTable.put(5.20, 23.8d);
+        hoodLookupTable.put(5.25, 23.8d);
+        hoodLookupTable.put(5.30, 23.8d);
+        hoodLookupTable.put(5.35, 23.8d);
+        hoodLookupTable.put(5.40, 23.8d);
+        hoodLookupTable.put(5.45, 23.8d);
+        hoodLookupTable.put(5.50, 23.8d);
+        hoodLookupTable.put(5.55, 23.8d);
+        hoodLookupTable.put(5.60, 23.8d);
+        hoodLookupTable.put(5.65, 23.8d);
+        hoodLookupTable.put(5.70, 23.8d);
+        hoodLookupTable.put(5.75, 23.8d);
+        hoodLookupTable.put(5.80, 24.1d);
+        hoodLookupTable.put(5.85, 24.1d);
+        hoodLookupTable.put(5.90, 24.1d);
+        hoodLookupTable.put(5.95, 24.1d);
+        hoodLookupTable.put(6.00, 24.1d);
+        hoodLookupTable.put(6.05, 24.3d);
+        hoodLookupTable.put(6.10, 24.3d);
+        hoodLookupTable.put(6.15, 24.3d);
+        hoodLookupTable.put(6.20, 24.9d);
+        hoodLookupTable.put(6.25, 24.9d);
+        hoodLookupTable.put(6.30, 24.9d);
+        hoodLookupTable.put(6.35, 24.9d);
+        hoodLookupTable.put(6.40, 24.9d);
+        hoodLookupTable.put(6.45, 24.9d);
+        hoodLookupTable.put(6.50, 24.9d);
+        hoodLookupTable.put(6.55, 24.9d);
+        hoodLookupTable.put(6.60, 24.9d);
+        hoodLookupTable.put(6.65, 24.9d);
+        hoodLookupTable.put(6.70, 24.9d);
+        hoodLookupTable.put(6.75, 24.9d);
+        hoodLookupTable.put(6.80, 24.9d);
+        hoodLookupTable.put(6.85, 24.9d);
+        hoodLookupTable.put(6.90, 24.9d);
+        hoodLookupTable.put(6.95, 24.9d);
+        hoodLookupTable.put(7.00, 24.9d);
+        hoodLookupTable.put(7.05, 24.9d);
+        hoodLookupTable.put(7.10, 24.9d);
+        hoodLookupTable.put(7.15, 24.9d);
+        hoodLookupTable.put(7.20, 24.9d);
+        hoodLookupTable.put(7.25, 24.9d);
+        hoodLookupTable.put(7.30, 24.9d);
+        hoodLookupTable.put(7.35, 24.9d);
+        hoodLookupTable.put(7.40, 24.9d);
+        hoodLookupTable.put(7.45, 24.9d);
+        hoodLookupTable.put(7.50, 24.9d);
+        hoodLookupTable.put(7.55, 24.9d);
+        hoodLookupTable.put(7.60, 24.9d);
+        hoodLookupTable.put(7.65, 24.9d);
+        hoodLookupTable.put(7.70, 24.9d);
+        hoodLookupTable.put(7.75, 24.9d);
+        hoodLookupTable.put(7.80, 24.9d);
+        hoodLookupTable.put(7.85, 24.9d);
+        hoodLookupTable.put(7.90, 24.9d);
+        hoodLookupTable.put(7.95, 24.9d);
+        hoodLookupTable.put(8.00, 24.9d);
 
         shooterSpeedLookupTable.put(1.10, 41.7);
-        shooterSpeedLookupTable.put(1.15, 42.3);
-        shooterSpeedLookupTable.put(1.20, 42.9);
+        shooterSpeedLookupTable.put(1.15, 42.0);
+        shooterSpeedLookupTable.put(1.20, 42.3);
         shooterSpeedLookupTable.put(1.25, 42.6);
-        shooterSpeedLookupTable.put(1.30, 43.2);
-        shooterSpeedLookupTable.put(1.35, 43.8);
-        shooterSpeedLookupTable.put(1.40, 43.5);
-        shooterSpeedLookupTable.put(1.45, 44d);
+        shooterSpeedLookupTable.put(1.30, 42.6);
+        shooterSpeedLookupTable.put(1.35, 43.2);
+        shooterSpeedLookupTable.put(1.40, 43.2);
+        shooterSpeedLookupTable.put(1.45, 43.5);
         shooterSpeedLookupTable.put(1.50, 43.8);
-        shooterSpeedLookupTable.put(1.55, 44.3);
-        shooterSpeedLookupTable.put(1.60, 44.9);
-        shooterSpeedLookupTable.put(1.65, 45.2);
-        shooterSpeedLookupTable.put(1.70, 45.2);
-        shooterSpeedLookupTable.put(1.75, 45.5);
-        shooterSpeedLookupTable.put(1.80, 46.1);
+        shooterSpeedLookupTable.put(1.55, 44.0);
+        shooterSpeedLookupTable.put(1.60, 44.3);
+        shooterSpeedLookupTable.put(1.65, 44.6);
+        shooterSpeedLookupTable.put(1.70, 44.9);
+        shooterSpeedLookupTable.put(1.75, 45.2);
+        shooterSpeedLookupTable.put(1.80, 45.5);
         shooterSpeedLookupTable.put(1.85, 45.8);
-        shooterSpeedLookupTable.put(1.90, 46.4);
-        shooterSpeedLookupTable.put(1.95, 46.7);
-        shooterSpeedLookupTable.put(2.00, 47.3);
-        shooterSpeedLookupTable.put(2.05, 47d);
-        shooterSpeedLookupTable.put(2.10, 47.4);
-        shooterSpeedLookupTable.put(2.15, 47.9);
+        shooterSpeedLookupTable.put(1.90, 46.1);
+        shooterSpeedLookupTable.put(1.95, 46.4);
+        shooterSpeedLookupTable.put(2.00, 46.7);
+        shooterSpeedLookupTable.put(2.05, 47.0);
+        shooterSpeedLookupTable.put(2.10, 47.0);
+        shooterSpeedLookupTable.put(2.15, 47.3);
         shooterSpeedLookupTable.put(2.20, 47.6);
-        shooterSpeedLookupTable.put(2.25, 48.1);
+        shooterSpeedLookupTable.put(2.25, 47.6);
         shooterSpeedLookupTable.put(2.30, 47.9);
-        shooterSpeedLookupTable.put(2.35, 48.3);
-        shooterSpeedLookupTable.put(2.40, 48.7);
-        shooterSpeedLookupTable.put(2.45, 48.6);
-        shooterSpeedLookupTable.put(2.50, 49d);
-        shooterSpeedLookupTable.put(2.55, 48.9);
-        shooterSpeedLookupTable.put(2.60, 49.3);
-        shooterSpeedLookupTable.put(2.65, 49.6);
-        shooterSpeedLookupTable.put(2.70, 49.6);
-        shooterSpeedLookupTable.put(2.75, 49.9);
-        shooterSpeedLookupTable.put(2.80, 50.2);
-        shooterSpeedLookupTable.put(2.85, 50.2);
-        shooterSpeedLookupTable.put(2.90, 50.5);
+        shooterSpeedLookupTable.put(2.35, 48.1);
+        shooterSpeedLookupTable.put(2.40, 48.3);
+        shooterSpeedLookupTable.put(2.45, 48.4);
+        shooterSpeedLookupTable.put(2.50, 48.7);
+        shooterSpeedLookupTable.put(2.55, 48.7);
+        shooterSpeedLookupTable.put(2.60, 49.0);
+        shooterSpeedLookupTable.put(2.65, 49.3);
+        shooterSpeedLookupTable.put(2.70, 49.3);
+        shooterSpeedLookupTable.put(2.75, 49.6);
+        shooterSpeedLookupTable.put(2.80, 49.9);
+        shooterSpeedLookupTable.put(2.85, 50.0);
+        shooterSpeedLookupTable.put(2.90, 50.2);
         shooterSpeedLookupTable.put(2.95, 50.5);
-        shooterSpeedLookupTable.put(3.00, 50.8);
-        shooterSpeedLookupTable.put(3.05, 51.1);
+        shooterSpeedLookupTable.put(3.00, 50.6);
+        shooterSpeedLookupTable.put(3.05, 50.8);
         shooterSpeedLookupTable.put(3.10, 51.1);
         shooterSpeedLookupTable.put(3.15, 51.4);
         shooterSpeedLookupTable.put(3.20, 51.4);
         shooterSpeedLookupTable.put(3.25, 51.7);
-        shooterSpeedLookupTable.put(3.30, 52.1);
-        shooterSpeedLookupTable.put(3.35, 52.2);
-        shooterSpeedLookupTable.put(3.40, 52.5);
-        shooterSpeedLookupTable.put(3.45, 52.7);
+        shooterSpeedLookupTable.put(3.30, 52.0);
+        shooterSpeedLookupTable.put(3.35, 52.0);
+        shooterSpeedLookupTable.put(3.40, 52.2);
+        shooterSpeedLookupTable.put(3.45, 52.5);
         shooterSpeedLookupTable.put(3.50, 52.8);
-        shooterSpeedLookupTable.put(3.55, 53.1);
+        shooterSpeedLookupTable.put(3.55, 52.8);
         shooterSpeedLookupTable.put(3.60, 53.1);
         shooterSpeedLookupTable.put(3.65, 53.4);
         shooterSpeedLookupTable.put(3.70, 53.7);
-        shooterSpeedLookupTable.put(3.75, 54d);
-        shooterSpeedLookupTable.put(3.80, 54.2);
+        shooterSpeedLookupTable.put(3.75, 53.9);
+        shooterSpeedLookupTable.put(3.80, 54.0);
         shooterSpeedLookupTable.put(3.85, 54.3);
         shooterSpeedLookupTable.put(3.90, 54.6);
         shooterSpeedLookupTable.put(3.95, 54.9);
-        shooterSpeedLookupTable.put(4.00, 55d);
+        shooterSpeedLookupTable.put(4.00, 55.0);
         shooterSpeedLookupTable.put(4.05, 55.2);
         shooterSpeedLookupTable.put(4.10, 55.5);
         shooterSpeedLookupTable.put(4.15, 55.8);
@@ -262,7 +261,7 @@ public class ShotCalculator {
         shooterSpeedLookupTable.put(4.65, 58.3);
         shooterSpeedLookupTable.put(4.70, 58.4);
         shooterSpeedLookupTable.put(4.75, 58.7);
-        shooterSpeedLookupTable.put(4.80, 59d);
+        shooterSpeedLookupTable.put(4.80, 59.0);
         shooterSpeedLookupTable.put(4.85, 59.3);
         shooterSpeedLookupTable.put(4.90, 59.6);
         shooterSpeedLookupTable.put(4.95, 59.7);
@@ -283,7 +282,7 @@ public class ShotCalculator {
         shooterSpeedLookupTable.put(5.70, 63.4);
         shooterSpeedLookupTable.put(5.75, 63.5);
         shooterSpeedLookupTable.put(5.80, 63.7);
-        shooterSpeedLookupTable.put(5.85, 64d);
+        shooterSpeedLookupTable.put(5.85, 64.0);
         shooterSpeedLookupTable.put(5.90, 64.3);
         shooterSpeedLookupTable.put(5.95, 64.6);
         shooterSpeedLookupTable.put(6.00, 64.7);
@@ -292,11 +291,11 @@ public class ShotCalculator {
         shooterSpeedLookupTable.put(6.15, 65.4);
         shooterSpeedLookupTable.put(6.20, 65.6);
         shooterSpeedLookupTable.put(6.25, 65.9);
-        shooterSpeedLookupTable.put(6.30, 66d);
+        shooterSpeedLookupTable.put(6.30, 66.0);
         shooterSpeedLookupTable.put(6.35, 66.3);
         shooterSpeedLookupTable.put(6.40, 66.6);
         shooterSpeedLookupTable.put(6.45, 66.7);
-        shooterSpeedLookupTable.put(6.50, 67d);
+        shooterSpeedLookupTable.put(6.50, 67.0);
         shooterSpeedLookupTable.put(6.55, 67.2);
         shooterSpeedLookupTable.put(6.60, 67.5);
         shooterSpeedLookupTable.put(6.65, 67.8);
@@ -309,7 +308,7 @@ public class ShotCalculator {
         shooterSpeedLookupTable.put(7.00, 69.2);
         shooterSpeedLookupTable.put(7.05, 69.5);
         shooterSpeedLookupTable.put(7.10, 69.8);
-        shooterSpeedLookupTable.put(7.15, 70d);
+        shooterSpeedLookupTable.put(7.15, 70.0);
         shooterSpeedLookupTable.put(7.20, 70.1);
         shooterSpeedLookupTable.put(7.25, 70.4);
         shooterSpeedLookupTable.put(7.30, 70.7);
@@ -318,156 +317,157 @@ public class ShotCalculator {
         shooterSpeedLookupTable.put(7.45, 71.3);
         shooterSpeedLookupTable.put(7.50, 71.6);
         shooterSpeedLookupTable.put(7.55, 71.7);
-        shooterSpeedLookupTable.put(7.60, 72d);
+        shooterSpeedLookupTable.put(7.60, 72.0);
         shooterSpeedLookupTable.put(7.65, 72.2);
         shooterSpeedLookupTable.put(7.70, 72.5);
         shooterSpeedLookupTable.put(7.75, 72.8);
         shooterSpeedLookupTable.put(7.80, 72.9);
-        shooterSpeedLookupTable.put(7.85, 73d);
+        shooterSpeedLookupTable.put(7.85, 73.0);
         shooterSpeedLookupTable.put(7.90, 73.3);
         shooterSpeedLookupTable.put(7.95, 73.6);
         shooterSpeedLookupTable.put(8.00, 73.8);
 
         timeOfFlightLookupTable.put(1.10, 0.764);
-        timeOfFlightLookupTable.put(1.15, 0.789);
-        timeOfFlightLookupTable.put(1.20, 0.813);
-        timeOfFlightLookupTable.put(1.25, 0.801);
-        timeOfFlightLookupTable.put(1.30, 0.822);
-        timeOfFlightLookupTable.put(1.35, 0.843);
-        timeOfFlightLookupTable.put(1.40, 0.830);
-        timeOfFlightLookupTable.put(1.45, 0.849);
+        timeOfFlightLookupTable.put(1.15, 0.784);
+        timeOfFlightLookupTable.put(1.20, 0.793);
+        timeOfFlightLookupTable.put(1.25, 0.806);
+        timeOfFlightLookupTable.put(1.30, 0.799);
+        timeOfFlightLookupTable.put(1.35, 0.819);
+        timeOfFlightLookupTable.put(1.40, 0.816);
+        timeOfFlightLookupTable.put(1.45, 0.827);
         timeOfFlightLookupTable.put(1.50, 0.836);
-        timeOfFlightLookupTable.put(1.55, 0.854);
-        timeOfFlightLookupTable.put(1.60, 0.871);
-        timeOfFlightLookupTable.put(1.65, 0.893);
-        timeOfFlightLookupTable.put(1.70, 0.873);
-        timeOfFlightLookupTable.put(1.75, 0.894);
-        timeOfFlightLookupTable.put(1.80, 0.909);
+        timeOfFlightLookupTable.put(1.55, 0.845);
+        timeOfFlightLookupTable.put(1.60, 0.854);
+        timeOfFlightLookupTable.put(1.65, 0.862);
+        timeOfFlightLookupTable.put(1.70, 0.870);
+        timeOfFlightLookupTable.put(1.75, 0.877);
+        timeOfFlightLookupTable.put(1.80, 0.888);
         timeOfFlightLookupTable.put(1.85, 0.894);
-        timeOfFlightLookupTable.put(1.90, 0.908);
-        timeOfFlightLookupTable.put(1.95, 0.927);
-        timeOfFlightLookupTable.put(2.00, 0.940);
-        timeOfFlightLookupTable.put(2.05, 0.925);
-        timeOfFlightLookupTable.put(2.10, 0.940);
-        timeOfFlightLookupTable.put(2.15, 0.954);
+        timeOfFlightLookupTable.put(1.90, 0.905);
+        timeOfFlightLookupTable.put(1.95, 0.910);
+        timeOfFlightLookupTable.put(2.00, 0.920);
+        timeOfFlightLookupTable.put(2.05, 0.929);
+        timeOfFlightLookupTable.put(2.10, 0.922);
+        timeOfFlightLookupTable.put(2.15, 0.931);
         timeOfFlightLookupTable.put(2.20, 0.939);
-        timeOfFlightLookupTable.put(2.25, 0.950);
+        timeOfFlightLookupTable.put(2.25, 0.929);
         timeOfFlightLookupTable.put(2.30, 0.936);
-        timeOfFlightLookupTable.put(2.35, 0.949);
-        timeOfFlightLookupTable.put(2.40, 0.961);
-        timeOfFlightLookupTable.put(2.45, 0.945);
-        timeOfFlightLookupTable.put(2.50, 0.957);
-        timeOfFlightLookupTable.put(2.55, 0.942);
-        timeOfFlightLookupTable.put(2.60, 0.953);
-        timeOfFlightLookupTable.put(2.65, 0.966);
-        timeOfFlightLookupTable.put(2.70, 0.949);
-        timeOfFlightLookupTable.put(2.75, 0.961);
-        timeOfFlightLookupTable.put(2.80, 0.974);
-        timeOfFlightLookupTable.put(2.85, 0.957);
-        timeOfFlightLookupTable.put(2.90, 0.969);
-        timeOfFlightLookupTable.put(2.95, 0.953);
-        timeOfFlightLookupTable.put(3.00, 0.964);
-        timeOfFlightLookupTable.put(3.05, 0.976);
-        timeOfFlightLookupTable.put(3.10, 0.960);
-        timeOfFlightLookupTable.put(3.15, 0.971);
+        timeOfFlightLookupTable.put(2.35, 0.944);
+        timeOfFlightLookupTable.put(2.40, 0.938);
+        timeOfFlightLookupTable.put(2.45, 0.944);
+        timeOfFlightLookupTable.put(2.50, 0.951);
+        timeOfFlightLookupTable.put(2.55, 0.941);
+        timeOfFlightLookupTable.put(2.60, 0.947);
+        timeOfFlightLookupTable.put(2.65, 0.957);
+        timeOfFlightLookupTable.put(2.70, 0.944);
+        timeOfFlightLookupTable.put(2.75, 0.953);
+        timeOfFlightLookupTable.put(2.80, 0.962);
+        timeOfFlightLookupTable.put(2.85, 0.950);
+        timeOfFlightLookupTable.put(2.90, 0.955);
+        timeOfFlightLookupTable.put(2.95, 0.963);
+        timeOfFlightLookupTable.put(3.00, 0.951);
+        timeOfFlightLookupTable.put(3.05, 0.956);
+        timeOfFlightLookupTable.put(3.10, 0.966);
+        timeOfFlightLookupTable.put(3.15, 0.974);
         timeOfFlightLookupTable.put(3.20, 0.956);
         timeOfFlightLookupTable.put(3.25, 0.966);
-        timeOfFlightLookupTable.put(3.30, 0.974);
-        timeOfFlightLookupTable.put(3.35, 0.957);
-        timeOfFlightLookupTable.put(3.40, 0.967);
-        timeOfFlightLookupTable.put(3.45, 0.979);
-        timeOfFlightLookupTable.put(3.50, 0.962);
-        timeOfFlightLookupTable.put(3.55, 0.971);
-        timeOfFlightLookupTable.put(3.60, 0.958);
-        timeOfFlightLookupTable.put(3.65, 0.967);
-        timeOfFlightLookupTable.put(3.70, 0.976);
-        timeOfFlightLookupTable.put(3.75, 0.984);
-        timeOfFlightLookupTable.put(3.80, 0.969);
-        timeOfFlightLookupTable.put(3.85, 0.954);
-        timeOfFlightLookupTable.put(3.90, 0.988);
-        timeOfFlightLookupTable.put(3.95, 0.996);
-        timeOfFlightLookupTable.put(4.00, 0.956);
-        timeOfFlightLookupTable.put(4.05, 0.966);
-        timeOfFlightLookupTable.put(4.10, 0.974);
-        timeOfFlightLookupTable.put(4.15, 0.981);
-        timeOfFlightLookupTable.put(4.20, 1.014);
-        timeOfFlightLookupTable.put(4.25, 1.021);
-        timeOfFlightLookupTable.put(4.30, 1.029);
-        timeOfFlightLookupTable.put(4.35, 0.968);
-        timeOfFlightLookupTable.put(4.40, 0.998);
-        timeOfFlightLookupTable.put(4.45, 1.005);
-        timeOfFlightLookupTable.put(4.50, 1.037);
-        timeOfFlightLookupTable.put(4.55, 1.044);
-        timeOfFlightLookupTable.put(4.60, 1.051);
-        timeOfFlightLookupTable.put(4.65, 1.011);
-        timeOfFlightLookupTable.put(4.70, 1.020);
-        timeOfFlightLookupTable.put(4.75, 1.051);
-        timeOfFlightLookupTable.put(4.80, 1.057);
-        timeOfFlightLookupTable.put(4.85, 1.064);
-        timeOfFlightLookupTable.put(4.90, 1.097);
-        timeOfFlightLookupTable.put(4.95, 1.054);
+        timeOfFlightLookupTable.put(3.30, 0.973);
+        timeOfFlightLookupTable.put(3.35, 0.954);
+        timeOfFlightLookupTable.put(3.40, 0.963);
+        timeOfFlightLookupTable.put(3.45, 0.973);
+        timeOfFlightLookupTable.put(3.50, 0.982);
+        timeOfFlightLookupTable.put(3.55, 0.955);
+        timeOfFlightLookupTable.put(3.60, 0.964);
+        timeOfFlightLookupTable.put(3.65, 0.973);
+        timeOfFlightLookupTable.put(3.70, 0.981);
+        timeOfFlightLookupTable.put(3.75, 0.958);
+        timeOfFlightLookupTable.put(3.80, 0.966);
+        timeOfFlightLookupTable.put(3.85, 0.974);
+        timeOfFlightLookupTable.put(3.90, 0.983);
+        timeOfFlightLookupTable.put(3.95, 0.991);
+        timeOfFlightLookupTable.put(4.00, 0.961);
+        timeOfFlightLookupTable.put(4.05, 0.969);
+        timeOfFlightLookupTable.put(4.10, 0.976);
+        timeOfFlightLookupTable.put(4.15, 0.984);
+        timeOfFlightLookupTable.put(4.20, 0.991);
+        timeOfFlightLookupTable.put(4.25, 0.998);
+        timeOfFlightLookupTable.put(4.30, 1.006);
+        timeOfFlightLookupTable.put(4.35, 0.977);
+        timeOfFlightLookupTable.put(4.40, 0.984);
+        timeOfFlightLookupTable.put(4.45, 0.991);
+        timeOfFlightLookupTable.put(4.50, 0.997);
+        timeOfFlightLookupTable.put(4.55, 1.004);
+        timeOfFlightLookupTable.put(4.60, 1.011);
+        timeOfFlightLookupTable.put(4.65, 1.020);
+        timeOfFlightLookupTable.put(4.70, 1.029);
+        timeOfFlightLookupTable.put(4.75, 1.036);
+        timeOfFlightLookupTable.put(4.80, 1.042);
+        timeOfFlightLookupTable.put(4.85, 1.049);
+        timeOfFlightLookupTable.put(4.90, 1.055);
+        timeOfFlightLookupTable.put(4.95, 1.064);
         timeOfFlightLookupTable.put(5.00, 1.063);
         timeOfFlightLookupTable.put(5.05, 1.069);
-        timeOfFlightLookupTable.put(5.10, 1.101);
-        timeOfFlightLookupTable.put(5.15, 1.107);
-        timeOfFlightLookupTable.put(5.20, 1.065);
-        timeOfFlightLookupTable.put(5.25, 1.096);
-        timeOfFlightLookupTable.put(5.30, 1.080);
-        timeOfFlightLookupTable.put(5.35, 1.111);
-        timeOfFlightLookupTable.put(5.40, 1.117);
-        timeOfFlightLookupTable.put(5.45, 1.149);
-        timeOfFlightLookupTable.put(5.50, 1.105);
-        timeOfFlightLookupTable.put(5.55, 1.114);
-        timeOfFlightLookupTable.put(5.60, 1.119);
-        timeOfFlightLookupTable.put(5.65, 1.151);
-        timeOfFlightLookupTable.put(5.70, 1.157);
-        timeOfFlightLookupTable.put(5.75, 1.139);
-        timeOfFlightLookupTable.put(5.80, 1.122);
-        timeOfFlightLookupTable.put(5.85, 1.152);
-        timeOfFlightLookupTable.put(5.90, 1.184);
-        timeOfFlightLookupTable.put(5.95, 1.190);
-        timeOfFlightLookupTable.put(6.00, 1.171);
-        timeOfFlightLookupTable.put(6.05, 1.153);
-        timeOfFlightLookupTable.put(6.10, 1.184);
-        timeOfFlightLookupTable.put(6.15, 1.189);
-        timeOfFlightLookupTable.put(6.20, 1.171);
-        timeOfFlightLookupTable.put(6.25, 1.202);
-        timeOfFlightLookupTable.put(6.30, 1.184);
-        timeOfFlightLookupTable.put(6.35, 1.215);
-        timeOfFlightLookupTable.put(6.40, 1.221);
-        timeOfFlightLookupTable.put(6.45, 1.201);
-        timeOfFlightLookupTable.put(6.50, 1.233);
-        timeOfFlightLookupTable.put(6.55, 1.214);
-        timeOfFlightLookupTable.put(6.60, 1.246);
-        timeOfFlightLookupTable.put(6.65, 1.251);
-        timeOfFlightLookupTable.put(6.70, 1.231);
-        timeOfFlightLookupTable.put(6.75, 1.238);
-        timeOfFlightLookupTable.put(6.80, 1.243);
-        timeOfFlightLookupTable.put(6.85, 1.276);
-        timeOfFlightLookupTable.put(6.90, 1.255);
-        timeOfFlightLookupTable.put(6.95, 1.260);
-        timeOfFlightLookupTable.put(7.00, 1.267);
-        timeOfFlightLookupTable.put(7.05, 1.272);
-        timeOfFlightLookupTable.put(7.10, 1.305);
-        timeOfFlightLookupTable.put(7.15, 1.284);
-        timeOfFlightLookupTable.put(7.20, 1.291);
-        timeOfFlightLookupTable.put(7.25, 1.295);
-        timeOfFlightLookupTable.put(7.30, 1.329);
-        timeOfFlightLookupTable.put(7.35, 1.307);
-        timeOfFlightLookupTable.put(7.40, 1.312);
-        timeOfFlightLookupTable.put(7.45, 1.319);
-        timeOfFlightLookupTable.put(7.50, 1.323);
-        timeOfFlightLookupTable.put(7.55, 1.330);
-        timeOfFlightLookupTable.put(7.60, 1.335);
-        timeOfFlightLookupTable.put(7.65, 1.342);
-        timeOfFlightLookupTable.put(7.70, 1.346);
-        timeOfFlightLookupTable.put(7.75, 1.381);
-        timeOfFlightLookupTable.put(7.80, 1.357);
-        timeOfFlightLookupTable.put(7.85, 1.364);
-        timeOfFlightLookupTable.put(7.90, 1.369);
-        timeOfFlightLookupTable.put(7.95, 1.373);
-        timeOfFlightLookupTable.put(8.00, 1.380);
-        //----------------
+        timeOfFlightLookupTable.put(5.10, 1.075);
+        timeOfFlightLookupTable.put(5.15, 1.081);
+        timeOfFlightLookupTable.put(5.20, 1.070);
+        timeOfFlightLookupTable.put(5.25, 1.076);
+        timeOfFlightLookupTable.put(5.30, 1.085);
+        timeOfFlightLookupTable.put(5.35, 1.090);
+        timeOfFlightLookupTable.put(5.40, 1.096);
+        timeOfFlightLookupTable.put(5.45, 1.102);
+        timeOfFlightLookupTable.put(5.50, 1.110);
+        timeOfFlightLookupTable.put(5.55, 1.119);
+        timeOfFlightLookupTable.put(5.60, 1.124);
+        timeOfFlightLookupTable.put(5.65, 1.130);
+        timeOfFlightLookupTable.put(5.70, 1.136);
+        timeOfFlightLookupTable.put(5.75, 1.144);
+        timeOfFlightLookupTable.put(5.80, 1.144);
+        timeOfFlightLookupTable.put(5.85, 1.149);
+        timeOfFlightLookupTable.put(5.90, 1.155);
+        timeOfFlightLookupTable.put(5.95, 1.160);
+        timeOfFlightLookupTable.put(6.00, 1.168);
+        timeOfFlightLookupTable.put(6.05, 1.171);
+        timeOfFlightLookupTable.put(6.10, 1.176);
+        timeOfFlightLookupTable.put(6.15, 1.181);
+        timeOfFlightLookupTable.put(6.20, 1.174);
+        timeOfFlightLookupTable.put(6.25, 1.179);
+        timeOfFlightLookupTable.put(6.30, 1.186);
+        timeOfFlightLookupTable.put(6.35, 1.191);
+        timeOfFlightLookupTable.put(6.40, 1.196);
+        timeOfFlightLookupTable.put(6.45, 1.204);
+        timeOfFlightLookupTable.put(6.50, 1.209);
+        timeOfFlightLookupTable.put(6.55, 1.216);
+        timeOfFlightLookupTable.put(6.60, 1.221);
+        timeOfFlightLookupTable.put(6.65, 1.226);
+        timeOfFlightLookupTable.put(6.70, 1.234);
+        timeOfFlightLookupTable.put(6.75, 1.241);
+        timeOfFlightLookupTable.put(6.80, 1.246);
+        timeOfFlightLookupTable.put(6.85, 1.251);
+        timeOfFlightLookupTable.put(6.90, 1.258);
+        timeOfFlightLookupTable.put(6.95, 1.263);
+        timeOfFlightLookupTable.put(7.00, 1.270);
+        timeOfFlightLookupTable.put(7.05, 1.275);
+        timeOfFlightLookupTable.put(7.10, 1.279);
+        timeOfFlightLookupTable.put(7.15, 1.287);
+        timeOfFlightLookupTable.put(7.20, 1.294);
+        timeOfFlightLookupTable.put(7.25, 1.298);
+        timeOfFlightLookupTable.put(7.30, 1.303);
+        timeOfFlightLookupTable.put(7.35, 1.310);
+        timeOfFlightLookupTable.put(7.40, 1.315);
+        timeOfFlightLookupTable.put(7.45, 1.322);
+        timeOfFlightLookupTable.put(7.50, 1.326);
+        timeOfFlightLookupTable.put(7.55, 1.333);
+        timeOfFlightLookupTable.put(7.60, 1.338);
+        timeOfFlightLookupTable.put(7.65, 1.345);
+        timeOfFlightLookupTable.put(7.70, 1.349);
+        timeOfFlightLookupTable.put(7.75, 1.353);
+        timeOfFlightLookupTable.put(7.80, 1.360);
+        timeOfFlightLookupTable.put(7.85, 1.367);
+        timeOfFlightLookupTable.put(7.90, 1.372);
+        timeOfFlightLookupTable.put(7.95, 1.376);
+        timeOfFlightLookupTable.put(8.00, 1.383);
+
+        //Shuttling Look up Tables
 
         shuttleHoodLookupTable.put(2.00, 25d);
         shuttleHoodLookupTable.put(2.50, 25d);
@@ -558,10 +558,19 @@ public class ShotCalculator {
                                             + RobotContainer.getAccelerationX() * Constants.ACCELERATION_PHASE_DELAY,
                                     RobotContainer.getVelocity().vy * Constants.PHASE_DELAY
                                             + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
-                                    RobotContainer.getVelocity().omega * Constants.PHASE_DELAY
+                                    RobotContainer.getVelocity().omega * Constants.ROTATIONAL_PHASE_DELAY
                                             + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY).exp());
+//            Pose2d estimatedPosePhaseDelayed =
+//                    estimatedPose.plus(
+//                            new Twist2d(
+//                                    Math.pow(RobotContainer.getVelocity().vx, 2) * Constants.PHASE_DELAY
+//                                            + RobotContainer.getAccelerationX() * Constants.ACCELERATION_PHASE_DELAY,
+//                                    Math.pow(RobotContainer.getVelocity().vy, 2) * Constants.PHASE_DELAY
+//                                            + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
+//                                    Math.pow(RobotContainer.getVelocity().omega, 2) * Constants.ROTATIONAL_PHASE_DELAY
+//                                            + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY).exp());
 
-            System.out.println(estimatedPosePhaseDelayed);
+            // System.out.println(estimatedPosePhaseDelayed);
             Translation2d target = getCurrentTarget();
             ChassisVelocities fieldRelativeVelocities = RobotContainer.getVelocity()
                     .toFieldRelative(RobotContainer.getPose().getRotation());
@@ -589,7 +598,10 @@ public class ShotCalculator {
             if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
             hoodVelocity = (hoodAngle - lastHoodAngle) / .005;
 
-            turretRotationPhaseDelayed = target.minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle().orElse(lastTurretRotationPhaseDelayed);
+            Translation2d deltaPhaseDelayed = target.minus(futureTurretPositionPhaseDelayed.getTranslation());
+            turretRotationPhaseDelayed = (deltaPhaseDelayed.getX() == 0 && deltaPhaseDelayed.getY() == 0)
+                    ? lastTurretRotationPhaseDelayed
+                    : new Rotation2d(deltaPhaseDelayed.getX(), deltaPhaseDelayed.getY());
 
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
             turretVelocityPhaseDelayed = turretRotationPhaseDelayed
@@ -618,7 +630,10 @@ public class ShotCalculator {
             turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getVelocity().omega));
 
             //Turret Angle Calculations
-            turretRotation = target.minus(futureTurretPosition.getTranslation()).getAngle().orElse(lastTurretRotation);
+            Translation2d delta = target.minus(futureTurretPosition.getTranslation());
+            turretRotation = (delta.getX() == 0 && delta.getY() == 0)
+                    ? lastTurretRotation
+                    : new Rotation2d(delta.getX(), delta.getY());
 
             if (lastTurretRotation == null) lastTurretRotation = turretRotation;
             turretVelocity = turretRotation
@@ -662,39 +677,39 @@ public class ShotCalculator {
 
 
         //Offset for left corner
-        if (Robot.getAlliance() != null) {
-            if (futureTurretToTargetDistance >= 4) {
-                if ((Robot.getAlliance().equals(Alliance.RED)
-                        && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
-                        || (Robot.getAlliance().equals(Alliance.BLUE)
-                        && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                    turretAngle += .25;
-                    turretAnglePhaseDelayed += .25;
-                    shooterSpeed += .25;
-                    shooterSpeedPhaseDelayed += .25;
-                }
-            }
-            if (futureTurretToTargetDistance >= 4.5) {
-                if ((Robot.getAlliance().equals(Alliance.RED)
-                        && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
-                        || (Robot.getAlliance().equals(Alliance.BLUE)
-                        && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                    turretAngle += 1d;
-                    turretAnglePhaseDelayed += 1d;
-                    shooterSpeed += .75;
-                    shooterSpeedPhaseDelayed += .75;
-                }
-            }
-            if (futureTurretToTargetDistance >= 4.65) {
-                if ((Robot.getAlliance().equals(Alliance.RED)
-                        && futureTurretPosition.getY() > Constants.RED_HUB_CENTER.getY())
-                        || (Robot.getAlliance().equals(Alliance.BLUE)
-                        && futureTurretPosition.getY() < Constants.BLUE_HUB_CENTER.getY())) {
-                    shooterSpeed += .75;
-                    shooterSpeedPhaseDelayed += .75;
-                }
-            }
-        }
+//        if (Robot.getAlliance() != null) {
+//            if (futureTurretToTargetDistance >= 4) {
+//                if ((Robot.getAlliance().equals(Alliance.RED)
+//                        && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
+//                        || (Robot.getAlliance().equals(Alliance.BLUE)
+//                        && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
+//                    turretAngle += .25;
+//                    turretAnglePhaseDelayed += .25;
+//                    shooterSpeed += .25;
+//                    shooterSpeedPhaseDelayed += .25;
+//                }
+//            }
+//            if (futureTurretToTargetDistance >= 4.5) {
+//                if ((Robot.getAlliance().equals(Alliance.RED)
+//                        && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
+//                        || (Robot.getAlliance().equals(Alliance.BLUE)
+//                        && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
+//                    turretAngle += 1d;
+//                    turretAnglePhaseDelayed += 1d;
+//                    shooterSpeed += .75;
+//                    shooterSpeedPhaseDelayed += .75;
+//                }
+//            }
+//            if (futureTurretToTargetDistance >= 4.65) {
+//                if ((Robot.getAlliance().equals(Alliance.RED)
+//                        && futureTurretPosition.getY() > Constants.RED_HUB_CENTER.getY())
+//                        || (Robot.getAlliance().equals(Alliance.BLUE)
+//                        && futureTurretPosition.getY() < Constants.BLUE_HUB_CENTER.getY())) {
+//                    shooterSpeed += .75;
+//                    shooterSpeedPhaseDelayed += .75;
+//                }
+//            }
+//        }
 
         turretSubsystem.updateGoalPosition(getTurretAnglePhaseDelayed(), getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
@@ -804,8 +819,7 @@ public class ShotCalculator {
 
     public boolean isWithinBounds() {
         if (RobotContainer.getShotMode() != ShotMode.SHOOTING) return true;
-        return futureTurretToTargetDistance >= (.997 + Constants.HUB_RADIUS)
-                && futureTurretToTargetDistance <= (5d + Constants.HUB_RADIUS);
+        return futureTurretToTargetDistance >= 1.1 && futureTurretToTargetDistance <= 8d;
     }
 
     private Translation2d getCurrentTarget() {

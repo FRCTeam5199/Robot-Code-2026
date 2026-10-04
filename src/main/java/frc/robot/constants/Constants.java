@@ -11,21 +11,22 @@ public class Constants {
     public static final int XBOX_PORT = 0;
     public static final int OPERATOR_XBOX_PORT = 1;
 
+    public static final double SHUTTLING_DISTANCE_FROM_WALL = 1.75;
     public static final Translation2d RED_HUB_CENTER = new Translation2d(11.916, 4.035);
     public static final Translation2d RED_HUB_FRONT_CENTER = new Translation2d(12.513, 4.035);
-    public static final Translation2d RED_SHUTTLE_LEFT_CORNER = new Translation2d(15.809, 2d);
-    public static final Translation2d RED_SHUTTLE_RIGHT_CORNER = new Translation2d(15.809, 5.75);
+    public static final Translation2d RED_SHUTTLE_LEFT_CORNER = new Translation2d(16d, SHUTTLING_DISTANCE_FROM_WALL);
+    public static final Translation2d RED_SHUTTLE_RIGHT_CORNER = new Translation2d(16d, 8.069 - SHUTTLING_DISTANCE_FROM_WALL);
 
     public static final Translation2d BLUE_HUB_CENTER = new Translation2d(4.626, 4.035);
     public static final Translation2d BLUE_HUB_FRONT_CENTER = new Translation2d(4.029, 4.035);
-    public static final Translation2d BLUE_SHUTTLE_LEFT_CORNER = new Translation2d(.740, 2d);   //Right
-    public static final Translation2d BLUE_SHUTTLE_RIGHT_CORNER = new Translation2d(.740, 5.75);   //Left
+    public static final Translation2d BLUE_SHUTTLE_RIGHT_CORNER = new Translation2d(.740, SHUTTLING_DISTANCE_FROM_WALL);
+    public static final Translation2d BLUE_SHUTTLE_LEFT_CORNER = new Translation2d(.740, 8.069 - SHUTTLING_DISTANCE_FROM_WALL);
 
     public static final double HUB_RADIUS = .52959;
     public static final Transform2d ROBOT_TO_TURRET = new Transform2d(-.13335, .13335, new Rotation2d(0));
-    public static final double PHASE_DELAY = 0.035;
-    public static final double ROTATIONAL_PHASE_DELAY = 0.05;
-    public static final double ACCELERATION_PHASE_DELAY = 0.02;
+    public static final double PHASE_DELAY = 0.02;
+    public static final double ROTATIONAL_PHASE_DELAY = 0.1;
+    public static final double ACCELERATION_PHASE_DELAY = 0;
     public static final double CENTER_TO_BUMPER_LONG = 0.9271 / 2d;
     public static final double CENTER_TO_BUMPER_SHORT = 0.8128 / 2d;
     public static final Transform2d FRONT_LEFT_CORNER = new Transform2d(CENTER_TO_BUMPER_SHORT, CENTER_TO_BUMPER_LONG, new Rotation2d(0));
@@ -41,4 +42,5 @@ public class Constants {
     public static final String LIMELIGHT_RIGHT_NAME = "limelight-right"; //10.51.99.13:5801
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front"; //10.51.99.12:5801 - NOT SET YET
     public static final double DRIVE_X_KS = .28;
+    public static final double INTAKE_AGITATION_TIMEOUT = .15;
 }

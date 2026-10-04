@@ -15,13 +15,13 @@ public class TurretConstants {
     public static final boolean BRAKE = true;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(1.0) //2.5
+            .withKP(.25)
             .withKI(0)
-            .withKD(0.25)
-            .withKS(.5)
+            .withKD(0.1)
+            .withKS(.34)
             .withKG(0)
-            .withKV(.10526315789473684210526315789474)
-            .withKA(0.005)
+            .withKV(.0943396226415094339622641509434)
+            .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double VELOCITY = 200;
@@ -33,7 +33,7 @@ public class TurretConstants {
 
     public static final double[][] GEAR_RATIO = {{50, 12}, {100, 10}};
 
-    public static final double ENCODER_MAGNET_OFFSET = -0.426025390625;
+    public static final double ENCODER_MAGNET_OFFSET = -0.374755859375;
     public static final double SENSOR_TO_MECH_GEAR_RATIO = 100d / 10d;
     public static final double MOTOR_TO_SENSOR_GEAR_RATIO = 50d / 12d;
     public static final boolean CCW_POSITIVE = true;

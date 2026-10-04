@@ -8,7 +8,6 @@ import frc.robot.utility.ShotCalculator;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.SequentialCommandGroup;
 import org.wpilib.system.Timer;
-import org.wpilib.telemetry.TelemetryLoggable;
 
 import java.util.ArrayList;
 
@@ -55,15 +54,15 @@ public final class Autos {
     private static PathPlannerAuto blueBottomDoubleScore;
     private static PathPlannerAuto blueTopDoubleScore;
     private static Timer pidAlignmentTimer = new Timer();
-    private TelemetryLoggable autoChooser;
+//    private SendableChooser<Command> autoChooser;
 
     public static void initializeAutos() {
 
         redBottomDoubleTrench = new PathPlannerAuto("Red Bottom Double Trench");
         redTopDoubleTrench = new PathPlannerAuto("Red Top Double Trench");
 
-       redBottomDoubleBump = new PathPlannerAuto("Red Bottom Double Bump");
-       redTopDoubleBump = new PathPlannerAuto("Red Top Double Bump");
+        redBottomDoubleBump = new PathPlannerAuto("Red Bottom Double Bump");
+        redTopDoubleBump = new PathPlannerAuto("Red Top Double Bump");
 
         redBottomDelayedBump = new PathPlannerAuto("Red Bottom Delayed Bump");
         redTopDelayedBump = new PathPlannerAuto("Red Top Delayed Bump");
@@ -79,23 +78,23 @@ public final class Autos {
         //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
         //         .withSize(2, 1);
 
-    //     autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
-    //     autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
-    //    autonChooserRed.addOption("Red Left Double Bump", redBottomDoubleBump);
-    //    autonChooserRed.addOption("Red Right Double Bump", redTopDoubleBump);
-    //     autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
-    //     autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
-    //     autonChooserRed.addOption("Red Left Delayed Trench", redBottomDelayedTrench);
-    //     autonChooserRed.addOption("Red Right Delayed Trench", redTopDelayedTrench);
+        //     autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
+        //     autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
+        //    autonChooserRed.addOption("Red Left Double Bump", redBottomDoubleBump);
+        //    autonChooserRed.addOption("Red Right Double Bump", redTopDoubleBump);
+        //     autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
+        //     autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
+        //     autonChooserRed.addOption("Red Left Delayed Trench", redBottomDelayedTrench);
+        //     autonChooserRed.addOption("Red Right Delayed Trench", redTopDelayedTrench);
 
-    //     autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
-    //     autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
-    //    autonChooserBlue.addOption("Blue Left Double Bump", redBottomDoubleBump);
-    //    autonChooserBlue.addOption("Blue Right Double Bump", redTopDoubleBump);
-    //     autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
-    //     autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
-    //     autonChooserBlue.addOption("Blue Left Delayed Trench", redBottomDelayedTrench);
-    //     autonChooserBlue.addOption("Blue Right Delayed Trench", redTopDelayedTrench);
+        //     autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
+        //     autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
+        //    autonChooserBlue.addOption("Blue Left Double Bump", redBottomDoubleBump);
+        //    autonChooserBlue.addOption("Blue Right Double Bump", redTopDoubleBump);
+        //     autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
+        //     autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
+        //     autonChooserBlue.addOption("Blue Left Delayed Trench", redBottomDelayedTrench);
+        //     autonChooserBlue.addOption("Blue Right Delayed Trench", redTopDelayedTrench);
 
         // autonChooserBlue.addOption("Blue Left Score Climb", blueBottomScore);
         // autonChooserBlue.addOption("Blue Right Score Climb", blueTopScore);
@@ -112,12 +111,12 @@ public final class Autos {
     /**
      * Gets or creates the AutoChooser (Singleton Method)
      */
-    public TelemetryLoggable getAutoChooser() {
-//         if (autoChooser == null) {
-//             autoChooser = TelemetryLoggable;
-// //            UserInterface.getTab("Auton").add("AutoChooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
-//         }
-
-        return autoChooser;
-    }
+//    public SendableChooser<Command> getAutoChooser() {
+//        // if (autoChooser == null) {
+//        //     autoChooser = new SendableChooser<>();
+//        //     Shuffleboard.getTab("Auton").add("AutoChooser", autoChooser)
+//        //             .withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
+//        // }
+//        return autoChooser;
+//    }
 }

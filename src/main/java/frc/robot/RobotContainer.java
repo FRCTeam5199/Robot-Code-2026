@@ -13,9 +13,8 @@ import org.wpilib.command2.InstantCommand;
 import org.wpilib.command2.ParallelCommandGroup;
 import org.wpilib.command2.SelectCommand;
 import org.wpilib.command2.SequentialCommandGroup;
-import org.wpilib.command2.button.CommandXboxController;
+// import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.DriverStation;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.LinearFilter;
 import org.wpilib.math.geometry.Pose2d;
@@ -51,11 +50,12 @@ import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
+import frc.robot.utility.CommandXboxController;
 
 public class
 
 RobotContainer {
-    public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
+    public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT, false);
     // public static final CommandXboxController operatorCommandXboxController
     //         = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
@@ -75,9 +75,9 @@ RobotContainer {
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
+    public static final PositionCommand intakeDeploy2 = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
     public static final PositionCommand intakeUpAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.UPAGITATE);
-    public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DOWNAGITATE);
-    private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.4), intakeDownAgitate.withTimeout(.4)).repeatedly();
+    public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
     //Drive
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelVelocities(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
@@ -160,6 +160,8 @@ RobotContainer {
     private static double accelerationY;
     private static double accelerationOmega;
     private static boolean isAutonomous = false;
+
+    private static boolean isRightTriggerPressed = false;
     //Button Bindings
     private static Command leftTriggerPressed;
     private static Command leftTriggerReleased;
@@ -187,12 +189,8 @@ RobotContainer {
 
         leftTriggerReleased = RobotCommands.idleState();
 
-        rightBumperPressed = RobotCommands.indexBallsAuto().alongWith(
-                new ParallelCommandGroup(shooterAutoRB,
-                        new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
-                        new InstantCommand(() -> turretSubsystem.setStopMoving(false))));
-
-        rightBumperReleased = RobotCommands.idleState();
+        rightBumperPressed = new SequentialCommandGroup(intakeUpAgitate.withTimeout(Constants.INTAKE_AGITATION_TIMEOUT), intakeDownAgitate.withTimeout(Constants.INTAKE_AGITATION_TIMEOUT)).repeatedly();
+        rightBumperReleased = intakeDeploy2;
 
         leftBumperPressed = new SelectCommand<>(Map.ofEntries(
                 Map.entry(Setpoint.HUB, new ParallelCommandGroup(
@@ -279,20 +277,22 @@ RobotContainer {
 
         // Sets Enums, default is Shooting
         // Shooting versus Shuttling depends on X, Shuttling left or right depends on Y
-        if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
-            shotMode = ShotMode.SHUTTLING_RIGHT;
+        if (Robot.getAlliance().equals(Alliance.RED)) {
+            if (getPose().getY() - Constants.RED_HUB_CENTER.getY() > 0) {
+                shotMode = ShotMode.SHUTTLING_RIGHT;
+            } else {
+                shotMode = ShotMode.SHUTTLING_LEFT;
+            }
         } else {
-            shotMode = ShotMode.SHUTTLING_LEFT;
+            if (getPose().getY() - Constants.BLUE_HUB_CENTER.getY() > 0) {
+                shotMode = ShotMode.SHUTTLING_LEFT;
+            } else {
+                shotMode = ShotMode.SHUTTLING_RIGHT;
+            }
         }
 
-        if (forceShuttleLeft) {
-            shotMode = Robot.getAlliance().equals(Alliance.BLUE) ? ShotMode.SHUTTLING_RIGHT
-                    : ShotMode.SHUTTLING_LEFT;
-        }
-        if (forceShuttleRight) {
-            shotMode = Robot.getAlliance().equals(Alliance.BLUE) ? ShotMode.SHUTTLING_LEFT
-                    : ShotMode.SHUTTLING_RIGHT;
-        }
+        if (forceShuttleLeft) shotMode = ShotMode.SHUTTLING_LEFT;
+        if (forceShuttleRight) shotMode = ShotMode.SHUTTLING_RIGHT;
 
         for (Translation2d robotCorner : robotCorners) {
             if (Robot.getAlliance() != null && Robot.getAlliance().equals(Alliance.RED)) {
@@ -320,6 +320,14 @@ RobotContainer {
             requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
         else
             requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
+
+        double maxAngularRateShooting = .5;
+        if (shooterSubsystem.getMotorVelocity() > 10d) {
+            if (requestRotationalVelocity > maxAngularRateShooting * Constants.MAX_ANGULAR_RATE)
+                requestRotationalVelocity = maxAngularRateShooting * Constants.MAX_ANGULAR_RATE;
+            else if (requestRotationalVelocity < maxAngularRateShooting * -Constants.MAX_ANGULAR_RATE)
+                requestRotationalVelocity = maxAngularRateShooting * -Constants.MAX_ANGULAR_RATE;
+        }
 
 //        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
 //        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
@@ -356,10 +364,6 @@ RobotContainer {
 
     public static ShotMode getShotMode() {
         return shotMode;
-    }
-
-    public static void setShotMode(ShotMode shotMode) {
-        RobotContainer.shotMode = shotMode;
     }
 
     public static Setpoint getCurrentSetpoint() {
@@ -464,7 +468,7 @@ RobotContainer {
                 ));
 
         // Field Centric
-        commandXboxController.menu().onTrue(commandSwerveDrivetrain
+        commandXboxController.start().onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
                         new ConditionalCommand(
                                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
@@ -502,8 +506,8 @@ RobotContainer {
 //        commandXboxController.y().onTrue(shooterSubsystem.sysIdDynamicForward());
 //        commandXboxController.x().onTrue(shooterSubsystem.sysIdDynamicReverse());
 
-        commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
-                .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
+        commandXboxController.rightTrigger().onTrue(intakeRollerIntake.alongWith(new InstantCommand(() -> setIsRightTriggerPressed(true)))/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
+                .onFalse(intakeRollerStop.alongWith(new InstantCommand(() -> setIsRightTriggerPressed(false)))/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
 
         commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);
@@ -517,9 +521,7 @@ RobotContainer {
                 ));
 
         // Outtake and Shoot
-        // commandXboxController.rightBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116)
-        //     .alongWith(rightBumperPressed))
-        //         .onFalse(RobotCommands.idleState().alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
+        commandXboxController.rightBumper().onTrue(rightBumperPressed).onFalse(rightBumperReleased);
 
         // X-drive
         commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
@@ -541,7 +543,7 @@ RobotContainer {
         // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
         // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-       commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
@@ -560,5 +562,13 @@ RobotContainer {
             commandSwerveDrivetrain.getModules()[i].getSteerMotor().optimizeBusUtilization();
             commandSwerveDrivetrain.getModules()[i].getEncoder().optimizeBusUtilization();
         }
+    }
+
+    public static boolean isRightTriggerPressed() {
+        return isRightTriggerPressed;
+    }
+
+    public static void setIsRightTriggerPressed(boolean isRightTriggerPressed) {
+        RobotContainer.isRightTriggerPressed = isRightTriggerPressed;
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.constants.IntakePivotConstants;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.FunctionalCommand;
 import org.wpilib.command2.InstantCommand;
@@ -30,35 +31,82 @@ public class RobotCommands {
     private static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-    private static boolean hasStartedTimer;
-    private static Timer timer = new Timer();
+    private static double systemsOutOfToleranceCheck = 0;
+    private static final double MAX_OUT_OF_TOLERANCE_TIMES = 10;
+    private static final Timer intakeTimer = new Timer();
+    private static boolean isIntakeAgitationDown = true;
+    private static final double INTAKE_AGITATION_INTERVAL = .3;
+
+    private static double hopperReverseCheck = 0;
+    private static final double MAX_HOPPER_REVERSAL_TIMES = 3;
+    private static double hopperStatorCurrentLimitCheck = 0;
+    private static final double STATOR_CURRENT_TIMES = 1;
 
     public static Command indexBallsAuto() {
         return new FunctionalCommand(
                 () -> {
+//                    if (RobotContainer.areMechanismsAtGoalsAuto()) {
+//                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
+//                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
+//                    }
+//                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
+//                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+//                    } else {
+//                        hopperSubsystem.setVelocity(-10);
+//                    }
+
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
                         indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
                         indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
-                    }
-                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
                         hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
                     } else {
-                        hopperSubsystem.setVelocity(-10);
+                        hopperSubsystem.setVelocity(HopperConstants.REVERSE_SPEED);
                     }
                 },
                 () -> {
-                    if (RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
-                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
-                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
-                    } else {
-                        indexerSubsystem.setVelocity(0);
-                        indexerSubsystem.setSecondaryVelocity(0);
-                    }
+//                    if (RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
+//                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
+//                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
+//                        systemsOutOfToleranceCheck = 0;
+//                    } else {
+//                        systemsOutOfToleranceCheck++;
+//                        if (systemsOutOfToleranceCheck > MAX_OUT_OF_TOLERANCE_TIMES) {
+//                            indexerSubsystem.setVelocity(0);
+//                            indexerSubsystem.setSecondaryVelocity(0);
+//                        }
+//                    }
+//
+//                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
+//                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+//                    } else {
+//                        hopperSubsystem.setVelocity(-10);
+//                    }
 
-                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
-                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+                    if (hopperSubsystem.getStatorCurrent() > 50d && Math.abs(hopperSubsystem.getAcceleration()) < 200) {
+                        hopperStatorCurrentLimitCheck++;
+                    } else hopperStatorCurrentLimitCheck = 0;
+
+                    if (hopperStatorCurrentLimitCheck > STATOR_CURRENT_TIMES && hopperReverseCheck < MAX_HOPPER_REVERSAL_TIMES) {
+                        if (shooterSubsystem.isMechAtGoal(true)) {
+                            hopperSubsystem.setVelocity(HopperConstants.REVERSE_SPEED);
+                            hopperReverseCheck++;
+                        } else {
+                            hopperStatorCurrentLimitCheck = 0;
+                        }
                     } else {
-                        hopperSubsystem.setVelocity(-10);
+                        hopperReverseCheck = 0;
+                        if (RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
+                            indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
+                            indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
+                            hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
+                            systemsOutOfToleranceCheck = 0;
+                        } else {
+                            systemsOutOfToleranceCheck++;
+                            if (systemsOutOfToleranceCheck > MAX_OUT_OF_TOLERANCE_TIMES) {
+                                hopperStatorCurrentLimitCheck = 0;
+                                hopperSubsystem.setVelocity(HopperConstants.REVERSE_SPEED);
+                            }
+                        }
                     }
                 },
                 (interrupted) -> {
@@ -68,6 +116,32 @@ public class RobotCommands {
                 },
                 () -> false,
                 hopperSubsystem, indexerSubsystem
+        );
+    }
+
+    public static Command agitateIntake() {
+        return new FunctionalCommand(
+                intakeTimer::restart,
+                () -> {
+                    if (!RobotContainer.isRightTriggerPressed() && intakeTimer.get() > INTAKE_AGITATION_INTERVAL) {
+                        intakeTimer.reset();
+                        if (isIntakeAgitationDown) {
+                            intakePivotSubsystem.setPosition(IntakePivotConstants.UPAGITATE);
+                            isIntakeAgitationDown = false;
+                        } else {
+                            intakePivotSubsystem.setPosition(IntakePivotConstants.DEPLOY);
+                            isIntakeAgitationDown = true;
+                        }
+                    }
+
+                },
+                (_) -> {
+                    intakePivotSubsystem.setPosition(IntakePivotConstants.DEPLOY);
+                    intakeTimer.stop();
+                    isIntakeAgitationDown = true;
+                },
+                () -> false,
+                intakePivotSubsystem
         );
     }
 
