@@ -1,12 +1,10 @@
 package frc.robot.utility;
 
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
-import org.wpilib.driverstation.Alliance;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
@@ -560,15 +558,6 @@ public class ShotCalculator {
                                             + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
                                     RobotContainer.getVelocity().omega * Constants.ROTATIONAL_PHASE_DELAY
                                             + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY).exp());
-//            Pose2d estimatedPosePhaseDelayed =
-//                    estimatedPose.plus(
-//                            new Twist2d(
-//                                    Math.pow(RobotContainer.getVelocity().vx, 2) * Constants.PHASE_DELAY
-//                                            + RobotContainer.getAccelerationX() * Constants.ACCELERATION_PHASE_DELAY,
-//                                    Math.pow(RobotContainer.getVelocity().vy, 2) * Constants.PHASE_DELAY
-//                                            + RobotContainer.getAccelerationY() * Constants.ACCELERATION_PHASE_DELAY,
-//                                    Math.pow(RobotContainer.getVelocity().omega, 2) * Constants.ROTATIONAL_PHASE_DELAY
-//                                            + RobotContainer.getAccelerationOmega() * Constants.ACCELERATION_PHASE_DELAY).exp());
 
             // System.out.println(estimatedPosePhaseDelayed);
             Translation2d target = getCurrentTarget();
@@ -598,10 +587,7 @@ public class ShotCalculator {
             if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
             hoodVelocity = (hoodAngle - lastHoodAngle) / .005;
 
-            Translation2d deltaPhaseDelayed = target.minus(futureTurretPositionPhaseDelayed.getTranslation());
-            turretRotationPhaseDelayed = (deltaPhaseDelayed.getX() == 0 && deltaPhaseDelayed.getY() == 0)
-                    ? lastTurretRotationPhaseDelayed
-                    : new Rotation2d(deltaPhaseDelayed.getX(), deltaPhaseDelayed.getY());
+            turretRotationPhaseDelayed = target.minus(futureTurretPositionPhaseDelayed.getTranslation()).getAngle().orElse(lastTurretRotationPhaseDelayed);
 
             if (lastTurretRotationPhaseDelayed == null) lastTurretRotationPhaseDelayed = turretRotationPhaseDelayed;
             turretVelocityPhaseDelayed = turretRotationPhaseDelayed
@@ -630,10 +616,7 @@ public class ShotCalculator {
             turretVelocityPhaseDelayed -= (Math.toDegrees(RobotContainer.getVelocity().omega));
 
             //Turret Angle Calculations
-            Translation2d delta = target.minus(futureTurretPosition.getTranslation());
-            turretRotation = (delta.getX() == 0 && delta.getY() == 0)
-                    ? lastTurretRotation
-                    : new Rotation2d(delta.getX(), delta.getY());
+            turretRotation = target.minus(futureTurretPosition.getTranslation()).getAngle().orElse(lastTurretRotation);
 
             if (lastTurretRotation == null) lastTurretRotation = turretRotation;
             turretVelocity = turretRotation
