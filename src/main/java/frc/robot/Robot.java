@@ -32,17 +32,17 @@ public class Robot extends TimedRobot {
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
+    private final static Vision vision = Vision.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static Timer autonTimer = new Timer();
+    private static Alliance alliance;
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
+    //    private final List<Vision.VisionMeasurement> visionBatch = new ArrayList<>(3);
     // private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
-    private static Alliance alliance;
-    private final List<Vision.VisionMeasurement> visionBatch = new ArrayList<>(3);
-    private final static Vision vision = Vision.getInstance();
 
     public Robot() {
         commandSwerveDrivetrain.configureAutoBuilder();
@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
         // DataLogManager.start();
         // DriverStation.startDataLog(DataLogManager.getLog());
 
-        // CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
+        CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 
         // LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
         //         -.316, -.316, .453, 0, 5, 135.218);
@@ -60,9 +60,17 @@ public class Robot extends TimedRobot {
         //         -.317, .317, .436, 180, 5, -135.218);;
 
         addPeriodic(() -> {
-                shotCalculator.periodic();
-            }, .020
+                    shotCalculator.periodic();
+                }, .020
         );
+    }
+
+    public static Alliance getAlliance() {
+        return alliance;
+    }
+
+    public static double getAutoTime() {
+        return autonTimer.get();
     }
 
     @Override
@@ -78,16 +86,16 @@ public class Robot extends TimedRobot {
         //     }
         // }
 
-        visionBatch.clear();
-        Vision.VisionMeasurement m;
-        while ((m = pendingMeasurements.poll()) != null) {
-            visionBatch.add(m);
-        }
-        visionBatch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
-
-        for (Vision.VisionMeasurement measurement : visionBatch) {
-            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(), measurement.stdDevs());
-        }
+//        visionBatch.clear();
+//        Vision.VisionMeasurement m;
+//        while ((m = pendingMeasurements.poll()) != null) {
+//            visionBatch.add(m);
+//        }
+//        visionBatch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
+//
+//        for (Vision.VisionMeasurement measurement : visionBatch) {
+//            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(), measurement.stdDevs());
+//        }
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
 
@@ -122,7 +130,7 @@ public class Robot extends TimedRobot {
         } else {
             commandSwerveDrivetrain.getPigeon2().setYaw(0);
         }
-        
+
         commandSwerveDrivetrain.seedFieldCentric();
 
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -135,10 +143,12 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+    }
 
     @Override
-    public void autonomousExit() {}
+    public void autonomousExit() {
+    }
 
     @Override
     public void teleopInit() {
@@ -151,10 +161,12 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+    }
 
     @Override
-    public void teleopExit() {}
+    public void teleopExit() {
+    }
 
     @Override
     public void utilityInit() {
@@ -162,19 +174,14 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void utilityPeriodic() {}
-
-    @Override
-    public void utilityExit() {}
-
-    @Override
-    public void simulationPeriodic() {}
-
-    public static Alliance getAlliance() {
-        return alliance;
+    public void utilityPeriodic() {
     }
 
-    public static double getAutoTime() {
-        return autonTimer.get();
+    @Override
+    public void utilityExit() {
+    }
+
+    @Override
+    public void simulationPeriodic() {
     }
 }

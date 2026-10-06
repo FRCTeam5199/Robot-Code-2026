@@ -13,24 +13,27 @@ import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.util.Units;
 import org.wpilib.system.Timer;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Vision {
+    public static final ConcurrentLinkedQueue<VisionMeasurement> pendingMeasurements = new ConcurrentLinkedQueue<>();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     private static Vision vision;
     private static Timer rightTimer;
     private static Timer leftTimer;
     private static Timer frontTimer;
-
     private static Limelight leftLimelight;
     private static Limelight frontLimelight;
     private static Limelight rightLimelight;
-
     private static double minWrongTime = 1d;
     private static double maxWrongDistance = .25;
     private static double maxSingleTagDistance = 1.5;
     private static double maxDoubleTagDistance = 4.15;
     private static double stdDev = .35;
+    private final List<VisionMeasurement> visionBatch = new ArrayList<>(3);
 
     private Vision() {
         //all numbers: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
@@ -83,7 +86,7 @@ public class Vision {
             while (!Thread.interrupted()) {
                 updatePoses();
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
                 } catch (InterruptedException ignored) {
                 }
             }
@@ -99,12 +102,17 @@ public class Vision {
         updateCameraPose(leftLimelight, leftTimer);
         updateCameraPose(rightLimelight, rightTimer);
         updateCameraPose(frontLimelight, frontTimer);
-    }
 
-    public static final ConcurrentLinkedQueue<VisionMeasurement> pendingMeasurements = new ConcurrentLinkedQueue<>();
+        visionBatch.clear();
+        Vision.VisionMeasurement m;
+        while ((m = pendingMeasurements.poll()) != null) {
+            visionBatch.add(m);
+        }
+        visionBatch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
 
-    public record VisionMeasurement(Pose2d pose, double timestampSeconds,
-                                    org.wpilib.math.linalg.Vector<org.wpilib.math.numbers.N3> stdDevs) {
+        for (Vision.VisionMeasurement measurement : visionBatch) {
+            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(), measurement.stdDevs());
+        }
     }
 
     private void updateCameraPose(Limelight limelight, Timer wrongPoseTimer) {
@@ -148,5 +156,9 @@ public class Vision {
 
     public Limelight getRightLimelight() {
         return rightLimelight;
+    }
+
+    public record VisionMeasurement(Pose2d pose, double timestampSeconds,
+                                    org.wpilib.math.linalg.Vector<org.wpilib.math.numbers.N3> stdDevs) {
     }
 }
