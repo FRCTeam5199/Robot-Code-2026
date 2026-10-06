@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-
 import java.util.Map;
 
 import org.wpilib.command2.Command;
@@ -13,7 +12,6 @@ import org.wpilib.command2.InstantCommand;
 import org.wpilib.command2.ParallelCommandGroup;
 import org.wpilib.command2.SelectCommand;
 import org.wpilib.command2.SequentialCommandGroup;
-// import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.LinearFilter;
@@ -47,10 +45,11 @@ import frc.robot.subsystems.templates.PositionCommand;
 // import frc.robot.subsystems.templates.ShooterCommand;
 //import frc.robot.subsystems.templates.ShooterCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.CommandXboxController;
+import frc.robot.utility.Elastic;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
-import frc.robot.utility.CommandXboxController;
 
 public class
 
@@ -72,7 +71,7 @@ RobotContainer {
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static final Vision vision = Vision.getInstance();
 
-    //Intake Pivot
+    // Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
     public static final PositionCommand intakeDeploy2 = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
@@ -83,27 +82,28 @@ RobotContainer {
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
-    //Misc
+    // Telemetry
     public static final Telemetry logger = new Telemetry(Constants.MAX_SPEED);
+    // Misc
     private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
     private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(2, 0, 0.25, new TrapezoidProfile.Constraints(100, 200));
     private static final LinearFilter accelerationXFilter = LinearFilter.movingAverage(30);
     private static final LinearFilter accelerationYFilter = LinearFilter.movingAverage(30);
     private static final LinearFilter accelerationOmegaFilter = LinearFilter.movingAverage(30);
-    //Turret Commands
+    // Turret Commands
 //    private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
     private static final PositionCommand turretHub = new PositionCommand(turretSubsystem, Setpoint.HUB.getTurretAngle());
     private static final PositionCommand turretTower = new PositionCommand(turretSubsystem, Setpoint.TOWER.getTurretAngle());
     private static final PositionCommand turretLeftCorner = new PositionCommand(turretSubsystem, Setpoint.LEFT_CORNER.getTurretAngle());
     private static final PositionCommand turretOutpost = new PositionCommand(turretSubsystem, Setpoint.OUTPOST.getTurretAngle());
-    //Hood Commands
+    // Hood Commands
     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
     private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
     private static final HoodCommand hoodHub = new HoodCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle());
     private static final HoodCommand hoodTower = new HoodCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle());
     private static final HoodCommand hoodLeftCorner = new HoodCommand(hoodSubsystem, Setpoint.LEFT_CORNER.getHoodAngle());
     private static final HoodCommand hoodOutpost = new HoodCommand(hoodSubsystem, Setpoint.OUTPOST.getHoodAngle());
-    //Shooter Commands
+    // Shooter Commands
     private static final VelocityCommand shooterAuto = new VelocityCommand(shooterSubsystem, 0);
     private static final VelocityCommand shooterAutoRB = new VelocityCommand(shooterSubsystem, 0);
     private static final VelocityCommand shooterStop = new VelocityCommand(shooterSubsystem, 0);
@@ -112,7 +112,7 @@ RobotContainer {
     private static final VelocityCommand shooterLeftCorner = new VelocityCommand(shooterSubsystem, Setpoint.LEFT_CORNER.getShooterSpeed());
     private static final VelocityCommand shooterOutpost = new VelocityCommand(shooterSubsystem, Setpoint.OUTPOST.getShooterSpeed());
     private static final VelocityCommand shooterRevUp = new VelocityCommand(shooterSubsystem, shotCalculator.getShooterSpeed());
-    //Indexer Commands
+    // Indexer Commands
     private static final VelocityCommand indexerAuto = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
     private static final VelocityCommand indexerZero = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
     private static final VelocityCommand indexerHub = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
@@ -120,20 +120,17 @@ RobotContainer {
     private static final VelocityCommand indexerLeftCorner = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
     private static final VelocityCommand indexerOutpost = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
     private static final VelocityCommand indexerRevUp = new VelocityCommand(indexerSubsystem, IndexerConstants.UPPER_INDEXER_SPEED, IndexerConstants.LOWER_INDEXER_SPEED);
-    //    Auton commands
+    // Auton commands
     private static final Command revUp = new ParallelCommandGroup(shooterRevUp, indexerRevUp);
-    //Indexer Commands
-    //Hopper Commands
+    // Indexer Commands
+    // Hopper Commands
     private static final VelocityCommand hopperAuto = new VelocityCommand(hopperSubsystem, 0);
     private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
     private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
-    //Intake Roller Commands
+    // Intake Roller Commands
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
     private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
-    //Climber Commands
-//    private static final PositionCommand climberClimb = new PositionCommand(climberSubsystem, ClimberConstants.CLIMB);
-//    private static final PositionCommand climberDeploy = new PositionCommand(climberSubsystem, ClimberConstants.DEPLOY);
     public static double xVelocity = 0;
     public static double yVelocity = 0;
     public static double rotationVelocity = 0;
@@ -145,8 +142,6 @@ RobotContainer {
     public static double requestRotationalVelocity;
     public static double velocity = 0;
     public static double acceleration = 0;
-    public static boolean isClimbing = false;
-    public static boolean isClimberRetracting = false;
     public static double goalX;
     private static Setpoint currentSetpoint = Setpoint.HUB;
     //Mode Commands
@@ -159,7 +154,6 @@ RobotContainer {
     private static double accelerationX;
     private static double accelerationY;
     private static double accelerationOmega;
-    private static boolean isAutonomous = false;
 
     private static boolean isRightTriggerPressed = false;
     //Button Bindings
@@ -179,9 +173,7 @@ RobotContainer {
     private static boolean forceShuttleRight = false;
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
-
     public RobotContainer() {
-//        optimizeDrivetrain();
         leftTriggerPressed = RobotCommands.indexBallsAuto().alongWith(
                 new ParallelCommandGroup(shooterAuto,
                         new InstantCommand(() -> hoodSubsystem.setStopMoving(false)),
@@ -241,7 +233,9 @@ RobotContainer {
                 () -> Robot.getAlliance().equals(Alliance.RED)
         ));
 
-        // Autos.initializeAutos();
+        Elastic.selectTab("Pre-Game");
+
+        Autos.initializeAutos();
         configureBindings();
     }
 
@@ -333,8 +327,6 @@ RobotContainer {
 //        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
 //        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
 
-        // calculateAutoClimbVelocities();
-
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
     }
@@ -422,22 +414,6 @@ RobotContainer {
 
     public static Pose2d getPose() {
         return currentState.Pose;
-    }
-
-    public static boolean isClimbing() {
-        return isClimbing;
-    }
-
-    public static void setIsClimbing(boolean isClimbing) {
-        RobotContainer.isClimbing = isClimbing;
-    }
-
-    public static boolean isAutonomous() {
-        return isAutonomous;
-    }
-
-    public static void setIsAutonomous(boolean isAutonomous) {
-        RobotContainer.isAutonomous = isAutonomous;
     }
 
     public static void updateLastVelocity() {
@@ -546,14 +522,9 @@ RobotContainer {
 //        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
+    // @Autonomous << TODO:Look into this
     public Command getAutonomousCommand() {
-        // var alliance = Robot.getAlliance();
-        // if (alliance != null && alliance == Alliance.RED) {
-        //     return Autos.autonChooserRed.getSelected();
-        // } else {
-        //     return Autos.autonChooserBlue.getSelected();
-        // }
-        return null;
+        return Autos.getInstance().getAutoChooser().getSelected();
     }
 
     public void optimizeDrivetrain() {

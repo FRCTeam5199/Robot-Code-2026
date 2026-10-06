@@ -22,7 +22,6 @@ import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.ShotCalculator;
 
 public class RobotCommands {
-    //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();

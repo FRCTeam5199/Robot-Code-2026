@@ -13,6 +13,13 @@ import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.util.Pair;
 
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
+import frc.robot.constants.TurretConstants;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+
 public class ShotCalculator {
     private static ShotCalculator shotCalculator;
     private Pose2d futureTurretPosition = new Pose2d(0, 0, new Rotation2d(0)), futureTurretPositionPhaseDelayed = new Pose2d(0, 0, new Rotation2d(0));

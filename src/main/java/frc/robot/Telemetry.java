@@ -3,7 +3,6 @@ package frc.robot;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.kinematics.SwerveModulePosition;
-// import org.wpilib.math.kinematics.SwerveModuleState;
 import org.wpilib.math.kinematics.SwerveModuleVelocity;
 import org.wpilib.networktables.DoubleArrayPublisher;
 import org.wpilib.networktables.DoublePublisher;
@@ -58,6 +57,7 @@ public class Telemetry {
             new Mechanism2d(1, 1),
             new Mechanism2d(1, 1),
     };
+
     /* A direction and length changing ligament for speed representation */
     private final MechanismLigament2d[] m_moduleSpeeds = new MechanismLigament2d[]{
             m_moduleMechanisms[0].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
@@ -65,6 +65,7 @@ public class Telemetry {
             m_moduleMechanisms[2].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
             m_moduleMechanisms[3].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
     };
+
     /* A direction changing and length constant ligament for module direction */
     private final MechanismLigament2d[] m_moduleDirections = new MechanismLigament2d[]{
             m_moduleMechanisms[0].getRoot("RootDirection", 0.5, 0.5)

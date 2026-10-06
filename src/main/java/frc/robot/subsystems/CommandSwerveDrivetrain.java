@@ -30,7 +30,6 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import frc.robot.RobotContainer;
@@ -60,7 +59,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void configureAutoBuilder() {
         // TODO: FIX AGAIN
         try {
-            RobotConfig config = RobotConfig.fromGUISettings();
+            // RobotConfig config = RobotConfig.fromGUISettings();
 
             // Configure AutoBuilder last
             AutoBuilder.configure(
@@ -75,7 +74,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                             new PIDConstants(5.5, 0.0, 0.0), // 7, Translation PID constants
                             new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
                     ),
-                    config, // The robot configuration
+                    null, // The robot configuration
                     () -> {
                         // Boolean supplier that controls when the path will be mirrored for the red alliance
                         // This will flip the path being followed to the red side of the field.

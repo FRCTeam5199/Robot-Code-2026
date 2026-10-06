@@ -17,6 +17,8 @@ import org.wpilib.driverstation.MatchState;
 import org.wpilib.framework.TimedRobot;
 import org.wpilib.system.Timer;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
+
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
@@ -31,7 +33,6 @@ public class Robot extends TimedRobot {
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
-    //    public static ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
     public static ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static Timer autonTimer = new Timer();
     // private static TalonFX motorLeader;
@@ -44,79 +45,29 @@ public class Robot extends TimedRobot {
     private final static Vision vision = Vision.getInstance();
 
     public Robot() {
-        // commandSwerveDrivetrain.configureAutoBuilder();
+        commandSwerveDrivetrain.configureAutoBuilder();
         m_robotContainer = new RobotContainer();
-        //For sysid:
-//        DataLogManager.start();
-//        DriverStation.startDataLog(DataLogManager.getLog());
 
-        // TODO: Fix
+        //For sysid:
+        // DataLogManager.start();
+        // DriverStation.startDataLog(DataLogManager.getLog());
+
         // CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 
-        // userInterface.createComponent("Motor ID (L)", "Control", BuiltInWidgets.kTextView, 0, 0, 1, 1, 0);
-        // userInterface.createComponent("Set (L)", "Control", BuiltInWidgets.kToggleButton, 0, 1, 1, 1, false);
-
-        // userInterface.createComponent("Motor Percent (L)", "Control", BuiltInWidgets.kTextView, 1, 0, 1, 1, 0);
-        // userInterface.createComponent("Motor Position (L)", "Control", BuiltInWidgets.kTextView, 1, 1, 1, 1, 0);
-        // userInterface.createComponent("Motor Velocity (L)", "Control", BuiltInWidgets.kTextView, 1, 2, 1, 1, 0);
-        // userInterface.createComponent("Motor Voltage (L)", "Control", BuiltInWidgets.kTextView, 1, 3, 1, 1, 0);
-
-        // userInterface.createComponent("Set Percent (L)", "Control", BuiltInWidgets.kTextView, 2, 0, 1, 1, 0);
-        // userInterface.createComponent("Set Position (L)", "Control", BuiltInWidgets.kTextView, 2, 1, 1, 1, 0);
-        // userInterface.createComponent("Set Velocity (L)", "Control", BuiltInWidgets.kTextView, 2, 2, 1, 1, 0);
-        // userInterface.createComponent("Set Voltage (L)", "Control", BuiltInWidgets.kTextView, 2, 3, 1, 1, 0);
-
-        // userInterface.createComponent("Apply Percent (L)", "Control", BuiltInWidgets.kToggleButton, 3, 0, 1, 1, false);
-        // userInterface.createComponent("Apply Position (L)", "Control", BuiltInWidgets.kToggleButton, 3, 1, 1, 1, false);
-        // userInterface.createComponent("Apply Velocity (L)", "Control", BuiltInWidgets.kToggleButton, 3, 2, 1, 1, false);
-        // userInterface.createComponent("Apply Voltage (L)", "Control", BuiltInWidgets.kToggleButton, 3, 3, 1, 1, false);
-
-        // userInterface.createComponent("Reset Percent (L)", "Control", BuiltInWidgets.kToggleButton, 4, 0, 1, 1, false);
-        // userInterface.createComponent("Reset Velocity (L)", "Control", BuiltInWidgets.kToggleButton, 4, 2, 1, 1, false);
-        // userInterface.createComponent("Reset Voltage (L)", "Control", BuiltInWidgets.kToggleButton, 4, 3, 1, 1, false);
-
-        // userInterface.createComponent("Motor ID (F)", "Control", BuiltInWidgets.kTextView, 0, 2, 1, 1, 0);
-        // userInterface.createComponent("Set (F)", "Control", BuiltInWidgets.kToggleButton, 0, 3, 1, 1, false);
-
-        // userInterface.createComponent("Motor Percent (F)", "Control", BuiltInWidgets.kTextView, 5, 0, 1, 1, 0);
-        // userInterface.createComponent("Motor Position (F)", "Control", BuiltInWidgets.kTextView, 5, 1, 1, 1, 0);
-        // userInterface.createComponent("Motor Velocity (F)", "Control", BuiltInWidgets.kTextView, 5, 2, 1, 1, 0);
-        // userInterface.createComponent("Motor Voltage (F)", "Control", BuiltInWidgets.kTextView, 5, 3, 1, 1, 0);
-
-        // userInterface.createComponent("Set Percent (F)", "Control", BuiltInWidgets.kTextView, 6, 0, 1, 1, 0);
-        // userInterface.createComponent("Set Position (F)", "Control", BuiltInWidgets.kTextView, 6, 1, 1, 1, 0);
-        // userInterface.createComponent("Set Velocity (F)", "Control", BuiltInWidgets.kTextView, 6, 2, 1, 1, 0);
-        // userInterface.createComponent("Set Voltage (F)", "Control", BuiltInWidgets.kTextView, 6, 3, 1, 1, 0);
-
-        // userInterface.createComponent("Apply Percent (F)", "Control", BuiltInWidgets.kToggleButton, 7, 0, 1, 1, false);
-        // userInterface.createComponent("Apply Position (F)", "Control", BuiltInWidgets.kToggleButton, 7, 1, 1, 1, false);
-        // userInterface.createComponent("Apply Velocity (F)", "Control", BuiltInWidgets.kToggleButton, 7, 2, 1, 1, false);
-        // userInterface.createComponent("Apply Voltage (F)", "Control", BuiltInWidgets.kToggleButton, 7, 3, 1, 1, false);
-
-        // userInterface.createComponent("Reset Percent (F)", "Control", BuiltInWidgets.kToggleButton, 8, 0, 1, 1, false);
-        // userInterface.createComponent("Reset Velocity (F)", "Control", BuiltInWidgets.kToggleButton, 8, 2, 1, 1, false);
-        // userInterface.createComponent("Reset Voltage (F)", "Control", BuiltInWidgets.kToggleButton, 8, 3, 1, 1, false);
-
-        // userInterface.setTab("Control");
-
-//        LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
-//                -.316, -.316, .453, 0, 5, 135.218);
-//        LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
-//                -.317, .317, .436, 180, 5, -135.218);;
+        // LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
+        //         -.316, -.316, .453, 0, 5, 135.218);
+        // LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
+        //         -.317, .317, .436, 180, 5, -135.218);;
 
         addPeriodic(() -> {
-                    shotCalculator.periodic();
-                }, .020
+                shotCalculator.periodic();
+            }, .020
         );
     }
 
     @Override
     public void robotPeriodic() {
-//        System.out.println("Path: " + DataLogManager.getLogDir());
-        // if (userInterface.getComponentData("Set (L)").getBoolean(false)) {
-        //     userInterface.setComponentData("Set (L)", false);
-        //     motorLeader = new TalonFX((int) userInterface.getComponentData("Motor ID (L)").getInteger(0));
-        // }
+        // System.out.println("Path: " + DataLogManager.getLogDir());
 
         // if (motorLeader != null) {
         //     if (motorLeader.isAlive()) {
@@ -127,89 +78,6 @@ public class Robot extends TimedRobot {
         //     }
         // }
 
-        // if (userInterface.getComponentData("Apply Percent (L)").getBoolean(false)) {
-        //     userInterface.setComponentData("Apply Percent (L)", false);
-        //     motorLeader.set(userInterface.getComponentData("Set Percent (L)").getDouble(0));
-        // }
-
-        // if (userInterface.getComponentData("Apply Position (L)").getBoolean(false)) {
-        //     userInterface.setComponentData("Apply Position (L)", false);
-        //     motorLeader.setPosition(userInterface.getComponentData("Set Position (L)").getDouble(0));
-        // }
-
-        // if (userInterface.getComponentData("Apply Velocity (L)").getBoolean(false)) {
-        //     userInterface.setComponentData("Apply Velocity (L)", false);
-        //     motorLeader.setControl(new MotionMagicVelocityVoltage(0).withSlot(0).withEnableFOC(true).withVelocity(userInterface.getComponentData("Set Velocity").getDouble(0)));
-        // }
-
-        // if (userInterface.getComponentData("Apply Voltage (L)").getBoolean(false)) {
-        //     userInterface.setComponentData("Apply Voltage (L)", false);
-        //     motorLeader.setVoltage(userInterface.getComponentData("Set Voltage (L)").getDouble(0));
-        // }
-
-        // if (userInterface.getComponentData("Reset Percent (L)").getBoolean(false)) {
-        //     userInterface.setComponentData("Reset Percent (L)", false);
-        //     motorLeader.set(0);
-        // }
-
-        // if (userInterface.getComponentData("Reset Velocity (L)").getBoolean(false)) {
-        //     userInterface.setComponentData("Reset Velocity (L)", false);
-        //     motorLeader.setControl(new MotionMagicVelocityVoltage(0).withSlot(0).withEnableFOC(true).withVelocity(0));
-        // }
-
-        // if (userInterface.getComponentData("Reset Voltage (L)").getBoolean(false)) {
-        //     userInterface.setComponentData("Reset Voltage (L)", false);
-        //     motorLeader.setVoltage(0);
-        // }
-
-        // if (userInterface.getComponentData("Set (F)").getBoolean(false)) {
-        //     userInterface.setComponentData("Set (F)", false);
-        //     motorFollower = new TalonFX((int) userInterface.getComponentData("Motor ID (F)").getInteger(0));
-        // }
-
-        // if (motorFollower != null) {
-        //     if (motorFollower.isAlive()) {
-        //         userInterface.setComponentData("Motor Percent (F)", motorFollower.get());
-        //         userInterface.setComponentData("Motor Position (F)", motorFollower.getPosition().getValueAsDouble());
-        //         userInterface.setComponentData("Motor Velocity (F)", motorFollower.getVelocity().getValueAsDouble());
-        //         userInterface.setComponentData("Motor Voltage (F)", motorFollower.getMotorVoltage().getValueAsDouble());
-        //     }
-        // }
-
-        // if (userInterface.getComponentData("Apply Percent (F)").getBoolean(false)) {
-        //     userInterface.setComponentData("Apply Percent (F)", false);
-        //     motorFollower.set(userInterface.getComponentData("Set Percent (F)").getDouble(0));
-        // }
-
-        // if (userInterface.getComponentData("Apply Position (F)").getBoolean(false)) {
-        //     userInterface.setComponentData("Apply Position (F)", false);
-        //     motorFollower.setPosition(userInterface.getComponentData("Set Position (F)").getDouble(0));
-        // }
-
-        // if (userInterface.getComponentData("Apply Velocity (F)").getBoolean(false)) {
-        //     userInterface.setComponentData("Apply Velocity (F)", false);
-        //     motorFollower.setControl(new MotionMagicVelocityVoltage(0).withSlot(0).withEnableFOC(true).withVelocity(userInterface.getComponentData("Set Velocity").getDouble(0)));
-        // }
-
-        // if (userInterface.getComponentData("Apply Voltage (F)").getBoolean(false)) {
-        //     userInterface.setComponentData("Apply Voltage (F)", false);
-        //     motorFollower.setVoltage(userInterface.getComponentData("Set Voltage (F)").getDouble(0));
-        // }
-
-        // if (userInterface.getComponentData("Reset Percent (F)").getBoolean(false)) {
-        //     userInterface.setComponentData("Reset Percent (F)", false);
-        //     motorFollower.set(0);
-        // }
-
-        // if (userInterface.getComponentData("Reset Velocity (F)").getBoolean(false)) {
-        //     userInterface.setComponentData("Reset Velocity (F)", false);
-        //     motorFollower.setControl(new MotionMagicVelocityVoltage(0).withSlot(0).withEnableFOC(true).withVelocity(0));
-        // }
-
-        // if (userInterface.getComponentData("Reset Voltage (F)").getBoolean(false)) {
-        //     userInterface.setComponentData("Reset Voltage (F)", false);
-        //     motorFollower.setVoltage(0);
-        // }
         visionBatch.clear();
         Vision.VisionMeasurement m;
         while ((m = pendingMeasurements.poll()) != null) {
@@ -224,8 +92,8 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
         RobotContainer.updateLastVelocity();
-//        System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
-//        System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
+        // System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
+        // System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
     }
 
     @Override
@@ -233,8 +101,6 @@ public class Robot extends TimedRobot {
         vision.getLeftLimelight().setThrottle(2000);
         vision.getFrontLimelight().setThrottle(2000);
         vision.getRightLimelight().setThrottle(2000);
-
-        RobotContainer.setIsAutonomous(false);
     }
 
     @Override
@@ -256,28 +122,23 @@ public class Robot extends TimedRobot {
         } else {
             commandSwerveDrivetrain.getPigeon2().setYaw(0);
         }
+        
         commandSwerveDrivetrain.seedFieldCentric();
 
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-        RobotContainer.setIsClimbing(false);
 
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
 
-        RobotContainer.setIsAutonomous(true);
-
         autonTimer.restart();
     }
 
     @Override
-    public void autonomousPeriodic() {
-//        System.out.println(20 - Robot.getAutoTime() < ClimberConstants.CLIMB_TIME);
-    }
+    public void autonomousPeriodic() {}
 
     @Override
-    public void autonomousExit() {
-    }
+    public void autonomousExit() {}
 
     @Override
     public void teleopInit() {
@@ -285,19 +146,15 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        RobotContainer.setIsAutonomous(false);
 
         CommandScheduler.getInstance().schedule(RobotCommands.idleState());
     }
 
     @Override
-    public void teleopPeriodic() {
-
-    }
+    public void teleopPeriodic() {}
 
     @Override
-    public void teleopExit() {
-    }
+    public void teleopExit() {}
 
     @Override
     public void utilityInit() {
@@ -305,16 +162,13 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void utilityPeriodic() {
-    }
+    public void utilityPeriodic() {}
 
     @Override
-    public void utilityExit() {
-    }
+    public void utilityExit() {}
 
     @Override
-    public void simulationPeriodic() {
-    }
+    public void simulationPeriodic() {}
 
     public static Alliance getAlliance() {
         return alliance;

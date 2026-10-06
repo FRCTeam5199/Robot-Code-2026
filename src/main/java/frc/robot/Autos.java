@@ -1,15 +1,26 @@
 package frc.robot;
 
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import frc.robot.constants.Constants;
-import frc.robot.subsystems.*;
-import frc.robot.utility.ShotCalculator;
+import java.util.Collection;
+import java.util.List;
+
 import org.wpilib.command2.Command;
 import org.wpilib.command2.SequentialCommandGroup;
-import org.wpilib.system.Timer;
+import org.wpilib.tunable.Selectable;
 
-import java.util.ArrayList;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Vision;
+import frc.robot.utility.ShotCalculator;
 
 public final class Autos {
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
@@ -19,24 +30,14 @@ public final class Autos {
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-
-    //    private static PathPlannerAuto redBottomShuttle;
-//    private static PathPlannerAuto redTopShuttle;
     public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
-//    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
-
-    //    private static PathPlannerAuto blueBottomShuttle;
-//    private static PathPlannerAuto blueTopShuttle;
     public static final Vision vision = Vision.getInstance();
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelVelocities(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
-    public static ArrayList<Command> autonChooserRed = new ArrayList<>();
-    public static ArrayList<Command> autonChooserBlue = new ArrayList<>();
-    private static Autos autos;
-    private static PathPlannerAuto redBottomScore;
-    private static PathPlannerAuto redTopScore;
+    private static Selectable<Command> autoChooserRed = new Selectable<Command>();
+    private static Selectable<Command> autoChooserBlue = new Selectable<Command>();
     private static PathPlannerAuto redBottomDelayedBump;
     private static PathPlannerAuto redTopDelayedBump;
     private static PathPlannerAuto redBottomDoubleTrench;
@@ -45,78 +46,42 @@ public final class Autos {
     private static PathPlannerAuto redBottomDoubleBump;
     private static PathPlannerAuto redBottomDelayedTrench;
     private static PathPlannerAuto redTopDelayedTrench;
-    private static PathPlannerAuto redBottomSelfShuttle;
-    private static PathPlannerAuto redTopSelfShuttle;
-    private static PathPlannerAuto blueBottomScore;
-    private static PathPlannerAuto blueTopScore;
-    private static SequentialCommandGroup blueBottomSelfShuttle;
-    private static SequentialCommandGroup blueTopSelfShuttle;
-    private static PathPlannerAuto blueBottomDoubleScore;
-    private static PathPlannerAuto blueTopDoubleScore;
-    private static Timer pidAlignmentTimer = new Timer();
-//    private SendableChooser<Command> autoChooser;
+    private static PathPlannerAuto blueBottomDelayedBump;
+    private static PathPlannerAuto blueTopDelayedBump;
+    private static PathPlannerAuto blueBottomDoubleTrench;
+    private static PathPlannerAuto blueTopDoubleBump;
+    private static PathPlannerAuto blueTopDoubleTrench;
+    private static PathPlannerAuto blueBottomDoubleBump;
+    private static PathPlannerAuto blueBottomDelayedTrench;
+    private static PathPlannerAuto blueTopDelayedTrench;
+    private static Autos autos;
 
     public static void initializeAutos() {
+        autoChooserRed.addDefault("Red Left Double Trench", redBottomDoubleTrench);
+        autoChooserRed.add("Red Right Double Trench", redTopDoubleTrench);
+        autoChooserRed.add("Red Left Double Bump", redBottomDoubleBump);
+        autoChooserRed.add("Red Right Double Bump", redTopDoubleBump);
+        autoChooserRed.add("Red Left Delayed Bump", redBottomDelayedBump);
+        autoChooserRed.add("Red Right Delayed Bump", redTopDelayedBump);
+        autoChooserRed.add("Red Left Delayed Trench", redBottomDelayedTrench);
+        autoChooserRed.add("Red Right Delayed Trench", redTopDelayedTrench);
 
-        redBottomDoubleTrench = new PathPlannerAuto("Red Bottom Double Trench");
-        redTopDoubleTrench = new PathPlannerAuto("Red Top Double Trench");
-
-        redBottomDoubleBump = new PathPlannerAuto("Red Bottom Double Bump");
-        redTopDoubleBump = new PathPlannerAuto("Red Top Double Bump");
-
-        redBottomDelayedBump = new PathPlannerAuto("Red Bottom Delayed Bump");
-        redTopDelayedBump = new PathPlannerAuto("Red Top Delayed Bump");
-
-        redBottomDelayedTrench = new PathPlannerAuto("Red Bottom Delayed Trench");
-        redTopDelayedTrench = new PathPlannerAuto("Red Top Delayed Trench");
-
-        // Elastic
-        // .getTab("Autons").add("Red Autons", autonChooserRed)
-        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
-        //         .withSize(2, 1);
-        // Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
-        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
-        //         .withSize(2, 1);
-
-        //     autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
-        //     autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
-        //    autonChooserRed.addOption("Red Left Double Bump", redBottomDoubleBump);
-        //    autonChooserRed.addOption("Red Right Double Bump", redTopDoubleBump);
-        //     autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
-        //     autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
-        //     autonChooserRed.addOption("Red Left Delayed Trench", redBottomDelayedTrench);
-        //     autonChooserRed.addOption("Red Right Delayed Trench", redTopDelayedTrench);
-
-        //     autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
-        //     autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
-        //    autonChooserBlue.addOption("Blue Left Double Bump", redBottomDoubleBump);
-        //    autonChooserBlue.addOption("Blue Right Double Bump", redTopDoubleBump);
-        //     autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
-        //     autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
-        //     autonChooserBlue.addOption("Blue Left Delayed Trench", redBottomDelayedTrench);
-        //     autonChooserBlue.addOption("Blue Right Delayed Trench", redTopDelayedTrench);
-
-        // autonChooserBlue.addOption("Blue Left Score Climb", blueBottomScore);
-        // autonChooserBlue.addOption("Blue Right Score Climb", blueTopScore);
-
+        autoChooserBlue.add("Blue Left Double Trench", blueBottomDoubleTrench);
+        autoChooserBlue.add("Blue Right Double Trench", blueTopDoubleTrench);
+        autoChooserBlue.add("Blue Left Double Bump", blueBottomDoubleBump);
+        autoChooserBlue.add("Blue Right Double Bump", blueTopDoubleBump);
+        autoChooserBlue.add("Blue Left Delayed Bump", blueBottomDelayedBump);
+        autoChooserBlue.add("Blue Right Delayed Bump", blueTopDelayedBump);
+        autoChooserBlue.add("Blue Left Delayed Trench", blueBottomDelayedTrench);
+        autoChooserBlue.add("Blue Right Delayed Trench", blueTopDelayedTrench);
     }
 
     public static Autos getInstance() {
-        if (autos == null) {
-            autos = new Autos();
-        }
+        if (autos == null) autos = new Autos();
         return autos;
     }
 
-    /**
-     * Gets or creates the AutoChooser (Singleton Method)
-     */
-//    public SendableChooser<Command> getAutoChooser() {
-//        // if (autoChooser == null) {
-//        //     autoChooser = new SendableChooser<>();
-//        //     Shuffleboard.getTab("Auton").add("AutoChooser", autoChooser)
-//        //             .withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
-//        // }
-//        return autoChooser;
-//    }
+   public Selectable<Command> getAutoChooser() {
+       return autoChooserRed;
+   }
 }
