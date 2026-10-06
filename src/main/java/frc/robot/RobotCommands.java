@@ -32,7 +32,7 @@ public class RobotCommands {
     private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     private static double systemsOutOfToleranceCheck = 0;
-    private static final double MAX_OUT_OF_TOLERANCE_TIMES = 10;
+    private static final double MAX_OUT_OF_TOLERANCE_TIMES = 5;
     private static final Timer intakeTimer = new Timer();
     private static boolean isIntakeAgitationDown = true;
     private static final double INTAKE_AGITATION_INTERVAL = .3;
@@ -105,6 +105,8 @@ public class RobotCommands {
                             if (systemsOutOfToleranceCheck > MAX_OUT_OF_TOLERANCE_TIMES) {
                                 hopperStatorCurrentLimitCheck = 0;
                                 hopperSubsystem.setVelocity(HopperConstants.REVERSE_SPEED);
+                                indexerSubsystem.setVelocity(0);
+                                indexerSubsystem.setSecondaryVelocity(0);
                             }
                         }
                     }
