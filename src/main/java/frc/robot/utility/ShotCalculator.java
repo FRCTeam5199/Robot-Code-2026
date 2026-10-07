@@ -806,7 +806,7 @@ public class ShotCalculator {
 
     public boolean isWithinBounds() {
         if (RobotContainer.getShotMode() != ShotMode.SHOOTING) return true;
-        return futureTurretToTargetDistance >= 1.1 && futureTurretToTargetDistance <= 8d;
+        return futureTurretToTargetDistance >= 1.05 && futureTurretToTargetDistance <= 8d;
     }
 
     private Translation2d getCurrentTarget() {

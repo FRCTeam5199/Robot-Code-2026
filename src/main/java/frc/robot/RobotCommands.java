@@ -44,16 +44,6 @@ public class RobotCommands {
     public static Command indexBallsAuto() {
         return new FunctionalCommand(
                 () -> {
-//                    if (RobotContainer.areMechanismsAtGoalsAuto()) {
-//                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
-//                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
-//                    }
-//                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
-//                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-//                    } else {
-//                        hopperSubsystem.setVelocity(-10);
-//                    }
-
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
                         indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
                         indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
@@ -63,24 +53,6 @@ public class RobotCommands {
                     }
                 },
                 () -> {
-//                    if (RobotContainer.areMechanismsExceptShooterAtGoalsAuto()) {
-//                        indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED);
-//                        indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED);
-//                        systemsOutOfToleranceCheck = 0;
-//                    } else {
-//                        systemsOutOfToleranceCheck++;
-//                        if (systemsOutOfToleranceCheck > MAX_OUT_OF_TOLERANCE_TIMES) {
-//                            indexerSubsystem.setVelocity(0);
-//                            indexerSubsystem.setSecondaryVelocity(0);
-//                        }
-//                    }
-//
-//                    if (indexerSubsystem.isMechAtGoal(true) && indexerSubsystem.getGoal() != 0) {
-//                        hopperSubsystem.setVelocity(HopperConstants.INDEXING_SPEED);
-//                    } else {
-//                        hopperSubsystem.setVelocity(-10);
-//                    }
-
                     if (hopperSubsystem.getStatorCurrent() > 50d && Math.abs(hopperSubsystem.getAcceleration()) < 200) {
                         hopperStatorCurrentLimitCheck++;
                     } else hopperStatorCurrentLimitCheck = 0;
@@ -101,7 +73,8 @@ public class RobotCommands {
                             systemsOutOfToleranceCheck = 0;
                         } else {
                             systemsOutOfToleranceCheck++;
-                            if (systemsOutOfToleranceCheck > MAX_OUT_OF_TOLERANCE_TIMES) {
+                            if (systemsOutOfToleranceCheck > MAX_OUT_OF_TOLERANCE_TIMES
+                                    || Math.abs(turretSubsystem.getDegrees() - turretSubsystem.getGoal()) > 30) {
                                 hopperStatorCurrentLimitCheck = 0;
                                 hopperSubsystem.setVelocity(HopperConstants.REVERSE_SPEED);
                                 indexerSubsystem.setVelocity(0);
