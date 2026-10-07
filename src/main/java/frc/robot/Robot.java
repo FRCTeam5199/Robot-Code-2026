@@ -41,7 +41,7 @@ public class Robot extends OpModeRobot {
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
-    //    private final List<Vision.VisionMeasurement> visionBatch = new ArrayList<>(3);
+    private final List<Vision.VisionMeasurement> visionBatch = new ArrayList<>(3);
     // private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
 
@@ -87,16 +87,16 @@ public class Robot extends OpModeRobot {
         //     }
         // }
 
-//        visionBatch.clear();
-//        Vision.VisionMeasurement m;
-//        while ((m = pendingMeasurements.poll()) != null) {
-//            visionBatch.add(m);
-//        }
-//        visionBatch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
-//
-//        for (Vision.VisionMeasurement measurement : visionBatch) {
-//            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(), measurement.stdDevs());
-//        }
+        visionBatch.clear();
+        Vision.VisionMeasurement m;
+        while ((m = pendingMeasurements.poll()) != null) {
+            visionBatch.add(m);
+        }
+        visionBatch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
+
+        for (Vision.VisionMeasurement measurement : visionBatch) {
+            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(), measurement.stdDevs());
+        }
         RobotContainer.periodic();
         CommandScheduler.getInstance().run();
 
