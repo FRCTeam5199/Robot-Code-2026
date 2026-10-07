@@ -21,6 +21,7 @@ import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class ShotCalculator {
+    private static final double CONVERGENCE_EPSILON_METERS = 0.005;
     private static ShotCalculator shotCalculator;
     private Pose2d futureTurretPosition = new Pose2d(0, 0, new Rotation2d(0)), futureTurretPositionPhaseDelayed = new Pose2d(0, 0, new Rotation2d(0));
     private double turretAngle, turretAnglePhaseDelayed;
@@ -39,7 +40,6 @@ public class ShotCalculator {
     private HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     //    private ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     private double futureTurretToTargetDistance, futureTurretToTargetDistancePhaseDelayed = 0;
-    private static final double CONVERGENCE_EPSILON_METERS = 0.005;
 
     private ShotCalculator() {
         //Motor Rotations = degrees / 360 / .01255707762557077625570776255708
@@ -474,6 +474,29 @@ public class ShotCalculator {
         timeOfFlightLookupTable.put(7.90, 1.369);
         timeOfFlightLookupTable.put(7.95, 1.374);
         timeOfFlightLookupTable.put(8.00, 1.381);
+
+        shuttleHoodLookupTable.put(2.00, 25d);
+        shuttleHoodLookupTable.put(2.50, 25d);
+        shuttleHoodLookupTable.put(3.00, 25d);
+        shuttleHoodLookupTable.put(3.50, 25d);
+        shuttleHoodLookupTable.put(4.00, 25d);
+        shuttleHoodLookupTable.put(4.50, 25d);
+        shuttleHoodLookupTable.put(5.00, 25d);
+        shuttleHoodLookupTable.put(5.50, 25d);
+        shuttleHoodLookupTable.put(6.00, 25d);
+        shuttleHoodLookupTable.put(6.50, 25d);
+        shuttleHoodLookupTable.put(7.00, 25d);
+        shuttleHoodLookupTable.put(7.50, 25d);
+        shuttleHoodLookupTable.put(8.00, 25d);
+        shuttleHoodLookupTable.put(8.50, 25d);
+        shuttleHoodLookupTable.put(9.00, 25d);
+        shuttleHoodLookupTable.put(9.50, 25d);
+        shuttleHoodLookupTable.put(10.00, 25d);
+        shuttleHoodLookupTable.put(10.50, 25d);
+        shuttleHoodLookupTable.put(11.00, 25d);
+        shuttleHoodLookupTable.put(11.50, 25d);
+        shuttleHoodLookupTable.put(12.00, 25d);
+        shuttleHoodLookupTable.put(12.50, 25d);
 
         shuttleShooterSpeedLookupTable.put(2.00, 29.9);
         shuttleShooterSpeedLookupTable.put(2.50, 34.2);
