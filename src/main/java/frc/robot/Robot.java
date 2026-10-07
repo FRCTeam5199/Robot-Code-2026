@@ -4,29 +4,21 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.Vision.pendingMeasurements;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
+import com.pathplanner.lib.commands.PathfindingCommand;
+import frc.robot.subsystems.*;
+import frc.robot.utility.ShotCalculator;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.framework.OpModeRobot;
-import org.wpilib.framework.TimedRobot;
 import org.wpilib.system.Timer;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.Vision;
-import frc.robot.utility.ShotCalculator;
+import static frc.robot.subsystems.Vision.pendingMeasurements;
 
 public class Robot extends OpModeRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
