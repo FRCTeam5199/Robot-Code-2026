@@ -14,8 +14,8 @@ public class Constants {
     public static final double SHUTTLING_DISTANCE_FROM_WALL = 1.75;
     public static final Translation2d RED_HUB_CENTER = new Translation2d(11.916, 4.035);
     public static final Translation2d RED_HUB_FRONT_CENTER = new Translation2d(12.513, 4.035);
-    public static final Translation2d RED_SHUTTLE_LEFT_CORNER = new Translation2d(16d, SHUTTLING_DISTANCE_FROM_WALL);
-    public static final Translation2d RED_SHUTTLE_RIGHT_CORNER = new Translation2d(16d, 8.069 - SHUTTLING_DISTANCE_FROM_WALL);
+    public static final Translation2d RED_SHUTTLE_LEFT_CORNER = new Translation2d(15.5, SHUTTLING_DISTANCE_FROM_WALL);
+    public static final Translation2d RED_SHUTTLE_RIGHT_CORNER = new Translation2d(15.5, 8.069 - SHUTTLING_DISTANCE_FROM_WALL);
 
     public static final Translation2d BLUE_HUB_CENTER = new Translation2d(4.626, 4.035);
     public static final Translation2d BLUE_HUB_FRONT_CENTER = new Translation2d(4.029, 4.035);

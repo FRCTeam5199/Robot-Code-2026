@@ -475,6 +475,7 @@ public class ShotCalculator {
         timeOfFlightLookupTable.put(7.95, 1.374);
         timeOfFlightLookupTable.put(8.00, 1.381);
 
+
         shuttleHoodLookupTable.put(2.00, 25d);
         shuttleHoodLookupTable.put(2.50, 25d);
         shuttleHoodLookupTable.put(3.00, 25d);
@@ -508,18 +509,15 @@ public class ShotCalculator {
         shuttleShooterSpeedLookupTable.put(5.50, 53.9);
         shuttleShooterSpeedLookupTable.put(6.00, 56.7);
         shuttleShooterSpeedLookupTable.put(6.50, 59.4);
-        shuttleShooterSpeedLookupTable.put(7.00, 70.9);
-        shuttleShooterSpeedLookupTable.put(7.50, 73.9);
-        shuttleShooterSpeedLookupTable.put(8.00, 76.7);
-        shuttleShooterSpeedLookupTable.put(8.50, 79.5);
-        shuttleShooterSpeedLookupTable.put(9.00, 82.2);
-        shuttleShooterSpeedLookupTable.put(9.50, 84.9);
-        shuttleShooterSpeedLookupTable.put(10.00, 87.5);
-        shuttleShooterSpeedLookupTable.put(10.50, 90.1);
-        shuttleShooterSpeedLookupTable.put(11.00, 92.7);
-        shuttleShooterSpeedLookupTable.put(11.50, 95.2);
-        shuttleShooterSpeedLookupTable.put(12.00, 97.7);
-        shuttleShooterSpeedLookupTable.put(12.50, 97.7);
+        shuttleShooterSpeedLookupTable.put(7.00, 77.0);
+        shuttleShooterSpeedLookupTable.put(7.50, 80.2);
+        shuttleShooterSpeedLookupTable.put(8.00, 83.3);
+        shuttleShooterSpeedLookupTable.put(8.50, 86.3);
+        shuttleShooterSpeedLookupTable.put(9.00, 89.2);
+        shuttleShooterSpeedLookupTable.put(9.50, 92.2);
+        shuttleShooterSpeedLookupTable.put(10.00, 95.0);
+        shuttleShooterSpeedLookupTable.put(10.50, 97.8);
+        shuttleShooterSpeedLookupTable.put(11.00, 97.8);
 
         shuttleTimeOfFlightLookupTable.put(2.00, 0.778);
         shuttleTimeOfFlightLookupTable.put(2.50, 0.858);
@@ -537,12 +535,10 @@ public class ShotCalculator {
         shuttleTimeOfFlightLookupTable.put(8.50, 1.569);
         shuttleTimeOfFlightLookupTable.put(9.00, 1.619);
         shuttleTimeOfFlightLookupTable.put(9.50, 1.667);
-        shuttleTimeOfFlightLookupTable.put(10.00, 1.715);
-        shuttleTimeOfFlightLookupTable.put(10.50, 1.763);
-        shuttleTimeOfFlightLookupTable.put(11.00, 1.810);
-        shuttleTimeOfFlightLookupTable.put(11.50, 1.856);
-        shuttleTimeOfFlightLookupTable.put(12.00, 1.903);
-        shuttleTimeOfFlightLookupTable.put(12.50, 1.903);
+        shuttleTimeOfFlightLookupTable.put(10.00, 1.716);
+        shuttleTimeOfFlightLookupTable.put(10.50, 1.764);
+        shuttleTimeOfFlightLookupTable.put(11.00, 1.764);
+
 
 //        lastTurretAngle = turretSubsystem.getDegrees();
 //        lastTurretAnglePhaseDelayed = turretSubsystem.getDegrees();
@@ -810,7 +806,7 @@ public class ShotCalculator {
 
     public boolean isWithinBounds() {
         if (RobotContainer.getShotMode() != ShotMode.SHOOTING) return true;
-        return futureTurretToTargetDistance >= 1.1 && futureTurretToTargetDistance <= 8d;
+        return futureTurretToTargetDistance >= 1.05 && futureTurretToTargetDistance <= 8d;
     }
 
     private Translation2d getCurrentTarget() {
