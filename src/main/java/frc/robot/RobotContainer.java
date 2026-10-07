@@ -50,6 +50,8 @@ import frc.robot.utility.Elastic;
 import frc.robot.utility.Setpoint;
 import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
+import org.wpilib.opmode.Autonomous;
+import org.wpilib.tunable.Tunables;
 
 public class
 
@@ -131,6 +133,11 @@ RobotContainer {
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
     private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
+    //Mode Commands
+    private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
+    private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
+    private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
+    private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
     public static double xVelocity = 0;
     public static double yVelocity = 0;
     public static double rotationVelocity = 0;
@@ -144,11 +151,6 @@ RobotContainer {
     public static double acceleration = 0;
     public static double goalX;
     private static Setpoint currentSetpoint = Setpoint.HUB;
-    //Mode Commands
-    private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
-    private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
-    private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
-    private static final InstantCommand setOutpostSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.OUTPOST));
     private static double lastVelocityDouble;
     private static ChassisVelocities lastVelocity;
     private static double accelerationX;
@@ -232,8 +234,6 @@ RobotContainer {
                                 .resetRotation(new Rotation2d(Math.toRadians(90d))))),
                 () -> Robot.getAlliance().equals(Alliance.RED)
         ));
-
-        Elastic.selectTab("Pre-Game");
 
         Autos.initializeAutos();
         configureBindings();
@@ -436,6 +436,14 @@ RobotContainer {
         return currentState;
     }
 
+    public static boolean isRightTriggerPressed() {
+        return isRightTriggerPressed;
+    }
+
+    public static void setIsRightTriggerPressed(boolean isRightTriggerPressed) {
+        RobotContainer.isRightTriggerPressed = isRightTriggerPressed;
+    }
+
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
@@ -522,7 +530,6 @@ RobotContainer {
 //        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    // @Autonomous << TODO:Look into this
     public Command getAutonomousCommand() {
         return Autos.getInstance().getAutoChooser().getSelected();
     }
@@ -533,13 +540,5 @@ RobotContainer {
             commandSwerveDrivetrain.getModules()[i].getSteerMotor().optimizeBusUtilization();
             commandSwerveDrivetrain.getModules()[i].getEncoder().optimizeBusUtilization();
         }
-    }
-
-    public static boolean isRightTriggerPressed() {
-        return isRightTriggerPressed;
-    }
-
-    public static void setIsRightTriggerPressed(boolean isRightTriggerPressed) {
-        RobotContainer.isRightTriggerPressed = isRightTriggerPressed;
     }
 }

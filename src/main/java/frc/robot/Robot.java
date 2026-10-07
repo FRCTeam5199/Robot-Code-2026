@@ -14,6 +14,7 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
+import org.wpilib.framework.OpModeRobot;
 import org.wpilib.framework.TimedRobot;
 import org.wpilib.system.Timer;
 
@@ -27,7 +28,7 @@ import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.utility.ShotCalculator;
 
-public class Robot extends TimedRobot {
+public class Robot extends OpModeRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
@@ -123,65 +124,65 @@ public class Robot extends TimedRobot {
         vision.getRightLimelight().setThrottle(0);
     }
 
-    @Override
-    public void autonomousInit() {
-        if (getAlliance() != null && getAlliance().equals(Alliance.RED)) {
-            commandSwerveDrivetrain.getPigeon2().setYaw(180d);
-        } else {
-            commandSwerveDrivetrain.getPigeon2().setYaw(0);
-        }
+//    @Override
+//    public void autonomousInit() {
+//        if (getAlliance() != null && getAlliance().equals(Alliance.RED)) {
+//            commandSwerveDrivetrain.getPigeon2().setYaw(180d);
+//        } else {
+//            commandSwerveDrivetrain.getPigeon2().setYaw(0);
+//        }
+//
+//        commandSwerveDrivetrain.seedFieldCentric();
+//
+//        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+//
+//        if (m_autonomousCommand != null) {
+//            CommandScheduler.getInstance().schedule(m_autonomousCommand);
+//        }
+//
+//        autonTimer.restart();
+//    }
 
-        commandSwerveDrivetrain.seedFieldCentric();
+//    @Override
+//    public void autonomousPeriodic() {
+//    }
+//
+//    @Override
+//    public void autonomousExit() {
+//    }
 
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+//    @Override
+//    public void teleopInit() {
+//        CommandScheduler.getInstance().cancelAll();
+//        if (m_autonomousCommand != null) {
+//            CommandScheduler.getInstance().cancel(m_autonomousCommand);
+//        }
+//
+//        CommandScheduler.getInstance().schedule(RobotCommands.idleState());
+//    }
 
-        if (m_autonomousCommand != null) {
-            CommandScheduler.getInstance().schedule(m_autonomousCommand);
-        }
-
-        autonTimer.restart();
-    }
-
-    @Override
-    public void autonomousPeriodic() {
-    }
-
-    @Override
-    public void autonomousExit() {
-    }
-
-    @Override
-    public void teleopInit() {
-        CommandScheduler.getInstance().cancelAll();
-        if (m_autonomousCommand != null) {
-            CommandScheduler.getInstance().cancel(m_autonomousCommand);
-        }
-
-        CommandScheduler.getInstance().schedule(RobotCommands.idleState());
-    }
-
-    @Override
-    public void teleopPeriodic() {
-    }
-
-    @Override
-    public void teleopExit() {
-    }
-
-    @Override
-    public void utilityInit() {
-        CommandScheduler.getInstance().cancelAll();
-    }
-
-    @Override
-    public void utilityPeriodic() {
-    }
-
-    @Override
-    public void utilityExit() {
-    }
-
-    @Override
-    public void simulationPeriodic() {
-    }
+//    @Override
+//    public void teleopPeriodic() {
+//    }
+//
+//    @Override
+//    public void teleopExit() {
+//    }
+//
+//    @Override
+//    public void utilityInit() {
+//        CommandScheduler.getInstance().cancelAll();
+//    }
+//
+//    @Override
+//    public void utilityPeriodic() {
+//    }
+//
+//    @Override
+//    public void utilityExit() {
+//    }
+//
+//    @Override
+//    public void simulationPeriodic() {
+//    }
 }
