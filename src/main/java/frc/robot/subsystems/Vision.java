@@ -33,7 +33,6 @@ public class Vision {
     private static double maxSingleTagDistance = 1.5;
     private static double maxDoubleTagDistance = 4.15;
     private static double stdDev = .35;
-    private final List<VisionMeasurement> visionBatch = new ArrayList<>(3);
 
     private Vision() {
         //all numbers: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
@@ -86,7 +85,7 @@ public class Vision {
             while (!Thread.interrupted()) {
                 updatePoses();
                 try {
-                    Thread.sleep(5);
+                    Thread.sleep(10);
                 } catch (InterruptedException ignored) {
                 }
             }
@@ -102,17 +101,6 @@ public class Vision {
         updateCameraPose(leftLimelight, leftTimer);
         updateCameraPose(rightLimelight, rightTimer);
         updateCameraPose(frontLimelight, frontTimer);
-
-        visionBatch.clear();
-        Vision.VisionMeasurement m;
-        while ((m = pendingMeasurements.poll()) != null) {
-            visionBatch.add(m);
-        }
-        visionBatch.sort(Comparator.comparingDouble(Vision.VisionMeasurement::timestampSeconds));
-
-        for (Vision.VisionMeasurement measurement : visionBatch) {
-            commandSwerveDrivetrain.addVisionMeasurement(measurement.pose(), measurement.timestampSeconds(), measurement.stdDevs());
-        }
     }
 
     private void updateCameraPose(Limelight limelight, Timer wrongPoseTimer) {
