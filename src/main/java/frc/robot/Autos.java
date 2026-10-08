@@ -12,10 +12,17 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.*;
-import frc.robot.utility.ShotCalculator;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Vision;
 
 public final class Autos {
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
@@ -28,8 +35,6 @@ public final class Autos {
 
     //    private static PathPlannerAuto redBottomShuttle;
 //    private static PathPlannerAuto redTopShuttle;
-    public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
-    public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
 //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
 
     //    private static PathPlannerAuto blueBottomShuttle;

@@ -2,7 +2,6 @@ package frc.robot.subsystems.templates;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
 
 public class HoodCommand extends Command {
     private double goal;

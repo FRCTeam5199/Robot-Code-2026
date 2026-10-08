@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
-import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
 
@@ -91,7 +90,6 @@ public class IndexerSubsystem extends TemplateSubsystem {
     }
 
     public boolean isMechAtGoalAuto() {
-        if (RobotContainer.getShotMode() != ShotMode.SHOOTING) return true;
         return getMotorVelocity() >= IndexerConstants.UPPER_INDEXER_SPEED - IndexerConstants.LOWER_TOLERANCE
                 && getMotorVelocity() <= IndexerConstants.UPPER_INDEXER_SPEED + IndexerConstants.UPPER_TOLERANCE;
     }

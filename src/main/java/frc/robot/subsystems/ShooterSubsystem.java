@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
-import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.Type;
 
 import static edu.wpi.first.units.Units.*;
@@ -19,7 +18,6 @@ public class ShooterSubsystem extends TemplateSubsystem {
     private static DoublePublisher goalSpeed;
     private static DoublePublisher currentSpeed;
     private static NetworkTable shooterNetworkTable;
-    private static ShotCalculator shotCalculator = ShotCalculator.getInstance();
 
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -76,11 +74,6 @@ public class ShooterSubsystem extends TemplateSubsystem {
 //        currentSpeed.set(getMotorVelocity());
 
 //        System.out.println("shooter: " + isMechAtGoal(true));
-    }
-
-    public boolean isMechAtGoalAuto() {
-        return getMotorVelocity() >= shotCalculator.getShooterSpeed() - ShooterConstants.LOWER_TOLERANCE
-                && getMotorVelocity() <= shotCalculator.getShooterSpeed() + ShooterConstants.UPPER_TOLERANCE;
     }
 
     public Command sysIdQuasistaticForward() {

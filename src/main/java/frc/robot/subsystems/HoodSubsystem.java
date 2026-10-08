@@ -8,7 +8,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.RobotContainer;
 import frc.robot.constants.HoodConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
-import frc.robot.utility.ShotCalculator;
 import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
 
@@ -116,12 +115,6 @@ public class HoodSubsystem extends TemplateSubsystem {
     public void followLastProfile() {
         currentState = profile.calculate(0.02, currentState, goalState);
         setPositionMotionMagicFF(goalRotations, getFF(goalVelocityRotPerSec));
-    }
-
-    public boolean isMechAtGoalAuto() {
-        if (RobotContainer.getShotMode() != ShotMode.SHOOTING) return true;
-        return getDegrees() >= ShotCalculator.getInstance().getHoodAngle() - HoodConstants.LOWER_TOLERANCE
-                && getDegrees() <= ShotCalculator.getInstance().getHoodAngle() + HoodConstants.UPPER_TOLERANCE;
     }
 
     public boolean isMechAtGoal() {

@@ -4,46 +4,36 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
+import static frc.robot.subsystems.Vision.pendingMeasurements;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.constants.HopperConstants;
-import frc.robot.subsystems.*;
-
-import frc.robot.subsystems.templates.PositionCommand;
-import frc.robot.utility.ShotCalculator;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.LimelightHelpers;
-
-import javax.xml.crypto.Data;
-import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static frc.robot.subsystems.Vision.pendingMeasurements;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import com.pathplanner.lib.commands.PathfindingCommand;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.Vision;
+import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    public static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
-    //    public static ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
-    public static ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static Timer autonTimer = new Timer();
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
@@ -109,12 +99,6 @@ public class Robot extends TimedRobot {
 //                -.317, .317, .436, 180, 5, -135.218);
 
         Logger.addDataReceiver(new WPILOGWriter());
-
-        addPeriodic(() -> {
-//                    turretSubsystem.periodic();
-                    shotCalculator.periodic();
-                }, .005
-        );
     }
 
     @Override
@@ -249,7 +233,6 @@ public class Robot extends TimedRobot {
         LimelightHelpers.SetThrottle("limelight-right", 2000);
         LimelightHelpers.SetThrottle("limelight-left", 2000);
         LimelightHelpers.SetThrottle("limelight-front", 2000);
-        RobotContainer.setIsAutonomous(false);
     }
 
     @Override
@@ -280,8 +263,6 @@ public class Robot extends TimedRobot {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
 
-        RobotContainer.setIsAutonomous(true);
-
         autonTimer.restart();
     }
 
@@ -300,9 +281,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        RobotContainer.setIsAutonomous(false);
-
-        CommandScheduler.getInstance().schedule(RobotCommands.idleState());
     }
 
     @Override
