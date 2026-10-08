@@ -37,7 +37,7 @@ public class RobotCommands {
     private static final double INTAKE_AGITATION_INTERVAL = .3;
 
     private static double hopperReverseCheck = 0;
-    private static final double MAX_HOPPER_REVERSAL_TIMES = 3;
+    private static final double MAX_HOPPER_REVERSAL_TIMES = 5;
     private static double hopperStatorCurrentLimitCheck = 0;
     private static final double STATOR_CURRENT_TIMES = 1;
 
@@ -53,7 +53,7 @@ public class RobotCommands {
                     }
                 },
                 () -> {
-                    if (hopperSubsystem.getStatorCurrent() > 50d && Math.abs(hopperSubsystem.getAcceleration()) < 200) {
+                    if (hopperSubsystem.getStatorCurrent() > 55d && Math.abs(hopperSubsystem.getAcceleration()) < 200) {
                         hopperStatorCurrentLimitCheck++;
                     } else hopperStatorCurrentLimitCheck = 0;
 
@@ -81,6 +81,7 @@ public class RobotCommands {
                                 indexerSubsystem.setSecondaryVelocity(0);
                             }
                         }
+
                     }
                 },
                 (interrupted) -> {

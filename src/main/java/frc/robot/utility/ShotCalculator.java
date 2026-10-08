@@ -5,6 +5,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.TurretConstants;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import org.wpilib.driverstation.Alliance;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
@@ -676,17 +677,15 @@ public class ShotCalculator {
 //                    shooterSpeedPhaseDelayed += .25;
 //                }
 //            }
-//            if (futureTurretToTargetDistance >= 4.5) {
-//                if ((Robot.getAlliance().equals(Alliance.RED)
-//                        && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
-//                        || (Robot.getAlliance().equals(Alliance.BLUE)
-//                        && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-//                    turretAngle += 1d;
-//                    turretAnglePhaseDelayed += 1d;
-//                    shooterSpeed += .75;
-//                    shooterSpeedPhaseDelayed += .75;
-//                }
-//            }
+        if (futureTurretToTargetDistance >= 4.75) {
+            if ((Robot.getAlliance().equals(Alliance.RED)
+                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
+                    || (Robot.getAlliance().equals(Alliance.BLUE)
+                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
+                turretAngle += 1.5;
+                turretAnglePhaseDelayed += 1.5;
+            }
+        }
 //            if (futureTurretToTargetDistance >= 4.65) {
 //                if ((Robot.getAlliance().equals(Alliance.RED)
 //                        && futureTurretPosition.getY() > Constants.RED_HUB_CENTER.getY())

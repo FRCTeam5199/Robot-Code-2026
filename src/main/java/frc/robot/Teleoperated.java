@@ -4,7 +4,7 @@ import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
 
-@Teleop(name = "Hi")
+@Teleop(name = "Hi! =^.^=")
 public class Teleoperated extends PeriodicOpMode {
     @Override
     public void start() {
