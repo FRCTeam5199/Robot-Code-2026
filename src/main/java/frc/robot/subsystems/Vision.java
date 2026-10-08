@@ -47,12 +47,12 @@ public class Vision {
         PoseEstimateConfig mt2Config = PoseEstimateConfig.defaultMT2()
                 .withMinTagCount(1)
                 .withMaxSingleTagAmbiguity(.8)
-                .withMaxSingleTagDistance(0) // 0 disables this check
+                .withMaxSingleTagDistance(4) // 0 disables this check
                 .withMaxAvgTagDistance(0)
                 .withMinAvgTagArea(0) //0-100, percentage of image area
                 .withFieldBounds(16.541, 8.069)
                 .withFieldBoundsMargin(0.5)
-                .withStdDevXY(0.005, 0.0001, 4.0)
+                .withStdDevXY(0.2, 0.0001, 4.0)
                 .withStdDevTheta(untrusted, untrusted, untrusted)
                 .withStdDevDistanceScaling(.5, 0.0, 100.0) // Less aggressive STDDev scaling for MT2. Scale by sqrt(distance) rather than distance^1.
                 .withStdDevTagCountDivision(.5); // Enhance trust by a factor equal to the square root of number of contributing tags
@@ -60,7 +60,7 @@ public class Vision {
 
         leftLimelight = new Limelight(Constants.LIMELIGHT_LEFT_NAME,
                 new Pose3d(-0.290653, 0.341453, 0.498656,
-                        new Rotation3d(0, Units.degreesToRadians(-3.6), Units.degreesToRadians(136d)))) //134.782385
+                        new Rotation3d(0, Units.degreesToRadians(-3.6), Units.degreesToRadians(138d)))) //134.782385
                 .withPoseEstimateConfig_MT2(mt2Config);
         frontLimelight = new Limelight(Constants.LIMELIGHT_FRONT_NAME,
                 new Pose3d(-0.049, -0.296, 0.514,

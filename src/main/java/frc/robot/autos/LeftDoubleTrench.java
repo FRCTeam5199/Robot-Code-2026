@@ -1,10 +1,11 @@
-package frc.robot;
+package frc.robot.autos;
 
+import frc.robot.Autos;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 import org.wpilib.opmode.PeriodicOpMode;
 
-@Autonomous(name = "Red Left Double Trench")
+@Autonomous(name = "Left Double Trench")
 public class LeftDoubleTrench extends PeriodicOpMode {
     private static final Autos autos = Autos.getInstance();
 

@@ -1,5 +1,6 @@
-package frc.robot;
+package frc.robot.autos;
 
+import frc.robot.Autos;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 import org.wpilib.opmode.PeriodicOpMode;

@@ -46,6 +46,12 @@
           "data": {
             "name": "shoot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Red Bottom Half"
+          }
         }
       ]
     }
