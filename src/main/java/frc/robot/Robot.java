@@ -10,8 +10,10 @@ import frc.robot.utility.ShotCalculator;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.DriverStation;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.framework.OpModeRobot;
+import org.wpilib.system.DataLogManager;
 import org.wpilib.system.Timer;
 
 import java.util.ArrayList;
@@ -42,8 +44,8 @@ public class Robot extends OpModeRobot {
         m_robotContainer = new RobotContainer();
 
         //For sysid:
-        // DataLogManager.start();
-        // DriverStation.startDataLog(DataLogManager.getLog());
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
 
         CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 
