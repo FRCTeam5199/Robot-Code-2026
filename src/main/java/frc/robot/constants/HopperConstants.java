@@ -15,9 +15,9 @@ public class HopperConstants {
             .withKP(0.1)
             .withKI(0)
             .withKD(0)
-            .withKS(.41423)
+            .withKS(.34)
             .withKG(0)
-            .withKV(.1263)
+            .withKV(.12121212121212121212121212121212)
             .withKA(0.1)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 

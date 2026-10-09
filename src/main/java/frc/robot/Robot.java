@@ -44,8 +44,8 @@ public class Robot extends OpModeRobot {
         m_robotContainer = new RobotContainer();
 
         //For sysid:
-        DataLogManager.start();
-        DriverStation.startDataLog(DataLogManager.getLog());
+//        DataLogManager.start();
+//        DriverStation.startDataLog(DataLogManager.getLog());
 
         CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 

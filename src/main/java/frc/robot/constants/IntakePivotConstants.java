@@ -14,7 +14,7 @@ public class IntakePivotConstants {
     public static final boolean INVERTED = false;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 98;
+    public static final double DEPLOY = 95;
     public static final double UPAGITATE = 60;
     public static final double STOW = -1;
 
@@ -23,7 +23,7 @@ public class IntakePivotConstants {
             .withKI(0)
             .withKD(0)
             .withKS(0.07)
-            .withKG(.44)
+            .withKG(.48)
             .withKV(.125)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
