@@ -478,7 +478,6 @@ public class ShotCalculator {
         timeOfFlightLookupTable.put(7.90, 1.369);
         timeOfFlightLookupTable.put(7.95, 1.374);
         timeOfFlightLookupTable.put(8.00, 1.380);
-```
 
 
         shuttleHoodLookupTable.put(2.00, 25d);
