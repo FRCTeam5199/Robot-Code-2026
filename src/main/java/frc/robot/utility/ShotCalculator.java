@@ -680,13 +680,13 @@ public class ShotCalculator {
 //                    shooterSpeedPhaseDelayed += .25;
 //                }
 //            }
-        if (futureTurretToTargetDistance >= 4.75) {
+        if (futureTurretToTargetDistance >= 4.6) {
             if ((Robot.getAlliance().equals(Alliance.RED)
                     && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
                     || (Robot.getAlliance().equals(Alliance.BLUE)
                     && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                turretAngle += 1d;
-                turretAnglePhaseDelayed += 1d;
+                turretAngle += 1.5;
+                turretAnglePhaseDelayed += 1.5;
             }
         }
 //            if (futureTurretToTargetDistance >= 4.65) {

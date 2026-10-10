@@ -191,24 +191,16 @@ RobotContainer {
 //        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
         //Retest on red
-        NamedCommands.registerCommand("startLeft", new ConditionalCommand(
-                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
-                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
-                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
-                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(Math.toRadians(-90))))),
-                () -> Robot.getAlliance().equals(Alliance.RED)
-        ));
-        NamedCommands.registerCommand("startRight", new ConditionalCommand(
-                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d))
-                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(Math.toRadians(-90d))))),
-                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d))
-                        .andThen(new InstantCommand(() -> commandSwerveDrivetrain
-                                .resetRotation(new Rotation2d(Math.toRadians(90d))))),
-                () -> Robot.getAlliance().equals(Alliance.RED)
-        ));
+//        NamedCommands.registerCommand("startLeft", new ConditionalCommand(
+//                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d)),
+//                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d)),
+//                () -> Robot.getAlliance().equals(Alliance.RED)
+//        ));
+//        NamedCommands.registerCommand("startRight", new ConditionalCommand(
+//                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(-90d)),
+//                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(90d)),
+//                () -> Robot.getAlliance().equals(Alliance.RED)
+//        ));
 
         autos.initializeAutos();
         configureBindings();
@@ -222,6 +214,11 @@ RobotContainer {
     }
 
     public static void periodic() {
+//        if (currentState != null) {
+//            System.out.println("Pigeon Rotation: " + commandSwerveDrivetrain.getPigeon2().getYaw());
+//            System.out.println("Pose Rotation: " + getPose().getRotation());
+//        }
+
         currentState = commandSwerveDrivetrain.getStateCopy();
         if (lastVelocity == null) lastVelocity = getVelocity();
         accelerationX = (getVelocity().vx - lastVelocity.vx) / .02;

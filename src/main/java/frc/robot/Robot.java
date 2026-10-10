@@ -31,7 +31,7 @@ public class Robot extends OpModeRobot {
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static ShotCalculator shotCalculator = ShotCalculator.getInstance();
     public static Timer autonTimer = new Timer();
-    private static Alliance alliance;
+    private static Alliance alliance = Alliance.RED;
     // private static TalonFX motorLeader;
     // private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
@@ -108,7 +108,8 @@ public class Robot extends OpModeRobot {
 
     @Override
     public void disabledPeriodic() {
-        if (MatchState.getAlliance().isPresent()) alliance = MatchState.getAlliance().get();
+        if (MatchState.getAlliance().isPresent() && !MatchState.getAlliance().get().equals(alliance))
+            alliance = MatchState.getAlliance().get();
     }
 
     @Override

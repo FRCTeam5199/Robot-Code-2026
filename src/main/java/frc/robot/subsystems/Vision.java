@@ -68,7 +68,7 @@ public class Vision {
                 .withPoseEstimateConfig_MT2(mt2Config);
         rightLimelight = new Limelight(Constants.LIMELIGHT_RIGHT_NAME,
                 new Pose3d(-0.248110, -.3182, 0.509,
-                        new Rotation3d(Units.degreesToRadians(.4), 0, Units.degreesToRadians(-157d)))) //-160d
+                        new Rotation3d(Units.degreesToRadians(.4), 0, Units.degreesToRadians(-156d)))) //-160d, -157d
                 .withPoseEstimateConfig_MT2(mt2Config);
 
         startThread();
@@ -95,7 +95,8 @@ public class Vision {
     public void updatePoses() {
         if (RobotContainer.getState() == null) return;
 
-        Limelight.setSharedRobotOrientation(commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble());
+//        Limelight.setSharedRobotOrientation(commandSwerveDrivetrain.getPigeon2().getYaw().getValueAsDouble());
+        Limelight.setSharedRobotOrientation(RobotContainer.getPose().getRotation().getDegrees());
 
         updateCameraPose(leftLimelight, leftTimer);
         updateCameraPose(rightLimelight, rightTimer);
