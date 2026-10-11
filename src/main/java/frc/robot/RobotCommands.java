@@ -30,16 +30,15 @@ public class RobotCommands {
     private static final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
     private static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     private static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-    private static double systemsOutOfToleranceCheck = 0;
     private static final double MAX_OUT_OF_TOLERANCE_TIMES = 5;
     private static final Timer intakeTimer = new Timer();
-    private static boolean isIntakeAgitationDown = true;
     private static final double INTAKE_AGITATION_INTERVAL = .3;
-
-    private static double hopperReverseCheck = 0;
     private static final double MAX_HOPPER_REVERSAL_TIMES = 5;
-    private static double hopperStatorCurrentLimitCheck = 0;
     private static final double STATOR_CURRENT_TIMES = 1;
+    private static double systemsOutOfToleranceCheck = 0;
+    private static boolean isIntakeAgitationDown = true;
+    private static double hopperReverseCheck = 0;
+    private static double hopperStatorCurrentLimitCheck = 0;
 
     public static Command indexBallsAuto() {
         return new FunctionalCommand(
@@ -161,6 +160,16 @@ public class RobotCommands {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> turretSubsystem.setStopMoving(true)),
                 new PositionCommand(turretSubsystem, 0),
+                new InstantCommand(turretSubsystem::zeroMotor),
+//                new InstantCommand(() -> turretSubsystem.setStopMoving(false)),
+                new InstantCommand(() -> turretSubsystem.setPositionProfiling(0, 0))
+        );
+    }
+
+    public static Command zeroTurretReboot() {
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> turretSubsystem.setStopMoving(true)),
+//                new PositionCommand(turretSubsystem, 0),
                 new InstantCommand(turretSubsystem::zeroMotor),
 //                new InstantCommand(() -> turretSubsystem.setStopMoving(false)),
                 new InstantCommand(() -> turretSubsystem.setPositionProfiling(0, 0))

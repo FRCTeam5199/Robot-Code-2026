@@ -40,7 +40,7 @@ public class CommandXboxController extends CommandGamepad {
         if (useDs) return super.button(4, dsEventLoop);
         return super.button(4);
     }
-    
+
     public Trigger guide() {
         if (useDs) return super.button(5, dsEventLoop);
         return super.button(5);
@@ -49,6 +49,11 @@ public class CommandXboxController extends CommandGamepad {
     public Trigger start() {
         if (useDs) return super.button(6, dsEventLoop);
         return super.button(6);
+    }
+
+    public Trigger display() {
+        if (useDs) return super.button(4, dsEventLoop);
+        return super.button(4);
     }
 
     public Trigger povDown() {
@@ -65,6 +70,7 @@ public class CommandXboxController extends CommandGamepad {
         if (useDs) return super.dpadLeft(dsEventLoop);
         return super.dpadLeft();
     }
+
     public Trigger povRight() {
         if (useDs) return super.dpadRight(dsEventLoop);
         return super.dpadRight();

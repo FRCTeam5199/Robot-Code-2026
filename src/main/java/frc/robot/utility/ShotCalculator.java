@@ -669,24 +669,22 @@ public class ShotCalculator {
 
         //Offset for left corner
 //        if (Robot.getAlliance() != null) {
-//            if (futureTurretToTargetDistance >= 4) {
-//                if ((Robot.getAlliance().equals(Alliance.RED)
-//                        && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
-//                        || (Robot.getAlliance().equals(Alliance.BLUE)
-//                        && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-//                    turretAngle += .25;
-//                    turretAnglePhaseDelayed += .25;
-//                    shooterSpeed += .25;
-//                    shooterSpeedPhaseDelayed += .25;
-//                }
-//            }
+        if (futureTurretToTargetDistance >= 4.25) {
+            if ((Robot.getAlliance().equals(Alliance.RED)
+                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
+                    || (Robot.getAlliance().equals(Alliance.BLUE)
+                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
+                turretAngle += .25;
+                turretAnglePhaseDelayed += .25;
+            }
+        }
         if (futureTurretToTargetDistance >= 4.6) {
             if ((Robot.getAlliance().equals(Alliance.RED)
                     && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
                     || (Robot.getAlliance().equals(Alliance.BLUE)
                     && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                turretAngle += 1.5;
-                turretAnglePhaseDelayed += 1.5;
+                turretAngle += 1.25;
+                turretAnglePhaseDelayed += 1.25;
             }
         }
 //            if (futureTurretToTargetDistance >= 4.65) {

@@ -490,6 +490,12 @@ RobotContainer {
         commandXboxController.dpadUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
         commandXboxController.dpadDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
+        commandXboxController.dpadLeft().onTrue(new InstantCommand(() -> turretSubsystem.setPercent(.1)))
+                .onFalse(new InstantCommand(() -> turretSubsystem.setPercent(0)));
+        commandXboxController.dpadRight().onTrue(new InstantCommand(() -> turretSubsystem.setPercent(-.1)))
+                .onFalse(new InstantCommand(() -> turretSubsystem.setPercent(0)));
+        commandXboxController.display().onTrue(RobotCommands.zeroTurretReboot());
+
         // operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
         // operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
 

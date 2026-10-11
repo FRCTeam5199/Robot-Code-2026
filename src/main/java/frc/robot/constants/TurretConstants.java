@@ -44,5 +44,5 @@ public class TurretConstants {
 
     public static final double INDEXING_TIME = .2;
 
-    public static final CANBus CANBUS = new CANBus("can_s2");
+    public static final CANBus CANBUS = new CANBus("can_s1");
 }
