@@ -668,13 +668,13 @@ public class ShotCalculator {
 
 
         //Offset for left corner
-        if (futureTurretToTargetDistance >= 4d) {
+        if (futureTurretToTargetDistance >= 3.85) {
             if ((Robot.getAlliance().equals(Alliance.RED)
                     && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
                     || (Robot.getAlliance().equals(Alliance.BLUE)
                     && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                turretAngle += .5;
-                turretAnglePhaseDelayed += .5;
+                turretAngle += 1d;
+                turretAnglePhaseDelayed += 1d;
             }
         }
         if (futureTurretToTargetDistance >= 4.5) {
@@ -682,8 +682,8 @@ public class ShotCalculator {
                     && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
                     || (Robot.getAlliance().equals(Alliance.BLUE)
                     && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                turretAngle += 1.75;
-                turretAnglePhaseDelayed += 1.75;
+                turretAngle += 1.5;
+                turretAnglePhaseDelayed += 1.5;
             }
         }
         if (futureTurretToTargetDistance >= 4.75) {
