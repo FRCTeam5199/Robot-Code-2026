@@ -8,40 +8,18 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
-import frc.robot.constants.HopperConstants;
-import frc.robot.constants.IndexerConstants;
-import frc.robot.constants.IntakePivotConstants;
-import frc.robot.constants.IntakeRollerConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
-import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.templates.HoodCommand;
-import frc.robot.subsystems.templates.PositionCommand;
-// import frc.robot.subsystems.templates.ShooterCommand;
-//import frc.robot.subsystems.templates.ShooterCommand;
-import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
-import frc.robot.utility.ShotMode;
 
 public class
 
@@ -141,6 +119,10 @@ RobotContainer {
     private static double accelerationX;
     private static double accelerationY;
     private static double accelerationOmega;
+    
+    private double scalingFactor = 1.5;
+    private double rotationScalingFactor = 1.5;
+
 //     private static boolean isAutonomous = false;
 //     //Button Bindings
 //     private static Command leftTriggerPressed;
@@ -221,24 +203,7 @@ RobotContainer {
         //             shotMode = ShotMode.SHOOTING;
         //     }
         // }
-        double scalingFactor = 1.5;
-        double rotationScalingFactor = 1.5;
-
-        if (commandXboxController.getLeftY() < 0)
-            requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
-        else
-            requestXVelocity = Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
-
-        if (commandXboxController.getLeftX() < 0)
-            requestYVelocity = -Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
-        else
-            requestYVelocity = Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
-
-        if (commandXboxController.getRightX() < 0)
-            requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
-        else
-            requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
-
+        
 //        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
 //        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
 //        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
@@ -357,9 +322,15 @@ RobotContainer {
 
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
-                        .withVelocityY(-requestYVelocity) // Drive left with negative X (left)
-                        .withRotationalRate(requestRotationalVelocity) // Drive counterclockwise with negative X (left)
+                commandSwerveDrivetrain.applyRequest(() -> drive
+                .withVelocityX(
+                    Math.copySign(Math.pow(commandXboxController.getLeftY(), scalingFactor) * Constants.MAX_SPEED,
+                    commandXboxController.getLeftY())
+                ) // Drive forward with negative Y (forward)
+                .withVelocityY(Math.copySign(Math.pow(commandXboxController.getLeftX(), scalingFactor) * Constants.MAX_SPEED,
+                    commandXboxController.getLeftX())) // Drive left with negative X (left)
+                .withRotationalRate(Math.copySign(Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE,
+                commandXboxController.getRightX())) // Drive counterclockwise with negative X (left)
                 ));
 
         // Field Centric

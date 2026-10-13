@@ -1,37 +1,19 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.RobotContainer;
 import frc.robot.constants.IndexerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
-import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
-
-import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 public class IndexerSubsystem extends TemplateSubsystem {
     private static IndexerSubsystem indexerSubsystem;
-
-//    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
-//            new SysIdRoutine.Config(
-//                    Volts.of(1).per(Second), // ramp rate - slow for a turret
-//                    Volts.of(6),                       // max voltage - keep low for turret safety
-//                    Seconds.of(8),                     // test timeout
-//                    null
-//            ),
-//            new SysIdRoutine.Mechanism(
-//                    (voltage) -> setVoltage(voltage.in(Volts)),
-//                    log -> {
-//                        log.motor("indexer")
-//                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
-//                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
-//                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
-//                    },
-//                    this
-//            )
-//    );
 
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(

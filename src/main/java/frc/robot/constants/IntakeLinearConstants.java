@@ -5,13 +5,15 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
-public class IntakePivotConstants {
+public class IntakeLinearConstants {
     public static final int MOTOR_ID = 17;
+    public static final int FOLLOWER_MOTOR_ID = 17;
     public static final int ENCODER_ID = 99;
 
     public static final double STATOR_CURRENT_LIMIT = 40;
     public static final double SUPPLY_CURRENT_LIMIT = 40;
     public static final boolean INVERTED = false;
+    public static final boolean FOLLOWER_INVERTED = false;
     public static final boolean BRAKE = true;
 
     public static final double DEPLOY = 98;
@@ -48,5 +50,5 @@ public class IntakePivotConstants {
     public static final double[][] GEAR_RATIOA = {{48, 1}};
     public static final double INTAKE_SENSOR_MECH_RATIO = 1d;
 
-    public static final CANBus canbus = new CANBus("rio");
+    public static final CANBus CAN_BUS = new CANBus("rio");
 }

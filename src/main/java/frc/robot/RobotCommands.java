@@ -4,13 +4,10 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotCommands {
-    //    public static final ClimberSubsystem climberSubsystem = ClimberSubsystem.getInstance();
-    public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     private static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
     private static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();

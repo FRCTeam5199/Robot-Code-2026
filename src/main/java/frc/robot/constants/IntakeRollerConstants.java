@@ -31,7 +31,7 @@ public class IntakeRollerConstants {
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
-    public static final double INTAKE_SPEED = 100; //116
+    public static final double INTAKE_SPEED = 100;
 
     public static final CANBus CAN_BUS = new CANBus("rio");
 }

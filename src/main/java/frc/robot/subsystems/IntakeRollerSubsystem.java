@@ -12,25 +12,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 public class IntakeRollerSubsystem extends TemplateSubsystem {
     private static IntakeRollerSubsystem intakeRollerSubsystem;
 
-    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(
-                    Volts.of(1).per(Second), // ramp rate - slow for a turret
-                    Volts.of(6),                       // max voltage - keep low for turret safety
-                    Seconds.of(8),                     // test timeout
-                    null
-            ),
-            new SysIdRoutine.Mechanism(
-                    (voltage) -> setVoltage(voltage.in(Volts)),
-                    log -> {
-                        log.motor("intake-roller")
-                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
-                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
-                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
-                    },
-                    this
-            )
-    );
-
     private IntakeRollerSubsystem() {
         super(Type.ROLLER, IntakeRollerConstants.MOTOR_ID,
                 0, IntakeRollerConstants.ACCELERATION,
@@ -55,11 +36,28 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
         return intakeRollerSubsystem;
     }
 
+    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    Volts.of(1).per(Second), // ramp rate - slow for a turret
+                    Volts.of(6),                       // max voltage - keep low for turret safety
+                    Seconds.of(8),                     // test timeout
+                    null
+            ),
+            new SysIdRoutine.Mechanism(
+                    (voltage) -> setVoltage(voltage.in(Volts)),
+                    log -> {
+                        log.motor("intakeRoller")
+                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
+                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
+                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
+                    },
+                    this
+            )
+    );
+
     @Override
     public void periodic() {
         super.periodic();
-        //    System.out.println("Velocity: " + getMotorVelocity());
-        // System.out.println("Goal: " + getGoal());
     }
 
     public Command sysIdQuasistaticForward() {
