@@ -23,15 +23,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
+// import frc.robot.subsystems.HoodSubsystem;
+// import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
-    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-    public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    // public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    // public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static Timer autonTimer = new Timer();

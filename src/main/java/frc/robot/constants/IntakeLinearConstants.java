@@ -6,23 +6,20 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class IntakeLinearConstants {
-    public static final int MOTOR_ID = 17;
-    public static final int FOLLOWER_MOTOR_ID = 17;
-    public static final int ENCODER_ID = 99;
+    public static final int MOTOR_ID = 14;
+    public static final int FOLLOWER_MOTOR_ID = 15;
 
     public static final double STATOR_CURRENT_LIMIT = 40;
     public static final double SUPPLY_CURRENT_LIMIT = 40;
     public static final boolean INVERTED = false;
-    public static final boolean FOLLOWER_INVERTED = false;
+    public static final boolean FOLLOWER_INVERTED = true;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 98;
-    public static final double UPAGITATE = 70;
-    public static final double DOWNAGITATE = 90;
-    public static final double STOW = -1;
+    public static final double DEPLOY = 24;
+    public static final double STOW = -.1;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
-            .withKP(10)
+            .withKP(4)
             .withKI(0)
             .withKD(0)
             .withKS(0.07)
@@ -37,18 +34,13 @@ public class IntakeLinearConstants {
     public static final double ACCELERATION = 100; //200
     public static final double JERK = 1500; //3000
 
-    public static final double LOWER_TOLERANCE = 10;
-    public static final double UPPER_TOLERANCE = 10;
+    public static final double LOWER_TOLERANCE = 1;
+    public static final double UPPER_TOLERANCE = 1;
 
-    public static final double MAGNET_OFFSET = .34912109375;
-    public static final boolean ENCODER_DIRECTION = true;
+    public static final double MIN = -.05;
+    public static final double MAX = 24.05;
 
-    public static final double MIN = -2;
-    public static final double MAX = 85;
+    public static final double[][] GEAR_RATIOA = {{5, 1}};
 
-    //    public static final double GEAR_RATIO = 48;
-    public static final double[][] GEAR_RATIOA = {{48, 1}};
-    public static final double INTAKE_SENSOR_MECH_RATIO = 1d;
-
-    public static final CANBus CAN_BUS = new CANBus("rio");
+    public static final CANBus CAN_BUS = new CANBus("Canivore");
 }

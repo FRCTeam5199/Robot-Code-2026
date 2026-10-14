@@ -17,13 +17,16 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IntakeLinearConstants;
+import frc.robot.constants.IntakeRollerConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.utility.Setpoint;
+import frc.robot.subsystems.IntakeLinearSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.templates.PositionCommand;
+import frc.robot.subsystems.templates.VelocityCommand;
 
-public class
-
-RobotContainer {
+public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
     // public static final CommandXboxController operatorCommandXboxController
     //         = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
@@ -31,8 +34,8 @@ RobotContainer {
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
 //     public static final Autos auton = Autos.getInstance();
-//     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-//     public static final IntakePivotSubsystem intakePivotSubsystem = IntakePivotSubsystem.getInstance();
+    public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
+    public static final IntakeLinearSubsystem intakelinearsubsystem = IntakeLinearSubsystem.getInstance();
 //     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
 //     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
 //     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
@@ -41,8 +44,8 @@ RobotContainer {
 //     public static final Vision vision = Vision.getInstance();
 
 //     //Intake Pivot
-//     public static final PositionCommand intakeStow = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.STOW);
-//     public static final PositionCommand intakeDeploy = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY);
+    public static final PositionCommand intakeStow = new PositionCommand(intakelinearsubsystem, IntakeLinearConstants.STOW);
+    public static final PositionCommand intakeDeploy = new PositionCommand(intakelinearsubsystem, IntakeLinearConstants.DEPLOY);
 //     public static final PositionCommand intakeUpAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.UPAGITATE);
 //     public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DOWNAGITATE);
 //     private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.4), intakeDownAgitate.withTimeout(.4)).repeatedly();
@@ -89,8 +92,8 @@ RobotContainer {
 //     private static final VelocityCommand hopperIdle = new VelocityCommand(hopperSubsystem, HopperConstants.IDLING_SPEED);
 //     private static final VelocityCommand hopperIndex = new VelocityCommand(hopperSubsystem, HopperConstants.INDEXING_SPEED);
 //     //Intake Roller Commands
-//     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
-//     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
+    private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
+    private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
 //     private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
 //     //Climber Commands
 // //    private static final PositionCommand climberClimb = new PositionCommand(climberSubsystem, ClimberConstants.CLIMB);
@@ -109,8 +112,7 @@ RobotContainer {
     public static boolean isClimbing = false;
     public static boolean isClimberRetracting = false;
     public static double goalX;
-    private static Setpoint currentSetpoint = Setpoint.HUB;
-//     //Mode Commands
+    //     //Mode Commands
 //     private static final InstantCommand setHubSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.HUB));
 //     private static final InstantCommand setTowerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.TOWER));
 //     private static final InstantCommand setLeftCornerSetpoint = new InstantCommand(() -> setCurrentSetpoint(Setpoint.LEFT_CORNER));
@@ -155,22 +157,23 @@ RobotContainer {
     }
 
     public static void periodic() {
-        currentState = commandSwerveDrivetrain.getStateCopy();
-        if (lastSpeeds == null) lastSpeeds = getSpeeds();
-        accelerationX = (getSpeeds().vxMetersPerSecond - lastSpeeds.vxMetersPerSecond) / .02;
-        accelerationY = (getSpeeds().vyMetersPerSecond - lastSpeeds.vyMetersPerSecond) / .02;
-        accelerationOmega = (getSpeeds().omegaRadiansPerSecond - lastSpeeds.omegaRadiansPerSecond) / .02;
+        double scalingFactor = 1.5;
+        double rotationScalingFactor = 1.5;
 
-        accelerationX = accelerationXFilter.calculate(accelerationX);
-        accelerationY = accelerationYFilter.calculate(accelerationY);
-        accelerationOmega = accelerationOmegaFilter.calculate(accelerationOmega);
+        if (commandXboxController.getLeftY() < 0)
+            requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+        else
+            requestXVelocity = Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
 
-        if (currentState == null || currentState.Pose == null) return;
+        if (commandXboxController.getLeftX() < 0)
+            requestYVelocity = -Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+        else
+            requestYVelocity = Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
 
-        velocity = Math.sqrt(Math.pow(RobotContainer.getSpeeds().vxMetersPerSecond, 2)
-                + Math.pow(RobotContainer.getSpeeds().vyMetersPerSecond, 2));
-        acceleration = (velocity - lastVelocity) / .02;
-        lastVelocity = velocity;
+        if (commandXboxController.getRightX() < 0)
+            requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
+        else
+            requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
 //        velocity = Math.sqrt(Math.pow(pigeonVelocityX, 2)
 //                + Math.pow(pigeonVelocityY, 2));
 
@@ -226,13 +229,6 @@ RobotContainer {
     //     RobotContainer.shotMode = shotMode;
     // }
 
-    public static Setpoint getCurrentSetpoint() {
-        return currentSetpoint;
-    }
-
-    public static void setCurrentSetpoint(Setpoint currentSetpoint) {
-        RobotContainer.currentSetpoint = currentSetpoint;
-    }
 
 //    public static TurretCommand getTurretControlAuto() {
 //        return turretControlAuto;
@@ -301,6 +297,7 @@ RobotContainer {
     // }
 
     public static void updateLastSpeeds() {
+        if(currentState!=null)
         lastSpeeds = currentState.Speeds;
     }
 
@@ -322,16 +319,9 @@ RobotContainer {
 
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-                commandSwerveDrivetrain.applyRequest(() -> drive
-                .withVelocityX(
-                    Math.copySign(Math.pow(commandXboxController.getLeftY(), scalingFactor) * Constants.MAX_SPEED,
-                    commandXboxController.getLeftY())
-                ) // Drive forward with negative Y (forward)
-                .withVelocityY(Math.copySign(Math.pow(commandXboxController.getLeftX(), scalingFactor) * Constants.MAX_SPEED,
-                    commandXboxController.getLeftX())) // Drive left with negative X (left)
-                .withRotationalRate(Math.copySign(Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE,
-                commandXboxController.getRightX())) // Drive counterclockwise with negative X (left)
-                ));
+                commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
+                        .withVelocityY(-requestYVelocity) // Drive left with negative X (left)
+                        .withRotationalRate(requestRotationalVelocity))); // Drive counterclockwise with negative X (left));
 
         // Field Centric
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
@@ -342,8 +332,8 @@ RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        // commandXboxController.y().onTrue(intakeDeploy);
-        // commandXboxController.a().onTrue(intakeStow);
+        commandXboxController.y().onTrue(intakeDeploy);
+        commandXboxController.a().onTrue(intakeStow);
 
         // commandXboxController.x().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleLeft = true),
@@ -372,8 +362,8 @@ RobotContainer {
 //        commandXboxController.y().onTrue(shooterSubsystem.sysIdDynamicForward());
 //        commandXboxController.x().onTrue(shooterSubsystem.sysIdDynamicReverse());
 
-        // commandXboxController.rightTrigger().onTrue(intakeRollerIntake/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
-        //         .onFalse(intakeRollerStop/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
+        commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
+                .onFalse(intakeRollerStop);
 
         // commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
         //         .onFalse(leftTriggerReleased);

@@ -16,20 +16,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
+// import frc.robot.subsystems.HoodSubsystem;
+// import frc.robot.subsystems.HopperSubsystem;
+// import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+// import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Vision;
 
 public final class Autos {
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
-    public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-    public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
-    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    // public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    // public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
+    // public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
+    // public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
 
     //    private static PathPlannerAuto redBottomShuttle;
 //    private static PathPlannerAuto redTopShuttle;
