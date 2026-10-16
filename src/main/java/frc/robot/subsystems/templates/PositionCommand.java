@@ -25,8 +25,7 @@ public class PositionCommand extends Command {
         addRequirements(templateSubsystem);
     }
 
-    public PositionCommand(TemplateSubsystem templateSubsystem, double goal, boolean shouldNotEnd,
-                           boolean useCustomFF, double goalVelocity) {
+    public PositionCommand(TemplateSubsystem templateSubsystem, double goal, boolean shouldNotEnd) {
         this(templateSubsystem, goal);
         this.shouldNotEnd = shouldNotEnd;
         this.useCustomFF = useCustomFF;

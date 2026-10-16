@@ -15,8 +15,8 @@ public class IntakeLinearConstants {
     public static final boolean FOLLOWER_INVERTED = true;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 24;
-    public static final double STOW = -.1;
+    public static final double DEPLOY = 24.05;
+    public static final double STOW = -0.2;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(4)
@@ -26,9 +26,7 @@ public class IntakeLinearConstants {
             .withKG(.44)
             .withKV(.125)
             .withKA(0)
-            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
-            .withGravityType(GravityTypeValue.Arm_Cosine)
-            .withGravityArmPositionOffset(.0);
+            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     public static final double VELOCITY = 50; //125
     public static final double ACCELERATION = 100; //200
@@ -37,8 +35,8 @@ public class IntakeLinearConstants {
     public static final double LOWER_TOLERANCE = 1;
     public static final double UPPER_TOLERANCE = 1;
 
-    public static final double MIN = -.05;
-    public static final double MAX = 24.05;
+    public static final double MIN = -0.2;
+    public static final double MAX = 24.05; //24.05
 
     public static final double[][] GEAR_RATIOA = {{5, 1}};
 

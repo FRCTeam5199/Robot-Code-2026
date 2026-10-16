@@ -224,15 +224,13 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
         RobotContainer.updateLastSpeeds();
-//        System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
-//        System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
     }
 
     @Override
     public void disabledInit() {
-        LimelightHelpers.SetThrottle("limelight-right", 2000);
-        LimelightHelpers.SetThrottle("limelight-left", 2000);
-        LimelightHelpers.SetThrottle("limelight-front", 2000);
+        // LimelightHelpers.SetThrottle("limelight-right", 2000);
+        // LimelightHelpers.SetThrottle("limelight-left", 2000);
+        // LimelightHelpers.SetThrottle("limelight-front", 2000);
     }
 
     @Override
@@ -242,9 +240,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledExit() {
-        LimelightHelpers.SetThrottle("limelight-right", 0);
-        LimelightHelpers.SetThrottle("limelight-left", 0);
-        LimelightHelpers.SetThrottle("limelight-front", 0);
+        // LimelightHelpers.SetThrottle("limelight-right", 0);
+        // LimelightHelpers.SetThrottle("limelight-left", 0);
+        // LimelightHelpers.SetThrottle("limelight-front", 0);
     }
 
     @Override

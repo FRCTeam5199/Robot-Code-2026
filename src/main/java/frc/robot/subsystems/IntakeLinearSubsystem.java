@@ -36,6 +36,5 @@ public class IntakeLinearSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        System.out.println("Pose" + intakePivotSubsystem.getMechM());
     }
 }

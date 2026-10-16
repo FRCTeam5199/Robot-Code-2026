@@ -28,42 +28,40 @@ import frc.robot.subsystems.templates.VelocityCommand;
 
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
-    // public static final CommandXboxController operatorCommandXboxController
-    //         = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
 //     public static final Autos auton = Autos.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    public static final IntakeLinearSubsystem intakelinearsubsystem = IntakeLinearSubsystem.getInstance();
+    public static final IntakeLinearSubsystem intakeLinearSubsystem = IntakeLinearSubsystem.getInstance();
 //     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
 //     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
 //     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
 //     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-//     // public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
+    // public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
 //     public static final Vision vision = Vision.getInstance();
 
 //     //Intake Pivot
-    public static final PositionCommand intakeStow = new PositionCommand(intakelinearsubsystem, IntakeLinearConstants.STOW);
-    public static final PositionCommand intakeDeploy = new PositionCommand(intakelinearsubsystem, IntakeLinearConstants.DEPLOY);
+    public static final PositionCommand intakeStow = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.STOW);
+    public static final PositionCommand intakeDeploy = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.DEPLOY, false);
 //     public static final PositionCommand intakeUpAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.UPAGITATE);
 //     public static final PositionCommand intakeDownAgitate = new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DOWNAGITATE);
 //     private static final Command intakeAgitation = new SequentialCommandGroup(intakeUpAgitate.withTimeout(.4), intakeDownAgitate.withTimeout(.4)).repeatedly();
-//     //Drive
+    //Drive
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
 //     public static final ProfiledPIDController turnPIDController = new ProfiledPIDController(.05, 0.0, 0.0, new TrapezoidProfile.Constraints(100, 200));
-//     //Misc
+    //Misc
 //     public static final Telemetry logger = new Telemetry(Constants.MAX_SPEED);
 //     private static final ProfiledPIDController drivePIDControllerX = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(100, 200));
 //     private static final ProfiledPIDController drivePIDControllerXClose = new ProfiledPIDController(2, 0, 0.25, new TrapezoidProfile.Constraints(100, 200));
     private static final LinearFilter accelerationXFilter = LinearFilter.movingAverage(30);
     private static final LinearFilter accelerationYFilter = LinearFilter.movingAverage(30);
     private static final LinearFilter accelerationOmegaFilter = LinearFilter.movingAverage(30);
-//     //Turret Commands
-// //    private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
-//     //Hood Commands
+    //Turret Commands
+//    private static final TurretCommand turretControlAuto = new TurretCommand(turretSubsystem, 0, 0);
+    //Hood Commands
 //     private static final HoodCommand hoodControlAuto = new HoodCommand(hoodSubsystem, 0, 0);
 //     private static final HoodCommand hoodZero = new HoodCommand(hoodSubsystem, 0);
 //     private static final HoodCommand hoodHub = new HoodCommand(hoodSubsystem, Setpoint.HUB.getHoodAngle());
@@ -121,9 +119,6 @@ public class RobotContainer {
     private static double accelerationX;
     private static double accelerationY;
     private static double accelerationOmega;
-    
-    private double scalingFactor = 1.5;
-    private double rotationScalingFactor = 1.5;
 
 //     private static boolean isAutonomous = false;
 //     //Button Bindings
@@ -149,12 +144,12 @@ public class RobotContainer {
         configureBindings();
     }
 
-    public static void updateRobotCorners() {
+    // public static void updateRobotCorners() {
         // robotCorners[0] = getPose().transformBy(Constants.FRONT_LEFT_CORNER).getTranslation();
         // robotCorners[1] = getPose().transformBy(Constants.FRONT_RIGHT_CORNER).getTranslation();
         // robotCorners[2] = getPose().transformBy(Constants.BACK_LEFT_CORNER).getTranslation();
         // robotCorners[3] = getPose().transformBy(Constants.BACK_RIGHT_CORNER).getTranslation();
-    }
+    // }
 
     public static void periodic() {
         double scalingFactor = 1.5;
@@ -176,7 +171,6 @@ public class RobotContainer {
             requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
 //        velocity = Math.sqrt(Math.pow(pigeonVelocityX, 2)
 //                + Math.pow(pigeonVelocityY, 2));
-
 
         // updateRobotCorners();
 
@@ -332,8 +326,8 @@ public class RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        commandXboxController.y().onTrue(intakeDeploy);
-        commandXboxController.a().onTrue(intakeStow);
+        commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
+        commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
 
         // commandXboxController.x().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleLeft = true),

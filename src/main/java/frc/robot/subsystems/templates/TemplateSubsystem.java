@@ -325,6 +325,22 @@ public class TemplateSubsystem extends SubsystemBase {
         motor.setPosition(sometimesEncoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
     }
 
+    public void setBrake(boolean brake) {
+        if (brake) {
+            motor.setNeutralMode(NeutralModeValue.Brake);
+            followerMotor.setNeutralMode(NeutralModeValue.Brake);
+        }
+        else {
+            motor.setNeutralMode(NeutralModeValue.Coast);
+            followerMotor.setNeutralMode(NeutralModeValue.Coast);
+        }
+    }
+
+    public void setSecondaryBrake(boolean brake) {
+        if (brake) secondaryMotor.setNeutralMode(NeutralModeValue.Brake);
+        else secondaryMotor.setNeutralMode(NeutralModeValue.Coast);
+    }
+
     public void setPercent(double percent) {
         followLastMechProfile = false;
         if (percent > 1) percent /= 100d;
