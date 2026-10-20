@@ -92,6 +92,7 @@ public class RobotContainer {
 //     //Intake Roller Commands
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
+    private static final VelocityCommand intakeRollerOuttake = new VelocityCommand(intakeRollerSubsystem, -IntakeRollerConstants.INTAKE_SPEED);
 //     private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
 //     //Climber Commands
 // //    private static final PositionCommand climberClimb = new PositionCommand(climberSubsystem, ClimberConstants.CLIMB);
@@ -137,7 +138,6 @@ public class RobotContainer {
 //     private static boolean forceShuttleLeft = false;
 //     private static boolean forceShuttleRight = false;
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-
 
     public RobotContainer() {
         Autos.initializeAutos();
@@ -356,8 +356,8 @@ public class RobotContainer {
 //        commandXboxController.y().onTrue(shooterSubsystem.sysIdDynamicForward());
 //        commandXboxController.x().onTrue(shooterSubsystem.sysIdDynamicReverse());
 
-        commandXboxController.rightTrigger().onTrue(intakeRollerIntake)
-                .onFalse(intakeRollerStop);
+        commandXboxController.rightTrigger().onTrue(intakeRollerIntake).onFalse(intakeRollerStop);
+        commandXboxController.rightBumper().onTrue(intakeRollerOuttake).onFalse(intakeRollerStop);
 
         // commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
         //         .onFalse(leftTriggerReleased);
