@@ -4,25 +4,29 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
-import frc.robot.subsystems.*;
-import frc.robot.utility.ShotCalculator;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.CommandScheduler;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.DriverStation;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.framework.OpModeRobot;
-import org.wpilib.system.DataLogManager;
-import org.wpilib.system.Timer;
+import static frc.robot.subsystems.Vision.pendingMeasurements;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static frc.robot.subsystems.Vision.pendingMeasurements;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.framework.TimedRobot;
 
-public class Robot extends OpModeRobot {
+import com.pathplanner.lib.commands.PathfindingCommand;
+
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Vision;
+import frc.robot.utility.ShotCalculator;
+
+public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
@@ -30,10 +34,7 @@ public class Robot extends OpModeRobot {
     private final static Vision vision = Vision.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static ShotCalculator shotCalculator = ShotCalculator.getInstance();
-    public static Timer autonTimer = new Timer();
     private static Alliance alliance = Alliance.RED;
-    // private static TalonFX motorLeader;
-    // private static TalonFX motorFollower;
     private final RobotContainer m_robotContainer;
     private final List<Vision.VisionMeasurement> visionBatch = new ArrayList<>(3);
     // private final UserInterface userInterface = UserInterface.getInstance();
@@ -52,7 +53,7 @@ public class Robot extends OpModeRobot {
         // LimelightHelpers.setCameraPose_RobotSpace("limelight-left",
         //         -.316, -.316, .453, 0, 5, 135.218);
         // LimelightHelpers.setCameraPose_RobotSpace("limelight-right",
-        //         -.317, .317, .436, 180, 5, -135.218);;
+        //         -.317, .317, .436, 180, 5, -135.218);
 
         addPeriodic(() -> {
                     shotCalculator.periodic();
@@ -62,10 +63,6 @@ public class Robot extends OpModeRobot {
 
     public static Alliance getAlliance() {
         return alliance;
-    }
-
-    public static double getAutoTime() {
-        return autonTimer.get();
     }
 
     @Override
@@ -119,42 +116,40 @@ public class Robot extends OpModeRobot {
         vision.getRightLimelight().setThrottle(0);
     }
 
-//    @Override
-//    public void autonomousInit() {
-//        if (getAlliance() != null && getAlliance().equals(Alliance.RED)) {
-//            commandSwerveDrivetrain.getPigeon2().setYaw(180d);
-//        } else {
-//            commandSwerveDrivetrain.getPigeon2().setYaw(0);
-//        }
-//
-//        commandSwerveDrivetrain.seedFieldCentric();
-//
-//        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-//
-//        if (m_autonomousCommand != null) {
-//            CommandScheduler.getInstance().schedule(m_autonomousCommand);
-//        }
-//
-//        autonTimer.restart();
-//    }
+   @Override
+   public void autonomousInit() {
+       if (getAlliance() != null && getAlliance().equals(Alliance.RED)) {
+           commandSwerveDrivetrain.getPigeon2().setYaw(180d);
+       } else {
+           commandSwerveDrivetrain.getPigeon2().setYaw(0);
+       }
 
-//    @Override
-//    public void autonomousPeriodic() {
-//    }
-//
-//    @Override
-//    public void autonomousExit() {
-//    }
+       commandSwerveDrivetrain.seedFieldCentric();
 
-//    @Override
-//    public void teleopInit() {
-//        CommandScheduler.getInstance().cancelAll();
-//        if (m_autonomousCommand != null) {
-//            CommandScheduler.getInstance().cancel(m_autonomousCommand);
-//        }
-//
-//        CommandScheduler.getInstance().schedule(RobotCommands.idleState());
-//    }
+       m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+       if (m_autonomousCommand != null) {
+           CommandScheduler.getInstance().schedule(m_autonomousCommand);
+       }
+   }
+
+   @Override
+   public void autonomousPeriodic() {
+   }
+
+   @Override
+   public void autonomousExit() {
+   }
+
+   @Override
+   public void teleopInit() {
+       CommandScheduler.getInstance().cancelAll();
+       if (m_autonomousCommand != null) {
+           CommandScheduler.getInstance().cancel(m_autonomousCommand);
+       }
+
+       CommandScheduler.getInstance().schedule(RobotCommands.idleState());
+   }
 
 //    @Override
 //    public void teleopPeriodic() {

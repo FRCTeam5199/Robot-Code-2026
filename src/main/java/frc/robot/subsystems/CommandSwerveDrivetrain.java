@@ -3,13 +3,9 @@ package frc.robot.subsystems;
 import static org.wpilib.units.Units.Second;
 import static org.wpilib.units.Units.Volts;
 
-// import static edu.wpi.first.units.Units.Second;
-// import static edu.wpi.first.units.Units.Volts;
-
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.pathplanner.lib.config.RobotConfig;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Subsystem;
 import org.wpilib.command2.sysid.SysIdRoutine;
@@ -31,6 +27,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import frc.robot.RobotContainer;
