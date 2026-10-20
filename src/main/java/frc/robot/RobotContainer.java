@@ -4,36 +4,53 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.NamedCommands;
-import frc.robot.constants.*;
-import frc.robot.subsystems.*;
-import frc.robot.subsystems.templates.HoodCommand;
-import frc.robot.subsystems.templates.PositionCommand;
-import frc.robot.subsystems.templates.VelocityCommand;
-import frc.robot.utility.CommandXboxController;
-import frc.robot.utility.Setpoint;
-import frc.robot.utility.ShotCalculator;
-import frc.robot.utility.ShotMode;
-import org.wpilib.command2.*;
+import java.util.Map;
+
+import org.wpilib.command2.Command;
+import org.wpilib.command2.ConditionalCommand;
+import org.wpilib.command2.InstantCommand;
+import org.wpilib.command2.ParallelCommandGroup;
+import org.wpilib.command2.SelectCommand;
+import org.wpilib.command2.SequentialCommandGroup;
+import org.wpilib.command2.button.CommandNiDsXboxController;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.filter.LinearFilter;
 import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.TrapezoidProfile;
 
-import java.util.Map;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
+
+import frc.robot.constants.Constants;
+import frc.robot.constants.HopperConstants;
+import frc.robot.constants.IndexerConstants;
+import frc.robot.constants.IntakePivotConstants;
+import frc.robot.constants.IntakeRollerConstants;
+import frc.robot.constants.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.templates.HoodCommand;
+import frc.robot.subsystems.templates.PositionCommand;
+import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.Setpoint;
+import frc.robot.utility.ShotCalculator;
+import frc.robot.utility.ShotMode;
 
 public class
 
 RobotContainer {
-    public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT, false);
-    // public static final CommandXboxController operatorCommandXboxController
-    //         = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
+    public static final CommandNiDsXboxController dsCommandXboxController = new CommandNiDsXboxController(Constants.XBOX_PORT);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -177,17 +194,17 @@ RobotContainer {
         ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
         leftBumperReleased = RobotCommands.idleState();
 
-        NamedCommands.registerCommand("shoot", leftTriggerPressed);
-//        NamedCommands.registerCommand("hoodZero", hoodZero);
-//        NamedCommands.registerCommand("revUp", revUp);
-        NamedCommands.registerCommand("stable", leftTriggerReleased);
-        NamedCommands.registerCommand("deployIntake", new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY)
-                .andThen(new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED)));
-//        NamedCommands.registerCommand("stowIntake", intakeStow);
-//        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
-//        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
-        NamedCommands.registerCommand("stopIntake", intakeRollerStop);
-        NamedCommands.registerCommand("intake", new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED));
+//         NamedCommands.registerCommand("shoot", leftTriggerPressed);
+// //        NamedCommands.registerCommand("hoodZero", hoodZero);
+// //        NamedCommands.registerCommand("revUp", revUp);
+//         NamedCommands.registerCommand("stable", leftTriggerReleased);
+//         NamedCommands.registerCommand("deployIntake", new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY)
+//                 .andThen(new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED)));
+// //        NamedCommands.registerCommand("stowIntake", intakeStow);
+// //        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
+// //        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
+//         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
+//         NamedCommands.registerCommand("intake", new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED));
 //        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
         //Retest on red
@@ -272,20 +289,20 @@ RobotContainer {
         double scalingFactor = 1.5;
         double rotationScalingFactor = 1.5;
 
-        if (commandXboxController.getLeftY() < 0)
-            requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+        if (dsCommandXboxController.getLeftY() < 0)
+            requestXVelocity = -Math.pow(Math.abs(dsCommandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
         else
-            requestXVelocity = Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+            requestXVelocity = Math.pow(Math.abs(dsCommandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
 
-        if (commandXboxController.getLeftX() < 0)
-            requestYVelocity = -Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+        if (dsCommandXboxController.getLeftX() < 0)
+            requestYVelocity = -Math.pow(Math.abs(dsCommandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
         else
-            requestYVelocity = Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+            requestYVelocity = Math.pow(Math.abs(dsCommandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
 
-        if (commandXboxController.getRightX() < 0)
-            requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
+        if (dsCommandXboxController.getRightX() < 0)
+            requestRotationalVelocity = Math.pow(Math.abs(dsCommandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
         else
-            requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
+            requestRotationalVelocity = -Math.pow(Math.abs(dsCommandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
 
         double maxAngularRateShooting = .5;
         if (shooterSubsystem.getMotorVelocity() > 10d) {
@@ -295,9 +312,9 @@ RobotContainer {
                 requestRotationalVelocity = maxAngularRateShooting * -Constants.MAX_ANGULAR_RATE;
         }
 
-//        requestXVelocity = commandXboxController.getLeftY() * Constants.MAX_SPEED;
-//        requestYVelocity = commandXboxController.getLeftX() * Constants.MAX_SPEED;
-//        requestRotationalVelocity = -commandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
+//        requestXVelocity = dsCommandXboxController.getLeftY() * Constants.MAX_SPEED;
+//        requestYVelocity = dsCommandXboxController.getLeftX() * Constants.MAX_SPEED;
+//        requestRotationalVelocity = -dsCommandXboxController.getRightX() * Constants.MAX_ANGULAR_RATE;
 
 //        System.out.println(shotCalculator.getTurretVelocity());
 //        System.out.println(predictedWrapAround());
@@ -424,7 +441,7 @@ RobotContainer {
                 ));
 
         // Field Centric
-        commandXboxController.start().onTrue(commandSwerveDrivetrain
+        dsCommandXboxController.start().onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
                         new ConditionalCommand(
                                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
@@ -432,17 +449,17 @@ RobotContainer {
                                 () -> Robot.getAlliance() == Alliance.BLUE)
                 ));
 
-        commandXboxController.y().onTrue(intakeDeploy);
-        commandXboxController.a().onTrue(intakeStow);
+        dsCommandXboxController.y().onTrue(intakeDeploy);
+        dsCommandXboxController.a().onTrue(intakeStow);
 
-        // commandXboxController.x().onTrue(new ConditionalCommand(
+        // dsCommandXboxController.x().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleLeft = true),
         //         new InstantCommand(() -> forceShuttleLeft = false)
         //                 .alongWith(new InstantCommand(() -> forceShuttleRight = false)),
         //         () -> !forceShuttleLeft
         // ));
 
-//        commandXboxController.b().onTrue(new ParallelCommandGroup(
+//        dsCommandXboxController.b().onTrue(new ParallelCommandGroup(
 //                        new VelocityCommand(hopperSubsystem, HopperConstants.UPPER_INDEXER_SPEED),
 //                        new VelocityCommand(indexerSubsystem, 25)
 //                ))
@@ -450,26 +467,26 @@ RobotContainer {
 //                        new VelocityCommand(hopperSubsystem, 0),
 //                        new VelocityCommand(indexerSubsystem, 0)
 //                ));
-        // commandXboxController.b().onTrue(new ConditionalCommand(
+        // dsCommandXboxController.b().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleRight = true),
         //         new InstantCommand(() -> forceShuttleRight = false)
         //                 .alongWith(new InstantCommand(() -> forceShuttleLeft = false)),
         //         () -> !forceShuttleRight
         // ));
 
-//        commandXboxController.a().onTrue(shooterSubsystem.sysIdQuasistaticForward());
-//        commandXboxController.b().onTrue(shooterSubsystem.sysIdQuasistaticReverse());
-//        commandXboxController.y().onTrue(shooterSubsystem.sysIdDynamicForward());
-//        commandXboxController.x().onTrue(shooterSubsystem.sysIdDynamicReverse());
+//        dsCommandXboxController.a().onTrue(shooterSubsystem.sysIdQuasistaticForward());
+//        dsCommandXboxController.b().onTrue(shooterSubsystem.sysIdQuasistaticReverse());
+//        dsCommandXboxController.y().onTrue(shooterSubsystem.sysIdDynamicForward());
+//        dsCommandXboxController.x().onTrue(shooterSubsystem.sysIdDynamicReverse());
 
-        commandXboxController.rightTrigger().onTrue(intakeRollerIntake.alongWith(new InstantCommand(() -> setIsRightTriggerPressed(true)))/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
+        dsCommandXboxController.rightTrigger().onTrue(intakeRollerIntake.alongWith(new InstantCommand(() -> setIsRightTriggerPressed(true)))/*.alongWith(new VelocityCommand(hopperSubsystem, 50))*/)
                 .onFalse(intakeRollerStop.alongWith(new InstantCommand(() -> setIsRightTriggerPressed(false)))/*.alongWith(new VelocityCommand(hopperSubsystem, 0))*/);
 
-        commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
+        dsCommandXboxController.leftTrigger().onTrue(leftTriggerPressed)
                 .onFalse(leftTriggerReleased);
 
         //Outtake
-        commandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
+        dsCommandXboxController.leftBumper().onTrue(new VelocityCommand(intakeRollerSubsystem, -116).alongWith(
                         new VelocityCommand(hopperSubsystem, -90)
                 ))
                 .onFalse(new VelocityCommand(intakeRollerSubsystem, 0).alongWith(
@@ -477,37 +494,36 @@ RobotContainer {
                 ));
 
         // Outtake and Shoot
-        commandXboxController.rightBumper().onTrue(rightBumperPressed).onFalse(rightBumperReleased);
+        dsCommandXboxController.rightBumper().onTrue(rightBumperPressed).onFalse(rightBumperReleased);
 
         // X-drive
-        commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
+        dsCommandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
-        // operatorCommandXboxController.y().onTrue(setHubSetpoint);
-        // operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
-        // operatorCommandXboxController.b().onTrue(setOutpostSetpoint);
-        // operatorCommandXboxController.a().onTrue(setTowerSetpoint);
+        // operatordsCommandXboxController.y().onTrue(setHubSetpoint);
+        // operatordsCommandXboxController.x().onTrue(setLeftCornerSetpoint);
+        // operatordsCommandXboxController.b().onTrue(setOutpostSetpoint);
+        // operatordsCommandXboxController.a().onTrue(setTowerSetpoint);
 
-        commandXboxController.dpadUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        commandXboxController.dpadDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        // dsCommandXboxController.dpadUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        // dsCommandXboxController.dpadDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-        commandXboxController.dpadLeft().onTrue(new InstantCommand(() -> turretSubsystem.setPercent(.1)))
-                .onFalse(new InstantCommand(() -> turretSubsystem.setPercent(0)));
-        commandXboxController.dpadRight().onTrue(new InstantCommand(() -> turretSubsystem.setPercent(-.1)))
-                .onFalse(new InstantCommand(() -> turretSubsystem.setPercent(0)));
-        commandXboxController.display().onTrue(RobotCommands.zeroTurretReboot());
+        // dsCommandXboxController.dpadLeft().onTrue(new InstantCommand(() -> turretSubsystem.setPercent(.1)))
+        //         .onFalse(new InstantCommand(() -> turretSubsystem.setPercent(0)));
+        // dsCommandXboxController.dpadRight().onTrue(new InstantCommand(() -> turretSubsystem.setPercent(-.1)))
+        //         .onFalse(new InstantCommand(() -> turretSubsystem.setPercent(0)));
+        dsCommandXboxController.back().onTrue(RobotCommands.zeroTurretReboot());
 
-        // operatorCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
-        // operatorCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
+        // operatordsCommandXboxController.rightTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = true));
+        // operatordsCommandXboxController.leftTrigger().onTrue(new InstantCommand(() -> turretSubsystem.fullStop = false));
 
-        // operatorCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
-        // operatorCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
+        // operatordsCommandXboxController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(.5)));
+        // operatordsCommandXboxController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.changeOffset(-.5)));
 
-        // operatorCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
+        // operatordsCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
-        // operatorCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
+        // operatordsCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
 //        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
-
 
     public void optimizeDrivetrain() {
         for (int i = 0; i < 4; i++) {
