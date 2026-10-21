@@ -118,15 +118,7 @@ public class Robot extends TimedRobot {
 
    @Override
    public void autonomousInit() {
-       if (getAlliance() != null && getAlliance().equals(Alliance.RED)) {
-           commandSwerveDrivetrain.getPigeon2().setYaw(180d);
-       } else {
-           commandSwerveDrivetrain.getPigeon2().setYaw(0);
-       }
-
-       commandSwerveDrivetrain.seedFieldCentric();
-
-       m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+       m_autonomousCommand = Autos.getInstance().getSelected();
 
        if (m_autonomousCommand != null) {
            CommandScheduler.getInstance().schedule(m_autonomousCommand);
