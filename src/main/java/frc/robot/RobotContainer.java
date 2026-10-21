@@ -92,7 +92,7 @@ public class RobotContainer {
 //     //Intake Roller Commands
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
-    private static final VelocityCommand intakeRollerOuttake = new VelocityCommand(intakeRollerSubsystem, -IntakeRollerConstants.INTAKE_SPEED);
+    private static final VelocityCommand intakeRollerOuttake = new VelocityCommand(intakeRollerSubsystem, -IntakeRollerConstants.OUTTAKE_SPEED);
 //     private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
 //     //Climber Commands
 // //    private static final PositionCommand climberClimb = new PositionCommand(climberSubsystem, ClimberConstants.CLIMB);
