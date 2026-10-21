@@ -194,18 +194,18 @@ RobotContainer {
         ), RobotContainer::getCurrentSetpoint).alongWith(RobotCommands.indexBalls());
         leftBumperReleased = RobotCommands.idleState();
 
-//         NamedCommands.registerCommand("shoot", leftTriggerPressed);
-// //        NamedCommands.registerCommand("hoodZero", hoodZero);
-// //        NamedCommands.registerCommand("revUp", revUp);
-//         NamedCommands.registerCommand("stable", leftTriggerReleased);
-//         NamedCommands.registerCommand("deployIntake", new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY)
-//                 .andThen(new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED)));
-// //        NamedCommands.registerCommand("stowIntake", intakeStow);
-// //        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
-// //        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
-//         NamedCommands.registerCommand("stopIntake", intakeRollerStop);
-//         NamedCommands.registerCommand("intake", new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED));
-//        NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
+        NamedCommands.registerCommand("shoot", leftTriggerPressed);
+//        NamedCommands.registerCommand("hoodZero", hoodZero);
+//        NamedCommands.registerCommand("revUp", revUp);
+        NamedCommands.registerCommand("stable", leftTriggerReleased);
+        NamedCommands.registerCommand("deployIntake", new PositionCommand(intakePivotSubsystem, IntakePivotConstants.DEPLOY)
+                .andThen(new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED)));
+//        NamedCommands.registerCommand("stowIntake", intakeStow);
+//        NamedCommands.registerCommand("agitateIntake", intakeAgitation);
+//        NamedCommands.registerCommand("runIntake", intakeRollerIntake);
+        NamedCommands.registerCommand("stopIntake", intakeRollerStop);
+        NamedCommands.registerCommand("intake", new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED));
+       NamedCommands.registerCommand("indexBalls", RobotCommands.indexBalls());
 
         //Retest on red
 //        NamedCommands.registerCommand("startLeft", new ConditionalCommand(
@@ -522,7 +522,7 @@ RobotContainer {
         // operatordsCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
         // operatordsCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-//        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+       commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public void optimizeDrivetrain() {

@@ -1,54 +1,39 @@
 package frc.robot;
 
+import org.wpilib.command2.Command;
+import org.wpilib.command2.PrintCommand;
+import org.wpilib.tunable.Selectable;
+import org.wpilib.tunable.Tunables;
+
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 public final class Autos {
-    private PathPlannerAuto bottomDelayedBump;
+    private static Selectable<Command> autoChooser = new Selectable<Command>();
 
-    public PathPlannerAuto getLeftDelayedBump() {
-        return bottomDelayedBump;
-    }
-
-    public PathPlannerAuto getRightDelayedBump() {
-        return topDelayedBump;
-    }
-
-    public PathPlannerAuto getLeftDoubleTrench() {
-        return bottomDoubleTrench;
-    }
-
-    public PathPlannerAuto getRightDoubleTrench() {
-        return topDoubleTrench;
-    }
-
-    public PathPlannerAuto getLeftDelayedTrench() {
-        return bottomDelayedTrench;
-    }
-
-    public PathPlannerAuto getRightDelayedTrench() {
-        return topDelayedTrench;
-    }
-
-    private PathPlannerAuto topDelayedBump;
-    private PathPlannerAuto bottomDoubleTrench;
-    private PathPlannerAuto topDoubleTrench;
-    private PathPlannerAuto bottomDelayedTrench;
-    private PathPlannerAuto topDelayedTrench;
     private static Autos autos;
 
     public void initializeAutos() {
-        bottomDoubleTrench = new PathPlannerAuto("Red Bottom Double Trench");
-        topDoubleTrench = new PathPlannerAuto("Red Top Double Trench");
+        // Red
+        autoChooser.addDefault("NONE", new PrintCommand("No Auto Selected"));
 
-        bottomDelayedBump = new PathPlannerAuto("Red Bottom Delayed Bump");
-        topDelayedBump = new PathPlannerAuto("Red Top Delayed Bump");
+        autoChooser.add("Left Double Trench", new PathPlannerAuto("Red Bottom Double Trench"));
+        autoChooser.add("Right Double Trench", new PathPlannerAuto("Red Top Double Trench"));
+        
+        autoChooser.add("Left Delayed Trench", new PathPlannerAuto("Red Bottom Delayed Trench"));
+        autoChooser.add("Right Delayed Trench", new PathPlannerAuto("Red Top Delayed Trench"));
 
-        bottomDelayedTrench = new PathPlannerAuto("Red Bottom Delayed Trench");
-        topDelayedTrench = new PathPlannerAuto("Red Top Delayed Trench");
+        autoChooser.add("Left Delayed Bump", new PathPlannerAuto("Red Bottom Delayed Bump"));
+        autoChooser.add("Right Delayed Bump", new PathPlannerAuto("Red Top Delayed Bump"));
+
+        if (!Tunables.publish("Auto Chooser", autoChooser)) System.out.println("ELASTIC AUTOCHOOSER INIT FAILED");
     }
 
     public static Autos getInstance() {
         if (autos == null) autos = new Autos();
         return autos;
+    }
+
+    public Command getSelected() {
+        return autoChooser.getSelected();
     }
 }
