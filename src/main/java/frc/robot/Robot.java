@@ -25,6 +25,7 @@ import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.utility.ShotCalculator;
+import org.wpilib.math.geometry.Pose2d;
 
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
@@ -116,30 +117,32 @@ public class Robot extends TimedRobot {
         vision.getRightLimelight().setThrottle(0);
     }
 
-   @Override
-   public void autonomousInit() {
-       m_autonomousCommand = Autos.getInstance().getSelected();
+    @Override
+    public void autonomousInit() {
+        m_autonomousCommand = Autos.getInstance().getSelected();
 
-       if (m_autonomousCommand != null) {
-           CommandScheduler.getInstance().schedule(m_autonomousCommand);
-       }
-   }
+        if (m_autonomousCommand != null) {
+            CommandScheduler.getInstance().schedule(m_autonomousCommand);
+        }
+    }
 
-   @Override
-   public void autonomousPeriodic() {}
+    @Override
+    public void autonomousPeriodic() {
+    }
 
-   @Override
-   public void autonomousExit() {}
+    @Override
+    public void autonomousExit() {
+    }
 
-   @Override
-   public void teleopInit() {
-       CommandScheduler.getInstance().cancelAll();
-       if (m_autonomousCommand != null) {
-           CommandScheduler.getInstance().cancel(m_autonomousCommand);
-       }
+    @Override
+    public void teleopInit() {
+        CommandScheduler.getInstance().cancelAll();
+        if (m_autonomousCommand != null) {
+            CommandScheduler.getInstance().cancel(m_autonomousCommand);
+        }
 
-       CommandScheduler.getInstance().schedule(RobotCommands.idleState());
-   }
+        CommandScheduler.getInstance().schedule(RobotCommands.idleState());
+    }
 
 //    @Override
 //    public void teleopPeriodic() {}

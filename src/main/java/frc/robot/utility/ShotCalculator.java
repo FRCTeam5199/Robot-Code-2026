@@ -667,7 +667,7 @@ public class ShotCalculator {
         lastHoodAngle = hoodAngle;
 
 
-        //Offset for left corner
+        //Offsets
         if (futureTurretToTargetDistance >= 3.85) {
             if ((Robot.getAlliance().equals(Alliance.RED)
                     && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
@@ -702,6 +702,8 @@ public class ShotCalculator {
                     && futureTurretPosition.getY() < Constants.BLUE_HUB_CENTER.getY())) {
                 turretAngle += 1.25;
                 turretAnglePhaseDelayed += 1.25;
+                shooterSpeed += 1.5;
+                shooterSpeedPhaseDelayed += 1.5;
             }
         }
 

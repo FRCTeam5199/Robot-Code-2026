@@ -27,8 +27,8 @@ public class Constants {
     public static final double PHASE_DELAY = 0.02;
     public static final double ROTATIONAL_PHASE_DELAY = 0.1;
     public static final double ACCELERATION_PHASE_DELAY = 0;
-    public static final double CENTER_TO_BUMPER_LONG = 0.9271 / 2d;
-    public static final double CENTER_TO_BUMPER_SHORT = 0.8128 / 2d;
+    public static final double CENTER_TO_BUMPER_LONG = .9 / 2d;
+    public static final double CENTER_TO_BUMPER_SHORT = .795 / 2d;
     public static final Transform2d FRONT_LEFT_CORNER = new Transform2d(CENTER_TO_BUMPER_SHORT, CENTER_TO_BUMPER_LONG, new Rotation2d(0));
     public static final Transform2d FRONT_RIGHT_CORNER = new Transform2d(CENTER_TO_BUMPER_SHORT, -CENTER_TO_BUMPER_LONG, new Rotation2d(0));
     public static final Transform2d BACK_LEFT_CORNER = new Transform2d(-CENTER_TO_BUMPER_SHORT, CENTER_TO_BUMPER_LONG, new Rotation2d(0));
