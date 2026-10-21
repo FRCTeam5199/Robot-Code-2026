@@ -532,4 +532,9 @@ RobotContainer {
             commandSwerveDrivetrain.getModules()[i].getEncoder().optimizeBusUtilization();
         }
     }
+
+    public Command getAutonomousCommand() {
+        // if (Robot.getAlliance().equals(Alliance.BLUE)) return Autos.getInstance().getBlueSelected();
+        return Autos.getInstance().getRedSelected();
+    }
 }
