@@ -12,13 +12,18 @@ public final class Autos {
 
     private static Autos autos;
 
+    public static Autos getInstance() {
+        if (autos == null) autos = new Autos();
+        return autos;
+    }
+
     public void initializeAutos() {
         // Red
         autoChooser.addDefault("NONE", new PrintCommand("No Auto Selected"));
 
-        autoChooser.add("Left Double Trench", new PathPlannerAuto("Red Bottom Double Trench"));
-        autoChooser.add("Right Double Trench", new PathPlannerAuto("Red Top Double Trench"));
-        
+        autoChooser.add("Left Double Trench Slow", new PathPlannerAuto("Red Bottom Double Trench Slow"));
+        autoChooser.add("Right Double Trench Slow", new PathPlannerAuto("Red Top Double Trench Slow"));
+
         autoChooser.add("Left Delayed Trench", new PathPlannerAuto("Red Bottom Delayed Trench"));
         autoChooser.add("Right Delayed Trench", new PathPlannerAuto("Red Top Delayed Trench"));
 
@@ -26,11 +31,6 @@ public final class Autos {
         autoChooser.add("Right Delayed Bump", new PathPlannerAuto("Red Top Delayed Bump"));
 
         if (!Tunables.publish("Auto Chooser", autoChooser)) System.out.println("ELASTIC AUTOCHOOSER INIT FAILED");
-    }
-
-    public static Autos getInstance() {
-        if (autos == null) autos = new Autos();
-        return autos;
     }
 
     public Command getSelected() {

@@ -668,44 +668,44 @@ public class ShotCalculator {
 
 
         //Offsets
-        if (futureTurretToTargetDistance >= 3.85) {
-            if ((Robot.getAlliance().equals(Alliance.RED)
-                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
-                    || (Robot.getAlliance().equals(Alliance.BLUE)
-                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                turretAngle += 1d;
-                turretAnglePhaseDelayed += 1d;
-            }
-        }
-        if (futureTurretToTargetDistance >= 4.5) {
-            if ((Robot.getAlliance().equals(Alliance.RED)
-                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
-                    || (Robot.getAlliance().equals(Alliance.BLUE)
-                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                turretAngle += 1.5;
-                turretAnglePhaseDelayed += 1.5;
-            }
-        }
-        if (futureTurretToTargetDistance >= 4.75) {
-            if ((Robot.getAlliance().equals(Alliance.RED)
-                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
-                    || (Robot.getAlliance().equals(Alliance.BLUE)
-                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-                shooterSpeed += .75;
-                shooterSpeedPhaseDelayed += .75;
-            }
-        }
-        if (futureTurretToTargetDistance >= 4.65) {
-            if ((Robot.getAlliance().equals(Alliance.RED)
-                    && futureTurretPosition.getY() > Constants.RED_HUB_CENTER.getY())
-                    || (Robot.getAlliance().equals(Alliance.BLUE)
-                    && futureTurretPosition.getY() < Constants.BLUE_HUB_CENTER.getY())) {
-                turretAngle += 1.25;
-                turretAnglePhaseDelayed += 1.25;
-                shooterSpeed += 1.5;
-                shooterSpeedPhaseDelayed += 1.5;
-            }
-        }
+//        if (futureTurretToTargetDistance >= 3.85) {
+//            if ((Robot.getAlliance().equals(Alliance.RED)
+//                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
+//                    || (Robot.getAlliance().equals(Alliance.BLUE)
+//                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
+//                turretAngle += 1d;
+//                turretAnglePhaseDelayed += 1d;
+//            }
+//        }
+//        if (futureTurretToTargetDistance >= 4.5) {
+//            if ((Robot.getAlliance().equals(Alliance.RED)
+//                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
+//                    || (Robot.getAlliance().equals(Alliance.BLUE)
+//                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
+//                turretAngle += 1.5;
+//                turretAnglePhaseDelayed += 1.5;
+//            }
+//        }
+//        if (futureTurretToTargetDistance >= 4.75) {
+//            if ((Robot.getAlliance().equals(Alliance.RED)
+//                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
+//                    || (Robot.getAlliance().equals(Alliance.BLUE)
+//                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
+//                shooterSpeed += .75;
+//                shooterSpeedPhaseDelayed += .75;
+//            }
+//        }
+//        if (futureTurretToTargetDistance >= 4.65) {
+//            if ((Robot.getAlliance().equals(Alliance.RED)
+//                    && futureTurretPosition.getY() > Constants.RED_HUB_CENTER.getY())
+//                    || (Robot.getAlliance().equals(Alliance.BLUE)
+//                    && futureTurretPosition.getY() < Constants.BLUE_HUB_CENTER.getY())) {
+//                turretAngle += 1.25;
+//                turretAnglePhaseDelayed += 1.25;
+//                shooterSpeed += 1.5;
+//                shooterSpeedPhaseDelayed += 1.5;
+//            }
+//        }
 
         turretSubsystem.updateGoalPosition(getTurretAnglePhaseDelayed(), getTurretVelocityPhaseDelayed());
         RobotContainer.getShooterControlAuto().setGoal(shotCalculator.getShooterSpeedPhaseDelayed());
