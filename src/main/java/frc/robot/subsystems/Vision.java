@@ -63,7 +63,7 @@ public class Vision {
                 .withPoseEstimateConfig_MT2(mt2Config);
         frontLimelight = new Limelight(Constants.LIMELIGHT_FRONT_NAME,
                 new Pose3d(-0.049, -0.296, 0.514,
-                        new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(14.106))))
+                        new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(13d)))) //14.106
                 .withPoseEstimateConfig_MT2(mt2Config);
         rightLimelight = new Limelight(Constants.LIMELIGHT_RIGHT_NAME,
                 new Pose3d(-0.248110, -.3182, 0.509,
