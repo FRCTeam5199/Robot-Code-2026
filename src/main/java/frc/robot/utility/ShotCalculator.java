@@ -12,6 +12,7 @@ import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.geometry.Twist2d;
 import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
 import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.system.Timer;
 import org.wpilib.util.Pair;
 
 import frc.robot.Robot;
@@ -677,15 +678,12 @@ public class ShotCalculator {
 //                turretAnglePhaseDelayed += 1d;
 //            }
 //        }
-//        if (futureTurretToTargetDistance >= 4.5) {
-//            if ((Robot.getAlliance().equals(Alliance.RED)
-//                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
-//                    || (Robot.getAlliance().equals(Alliance.BLUE)
-//                    && futureTurretPosition.getY() > Constants.BLUE_HUB_CENTER.getY())) {
-//                turretAngle += 1.5;
-//                turretAnglePhaseDelayed += 1.5;
-//            }
-//        }
+       if (Timer.getMatchTime() < 90 && futureTurretToTargetDistance >= 4.25) {
+            turretAngle += 1d;
+            turretAnglePhaseDelayed += 1d;
+            shooterSpeed += 1d;
+            shooterSpeedPhaseDelayed += 1d;
+       }
 //        if (futureTurretToTargetDistance >= 4.75) {
 //            if ((Robot.getAlliance().equals(Alliance.RED)
 //                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
