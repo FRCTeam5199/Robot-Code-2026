@@ -44,9 +44,4 @@ public class KickerSubsystem extends TemplateSubsystem {
 //        System.out.println("Indexer Goal: " + getGoal());
 
     }
-
-    public boolean isMechAtGoalAuto() {
-        return getMotorVelocity() >= KickerConstants.INDEXER_SPEED - KickerConstants.LOWER_TOLERANCE
-                && getMotorVelocity() <= KickerConstants.INDEXER_SPEED + KickerConstants.UPPER_TOLERANCE;
-    }
 }

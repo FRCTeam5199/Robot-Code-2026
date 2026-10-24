@@ -14,7 +14,8 @@ public class KickerConstants {
 
     public static final boolean BRAKE = false;
     
-    public static final double INDEXER_SPEED = 20;
+    public static final double KICKER_REVERSE = -20;
+    public static final double KICKER_SPEED = 55;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(0.4)

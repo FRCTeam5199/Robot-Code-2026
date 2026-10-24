@@ -19,11 +19,15 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import java.util.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
+import frc.robot.constants.HoodConstants;
 import frc.robot.constants.IntakeLinearConstants;
 import frc.robot.constants.IntakeRollerConstants;
+import frc.robot.constants.KickerConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
@@ -335,26 +339,38 @@ public static Setpoint currentSetpoint = Setpoint.TOWER;
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
+        commandXboxController.povUp().onTrue(new InstantCommand(()->setSetpoint(Setpoint.SHUTTLE)));
+        commandXboxController.povLeft().onTrue(new InstantCommand(()->setSetpoint(Setpoint.TRENCH)));
+        commandXboxController.povDown().onTrue(new InstantCommand(()->setSetpoint(Setpoint.TOWER)));
+
         commandXboxController.leftTrigger().onTrue(new SelectCommand<>(
                     Map.ofEntries(
                             Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
                     new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
                     new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle())
-                )),
+                ).andThen(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))
+                ),
                             
                 Map.entry(Setpoint.TRENCH, new ParallelCommandGroup(
                     new VelocityCommand(shooterSubsystem, Setpoint.TRENCH.getShooterSpeed()),
                     new PositionCommand(hoodSubsystem, Setpoint.TRENCH.getHoodAngle())
-                )),
+                ).andThen(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))
+                ),
                             
                 Map.entry(Setpoint.SHUTTLE, new ParallelCommandGroup(
                     new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLE.getShooterSpeed()),
                     new PositionCommand(hoodSubsystem, Setpoint.SHUTTLE.getHoodAngle())
-                ))
+                ).andThen(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))
+                )
                             
                     ),
                     RobotContainer::getSetpoint
-            ));
+            )).onFalse(
+                new SequentialCommandGroup(
+                    new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE),
+                    new VelocityCommand(shooterSubsystem, 0),
+                    new PositionCommand(hoodSubsystem, HoodConstants.MIN)
+                    ));
 
         // commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
         // commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
@@ -429,6 +445,10 @@ public static Setpoint currentSetpoint = Setpoint.TOWER;
 
     public static Setpoint getSetpoint() {
         return currentSetpoint;
+    }
+
+    public static void setSetpoint(Setpoint setpoint) {
+        currentSetpoint = setpoint;
     }
 
     public Command getAutonomousCommand() {
