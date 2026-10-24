@@ -30,6 +30,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 
@@ -194,6 +195,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
+    @Override
+    public void resetPose(Pose2d pose) {
+        super.resetPose(pose);
+        Robot.gyroOffsetDegrees = pose.getRotation().getDegrees() - (Robot.gyro.getYaw() * 360d);
+        Robot.gyroOffsetValid = true;
+    }
     public void configureAutoBuilder() {
         try {
             RobotConfig config = RobotConfig.fromGUISettings();

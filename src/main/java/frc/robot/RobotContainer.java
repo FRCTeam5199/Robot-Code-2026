@@ -444,10 +444,12 @@ RobotContainer {
         dsCommandXboxController.start().onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
                         new ConditionalCommand(
-                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
-                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0))
+                                .alongWith(new InstantCommand(() -> Robot.gyro.setYaw(0))),
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180))
+                                .alongWith(new InstantCommand(() -> Robot.gyro.setYaw(.5))),
                                 () -> Robot.getAlliance() == Alliance.BLUE)
-                ));
+                ).alongWith(new InstantCommand(() -> Robot.gyroOffsetValid = true)).alongWith(new InstantCommand(() -> Robot.gyroOffsetDegrees = 0)));
 
         dsCommandXboxController.y().onTrue(intakeDeploy);
         dsCommandXboxController.a().onTrue(intakeStow);

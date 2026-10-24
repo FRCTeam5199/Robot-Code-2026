@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static frc.robot.subsystems.Vision.pendingMeasurements;
+import static org.wpilib.units.Units.Rotation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,7 +26,17 @@ import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.utility.ShotCalculator;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.linalg.VecBuilder;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.system.Timer;
+
+import com.reduxrobotics.canandgyro.Canandgyro;
+
 
 public class Robot extends TimedRobot {
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
@@ -38,6 +49,9 @@ public class Robot extends TimedRobot {
     private static Alliance alliance = Alliance.RED;
     private final RobotContainer m_robotContainer;
     private final List<Vision.VisionMeasurement> visionBatch = new ArrayList<>(3);
+    public static final Canandgyro gyro = new Canandgyro(0, CANPort.CAN_S4);
+    public static double gyroOffsetDegrees = 0;
+    public static boolean gyroOffsetValid = false;
     // private final UserInterface userInterface = UserInterface.getInstance();
     private Command m_autonomousCommand;
 
@@ -79,6 +93,7 @@ public class Robot extends TimedRobot {
         //     }
         // }
 
+
         visionBatch.clear();
         Vision.VisionMeasurement m;
         while ((m = pendingMeasurements.poll()) != null) {
@@ -95,6 +110,15 @@ public class Robot extends TimedRobot {
         RobotContainer.updateLastVelocity();
         // System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
         // System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
+
+        System.out.println("Gyro Degrees: " + gyro.getYaw() * 360d);
+        
+        if (gyroOffsetValid && gyro.isConnected() && !gyro.isCalibrating()) {
+            Pose2d rotationPose = new Pose2d(RobotContainer.getPose().getX(), 
+                RobotContainer.getPose().getY(), Rotation2d.fromDegrees(gyro.getYaw() * 360d + gyroOffsetDegrees));
+            Matrix<N3, N1> rotationStdDevs = VecBuilder.fill(9999999999d, 9999999999d, .00000001);
+            commandSwerveDrivetrain.addVisionMeasurement(rotationPose, Timer.getTimestamp(), rotationStdDevs);
+        }
     }
 
     @Override
