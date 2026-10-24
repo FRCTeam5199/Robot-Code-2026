@@ -184,8 +184,8 @@ public class TurretSubsystem extends TemplateSubsystem {
 //
 //        isMechAtGoal.set(isMechAtGoalAuto());
 //        isHoodAtGoal.set(HoodSubsystem.getInstance().isMechAtGoalAuto());
-        // isShooterAtGoal.set(ShooterSubsystem.getInstance().isMechAtGoalAuto());
-//        isIndexerAtGoal.set(KickerSubsystem.getInstance().isMechAtGoalAuto());
+//        isShooterAtGoal.set(ShooterSubsystem.getInstance().isMechAtGoalAuto());
+//        isIndexerAtGoal.set(IndexerSubsystem.getInstance().isMechAtGoalAuto());
 //        areMechanismsAtGoalAuto.set(RobotContainer.areMechanismsExceptShooterAtGoalsAuto());
 //
 //        goalVelocityLogging.set(goalVelocityRotPerSec);

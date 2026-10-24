@@ -10,9 +10,6 @@ import static org.wpilib.units.Units.*;
 
 public class HopperSubsystem extends TemplateSubsystem {
     private static HopperSubsystem hopperSubsystem;
-    private double lastVelocity = 0;
-    private double acceleration = 0;
-
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
                     Volts.of(1).per(Second), // ramp rate - slow for a turret
@@ -31,6 +28,8 @@ public class HopperSubsystem extends TemplateSubsystem {
                     this
             )
     );
+    private double lastVelocity = 0;
+    private double acceleration = 0;
 
     private HopperSubsystem() {
         super(SubsystemType.ROLLER, HopperConstants.MOTOR_ID, HopperConstants.CANBUS,
@@ -61,7 +60,7 @@ public class HopperSubsystem extends TemplateSubsystem {
         acceleration = (getMotorVelocity() - lastVelocity) / .02;
         lastVelocity = getMotorVelocity();
 
-//        System.out.println("Goal: " + getGoal());
+        System.out.println("Goal: " + getGoal());
     }
 
     public Command sysIdQuasistaticForward() {
