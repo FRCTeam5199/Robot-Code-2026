@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
         // System.out.println("Pose Degrees: " + RobotContainer.getPose().getRotation().getDegrees());
         // System.out.println("Pigeon Degrees: " + RobotContainer.commandSwerveDrivetrain.getPigeon2().getYaw());
 
-        System.out.println("Gyro Degrees: " + gyro.getYaw() * 360d);
+        // System.out.println("Gyro Degrees: " + gyro.getYaw() * 360d);
         
         if (gyroOffsetValid && gyro.isConnected() && !gyro.isCalibrating()) {
             Pose2d rotationPose = new Pose2d(RobotContainer.getPose().getX(), 

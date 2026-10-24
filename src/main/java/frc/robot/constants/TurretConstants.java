@@ -39,8 +39,8 @@ public class TurretConstants {
     public static final boolean CCW_POSITIVE = true;
     public static final double ABSOLUTE_DISCONTINUITY_POINT = .5;
 
-    public static final double MIN = -270d;
-    public static final double MAX = 240d;
+    public static final double MIN = -260d;
+    public static final double MAX = 270;
 
     public static final double INDEXING_TIME = .2;
 

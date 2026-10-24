@@ -52,15 +52,15 @@ public class RobotCommands {
                     }
                 },
                 () -> {
-                    if (hopperSubsystem.getStatorCurrent() > 52.5 && Math.abs(hopperSubsystem.getAcceleration()) < 200) {
+                    if (hopperSubsystem.getStatorCurrent() > 55d & Math.abs(hopperSubsystem.getAcceleration()) < 200) {
                         hopperStatorCurrentLimitCheck++;
                     } else hopperStatorCurrentLimitCheck = 0;
 
                     if (hopperStatorCurrentLimitCheck > STATOR_CURRENT_TIMES && hopperReverseCheck < MAX_HOPPER_REVERSAL_TIMES) {
                         if (shooterSubsystem.isMechAtGoal(true)) {
                             hopperSubsystem.setVelocity(HopperConstants.REVERSE_SPEED);
-                            indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED + 10d);
-                            indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED + (10d * IndexerConstants.UPPER_TO_LOWER_RATIO));
+                            // indexerSubsystem.setVelocity(IndexerConstants.UPPER_INDEXER_SPEED + 10d);
+                            // indexerSubsystem.setSecondaryVelocity(IndexerConstants.LOWER_INDEXER_SPEED + (10d * IndexerConstants.UPPER_TO_LOWER_RATIO));
                             hopperReverseCheck++;
                         } else {
                             hopperStatorCurrentLimitCheck = 0;
