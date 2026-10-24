@@ -93,6 +93,9 @@ public class Robot extends TimedRobot {
         //     }
         // }
 
+        // System.out.println("Timer: " + Timer.getTimestamp());
+        // System.out.println("Yaw Frame: " + gyro.getYawFrame().getTimestamp());
+        // System.out.println("Difference: " + (Timer.getTimestamp() - gyro.getYawFrame().getTimestamp()));
 
         visionBatch.clear();
         Vision.VisionMeasurement m;
@@ -116,8 +119,9 @@ public class Robot extends TimedRobot {
         if (gyroOffsetValid && gyro.isConnected() && !gyro.isCalibrating()) {
             Pose2d rotationPose = new Pose2d(RobotContainer.getPose().getX(), 
                 RobotContainer.getPose().getY(), Rotation2d.fromDegrees(gyro.getYaw() * 360d + gyroOffsetDegrees));
+            // System.out.println("Using Gyro");
             Matrix<N3, N1> rotationStdDevs = VecBuilder.fill(9999999999d, 9999999999d, .00000001);
-            commandSwerveDrivetrain.addVisionMeasurement(rotationPose, Timer.getTimestamp(), rotationStdDevs);
+            commandSwerveDrivetrain.addVisionMeasurement(rotationPose, gyro.getYawFrame().getTimestamp(), rotationStdDevs);
         }
     }
 

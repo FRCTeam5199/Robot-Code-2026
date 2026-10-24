@@ -524,7 +524,7 @@ RobotContainer {
         // operatordsCommandXboxController.rightBumper().onTrue(RobotCommands.outtake())
         //         .onFalse(RobotCommands.idleState());
         // operatordsCommandXboxController.leftBumper().onTrue(leftBumperPressed).onFalse(leftBumperReleased);
-       commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
+    //    commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public void optimizeDrivetrain() {
