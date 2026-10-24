@@ -16,7 +16,7 @@ public class IntakeLinearConstants {
     public static final boolean BRAKE = true;
 
     public static final double DEPLOY = 24.05;
-    public static final double STOW = -0.2;
+    public static final double STOW = 7.6;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(4)
@@ -28,8 +28,8 @@ public class IntakeLinearConstants {
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
-    public static final double VELOCITY = 50; //125
-    public static final double ACCELERATION = 100; //200
+    public static final double VELOCITY = 75; //125
+    public static final double ACCELERATION = 110; //200
     public static final double JERK = 1500; //3000
 
     public static final double LOWER_TOLERANCE = 1;

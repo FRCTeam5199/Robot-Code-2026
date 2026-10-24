@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import java.util.Map;
+
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -15,16 +17,23 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
+import java.util.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IntakeLinearConstants;
 import frc.robot.constants.IntakeRollerConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.IntakeLinearSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
+import frc.robot.utility.Setpoint;
 
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
@@ -35,12 +44,12 @@ public class RobotContainer {
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final IntakeLinearSubsystem intakeLinearSubsystem = IntakeLinearSubsystem.getInstance();
 //     public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
-//     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
-//     public static final IndexerSubsystem indexerSubsystem = IndexerSubsystem.getInstance();
-//     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
+    public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
+    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
     // public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
 //     public static final Vision vision = Vision.getInstance();
-
+public static Setpoint currentSetpoint = Setpoint.TOWER;
 //     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.DEPLOY, false);
@@ -92,7 +101,7 @@ public class RobotContainer {
 //     //Intake Roller Commands
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
-    private static final VelocityCommand intakeRollerOuttake = new VelocityCommand(intakeRollerSubsystem, -IntakeRollerConstants.OUTTAKE_SPEED);
+    private static final VelocityCommand intakeRollerOuttake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.OUTTAKE_SPEED);
 //     private static final VelocityCommand intakeRollerIntakeAuton = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
 //     //Climber Commands
 // //    private static final PositionCommand climberClimb = new PositionCommand(climberSubsystem, ClimberConstants.CLIMB);
@@ -326,8 +335,29 @@ public class RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
-        commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
+        commandXboxController.leftTrigger().onTrue(new SelectCommand<>(
+                    Map.ofEntries(
+                            Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
+                    new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
+                    new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle())
+                )),
+                            
+                Map.entry(Setpoint.TRENCH, new ParallelCommandGroup(
+                    new VelocityCommand(shooterSubsystem, Setpoint.TRENCH.getShooterSpeed()),
+                    new PositionCommand(hoodSubsystem, Setpoint.TRENCH.getHoodAngle())
+                )),
+                            
+                Map.entry(Setpoint.SHUTTLE, new ParallelCommandGroup(
+                    new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLE.getShooterSpeed()),
+                    new PositionCommand(hoodSubsystem, Setpoint.SHUTTLE.getHoodAngle())
+                ))
+                            
+                    ),
+                    RobotContainer::getSetpoint
+            ));
+
+        // commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
+        // commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
 
         // commandXboxController.x().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleLeft = true),
@@ -350,11 +380,10 @@ public class RobotContainer {
         //                 .alongWith(new InstantCommand(() -> forceShuttleLeft = false)),
         //         () -> !forceShuttleRight
         // ));
-
-//        commandXboxController.a().onTrue(shooterSubsystem.sysIdQuasistaticForward());
-//        commandXboxController.b().onTrue(shooterSubsystem.sysIdQuasistaticReverse());
-//        commandXboxController.y().onTrue(shooterSubsystem.sysIdDynamicForward());
-//        commandXboxController.x().onTrue(shooterSubsystem.sysIdDynamicReverse());
+    //    commandXboxController.a().onTrue(kickerSubsystem.sysIdQuasistaticForward());
+    //    commandXboxController.b().onTrue(kickerSubsystem.sysIdQuasistaticReverse());
+    //    commandXboxController.y().onTrue(kickerSubsystem.sysIdDynamicForward());
+    //    commandXboxController.x().onTrue(kickerSubsystem.sysIdDynamicReverse());
 
         commandXboxController.rightTrigger().onTrue(intakeRollerIntake).onFalse(intakeRollerStop);
         commandXboxController.rightBumper().onTrue(intakeRollerOuttake).onFalse(intakeRollerStop);
@@ -376,7 +405,7 @@ public class RobotContainer {
         //         .onFalse(RobotCommands.idleState().alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
 
         // X-drive
-        commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
+        // commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
         // operatorCommandXboxController.y().onTrue(setHubSetpoint);
         // operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
@@ -398,6 +427,10 @@ public class RobotContainer {
 //        commandSwerveDrivetrain.registerTelemetry(logger::telemeterize);
     }
 
+    public static Setpoint getSetpoint() {
+        return currentSetpoint;
+    }
+
     public Command getAutonomousCommand() {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
@@ -414,4 +447,6 @@ public class RobotContainer {
             commandSwerveDrivetrain.getModules()[i].getEncoder().optimizeBusUtilization();
         }
     }
+
+    
 }

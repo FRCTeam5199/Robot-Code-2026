@@ -1,38 +1,25 @@
-// package frc.robot.utility;
+package frc.robot.utility;
 
-// import frc.robot.constants.IndexerConstants;
+public enum Setpoint {
+    TOWER(0, 47), //intake against hub
+    TRENCH(13, 60.5),
+    SHUTTLE(20, 68.5);
 
-// public enum Setpoint {
-//     HUB(0, 0, 47), //intake against hub
-//     TOWER(-10, 13, 60.5),
-//     LEFT_CORNER(-40, 20, 68.5),
-//     OUTPOST(38, 20, 67);
+    private final double  hoodAngle, shooterSpeed;
 
-//     private final double turretAngle, hoodAngle, shooterSpeed;
+    Setpoint(double hoodAngle, double shooterSpeed) {
+        this.hoodAngle = hoodAngle;
+        this.shooterSpeed = shooterSpeed;
+    }
 
-//     Setpoint(double turretAngle, double hoodAngle, double shooterSpeed) {
-//         this.turretAngle = turretAngle;
-//         this.hoodAngle = hoodAngle;
-//         this.shooterSpeed = shooterSpeed;
-//     }
+    
 
-//     public double getTurretAngle() {
-//         return turretAngle;
-//     }
+    public double getHoodAngle() {
+        return hoodAngle;
+    }
 
-//     public double getHoodAngle() {
-//         return hoodAngle;
-//     }
+    public double getShooterSpeed() {
+        return shooterSpeed;
+    }
 
-//     public double getShooterSpeed() {
-//         return shooterSpeed;
-//     }
-
-//     public double getUpperIndexerSpeed() {
-//         return IndexerConstants.UPPER_INDEXER_SPEED;
-//     }
-
-//     public double getLowerIndexerSpeed() {
-//         return IndexerConstants.LOWER_INDEXER_SPEED;
-//     }
-// }
+}

@@ -22,7 +22,7 @@ public class IntakeLinearSubsystem extends TemplateSubsystem {
         configureFollowerMotor(IntakeLinearConstants.FOLLOWER_MOTOR_ID,
                 IntakeLinearConstants.FOLLOWER_INVERTED, IntakeLinearConstants.CAN_BUS, true);
 
-        configureLinearMech(2*Math.PI, IntakeLinearConstants.MIN, IntakeLinearConstants.MAX);
+        configureLinearMech(2 * Math.PI, IntakeLinearConstants.MIN, IntakeLinearConstants.MAX);
 
     }
 
@@ -36,5 +36,6 @@ public class IntakeLinearSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        // System.out.println("pose: " + getMechM());
     }
 }

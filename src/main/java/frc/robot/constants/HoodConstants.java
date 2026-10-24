@@ -6,8 +6,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class HoodConstants {
-    public static final int MOTOR_ID = 19;
-    public static final int ENCODER_ID = 99;
+    public static final int MOTOR_ID = 21;
 
     public static final double STATOR_CURRENT_LIMIT = 60;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
@@ -18,9 +17,9 @@ public class HoodConstants {
             .withKP(50)
             .withKI(0)
             .withKD(0)
-            .withKS(.5)
+            .withKS(.58)
             .withKG(0)
-            .withKV(.08264462809917355371900826446281)
+            .withKV(.12345679012345679012345679012346)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign)
             .withGravityType(GravityTypeValue.Arm_Cosine)
@@ -37,15 +36,15 @@ public class HoodConstants {
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;
-    public static final double MAX = 25;
+    public static final double MAX = 36.5;
 
     public static final double MOTOR_TO_SENSOR_GEAR_RATIO = 8d;
-    public static final double[][] GEAR_RATIO = {{60, 11}, {146, 10}}; //.01255707762557077625570776255708
+    public static final double[][] GEAR_RATIO = {{120, 1}}; //.01255707762557077625570776255708
     public static final double SENSOR_TO_MECH_GEAR_RATIO = 18d;
 
     public static final double ABSOLUTE_DISCONTINUITY_POINT = .5;
 
-    public static final CANBus CANBUS = new CANBus("rio");
+    public static final CANBus CANBUS = new CANBus("Canivore");
 }
 
 

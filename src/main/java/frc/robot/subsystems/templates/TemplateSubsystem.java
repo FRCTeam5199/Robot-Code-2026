@@ -239,6 +239,30 @@ public class TemplateSubsystem extends SubsystemBase {
         followerMotor.setControl(follower);
     }
 
+    public void configureSecondFollowerMotor(int followerMotorId, boolean opposeMasterDirection, CANBus canbus) {
+        followerMotor = new TalonFX(followerMotorId, canbus);
+
+        motor.getDutyCycle().setUpdateFrequency(100);
+        motor.getMotorVoltage().setUpdateFrequency(100);
+        motor.getTorqueCurrent().setUpdateFrequency(100);
+
+        follower = new Follower(motor.getDeviceID(),
+                opposeMasterDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned);
+        followerMotor.setControl(follower);
+    }
+
+    public void configureThirdFollowerMotor(int followerMotorId, boolean opposeMasterDirection, CANBus canbus) {
+        followerMotor = new TalonFX(followerMotorId, canbus);
+
+        motor.getDutyCycle().setUpdateFrequency(100);
+        motor.getMotorVoltage().setUpdateFrequency(100);
+        motor.getTorqueCurrent().setUpdateFrequency(100);
+
+        follower = new Follower(motor.getDeviceID(),
+                opposeMasterDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned);
+        followerMotor.setControl(follower);
+    }
+
     public void configureFollowerMotor(int followerMotorId, boolean opposeMasterDirection, CANBus canbus, boolean special) {
         followerMotor = new TalonFX(followerMotorId, canbus);
 
@@ -359,6 +383,7 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     public void setSecondaryVoltage(double output) {
+        if(secondaryMotor==null) return;
         followLastMechProfile = false;
         secondaryMotor.setVoltage(output);
     }
