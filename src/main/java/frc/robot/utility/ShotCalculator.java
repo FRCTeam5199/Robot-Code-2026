@@ -678,19 +678,19 @@ public class ShotCalculator {
 //                turretAnglePhaseDelayed += 1d;
 //            }
 //        }
-       if (Timer.getMatchTime() < 90 && futureTurretToTargetDistance >= 4d) {
-            turretAngle += 1d;
-            turretAnglePhaseDelayed += 1d;
-       }
+        if (Timer.getMatchTime() < 90 && futureTurretToTargetDistance >= 4d) {
+            turretAngle += 1.25;
+            turretAnglePhaseDelayed += 1.25;
+        }
 
-       if (futureTurretToTargetDistance > 3.75) {
-           shooterSpeed += .5;
-           shooterSpeedPhaseDelayed += .5;
-       }
-       if (futureTurretToTargetDistance > 4.25) {
-           shooterSpeed += 1d;
-           shooterSpeedPhaseDelayed += 1d;
-       }
+        if (futureTurretToTargetDistance > 3.75) {
+            shooterSpeed += .5;
+            shooterSpeedPhaseDelayed += .5;
+        }
+        if (futureTurretToTargetDistance > 4.25) {
+            shooterSpeed += 1d;
+            shooterSpeedPhaseDelayed += 1d;
+        }
 //        if (futureTurretToTargetDistance >= 4.75) {
 //            if ((Robot.getAlliance().equals(Alliance.RED)
 //                    && futureTurretPosition.getY() < Constants.RED_HUB_CENTER.getY())
