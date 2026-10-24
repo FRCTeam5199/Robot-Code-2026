@@ -22,7 +22,8 @@ public class IndexerConstants {
     public static final boolean LOWER_BRAKE = false;
 
     public static final double UPPER_INDEXER_SPEED = 20;
-    public static final double LOWER_INDEXER_SPEED = UPPER_INDEXER_SPEED * 3; //2.5 is 1:1
+    public static final double UPPER_TO_LOWER_RATIO = 3d; //2.5 is 1:1
+    public static final double LOWER_INDEXER_SPEED = UPPER_INDEXER_SPEED * UPPER_TO_LOWER_RATIO;
 
     public static final Slot0Configs UPPER_SLOT0_CONFIGS = new Slot0Configs()
             .withKP(0.0014654)

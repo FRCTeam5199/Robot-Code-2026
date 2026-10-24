@@ -60,7 +60,7 @@ public class HopperSubsystem extends TemplateSubsystem {
         acceleration = (getMotorVelocity() - lastVelocity) / .02;
         lastVelocity = getMotorVelocity();
 
-        System.out.println("Goal: " + getGoal());
+//        System.out.println("Goal: " + getGoal());
     }
 
     public Command sysIdQuasistaticForward() {

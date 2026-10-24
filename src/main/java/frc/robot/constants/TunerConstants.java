@@ -84,7 +84,7 @@ public class TunerConstants {
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     private static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
-            .withGyroTrim(new GyroTrimConfigs().withGyroScalarZ(-4.47)); //-1.55   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
+            .withGyroTrim(new GyroTrimConfigs().withGyroScalarZ(-4.23)); //-1.55   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
     private static final double kCoupleRatio = 3.857142857142857;
 
