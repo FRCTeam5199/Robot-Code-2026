@@ -50,8 +50,8 @@ public class ShooterSubsystem extends TemplateSubsystem {
                 ShooterConstants.STATOR_CURRENT_LIMIT,
                 ShooterConstants.SLOT0_CONFIGS, true);
 
-        configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID, 
-                ShooterConstants.CANBUS, 
+        configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID,
+                ShooterConstants.CANBUS,
                 ShooterConstants.SECOND_INVERTED
         );
     }
@@ -66,6 +66,7 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+//        System.out.println("Difference: " + (getGoal() - getMotorVelocity()));
     }
 
     public boolean isMechAtGoalAuto() {
