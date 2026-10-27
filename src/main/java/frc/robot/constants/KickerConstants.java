@@ -7,15 +7,15 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 public class KickerConstants {
     public static final int MOTOR_ID = 12;
 
-    public static final double STATOR_CURRENT_LIMIT = 85;
-    public static final double SUPPLY_CURRENT_LIMIT = 60;
+    public static final double STATOR_CURRENT_LIMIT = 50;
+    public static final double SUPPLY_CURRENT_LIMIT = 50;
 
-    public static final boolean INVERTED = false;
+    public static final boolean INVERTED = true;
 
     public static final boolean BRAKE = false;
     
     public static final double KICKER_REVERSE = -20;
-    public static final double KICKER_SPEED = 55;
+    public static final double KICKER_SPEED = 40;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(0.4)

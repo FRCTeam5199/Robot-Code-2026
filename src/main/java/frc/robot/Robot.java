@@ -22,16 +22,19 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.KickerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 // import frc.robot.subsystems.HoodSubsystem;
 // import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.LimelightHelpers;
 
 public class Robot extends TimedRobot {
     // public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-    // public static final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+    public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     public static Timer autonTimer = new Timer();
@@ -254,13 +257,6 @@ public class Robot extends TimedRobot {
         }
         commandSwerveDrivetrain.seedFieldCentric();
 
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-        RobotContainer.setIsClimbing(false);
-
-        if (m_autonomousCommand != null) {
-            CommandScheduler.getInstance().schedule(m_autonomousCommand);
-        }
-
         autonTimer.restart();
     }
 
@@ -279,6 +275,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
+        CommandScheduler.getInstance().schedule(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE));
     }
 
     @Override

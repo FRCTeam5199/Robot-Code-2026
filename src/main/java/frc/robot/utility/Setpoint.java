@@ -3,9 +3,8 @@ package frc.robot.utility;
 import frc.robot.constants.HoodConstants;
 
 public enum Setpoint {
-    TOWER(13, 65),
-    TRENCH(12, 60),
-    SHUTTLE(HoodConstants.MAX, 100);
+    TOWER(17, 26.5),
+    SHUTTLE(HoodConstants.MAX, 38);
 
     private final double  hoodAngle, shooterSpeed;
 

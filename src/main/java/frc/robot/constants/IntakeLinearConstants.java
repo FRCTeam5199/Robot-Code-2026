@@ -9,14 +9,14 @@ public class IntakeLinearConstants {
     public static final int MOTOR_ID = 14;
     public static final int FOLLOWER_MOTOR_ID = 15;
 
-    public static final double STATOR_CURRENT_LIMIT = 40;
-    public static final double SUPPLY_CURRENT_LIMIT = 40;
+    public static final double STATOR_CURRENT_LIMIT = 25;
+    public static final double SUPPLY_CURRENT_LIMIT = 25;
     public static final boolean INVERTED = false;
     public static final boolean FOLLOWER_INVERTED = true;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 24.05;
-    public static final double STOW = 7.6;
+    public static final double DEPLOY = 23.9;
+    public static final double STOW = 7;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
             .withKP(4)

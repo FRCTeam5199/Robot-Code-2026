@@ -9,7 +9,7 @@ public class ShooterConstants {
     public static final int SECOND_MOTOR_ID = 26;
     public static final int THIRD_MOTOR_ID = 27;
     public static final int FOURTH_MOTOR_ID = 25;
-    public static final double STATOR_CURRENT_LIMIT = 100;
+    public static final double STATOR_CURRENT_LIMIT = 65;
     public static final double SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean INVERTED = false;
     public static final boolean SECOND_INVERTED = false;

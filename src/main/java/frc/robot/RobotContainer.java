@@ -9,9 +9,12 @@ import java.util.Map;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +44,7 @@ import frc.robot.utility.Setpoint;
 
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
+    // public static final CommandXboxController opXboxController = new CommandXboxController(1);
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -54,6 +58,11 @@ public class RobotContainer {
     // public static final ShotCalculator shotCalculator = ShotCalculator.getInstance();
 //     public static final Vision vision = Vision.getInstance();
 public static Setpoint currentSetpoint = Setpoint.TOWER;
+public static double shooterTower = 45;
+public static double hoodTower = 12;
+public static double shooterTrench = 40;
+public static double hoodTrench = 12;
+public static double shooterShuttle = 60;
 //     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.DEPLOY, false);
@@ -334,47 +343,48 @@ public static Setpoint currentSetpoint = Setpoint.TOWER;
         commandXboxController.button(8).onTrue(commandSwerveDrivetrain
                 .runOnce(commandSwerveDrivetrain::seedFieldCentric).alongWith(
                         new ConditionalCommand(
-                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
                                 new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(180)),
+                                new InstantCommand(() -> commandSwerveDrivetrain.getPigeon2().setYaw(0)),
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
         commandXboxController.povUp().onTrue(new InstantCommand(()->setSetpoint(Setpoint.SHUTTLE)));
-        commandXboxController.povLeft().onTrue(new InstantCommand(()->setSetpoint(Setpoint.TRENCH)));
         commandXboxController.povDown().onTrue(new InstantCommand(()->setSetpoint(Setpoint.TOWER)));
 
-        commandXboxController.leftTrigger().onTrue(new SelectCommand<>(
+        commandXboxController.rightTrigger().onTrue(new SelectCommand<>(
                     Map.ofEntries(
                             Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
                     new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
-                    new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle())
-                ).andThen(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))
-                ),
-                            
-                Map.entry(Setpoint.TRENCH, new ParallelCommandGroup(
-                    new VelocityCommand(shooterSubsystem, Setpoint.TRENCH.getShooterSpeed()),
-                    new PositionCommand(hoodSubsystem, Setpoint.TRENCH.getHoodAngle())
-                ).andThen(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))
-                ),
-                            
+                    new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
+                    new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))
+                ),          
                 Map.entry(Setpoint.SHUTTLE, new ParallelCommandGroup(
                     new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLE.getShooterSpeed()),
-                    new PositionCommand(hoodSubsystem, Setpoint.SHUTTLE.getHoodAngle())
-                ).andThen(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))
-                )
-                            
-                    ),
+                    new PositionCommand(hoodSubsystem, Setpoint.SHUTTLE.getHoodAngle()),
+                    new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))
+                )),
+                
                     RobotContainer::getSetpoint
             )).onFalse(
-                new SequentialCommandGroup(
+                new ParallelCommandGroup(
                     new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE),
                     new VelocityCommand(shooterSubsystem, 0),
                     new PositionCommand(hoodSubsystem, HoodConstants.MIN)
                     ));
 
-        // commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
-        // commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
+        commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
+        commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
 
+        // opXboxController.a().onTrue(new InstantCommand(()->shooterTower++));
+        // opXboxController.b().onTrue(new InstantCommand(()->hoodTower++));
+        // opXboxController.x().onTrue(new InstantCommand(()->shooterTrench++));
+        // opXboxController.y().onTrue(new InstantCommand(()->hoodTrench++));
+        // opXboxController.povUp().onTrue(new InstantCommand(()->shooterTower--));
+        // opXboxController.povDown().onTrue(new InstantCommand(()->hoodTower--));
+        // opXboxController.povRight().onTrue(new InstantCommand(()->shooterTrench--));
+        // opXboxController.povLeft().onTrue(new InstantCommand(()->hoodTrench--));
+        // opXboxController.rightTrigger().onTrue(new InstantCommand(() -> shooterShuttle+=5));
+        // opXboxController.leftTrigger().onTrue(new InstantCommand(() -> shooterShuttle-=5));
         // commandXboxController.x().onTrue(new ConditionalCommand(
         //         new InstantCommand(() -> forceShuttleLeft = true),
         //         new InstantCommand(() -> forceShuttleLeft = false)
@@ -401,7 +411,7 @@ public static Setpoint currentSetpoint = Setpoint.TOWER;
     //    commandXboxController.y().onTrue(kickerSubsystem.sysIdDynamicForward());
     //    commandXboxController.x().onTrue(kickerSubsystem.sysIdDynamicReverse());
 
-        commandXboxController.rightTrigger().onTrue(intakeRollerIntake).onFalse(intakeRollerStop);
+        commandXboxController.leftTrigger().onTrue(intakeRollerIntake).onFalse(intakeRollerStop);
         commandXboxController.rightBumper().onTrue(intakeRollerOuttake).onFalse(intakeRollerStop);
 
         // commandXboxController.leftTrigger().onTrue(leftTriggerPressed)
@@ -421,7 +431,7 @@ public static Setpoint currentSetpoint = Setpoint.TOWER;
         //         .onFalse(RobotCommands.idleState().alongWith(new VelocityCommand(intakeRollerSubsystem, 0)));
 
         // X-drive
-        // commandXboxController.x().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
+        commandXboxController.rightTrigger().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
         // operatorCommandXboxController.y().onTrue(setHubSetpoint);
         // operatorCommandXboxController.x().onTrue(setLeftCornerSetpoint);
@@ -454,9 +464,9 @@ public static Setpoint currentSetpoint = Setpoint.TOWER;
     public Command getAutonomousCommand() {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return Autos.autonChooserRed.getSelected();
+            return new PathPlannerAuto("Top");
         } else {
-            return Autos.autonChooserBlue.getSelected();
+            return new PathPlannerAuto("Top");
         }
     }
 
