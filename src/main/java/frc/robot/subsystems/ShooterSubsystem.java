@@ -1,16 +1,16 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
-
-import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 public class ShooterSubsystem extends TemplateSubsystem {
     private static ShooterSubsystem shooterSubsystem;
@@ -50,8 +50,6 @@ public class ShooterSubsystem extends TemplateSubsystem {
         configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID, ShooterConstants.SECOND_INVERTED, ShooterConstants.CANBUS);
         configureSecondFollowerMotor(ShooterConstants.THIRD_MOTOR_ID, ShooterConstants.THIRD_INVERTED, ShooterConstants.CANBUS);
         configureThirdFollowerMotor(ShooterConstants.FOURTH_MOTOR_ID, ShooterConstants.FOURTH_INVERTED, ShooterConstants.CANBUS);
-        
-//        shooterNetworkTable.getDoubleTopic("Current Speed").publish();
     }
 
     public static ShooterSubsystem getInstance() {
@@ -64,11 +62,6 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-//        isMechAtGoal.set(isMechAtGoalAuto());
-//        goalSpeed.set(shotCalculator.getShooterSpeed());
-//        currentSpeed.set(getMotorVelocity());
-
-//        System.out.println("shooter: " + isMechAtGoal(true));
     }
 
     public Command sysIdQuasistaticForward() {

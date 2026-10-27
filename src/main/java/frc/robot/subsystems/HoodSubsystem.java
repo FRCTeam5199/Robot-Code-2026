@@ -5,10 +5,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
-import frc.robot.RobotContainer;
 import frc.robot.constants.HoodConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
-import frc.robot.utility.ShotMode;
 import frc.robot.utility.Type;
 
 public class HoodSubsystem extends TemplateSubsystem {

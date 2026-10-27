@@ -1,13 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.KickerConstants;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
@@ -40,8 +32,5 @@ public class KickerSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-//        System.out.println("Indexer Velocity: " + isMechAtGoal(true));
-//        System.out.println("Indexer Goal: " + getGoal());
-
     }
 }

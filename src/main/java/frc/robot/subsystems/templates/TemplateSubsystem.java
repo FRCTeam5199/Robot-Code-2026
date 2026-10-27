@@ -119,7 +119,6 @@ public class TemplateSubsystem extends SubsystemBase {
                              double[][] gearRatios, String SubsystemName, boolean enableFoc, CANBus canbus) {
         this.type = type;
 
-//        motor = new TalonFX(id, "CANBUS");
         motor = new TalonFX(id, canbus);
         motorConfig = new TalonFXConfiguration();
 
