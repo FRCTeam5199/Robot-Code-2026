@@ -20,7 +20,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
@@ -355,7 +354,21 @@ public class TemplateSubsystem extends SubsystemBase {
         motors.get(motorId).setPosition(sometimesEncoder.getAbsolutePosition().getValueAsDouble() * motorToSensorRatio);
     }
 
-    public void setBrake(boolean brake, int motorId) {
+    // TODO: WIP 'Subsystem Brake' Logic
+    // public void setBrake(boolean brake) {
+    //     if (brake) {
+    //         for (TalonFX motor : motors.values()) {
+    //             motor.setNeutralMode(NeutralModeValue.Brake);
+    //             followerMotor.setNeutralMode(NeutralModeValue.Brake);
+    //         }
+    //     }
+    //     else {
+    //         motors.get(motorId).setNeutralMode(NeutralModeValue.Coast);
+    //         followerMotor.setNeutralMode(NeutralModeValue.Coast);
+    //     }
+    // }
+
+    public void setMotorBrake(boolean brake, int motorId) {
         if (brake) {
             motors.get(motorId).setNeutralMode(NeutralModeValue.Brake);
             followerMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -483,10 +496,10 @@ public class TemplateSubsystem extends SubsystemBase {
 //        motionMagicVoltage.Jerk = jerk;
     }
 
-    public boolean isMechAtGoal(boolean isVelocity) {
+    public boolean isMechAtGoal(int motorId, boolean isVelocity) {
         switch (type) {
             case LINEAR -> {
-                return getMechM() >= goal - lowerTolerance && getMechM() <= goal + upperTolerance;
+                return getMechM(motorId) >= goal - lowerTolerance && getMechM(motorId) <= goal + upperTolerance;
             }
             case PIVOT -> {
                 return getDegrees() >= goal - lowerTolerance && getDegrees() <= goal + upperTolerance;
@@ -500,10 +513,10 @@ public class TemplateSubsystem extends SubsystemBase {
         }
     }
 
-    public boolean isMechGreaterThanPosition(double position) {
+    public boolean isMechGreaterThanPosition(int motorId, double position) {
         switch (type) {
             case LINEAR -> {
-                return getMechM() >= position;
+                return getMechM(motorId) >= position;
             }
             case PIVOT -> {
                 return getDegrees() >= position;
@@ -714,7 +727,6 @@ public class TemplateSubsystem extends SubsystemBase {
 //            followerPositionStatusSignal.refresh();
 //            followerVelocityStatusSignal.refresh();
 //        }
-
 
 //        if (type == Type.LINEAR) poseData.set(getMechM());
 //        else poseData.set(getDegrees());

@@ -3,12 +3,13 @@ package frc.robot.subsystems.templates;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class PositionCommand extends Command {
+    private TemplateSubsystem templateSubsystem;
+    private int id;
     private double velocity;
     private double acceleration;
     private double jerk;
     private double goal;
     private double goalVelocity;
-    private TemplateSubsystem templateSubsystem;
     private boolean updateGoalPosition;
     private boolean changeConstraints;
     private boolean uniqueConstraints;
@@ -25,16 +26,17 @@ public class PositionCommand extends Command {
         addRequirements(templateSubsystem);
     }
 
-    public PositionCommand(TemplateSubsystem templateSubsystem, double goal, boolean shouldNotEnd) {
+    public PositionCommand(TemplateSubsystem templateSubsystem, int motorId, double goal, boolean shouldNotEnd) {
         this(templateSubsystem, goal);
         this.shouldNotEnd = shouldNotEnd;
         this.useCustomFF = useCustomFF;
         this.goalVelocity = goalVelocity;
     }
 
-    public PositionCommand(TemplateSubsystem templateSubsystem, double goal,
+    public PositionCommand(TemplateSubsystem templateSubsystem, int motorId, double goal,
                            double velocity, double acceleration, double jerk) {
         this.templateSubsystem = templateSubsystem;
+        this.id = motorId;
         this.goal = goal;
         updateGoalPosition = false;
 
@@ -51,11 +53,11 @@ public class PositionCommand extends Command {
     @Override
     public void initialize() {
         if (changeConstraints) {
-            templateSubsystem.setPosition(goal);
+            templateSubsystem.setPosition(id, goal);
             templateSubsystem.setConstraints(velocity, acceleration, jerk);
             changeConstraints = false;
         } else {
-            templateSubsystem.setPosition(goal);
+            templateSubsystem.setPosition(id, goal);
         }
         templateSubsystem.setCommandRunning(true);
     }
@@ -63,7 +65,7 @@ public class PositionCommand extends Command {
     @Override
     public void execute() {
         if (updateGoalPosition) {
-            templateSubsystem.setPosition(goal);
+            templateSubsystem.setPosition(id, goal);
             updateGoalPosition = false;
         }
         if (changeConstraints) {
