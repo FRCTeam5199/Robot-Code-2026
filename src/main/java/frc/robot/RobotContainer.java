@@ -154,12 +154,12 @@ public class RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        commandXboxController.rightTrigger().onTrue(new SelectCommand<>(
+         commandXboxController.rightTrigger().onTrue(new SelectCommand<>(
                 Map.ofEntries(
                         Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
                                 new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
-                                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()))
-                                .andThen(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
+                                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
+                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
                         Map.entry(Setpoint.SHUTTLE, new ParallelCommandGroup(
                                 new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLE.getShooterSpeed()),
                                 new PositionCommand(hoodSubsystem, Setpoint.SHUTTLE.getHoodAngle()),

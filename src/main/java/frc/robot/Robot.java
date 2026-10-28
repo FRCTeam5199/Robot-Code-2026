@@ -21,6 +21,7 @@ import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.templates.VelocityCommand;
 
 public class Robot extends TimedRobot {
+    private RobotContainer m_robotContainer;
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
@@ -29,6 +30,7 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         commandSwerveDrivetrain.configureAutoBuilder();
+        m_robotContainer = new RobotContainer();
 
         Logger.addDataReceiver(new WPILOGWriter());
     }

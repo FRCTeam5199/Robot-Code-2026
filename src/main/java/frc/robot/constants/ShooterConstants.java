@@ -31,7 +31,7 @@ public class ShooterConstants {
     public static final double JERK = 80000000;
 
     public static final double LOWER_TOLERANCE = 4;
-    public static final double UPPER_TOLERANCE = 4;
+    public static final double UPPER_TOLERANCE = 17;
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
