@@ -46,13 +46,6 @@ public class RobotContainer {
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
-
-    public static Setpoint currentSetpoint = Setpoint.TOWER;
-    public static double shooterTower = 45;
-    public static double hoodTower = 12;
-    public static double shooterTrench = 40;
-    public static double hoodTrench = 12;
-    public static double shooterShuttle = 60;
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.DEPLOY, false);
@@ -64,6 +57,12 @@ public class RobotContainer {
     private static final VelocityCommand intakeRollerStop = new VelocityCommand(intakeRollerSubsystem, 0);
     private static final VelocityCommand intakeRollerIntake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED);
     private static final VelocityCommand intakeRollerOuttake = new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.OUTTAKE_SPEED);
+    public static Setpoint currentSetpoint = Setpoint.TOWER;
+    public static double shooterTower = 45;
+    public static double hoodTower = 12;
+    public static double shooterTrench = 40;
+    public static double hoodTrench = 12;
+    public static double shooterShuttle = 60;
     //Current Robot State
     public static SwerveDrivetrain.SwerveDriveState currentState;
     public static Pose2d filteredPose;
@@ -132,6 +131,14 @@ public class RobotContainer {
         RobotContainer.isClimbing = isClimbing;
     }
 
+    public static Setpoint getSetpoint() {
+        return currentSetpoint;
+    }
+
+    public static void setSetpoint(Setpoint setpoint) {
+        currentSetpoint = setpoint;
+    }
+
     private void configureBindings() {
         commandSwerveDrivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 commandSwerveDrivetrain.applyRequest(() -> drive.withVelocityX(-requestXVelocity) // Drive forward with negative Y (forward)
@@ -147,22 +154,22 @@ public class RobotContainer {
                                 () -> Robot.getAlliance() == DriverStation.Alliance.Blue)
                 ));
 
-        commandXboxController.rightTrigger().onTrue(new SelectCommand<>(
+         commandXboxController.rightTrigger().onTrue(new SelectCommand<>(
                 Map.ofEntries(
-                    Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
-                        new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
-                        new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
-                        new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),          
-                Map.entry(Setpoint.SHUTTLE, new ParallelCommandGroup(
-                    new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLE.getShooterSpeed()),
-                    new PositionCommand(hoodSubsystem, Setpoint.SHUTTLE.getHoodAngle()),
-                    new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED)))),
+                        Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
+                                new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
+                                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
+                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
+                        Map.entry(Setpoint.SHUTTLE, new ParallelCommandGroup(
+                                new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLE.getShooterSpeed()),
+                                new PositionCommand(hoodSubsystem, Setpoint.SHUTTLE.getHoodAngle()),
+                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED)))),
                 RobotContainer::getSetpoint
-            )).onFalse(
+        )).onFalse(
                 new ParallelCommandGroup(
-                    new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE),
-                    new VelocityCommand(shooterSubsystem, 0),
-                    new PositionCommand(hoodSubsystem, HoodConstants.MIN)));
+                        new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE),
+                        new VelocityCommand(shooterSubsystem, 0),
+                        new PositionCommand(hoodSubsystem, HoodConstants.MIN)));
 
         commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
         commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
@@ -175,14 +182,6 @@ public class RobotContainer {
 
         operatorXboxController.y().onTrue(new InstantCommand(()->setSetpoint(Setpoint.SHUTTLE)));
         operatorXboxController.a().onTrue(new InstantCommand(()->setSetpoint(Setpoint.TOWER)));
-    }
-
-    public static Setpoint getSetpoint() {
-        return currentSetpoint;
-    }
-
-    public static void setSetpoint(Setpoint setpoint) {
-        currentSetpoint = setpoint;
     }
 
     public Command getAutonomousCommand() {
