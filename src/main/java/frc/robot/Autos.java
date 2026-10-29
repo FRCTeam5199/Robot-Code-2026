@@ -30,7 +30,7 @@ public final class Autos {
 
     public static void initializeAutos() {
 
-        PathPlannerAuto FunnyAuto = new PathPlannerAuto("Red Top Delayed Trench");
+        PathPlannerAuto FunnyAuto = new PathPlannerAuto("Red Hub to Tower shoot");
 
         Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
@@ -39,8 +39,8 @@ public final class Autos {
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
                 .withSize(2, 1);
 
-        autonChooserRed.addOption("Red Top Delayed Trench", FunnyAuto);
-        autonChooserBlue.addOption("Red Top Delayed Trench", FunnyAuto);
+        autonChooserRed.addOption("Red Hub to Tower shoot", FunnyAuto);
+        autonChooserBlue.addOption("Blue Hub to Tower shoot", FunnyAuto);
     }
 
     public static Autos getInstance() {

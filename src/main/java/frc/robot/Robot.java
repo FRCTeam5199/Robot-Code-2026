@@ -28,9 +28,9 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
     private static DriverStation.Alliance alliance;
 
-    public Robot() {
-        m_robotContainer = new RobotContainer();
+    public Robot() {   
         commandSwerveDrivetrain.configureAutoBuilder();
+        m_robotContainer = new RobotContainer();
         Logger.addDataReceiver(new WPILOGWriter());
     }
 
