@@ -27,11 +27,11 @@ public class ShooterConstants {
             .withKA(0.0045384)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
-    public static final double ACCELERATION = 80000;
+    public static final double ACCELERATION = 120000;
     public static final double JERK = 80000000;
 
     public static final double LOWER_TOLERANCE = 4;
-    public static final double UPPER_TOLERANCE = 4;
+    public static final double UPPER_TOLERANCE = 17;
 
     public static final double[][] GEAR_RATIO = {{1, 1}};
 
