@@ -67,6 +67,11 @@ public class Robot extends TimedRobot {
             commandSwerveDrivetrain.getPigeon2().setYaw(0);
         }
         commandSwerveDrivetrain.seedFieldCentric();
+
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        if (m_autonomousCommand != null) {
+            CommandScheduler.getInstance().schedule(m_autonomousCommand);
+        }
     }
 
     @Override
@@ -78,6 +83,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        RobotContainer.speedMultiplier = 1.0;
         CommandScheduler.getInstance().cancelAll();
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);

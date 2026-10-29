@@ -34,6 +34,11 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 import frc.robot.utility.Setpoint;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
@@ -46,10 +51,12 @@ public class RobotContainer {
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+
     //Intake Pivot
     public static final PositionCommand intakeStow = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.STOW);
     public static final PositionCommand intakeDeploy = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.DEPLOY, false);
     //Drive
+    public static double speedMultiplier = 1.0;
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
             .withDeadband(Constants.MAX_SPEED * .05).withRotationalDeadband(Constants.MAX_ANGULAR_RATE * .05)
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage);
@@ -75,25 +82,30 @@ public class RobotContainer {
     public static boolean isClimberRetracting = false;
     public static double goalX;
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        registerNamedCommands();
         Autos.initializeAutos();
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
         configureBindings();
     }
 
     public static void periodic() {
         double scalingFactor = 1.5;
         double rotationScalingFactor = 1.5;
+        double maxSpeed = Constants.MAX_SPEED * speedMultiplier;
 
         if (commandXboxController.getLeftY() < 0)
-            requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+            requestXVelocity = -Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * maxSpeed;
         else
-            requestXVelocity = Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * Constants.MAX_SPEED;
+            requestXVelocity = Math.pow(Math.abs(commandXboxController.getLeftY()), scalingFactor) * maxSpeed;
 
         if (commandXboxController.getLeftX() < 0)
-            requestYVelocity = -Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+            requestYVelocity = -Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * maxSpeed;
         else
-            requestYVelocity = Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * Constants.MAX_SPEED;
+            requestYVelocity = Math.pow(Math.abs(commandXboxController.getLeftX()), scalingFactor) * maxSpeed;
 
         if (commandXboxController.getRightX() < 0)
             requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
@@ -160,16 +172,29 @@ public class RobotContainer {
                                 new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
                                 new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
                                 new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
-                        Map.entry(Setpoint.SHUTTLE, new ParallelCommandGroup(
-                                new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLE.getShooterSpeed()),
-                                new PositionCommand(hoodSubsystem, Setpoint.SHUTTLE.getHoodAngle()),
+                        Map.entry(Setpoint.SHUTTLELONG, new ParallelCommandGroup(
+                                new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLELONG.getShooterSpeed()),
+                                new PositionCommand(hoodSubsystem, Setpoint.SHUTTLELONG.getHoodAngle()),
+                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
+                        Map.entry(Setpoint.CHRISLAN, new ParallelCommandGroup(
+                                new VelocityCommand(shooterSubsystem, Setpoint.CHRISLAN.getShooterSpeed()),
+                                new PositionCommand(hoodSubsystem, Setpoint.CHRISLAN.getHoodAngle()),
+                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
+                        Map.entry(Setpoint.SHUTTLESHORT, new ParallelCommandGroup(
+                            new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLESHORT.getShooterSpeed()),
+                                new PositionCommand(hoodSubsystem, Setpoint.SHUTTLESHORT.getHoodAngle()),
                                 new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED)))),
-                RobotContainer::getSetpoint
-        )).onFalse(
+                RobotContainer::getSetpoint))
+        .onFalse(
                 new ParallelCommandGroup(
                         new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE),
                         new VelocityCommand(shooterSubsystem, 0),
                         new PositionCommand(hoodSubsystem, HoodConstants.MIN)));
+
+        // speed limiter
+        commandXboxController.b().toggleOnTrue(Commands.startEnd(
+            () -> speedMultiplier = 0.75, 
+            () -> speedMultiplier = 1.0));
 
         commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
         commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
@@ -180,20 +205,28 @@ public class RobotContainer {
         // X-drive
         commandXboxController.rightTrigger().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
 
-        operatorXboxController.y().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.SHUTTLE)));
+        operatorXboxController.y().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.SHUTTLELONG)));
+        operatorXboxController.x().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.SHUTTLESHORT)));
         operatorXboxController.a().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.TOWER)));
+        operatorXboxController.b().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.CHRISLAN)));
 
         // operatorXboxController.x().onTrue(new InstantCommand(()->setSetpoint(Setpoint.)));
         // operatorXboxController.b().onTrue(new InstantCommand(()->setSetpoint(Setpoint.)));
     }
 
+    private void registerNamedCommands() {
+         NamedCommands.registerCommand("ShootTower", new ParallelCommandGroup(
+                new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
+                new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
+                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED)));
+        NamedCommands.registerCommand("ShooterStop", new ParallelCommandGroup(
+                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE),
+                new VelocityCommand(shooterSubsystem, 0),
+                new PositionCommand(hoodSubsystem, HoodConstants.MIN)));
+    }
+
     public Command getAutonomousCommand() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return new PathPlannerAuto("Top");
-        } else {
-            return new PathPlannerAuto("Top");
-        }
+       return autoChooser.getSelected();
     }
 
     public void optimizeDrivetrain() {

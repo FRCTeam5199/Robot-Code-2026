@@ -26,23 +26,11 @@ public final class Autos {
     public static SendableChooser<Command> autonChooserBlue = new SendableChooser<>();
     private static Autos autos;
     private static PathPlannerAuto redBottomDelayedBump;
-    private static PathPlannerAuto redTopDelayedBump;
-    private static PathPlannerAuto redBottomDoubleTrench;
-    private static PathPlannerAuto redTopDoubleTrench;
-    private static PathPlannerAuto redBottomDelayedTrench;
-    private static PathPlannerAuto redTopDelayedTrench;
     private SendableChooser<Command> autoChooser;
 
     public static void initializeAutos() {
 
-        redBottomDoubleTrench = new PathPlannerAuto("Red Bottom Double Trench");
-        redTopDoubleTrench = new PathPlannerAuto("Red Top Double Trench");
-
-        redBottomDelayedBump = new PathPlannerAuto("Red Bottom Delayed Bump");
-        redTopDelayedBump = new PathPlannerAuto("Red Top Delayed Bump");
-
-        redBottomDelayedTrench = new PathPlannerAuto("Red Bottom Delayed Trench");
-        redTopDelayedTrench = new PathPlannerAuto("Red Top Delayed Trench");
+        PathPlannerAuto FunnyAuto = new PathPlannerAuto("Red Top Delayed Trench");
 
         Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
@@ -51,19 +39,8 @@ public final class Autos {
                 .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
                 .withSize(2, 1);
 
-        autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
-        autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
-        autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
-        autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
-        autonChooserRed.addOption("Red Left Delayed Trench", redBottomDelayedTrench);
-        autonChooserRed.addOption("Red Right Delayed Trench", redTopDelayedTrench);
-
-        autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
-        autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
-        autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
-        autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
-        autonChooserBlue.addOption("Blue Left Delayed Trench", redBottomDelayedTrench);
-        autonChooserBlue.addOption("Blue Right Delayed Trench", redTopDelayedTrench);
+        autonChooserRed.addOption("Red Top Delayed Trench", FunnyAuto);
+        autonChooserBlue.addOption("Red Top Delayed Trench", FunnyAuto);
     }
 
     public static Autos getInstance() {

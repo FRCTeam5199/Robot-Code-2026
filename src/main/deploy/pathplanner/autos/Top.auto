@@ -26,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Red Double Score",
+  "folder": null,
   "choreoAuto": false
 }
