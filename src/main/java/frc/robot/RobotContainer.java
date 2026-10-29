@@ -78,7 +78,7 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
     public RobotContainer() {
-        Autos.initializeAutos();
+        // Autos.initializeAutos();
         configureBindings();
     }
 
@@ -172,12 +172,9 @@ public class RobotContainer {
 
         // X-drive
         commandXboxController.rightTrigger().whileTrue(commandSwerveDrivetrain.applyRequest(() -> brake));
-        
+
         operatorXboxController.y().onTrue(new InstantCommand(()->setSetpoint(Setpoint.SHUTTLE)));
         operatorXboxController.a().onTrue(new InstantCommand(()->setSetpoint(Setpoint.TOWER)));
-        
-        // operatorXboxController.x().onTrue(new InstantCommand(()->setSetpoint(Setpoint.)));
-        // operatorXboxController.b().onTrue(new InstantCommand(()->setSetpoint(Setpoint.)));
     }
 
     public static Setpoint getSetpoint() {
