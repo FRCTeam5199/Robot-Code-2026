@@ -29,8 +29,9 @@ public class VelocityCommand extends Command {
     @Override
     public void initialize() {
         templateSubsystem.setVelocity(goal);
-        if (templateSubsystem.hasSecondaryMotor())
-            templateSubsystem.setSecondaryVelocity(secondaryGoal);
+        // TODO: Replace with ForEach \/
+        // if (templateSubsystem.hasSecondaryMotor())
+        //     templateSubsystem.setSecondaryVelocity(secondaryGoal);
     }
 
     @Override

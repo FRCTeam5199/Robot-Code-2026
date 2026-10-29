@@ -717,7 +717,7 @@ public class TemplateSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (changedOffset) {
-            setPosition(goal);
+            motors.forEach((Integer id, TalonFX motor) -> setPosition(id, goal));
             changedOffset = false;
         }
 
