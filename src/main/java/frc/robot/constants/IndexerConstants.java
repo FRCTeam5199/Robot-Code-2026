@@ -29,9 +29,9 @@ public class IndexerConstants {
             .withKP(0.0014654)
             .withKI(0)
             .withKD(0)
-            .withKS(.37)
+            .withKS(.4)
             .withKG(0)
-            .withKV(.11904761904761904761904761904762)
+            .withKV(0.1288659793814433)
             .withKA(0.15)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
