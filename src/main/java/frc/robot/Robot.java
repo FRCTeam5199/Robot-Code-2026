@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.constants.KickerConstants;
+import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
@@ -24,7 +26,7 @@ public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
+    public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
     private Command m_autonomousCommand;
     private static DriverStation.Alliance alliance;
 
@@ -87,6 +89,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
+        CommandScheduler.getInstance().schedule(new InstantCommand(()->commandSwerveDrivetrain.seedFieldCentric()));
         CommandScheduler.getInstance().schedule(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE));
     }
 

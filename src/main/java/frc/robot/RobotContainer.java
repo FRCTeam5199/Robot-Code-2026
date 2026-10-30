@@ -27,7 +27,8 @@ import frc.robot.constants.KickerConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.IntakeLinearSubsystem;
+import frc.robot.subsystems.IntakeLinearLeft;
+import frc.robot.subsystems.IntakeLinearRight;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -43,18 +44,24 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
     public static final CommandXboxController operatorXboxController = new CommandXboxController(Constants.OPERATOR_XBOX_PORT);
+    public static int stallinL =0;
+    public static int stallinR =0;
+    public static int voltageTol = 5;
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    public static final IntakeLinearSubsystem intakeLinearSubsystem = IntakeLinearSubsystem.getInstance();
+    public static final IntakeLinearRight intakeLinearRightSubsystem = IntakeLinearRight.getInstance();
+    public static final IntakeLinearLeft intakeLinearLeftSubsystem = IntakeLinearLeft.getInstance();
+
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
 
     //Intake Pivot
-    public static final PositionCommand intakeStow = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.STOW);
-    public static final PositionCommand intakeDeploy = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.DEPLOY, false);
+    public static final ParallelCommandGroup intakeStow = new ParallelCommandGroup(new PositionCommand(intakeLinearLeftSubsystem, IntakeLinearConstants.STOW), new PositionCommand(intakeLinearRightSubsystem, IntakeLinearConstants.STOW));
+    public static final ParallelCommandGroup intakeDeploy = new ParallelCommandGroup(new PositionCommand(intakeLinearLeftSubsystem, IntakeLinearConstants.DEPLOY), new PositionCommand(intakeLinearRightSubsystem, IntakeLinearConstants.DEPLOY));
+
     //Drive
     public static double speedMultiplier = 1.0;
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDesaturateWheelSpeeds(true)
@@ -92,7 +99,16 @@ public class RobotContainer {
         configureBindings();
     }
 
+    public static boolean areMechanismsAtGoalsAuto(){
+        return shooterSubsystem.isMechAtGoal(true) && hoodSubsystem.isMechAtGoal(false);
+    }
+    public static boolean areMechanismsAtGoalsExeptShooterAuto(){
+        return hoodSubsystem.isMechAtGoal(false);
+    }
+
     public static void periodic() {
+        // System.out.println(areMechanismsAtGoalsAuto());
+        stallinCount();
         double scalingFactor = 1.5;
         double rotationScalingFactor = 1.5;
         double maxSpeed = Constants.MAX_SPEED * speedMultiplier;
@@ -171,19 +187,19 @@ public class RobotContainer {
                         Map.entry(Setpoint.TOWER, new ParallelCommandGroup(
                                 new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
                                 new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
-                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
+                                RobotCommands.indexBallsAuto())),
                         Map.entry(Setpoint.SHUTTLELONG, new ParallelCommandGroup(
                                 new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLELONG.getShooterSpeed()),
                                 new PositionCommand(hoodSubsystem, Setpoint.SHUTTLELONG.getHoodAngle()),
-                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
+                                RobotCommands.indexBallsAuto())),
                         Map.entry(Setpoint.CHRISLAN, new ParallelCommandGroup(
                                 new VelocityCommand(shooterSubsystem, Setpoint.CHRISLAN.getShooterSpeed()),
                                 new PositionCommand(hoodSubsystem, Setpoint.CHRISLAN.getHoodAngle()),
-                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED))),
+                                RobotCommands.indexBallsAuto())),
                         Map.entry(Setpoint.SHUTTLESHORT, new ParallelCommandGroup(
                             new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLESHORT.getShooterSpeed()),
-                                new PositionCommand(hoodSubsystem, Setpoint.SHUTTLESHORT.getHoodAngle()),
-                                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED)))),
+                                new PositionCommand(hoodSubsystem, Setpoint.SHUTTLESHORT.getHoodAngle())
+                                .andThen(RobotCommands.indexBallsAuto())))),
                 RobotContainer::getSetpoint))
         .onFalse(
                 new ParallelCommandGroup(
@@ -196,8 +212,8 @@ public class RobotContainer {
             () -> speedMultiplier = 0.75, 
             () -> speedMultiplier = 1.0));
 
-        commandXboxController.y().onTrue(intakeDeploy).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(false)));
-        commandXboxController.a().onTrue(intakeStow).onTrue(new InstantCommand(() -> intakeLinearSubsystem.setBrake(true)));
+        commandXboxController.y().onTrue(RobotCommands.intakeOut());
+        commandXboxController.a().onTrue(intakeStow);
 
         commandXboxController.leftTrigger().onTrue(intakeRollerIntake).onFalse(intakeRollerStop);
         commandXboxController.rightBumper().onTrue(intakeRollerOuttake).onFalse(intakeRollerStop);
@@ -227,6 +243,30 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
        return autoChooser.getSelected();
+    }
+
+    private static void stallinLeft(){
+        if(intakeLinearLeftSubsystem.getMotorVoltage()>=voltageTol) {
+            stallinL ++;
+        }else {stallinL =0;};
+    }
+
+    private static void stallinRight(){
+        if(intakeLinearLeftSubsystem.getMotorVoltage()>=voltageTol) {
+            stallinR ++;
+        }else {stallinR = 0;};
+    }
+
+    public static void stallinCount() {
+        stallinLeft();
+        stallinRight();
+    }
+
+    public static int getStallinL() {
+        return stallinL;
+    }
+    public static int getStallinR() {
+        return stallinR;
     }
 
     public void optimizeDrivetrain() {

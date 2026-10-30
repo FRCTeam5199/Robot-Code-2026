@@ -3,7 +3,7 @@ package frc.robot.utility;
 import frc.robot.constants.HoodConstants;
 
 public enum Setpoint {
-    TOWER(15, 23.2),
+    TOWER(13, 22.9),
     SHUTTLELONG(HoodConstants.MAX, 38),
     SHUTTLESHORT(18, 25),
     CHRISLAN(17, 30);

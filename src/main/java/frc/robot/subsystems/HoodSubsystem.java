@@ -71,9 +71,9 @@ public class HoodSubsystem extends TemplateSubsystem {
     public void periodic() {
         super.periodic();
         // System.out.println("Hood: "+getDegrees());
-//        System.out.println("Hood Degrees: " + getDegrees());
-//        System.out.println(getGoal());
-//        System.out.println("Hood is at goal: " + isMechAtGoal(true));
+    //    System.out.println("Hood Degrees: " + getDegrees());
+    //    System.out.println(getGoal());
+    //    System.out.println("Hood is at goal: " + isMechAtGoal());
 //        System.out.println(getGearRatio());
 
 //        goalPosition.set(ShotCalculator.getInstance().getHoodAngle());
@@ -89,9 +89,9 @@ public class HoodSubsystem extends TemplateSubsystem {
 
     }
 
-    public boolean isMechAtGoal() {
-        return getMotorRot() >= goalRotations - getMotorRotFromDegrees(HoodConstants.LOWER_TOLERANCE)
-                && getMotorRot() <= goalRotations + getMotorRotFromDegrees(HoodConstants.UPPER_TOLERANCE);
-    }
+    // public boolean isMechAtGoal() {
+    //     return getMotorRot() >= goalRotations - getMotorRotFromDegrees(HoodConstants.LOWER_TOLERANCE)
+    //             && getMotorRot() <= goalRotations + getMotorRotFromDegrees(HoodConstants.UPPER_TOLERANCE);
+    // }
 }
 
