@@ -36,7 +36,7 @@ public class HoodConstants {
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;
-    public static final double MAX = 36.5;
+    public static final double MAX = 37.5;
 
     public static final double MOTOR_TO_SENSOR_GEAR_RATIO = 8d;
     public static final double[][] GEAR_RATIO = {{120, 1}}; //.01255707762557077625570776255708
