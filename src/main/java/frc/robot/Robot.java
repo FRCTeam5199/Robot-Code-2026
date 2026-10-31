@@ -62,9 +62,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        if (getAlliance() != null && getAlliance().equals(DriverStation.Alliance.Red)) {
-            commandSwerveDrivetrain.getPigeon2().setYaw(180d);
-        } else {
+        if (getAlliance() != null){
             commandSwerveDrivetrain.getPigeon2().setYaw(0);
         }
         commandSwerveDrivetrain.seedFieldCentric();
@@ -89,7 +87,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        CommandScheduler.getInstance().schedule(new InstantCommand(()->commandSwerveDrivetrain.seedFieldCentric()));
         CommandScheduler.getInstance().schedule(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE));
     }
 
