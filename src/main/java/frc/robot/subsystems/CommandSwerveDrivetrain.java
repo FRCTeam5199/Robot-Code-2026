@@ -57,9 +57,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
             // Configure AutoBuilder last
             AutoBuilder.configure(
-                    RobotContainer::getPose, // Robot pose supplier
+                    () -> getState().Pose, // Robot pose supplier
                     this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                    RobotContainer::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                    () -> getState().Speeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                     (speeds, feedforwards) -> setControl(
                             m_pathApplyRobotSpeeds.withSpeeds(speeds)
                                     .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
@@ -82,7 +82,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     },
                     this // Reference to this subsystem to set requirements
             );
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            DriverStation.reportError("Failed to configure Auto: " +ex.getMessage(), ex.getStackTrace());
         }
     }
 

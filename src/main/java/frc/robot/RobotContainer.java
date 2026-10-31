@@ -39,7 +39,14 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class RobotContainer {
     public static final CommandXboxController commandXboxController = new CommandXboxController(Constants.XBOX_PORT);
@@ -47,6 +54,9 @@ public class RobotContainer {
     public static int stallinL =0;
     public static int stallinR =0;
     public static int voltageTol = 5;
+    private static final double ENDGAME_START = 30;
+    private static final double SHIFT_LENGTH = 25;
+    private static final double TRANSITION_END = ENDGAME_START + 4 * SHIFT_LENGTH;
 
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
@@ -90,12 +100,13 @@ public class RobotContainer {
     public static double goalX;
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SendableChooser<Command> autoChooser;
+    private static final Field2d field = new Field2d();
 
     public RobotContainer() {
         registerNamedCommands();
-        Autos.initializeAutos();
         autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        PathPlannerLogging.setLogActivePathCallback(poses -> field.getObject("path").setPoses(poses)); 
+        setupShuffleboard();    
         configureBindings();
     }
 
@@ -127,10 +138,121 @@ public class RobotContainer {
             requestRotationalVelocity = Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
         else
             requestRotationalVelocity = -Math.pow(Math.abs(commandXboxController.getRightX()), rotationScalingFactor) * Constants.MAX_ANGULAR_RATE;
+
+        updateDashboard();
+    }
+
+    private static GenericEntry hubActiveEntry, shiftTimeEntry, phaseEntry, setpointEntry,
+            readyEntry, slowModeEntry, matchTimeEntry,
+            shooterVelEntry, hoodAngleEntry, kickerVelEntry,
+            intakeLeftEntry, intakeRightEntry, stallLEntry, stallREntry,
+            speedEntry, batteryEntry;
+
+
+     private void setupShuffleboard() {
+        ShuffleboardTab driver = Shuffleboard.getTab("Driver");
+        hubActiveEntry = driver.add("Hub Active", true).withWidget(BuiltInWidgets.kBooleanBox)
+                .withProperties(Map.of("Color when true", "green", "Color when false", "red"))
+                .withPosition(0, 0).withSize(3, 2).getEntry();
+        shiftTimeEntry = driver.add("Shift Time Left", 0).withPosition(0, 2).withSize(3, 1).getEntry();
+        phaseEntry = driver.add("Phase", "").withPosition(3, 0).withSize(2, 1).getEntry();
+        setpointEntry = driver.add("Setpoint", "").withPosition(3, 1).withSize(2, 1).getEntry();
+        readyEntry = driver.add("Ready To Shoot", false).withWidget(BuiltInWidgets.kBooleanBox)
+                .withPosition(5, 0).withSize(2, 1).getEntry();
+        slowModeEntry = driver.add("Slow Mode", false).withWidget(BuiltInWidgets.kBooleanBox)
+                .withPosition(5, 1).withSize(2, 1).getEntry();
+        matchTimeEntry = driver.add("Match Time", 0).withPosition(3, 2).withSize(2, 1).getEntry();
+        driver.add("Auto Chooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser)
+                .withPosition(5, 2).withSize(2, 1);
+        driver.add("Field", field).withWidget(BuiltInWidgets.kField)
+                .withPosition(7, 0).withSize(6, 4);
+
+        ShuffleboardTab debug = Shuffleboard.getTab("Debug");
+        shooterVelEntry = debug.add("Shooter Velocity", 0).withWidget(BuiltInWidgets.kGraph).withSize(3, 2).getEntry();
+        hoodAngleEntry = debug.add("Hood Angle", 0).getEntry();
+        kickerVelEntry = debug.add("Kicker Velocity", 0).getEntry();
+        intakeLeftEntry = debug.add("Intake Left Pos", 0).getEntry();
+        intakeRightEntry = debug.add("Intake Right Pos", 0).getEntry();
+        stallLEntry = debug.add("Stall L", 0).getEntry();
+        stallREntry = debug.add("Stall R", 0).getEntry();
+        speedEntry = debug.add("Speed (mps)", 0).getEntry();
+        batteryEntry = debug.add("Battery", 0).getEntry();
+        
+    }
+
+    private static void updateDashboard() {
+        if (hubActiveEntry == null) return; // not set up yet
+
+        double matchTime = DriverStation.getMatchTime();
+        hubActiveEntry.setBoolean(isOurHubActive(matchTime));
+        shiftTimeEntry.setDouble(Math.ceil(getPhaseTimeLeft(matchTime)));
+        phaseEntry.setString(getPhaseName(matchTime));
+        setpointEntry.setString(currentSetpoint.name());
+        readyEntry.setBoolean(areMechanismsAtGoalsAuto());
+        slowModeEntry.setBoolean(speedMultiplier < 1.0);
+        matchTimeEntry.setDouble(matchTime);
+        field.setRobotPose(getPose());
+
+        shooterVelEntry.setDouble(shooterSubsystem.getMotorVelocity());
+        hoodAngleEntry.setDouble(hoodSubsystem.getDegrees());
+        kickerVelEntry.setDouble(kickerSubsystem.getMotorVelocity());
+        intakeLeftEntry.setDouble(intakeLinearLeftSubsystem.getMechM());
+        intakeRightEntry.setDouble(intakeLinearRightSubsystem.getMechM());
+        stallLEntry.setDouble(stallinL);
+        stallREntry.setDouble(stallinR);
+
+        ChassisSpeeds speeds = getSpeeds();
+        speedEntry.setDouble(Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond));
+        batteryEntry.setDouble(RobotController.getBatteryVoltage());
+    }
+
+    private static int getShift(double t) {
+        if (!DriverStation.isTeleopEnabled() || t < 0) return 0;
+        if (t > TRANSITION_END || t <= ENDGAME_START) return 0;
+        int shift = (int) Math.ceil((TRANSITION_END - t) / SHIFT_LENGTH);
+        return Math.max(1, Math.min(4, shift));
+    }
+
+    private static boolean isOurHubActive(double t) {
+        int shift = getShift(t);
+        if (shift == 0) return true; 
+
+        String data = DriverStation.getGameSpecificMessage();
+        if (data == null || data.isEmpty()) return true; 
+
+        
+        DriverStation.Alliance inactiveFirst = switch (data.charAt(0)) {
+            case 'R' -> DriverStation.Alliance.Red;
+            case 'B' -> DriverStation.Alliance.Blue;
+            default -> null;
+    };
+    if (inactiveFirst == null) return true;
+
+    boolean weAreInactiveFirst = Robot.getAlliance() == inactiveFirst;
+    boolean oddShift = (shift % 2) == 1;
+    return weAreInactiveFirst ? !oddShift : oddShift;
+    }
+
+    private static String getPhaseName (double t) {
+         if (t < 0) return "Not in match";
+        if (DriverStation.isAutonomous()) return "Auto";
+        if (!DriverStation.isTeleop()) return "Disabled";
+        if (t > TRANSITION_END) return "Transition";
+        if (t <= ENDGAME_START) return "Endgame";
+        return "Shift " + getShift(t);
+    }
+
+    private static double getPhaseTimeLeft(double t) {
+        if (t < 0) return 0;
+        if (DriverStation.isAutonomous()) return t;
+        if (t > TRANSITION_END) return t - TRANSITION_END;
+        if (t <= ENDGAME_START) return t;
+        double intoShifts = TRANSITION_END - t;
+        return SHIFT_LENGTH - (intoShifts % SHIFT_LENGTH);
     }
 
     public static ChassisSpeeds getSpeeds() {
-        return currentState.Speeds;
+        return commandSwerveDrivetrain.getState().Speeds;
     }
 
     public static double getRequestRotationalVelocity() {
@@ -148,7 +270,7 @@ public class RobotContainer {
     }
 
     public static Pose2d getPose() {
-        return currentState.Pose;
+        return commandSwerveDrivetrain.getState().Pose;
     }
 
     public static boolean isClimbing() {
@@ -192,10 +314,6 @@ public class RobotContainer {
                                 new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLELONG.getShooterSpeed()),
                                 new PositionCommand(hoodSubsystem, Setpoint.SHUTTLELONG.getHoodAngle()),
                                 RobotCommands.indexBallsAuto())),
-                        Map.entry(Setpoint.CHRISLAN, new ParallelCommandGroup(
-                                new VelocityCommand(shooterSubsystem, Setpoint.CHRISLAN.getShooterSpeed()),
-                                new PositionCommand(hoodSubsystem, Setpoint.CHRISLAN.getHoodAngle()),
-                                RobotCommands.indexBallsAuto())),
                         Map.entry(Setpoint.SHUTTLESHORT, new ParallelCommandGroup(
                             new VelocityCommand(shooterSubsystem, Setpoint.SHUTTLESHORT.getShooterSpeed()),
                                 new PositionCommand(hoodSubsystem, Setpoint.SHUTTLESHORT.getHoodAngle())
@@ -224,7 +342,7 @@ public class RobotContainer {
         operatorXboxController.y().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.SHUTTLELONG)));
         operatorXboxController.x().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.SHUTTLESHORT)));
         operatorXboxController.a().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.TOWER)));
-        operatorXboxController.b().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.CHRISLAN)));
+        // operatorXboxController.b().onTrue(new InstantCommand(() -> setSetpoint(Setpoint.CHRISLAN)));
 
         // operatorXboxController.x().onTrue(new InstantCommand(()->setSetpoint(Setpoint.)));
         // operatorXboxController.b().onTrue(new InstantCommand(()->setSetpoint(Setpoint.)));
@@ -252,7 +370,7 @@ public class RobotContainer {
     }
 
     private static void stallinRight(){
-        if(intakeLinearLeftSubsystem.getMotorVoltage()>=voltageTol) {
+        if(intakeLinearRightSubsystem.getMotorVoltage()>=voltageTol) {
             stallinR ++;
         }else {stallinR = 0;};
     }

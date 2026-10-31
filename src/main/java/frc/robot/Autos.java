@@ -32,12 +32,12 @@ public final class Autos {
 
         PathPlannerAuto FunnyAuto = new PathPlannerAuto("Red Hub to Tower shoot");
 
-        Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
-                .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
-                .withSize(2, 1);
-        Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
-                .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
-                .withSize(2, 1);
+        // Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
+        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
+        //         .withSize(2, 1);
+        // Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
+        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
+        //         .withSize(2, 1);
 
         autonChooserRed.addOption("Red Hub to Tower shoot", FunnyAuto);
         autonChooserBlue.addOption("Blue Hub to Tower shoot", FunnyAuto);

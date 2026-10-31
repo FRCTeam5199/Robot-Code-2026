@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+    public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     private Command m_autonomousCommand;
     private static DriverStation.Alliance alliance;
 
