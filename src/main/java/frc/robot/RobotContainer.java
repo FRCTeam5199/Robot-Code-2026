@@ -349,10 +349,11 @@ public class RobotContainer {
     }
 
     private void registerNamedCommands() {
-         NamedCommands.registerCommand("ShootTower", new ParallelCommandGroup(
+        NamedCommands.registerCommand("ShootTower", new ParallelCommandGroup(
                 new VelocityCommand(shooterSubsystem, Setpoint.TOWER.getShooterSpeed()),
                 new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
-                new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_SPEED)));
+                new VelocityCommand(kickerSubsystem, 60)));
+        NamedCommands.registerCommand("ReverseKicker", new VelocityCommand(kickerSubsystem, -20));
         NamedCommands.registerCommand("ShooterStop", new ParallelCommandGroup(
                 new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE),
                 new VelocityCommand(shooterSubsystem, 0),
