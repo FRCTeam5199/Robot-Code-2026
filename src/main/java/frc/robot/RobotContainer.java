@@ -354,6 +354,9 @@ public class RobotContainer {
                 new PositionCommand(hoodSubsystem, Setpoint.TOWER.getHoodAngle()),
                 new VelocityCommand(kickerSubsystem, 60)));
         NamedCommands.registerCommand("ReverseKicker", new VelocityCommand(kickerSubsystem, -20));
+        NamedCommands.registerCommand("IntakeDeploy", intakeDeploy);
+        NamedCommands.registerCommand("IntakeStow", intakeStow);
+        NamedCommands.registerCommand("IntakeRun", new VelocityCommand(intakeRollerSubsystem, IntakeRollerConstants.INTAKE_SPEED));
         NamedCommands.registerCommand("ShooterStop", new ParallelCommandGroup(
                 new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE),
                 new VelocityCommand(shooterSubsystem, 0),
