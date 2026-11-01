@@ -15,16 +15,23 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.constants.HoodConstants;
 import frc.robot.constants.KickerConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.templates.PositionCommand;
 import frc.robot.subsystems.templates.VelocityCommand;
 
 public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
+    public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
+    public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
     private Command m_autonomousCommand;
@@ -88,6 +95,8 @@ public class Robot extends TimedRobot {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
         CommandScheduler.getInstance().schedule(new VelocityCommand(kickerSubsystem, KickerConstants.KICKER_REVERSE));
+        CommandScheduler.getInstance().schedule(new PositionCommand(hoodSubsystem, HoodConstants.MIN));
+        CommandScheduler.getInstance().schedule(new VelocityCommand(shooterSubsystem, 0));
     }
 
     @Override

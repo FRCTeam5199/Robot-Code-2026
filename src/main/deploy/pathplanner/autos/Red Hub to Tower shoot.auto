@@ -11,24 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ReverseKicker"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootTower"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 5.0
