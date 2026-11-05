@@ -27,8 +27,7 @@ import frc.robot.constants.KickerConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.IntakeLinearLeft;
-import frc.robot.subsystems.IntakeLinearRight;
+import frc.robot.subsystems.IntakeLinearSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -61,16 +60,15 @@ public class RobotContainer {
     //Subsystems
     public static final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
     public static final IntakeRollerSubsystem intakeRollerSubsystem = IntakeRollerSubsystem.getInstance();
-    public static final IntakeLinearRight intakeLinearRightSubsystem = IntakeLinearRight.getInstance();
-    public static final IntakeLinearLeft intakeLinearLeftSubsystem = IntakeLinearLeft.getInstance();
+    public static final IntakeLinearSubsystem intakeLinearSubsystem = IntakeLinearSubsystem.getInstance();
 
     public static final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
     public static final KickerSubsystem kickerSubsystem = KickerSubsystem.getInstance();
     public static final HoodSubsystem hoodSubsystem = HoodSubsystem.getInstance();
 
     //Intake Pivot
-    public static final ParallelCommandGroup intakeStow = new ParallelCommandGroup(new PositionCommand(intakeLinearLeftSubsystem, IntakeLinearConstants.STOW), new PositionCommand(intakeLinearRightSubsystem, IntakeLinearConstants.STOW));
-    public static final ParallelCommandGroup intakeDeploy = new ParallelCommandGroup(new PositionCommand(intakeLinearLeftSubsystem, IntakeLinearConstants.DEPLOY), new PositionCommand(intakeLinearRightSubsystem, IntakeLinearConstants.DEPLOY));
+    public static final PositionCommand intakeStow = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.STOW);
+    public static final PositionCommand intakeDeploy = new PositionCommand(intakeLinearSubsystem, IntakeLinearConstants.DEPLOY);
 
     //Drive
     public static double speedMultiplier = 1.0;
@@ -111,10 +109,10 @@ public class RobotContainer {
     }
 
     public static boolean areMechanismsAtGoalsAuto(){
-        return shooterSubsystem.isMechAtGoal(true) && hoodSubsystem.isMechAtGoal(false);
+        return shooterSubsystem.getMotorGroup().isMechAtGoal(true) && hoodSubsystem.getMotorGroup().isMechAtGoal(false);
     }
     public static boolean areMechanismsAtGoalsExeptShooterAuto(){
-        return hoodSubsystem.isMechAtGoal(false);
+        return hoodSubsystem.getMotorGroup().isMechAtGoal(false);
     }
 
     public static void periodic() {
@@ -193,11 +191,11 @@ public class RobotContainer {
         matchTimeEntry.setDouble(matchTime);
         field.setRobotPose(getPose());
 
-        shooterVelEntry.setDouble(shooterSubsystem.getMotorVelocity());
-        hoodAngleEntry.setDouble(hoodSubsystem.getDegrees());
-        kickerVelEntry.setDouble(kickerSubsystem.getMotorVelocity());
-        intakeLeftEntry.setDouble(intakeLinearLeftSubsystem.getMechM());
-        intakeRightEntry.setDouble(intakeLinearRightSubsystem.getMechM());
+        shooterVelEntry.setDouble(shooterSubsystem.getMotorGroup().getMotorVelocity());
+        hoodAngleEntry.setDouble(hoodSubsystem.getMotorGroup().getDegrees());
+        kickerVelEntry.setDouble(kickerSubsystem.getMotorGroup().getMotorVelocity());
+        intakeLeftEntry.setDouble(intakeLinearSubsystem.getLeft().getMechM());
+        intakeRightEntry.setDouble(intakeLinearSubsystem.getRight().getMechM());
         stallLEntry.setDouble(stallinL);
         stallREntry.setDouble(stallinR);
 
@@ -368,13 +366,13 @@ public class RobotContainer {
     }
 
     private static void stallinLeft(){
-        if(intakeLinearLeftSubsystem.getMotorVoltage()>=voltageTol) {
+        if(intakeLinearSubsystem.getLeft().getMotorVoltage()>=voltageTol) {
             stallinL ++;
         }else {stallinL =0;};
     }
 
     private static void stallinRight(){
-        if(intakeLinearRightSubsystem.getMotorVoltage()>=voltageTol) {
+        if(intakeLinearSubsystem.getRight().getMotorVoltage()>=voltageTol) {
             stallinR ++;
         }else {stallinR = 0;};
     }

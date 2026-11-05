@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.RobotContainer;
 import frc.robot.constants.IntakeLinearConstants;
 import frc.robot.constants.KickerConstants;
-import frc.robot.subsystems.IntakeLinearLeft;
-import frc.robot.subsystems.IntakeLinearRight;
+import frc.robot.subsystems.IntakeLinearSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.templates.MotorGroup;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 
 public class RobotCommands {
@@ -18,49 +18,51 @@ public class RobotCommands {
         return new FunctionalCommand(
                 () -> {
                     if (RobotContainer.areMechanismsAtGoalsAuto()) {
-                        kickerSubsystem.setVelocity(KickerConstants.KICKER_SPEED);
+                        kickerSubsystem.getMotorGroup().setVelocity(KickerConstants.KICKER_SPEED);
                     }
                 },
                 () -> {
                     if (RobotContainer.areMechanismsAtGoalsExeptShooterAuto()) {
-                        kickerSubsystem.setVelocity(KickerConstants.KICKER_SPEED);
+                        kickerSubsystem.getMotorGroup().setVelocity(KickerConstants.KICKER_SPEED);
                     } else {
-                        kickerSubsystem.setVelocity(KickerConstants.KICKER_REVERSE);
+                        kickerSubsystem.getMotorGroup().setVelocity(KickerConstants.KICKER_REVERSE);
                     }
 
                 },
                 (interrupted) -> {
-                    kickerSubsystem.setVelocity(KickerConstants.KICKER_REVERSE);
+                    kickerSubsystem.getMotorGroup().setVelocity(KickerConstants.KICKER_REVERSE);
                 },
                 () -> false,
                 kickerSubsystem
         );
     }
 
-    public static final IntakeLinearRight intakeLinearRSubsystem = IntakeLinearRight.getInstance();
-    public static final IntakeLinearLeft intakeLinearLSubsystem = IntakeLinearLeft.getInstance();
+    public static final IntakeLinearSubsystem intakeLinearSubsystem = IntakeLinearSubsystem.getInstance();
 
     public static final int StalinTol = 10;
 
     public static Command intakeOut() {
+        MotorGroup left = intakeLinearSubsystem.getLeft();
+        MotorGroup right = intakeLinearSubsystem.getRight();
+
         return new FunctionalCommand(
                 () -> {
-                        intakeLinearLSubsystem.setPosition(IntakeLinearConstants.DEPLOY);
-                        intakeLinearRSubsystem.setPosition(IntakeLinearConstants.DEPLOY);
+                        left.setPosition(IntakeLinearConstants.DEPLOY);
+                        right.setPosition(IntakeLinearConstants.DEPLOY);
                 },
                 () -> {
                     if (RobotContainer.getStallinL()>=StalinTol) {
-                        intakeLinearLSubsystem.setPosition(intakeLinearLSubsystem.getMechM()-.1);
+                        left.setPosition(left.getMechM()-.1);
                     }
                     if (RobotContainer.getStallinR()>=StalinTol) {
-                        intakeLinearRSubsystem.setPosition(intakeLinearRSubsystem.getMechM()-.1);
+                        right.setPosition(right.getMechM()-.1);
                     }
 
                 },
                 (interrupted) -> {
                 },
                 () -> false,
-                intakeLinearLSubsystem, intakeLinearRSubsystem
+                intakeLinearSubsystem
         );
     }
     
