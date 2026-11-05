@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.IntakeRollerConstants;
+import frc.robot.subsystems.templates.MotorGroup;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
@@ -13,20 +14,21 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
     private static IntakeRollerSubsystem intakeRollerSubsystem;
 
     private IntakeRollerSubsystem() {
-        super(Type.ROLLER, IntakeRollerConstants.MOTOR_ID,
+        super("Intake Roller");
+
+        MotorGroup motors = addMotorGroup(new MotorGroup(Type.ROLLER, IntakeRollerConstants.MOTOR_ID,
                 0, IntakeRollerConstants.ACCELERATION,
                 IntakeRollerConstants.JERK,
                 IntakeRollerConstants.LOWER_TOLERANCE,
                 IntakeRollerConstants.UPPER_TOLERANCE,
-                IntakeRollerConstants.GEAR_RATIO, "Intake Roller", false, IntakeRollerConstants.CAN_BUS);
+                IntakeRollerConstants.GEAR_RATIO, false, IntakeRollerConstants.CAN_BUS));
 
-        configureMotor(IntakeRollerConstants.INVERTED, IntakeRollerConstants.BRAKE,
+        motors.configureMotor(IntakeRollerConstants.INVERTED, IntakeRollerConstants.BRAKE,
                 IntakeRollerConstants.SUPPLY_CURRENT_LIMIT,
                 IntakeRollerConstants.STATOR_CURRENT_LIMIT,
                 IntakeRollerConstants.SLOT0_CONFIGS, false);
 
-        configureFollowerMotor(IntakeRollerConstants.FOLLOWER_MOTOR_ID,
-                IntakeRollerConstants.FOLLOWER_INVERTED, IntakeRollerConstants.CAN_BUS, true);
+        motors.addFollower(IntakeRollerConstants.FOLLOWER_MOTOR_ID, IntakeRollerConstants.FOLLOWER_INVERTED);
     }
 
     public static IntakeRollerSubsystem getInstance() {
@@ -44,12 +46,12 @@ public class IntakeRollerSubsystem extends TemplateSubsystem {
                     null
             ),
             new SysIdRoutine.Mechanism(
-                    (voltage) -> setVoltage(voltage.in(Volts)),
+                    (voltage) -> getMotorGroup().setVoltage(voltage.in(Volts)),
                     log -> {
                         log.motor("intakeRoller")
-                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
-                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
-                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
+                                .voltage(Volts.of(getMotorGroup().getMotor().getMotorVoltage().getValueAsDouble()))
+                                .angularPosition(Rotations.of(getMotorGroup().getMotor().getRotorPosition().getValueAsDouble()))
+                                .angularVelocity(RotationsPerSecond.of(getMotorGroup().getMotor().getRotorVelocity().getValueAsDouble()));
                     },
                     this
             )

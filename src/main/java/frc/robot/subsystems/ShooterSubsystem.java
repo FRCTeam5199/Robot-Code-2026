@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ShooterConstants;
+import frc.robot.subsystems.templates.MotorGroup;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
@@ -23,33 +24,35 @@ public class ShooterSubsystem extends TemplateSubsystem {
                     null
             ),
             new SysIdRoutine.Mechanism(
-                    (voltage) -> setVoltage(voltage.in(Volts)),
+                    (voltage) -> getMotorGroup().setVoltage(voltage.in(Volts)),
                     log -> {
                         log.motor("shooter")
-                                .voltage(Volts.of(getMotor().getMotorVoltage().getValueAsDouble()))
-                                .angularPosition(Rotations.of(getMotor().getRotorPosition().getValueAsDouble()))
-                                .angularVelocity(RotationsPerSecond.of(getMotor().getRotorVelocity().getValueAsDouble()));
+                                .voltage(Volts.of(getMotorGroup().getMotor().getMotorVoltage().getValueAsDouble()))
+                                .angularPosition(Rotations.of(getMotorGroup().getMotor().getRotorPosition().getValueAsDouble()))
+                                .angularVelocity(RotationsPerSecond.of(getMotorGroup().getMotor().getRotorVelocity().getValueAsDouble()));
                     },
                     this
             )
     );
 
     private ShooterSubsystem() {
-        super(Type.ROLLER, ShooterConstants.MOTOR_ID,
+        super("Shooter");
+
+        MotorGroup motors = addMotorGroup(new MotorGroup(Type.ROLLER, ShooterConstants.MOTOR_ID,
                 0, ShooterConstants.ACCELERATION,
                 ShooterConstants.JERK,
                 ShooterConstants.LOWER_TOLERANCE,
                 ShooterConstants.UPPER_TOLERANCE,
-                ShooterConstants.GEAR_RATIO, "Shooter", true, ShooterConstants.CANBUS);
+                ShooterConstants.GEAR_RATIO, true, ShooterConstants.CANBUS));
 
-        configureMotor(ShooterConstants.INVERTED, ShooterConstants.BRAKE,
+        motors.configureMotor(ShooterConstants.INVERTED, ShooterConstants.BRAKE,
                 ShooterConstants.SUPPLY_CURRENT_LIMIT,
                 ShooterConstants.STATOR_CURRENT_LIMIT,
                 ShooterConstants.SLOT0_CONFIGS, true);
-                
-        configureFollowerMotor(ShooterConstants.SECOND_MOTOR_ID, ShooterConstants.SECOND_INVERTED, ShooterConstants.CANBUS);
-        configureSecondFollowerMotor(ShooterConstants.THIRD_MOTOR_ID, ShooterConstants.THIRD_INVERTED, ShooterConstants.CANBUS);
-        configureThirdFollowerMotor(ShooterConstants.FOURTH_MOTOR_ID, ShooterConstants.FOURTH_INVERTED, ShooterConstants.CANBUS);
+
+        motors.addFollower(ShooterConstants.SECOND_MOTOR_ID, ShooterConstants.SECOND_INVERTED);
+        motors.addFollower(ShooterConstants.THIRD_MOTOR_ID, ShooterConstants.THIRD_INVERTED);
+        motors.addFollower(ShooterConstants.FOURTH_MOTOR_ID, ShooterConstants.FOURTH_INVERTED);
     }
 
     public static ShooterSubsystem getInstance() {

@@ -1,24 +1,38 @@
 package frc.robot.subsystems.templates;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
+/**
+ * Moves motor groups to set positions, and finishes when all of them are at their goals. A command
+ * requires its whole subsystem, so to move several groups of one subsystem together, use
+ * {@link #withGoal} instead of two separate commands.
+ */
 public class PositionCommand extends Command {
-    private TemplateSubsystem templateSubsystem;
-    private int id;
+    private final TemplateSubsystem templateSubsystem;
+    private final MotorGroup motorGroup;
+    private final Map<MotorGroup, Double> goals = new LinkedHashMap<>();
     private double velocity;
     private double acceleration;
     private double jerk;
-    private double goal;
     private double goalVelocity;
     private boolean updateGoalPosition;
     private boolean changeConstraints;
     private boolean uniqueConstraints;
     private boolean shouldNotEnd;
-    private boolean useCustomFF;
 
+    /** Moves the subsystem's first motor group. */
     public PositionCommand(TemplateSubsystem templateSubsystem, double goal) {
+        this(templateSubsystem, templateSubsystem.getMotorGroup(), goal);
+    }
+
+    /** Moves a specific motor group of the subsystem. */
+    public PositionCommand(TemplateSubsystem templateSubsystem, MotorGroup motorGroup, double goal) {
         this.templateSubsystem = templateSubsystem;
-        this.goal = goal;
+        this.motorGroup = motorGroup;
+        goals.put(motorGroup, goal);
         updateGoalPosition = false;
         changeConstraints = false;
         uniqueConstraints = false;
@@ -26,19 +40,14 @@ public class PositionCommand extends Command {
         addRequirements(templateSubsystem);
     }
 
-    public PositionCommand(TemplateSubsystem templateSubsystem, int motorId, double goal, boolean shouldNotEnd) {
+    public PositionCommand(TemplateSubsystem templateSubsystem, double goal, boolean shouldNotEnd) {
         this(templateSubsystem, goal);
         this.shouldNotEnd = shouldNotEnd;
-        this.useCustomFF = useCustomFF;
-        this.goalVelocity = goalVelocity;
     }
 
-    public PositionCommand(TemplateSubsystem templateSubsystem, int motorId, double goal,
+    public PositionCommand(TemplateSubsystem templateSubsystem, double goal,
                            double velocity, double acceleration, double jerk) {
-        this.templateSubsystem = templateSubsystem;
-        this.id = motorId;
-        this.goal = goal;
-        updateGoalPosition = false;
+        this(templateSubsystem, goal);
 
         this.velocity = velocity;
         this.acceleration = acceleration;
@@ -46,18 +55,20 @@ public class PositionCommand extends Command {
 
         changeConstraints = true;
         uniqueConstraints = true;
+    }
 
-        addRequirements(templateSubsystem);
+    /** Also moves another motor group of the same subsystem. */
+    public PositionCommand withGoal(MotorGroup motorGroup, double goal) {
+        goals.put(motorGroup, goal);
+        return this;
     }
 
     @Override
     public void initialize() {
+        applyGoals();
         if (changeConstraints) {
-            templateSubsystem.setPosition(id, goal);
-            templateSubsystem.setConstraints(velocity, acceleration, jerk);
+            applyConstraints();
             changeConstraints = false;
-        } else {
-            templateSubsystem.setPosition(id, goal);
         }
         templateSubsystem.setCommandRunning(true);
     }
@@ -65,29 +76,38 @@ public class PositionCommand extends Command {
     @Override
     public void execute() {
         if (updateGoalPosition) {
-            templateSubsystem.setPosition(id, goal);
+            applyGoals();
             updateGoalPosition = false;
         }
         if (changeConstraints) {
-            templateSubsystem.setConstraints(velocity, acceleration, jerk);
+            applyConstraints();
             changeConstraints = false;
         }
     }
 
     @Override
     public boolean isFinished() {
-        return templateSubsystem.isMechAtGoal(false) && !shouldNotEnd;
+        if (shouldNotEnd) return false;
+        for (MotorGroup group : goals.keySet()) {
+            if (!group.isMechAtGoal(false)) return false;
+        }
+        return true;
     }
 
     @Override
     public void end(boolean interrupted) {
-        templateSubsystem.setFollowLastMechProfile(true);
+        goals.keySet().forEach(group -> group.setFollowLastMechProfile(true));
         templateSubsystem.setCommandRunning(false);
         if (uniqueConstraints) changeConstraints = true;
     }
 
+    /** Changes the goal of the motor group given to the constructor. */
     public void setGoal(double goal) {
-        this.goal = goal;
+        setGoal(motorGroup, goal);
+    }
+
+    public void setGoal(MotorGroup motorGroup, double goal) {
+        goals.put(motorGroup, goal);
         this.updateGoalPosition = true;
     }
 
@@ -102,5 +122,13 @@ public class PositionCommand extends Command {
         this.jerk = jerk;
 
         this.changeConstraints = true;
+    }
+
+    private void applyGoals() {
+        goals.forEach((group, goal) -> group.setPosition(goal));
+    }
+
+    private void applyConstraints() {
+        goals.keySet().forEach(group -> group.setConstraints(velocity, acceleration, jerk));
     }
 }

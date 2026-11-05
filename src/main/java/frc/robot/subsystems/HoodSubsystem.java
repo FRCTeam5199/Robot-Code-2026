@@ -6,6 +6,7 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.constants.HoodConstants;
+import frc.robot.subsystems.templates.MotorGroup;
 import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.utility.Type;
 
@@ -30,25 +31,27 @@ public class HoodSubsystem extends TemplateSubsystem {
     private SimpleMotorFeedforward simpleMotorFeedforward;
 
     private HoodSubsystem() {
-        super(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
+        super("Hood");
+
+        MotorGroup motors = addMotorGroup(new MotorGroup(Type.PIVOT, HoodConstants.MOTOR_ID, HoodConstants.VELOCITY,
                 HoodConstants.ACCELERATION, HoodConstants.JERK,
                 HoodConstants.LOWER_TOLERANCE,
                 HoodConstants.UPPER_TOLERANCE,
-                HoodConstants.GEAR_RATIO, "Hood", true, HoodConstants.CANBUS);
+                HoodConstants.GEAR_RATIO, true, HoodConstants.CANBUS));
 
-        configureMotor(HoodConstants.INVERTED, HoodConstants.BRAKE,
+        motors.configureMotor(HoodConstants.INVERTED, HoodConstants.BRAKE,
                 HoodConstants.SUPPLY_CURRENT_LIMIT,
                 HoodConstants.STATOR_CURRENT_LIMIT,
                 HoodConstants.SLOT0_CONFIGS, true);
 
-        // configureSometimesEncoder(HoodConstants.ENCODER_ID,
+        // motors.configureSometimesEncoder(HoodConstants.ENCODER_ID,
         //         HoodConstants.CANBUS, HoodConstants.MAGNET_OFFSET,
         //         HoodConstants.SENSOR_TO_MECH_GEAR_RATIO,
         //         HoodConstants.MOTOR_TO_SENSOR_GEAR_RATIO,
         //         HoodConstants.IS_CCW_POS,
         //         HoodConstants.ABSOLUTE_DISCONTINUITY_POINT);
 
-        configurePivot(HoodConstants.MIN,
+        motors.configurePivot(HoodConstants.MIN,
                 HoodConstants.MAX);
 
         
@@ -90,8 +93,9 @@ public class HoodSubsystem extends TemplateSubsystem {
     }
 
     public boolean isMechAtGoal() {
-        return getMotorRot() >= goalRotations - getMotorRotFromDegrees(HoodConstants.LOWER_TOLERANCE)
-                && getMotorRot() <= goalRotations + getMotorRotFromDegrees(HoodConstants.UPPER_TOLERANCE);
+        MotorGroup motors = getMotorGroup();
+        return motors.getMotorRot() >= goalRotations - motors.getMotorRotFromDegrees(HoodConstants.LOWER_TOLERANCE)
+                && motors.getMotorRot() <= goalRotations + motors.getMotorRotFromDegrees(HoodConstants.UPPER_TOLERANCE);
     }
 }
 
