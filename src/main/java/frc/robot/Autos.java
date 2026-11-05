@@ -4,12 +4,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeRollerSubsystem;
@@ -32,13 +28,6 @@ public final class Autos {
 
         PathPlannerAuto FunnyAuto = new PathPlannerAuto("Red Hub to Tower shoot");
 
-        // Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
-        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
-        //         .withSize(2, 1);
-        // Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
-        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
-        //         .withSize(2, 1);
-
         autonChooserRed.addOption("Red Hub to Tower shoot", FunnyAuto);
         autonChooserBlue.addOption("Blue Hub to Tower shoot", FunnyAuto);
     }
@@ -54,10 +43,7 @@ public final class Autos {
      * Gets or creates the AutoChooser (Singleton Method)
      */
     public SendableChooser<Command> getAutoChooser() {
-        if (autoChooser == null) {
-            autoChooser = AutoBuilder.buildAutoChooser();
-//            UserInterface.getTab("Auton").add("AutoChooser", autoChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(1, 1).withPosition(0, 0);
-        }
+        if (autoChooser == null) { autoChooser = AutoBuilder.buildAutoChooser(); }
 
         return autoChooser;
     }
