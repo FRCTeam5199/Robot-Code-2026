@@ -1,6 +1,7 @@
 package frc.robot.subsystems.templates;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,10 +43,15 @@ public class TemplateSubsystem extends SubsystemBase {
     }
 
     /**
-     * @return the first group added, which is the only group on most subsystems
+     * @return the first group added, for subsystems with one group. Subsystems with several groups
+     * should have a getter for each one, like IntakeLinearSubsystem's getLeft() and getRight().
      */
     public MotorGroup getMotorGroup() {
         return motorGroups.get(0);
+    }
+
+    public List<MotorGroup> getMotorGroups() {
+        return Collections.unmodifiableList(motorGroups);
     }
 
     public void setBrake(boolean brake) {

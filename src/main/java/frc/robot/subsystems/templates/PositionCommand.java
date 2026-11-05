@@ -7,12 +7,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * Moves motor groups to set positions, and finishes when all of them are at their goals. A command
- * requires its whole subsystem, so to move several groups of one subsystem together, use
+ * requires its whole subsystem, so to give groups of one subsystem different goals, use
  * {@link #withGoal} instead of two separate commands.
  */
 public class PositionCommand extends Command {
     private final TemplateSubsystem templateSubsystem;
-    private final MotorGroup motorGroup;
     private final Map<MotorGroup, Double> goals = new LinkedHashMap<>();
     private double velocity;
     private double acceleration;
@@ -23,19 +22,20 @@ public class PositionCommand extends Command {
     private boolean uniqueConstraints;
     private boolean shouldNotEnd;
 
-    /** Moves the subsystem's first motor group. */
+    /** Moves every motor group of the subsystem to the same goal. */
     public PositionCommand(TemplateSubsystem templateSubsystem, double goal) {
-        this(templateSubsystem, templateSubsystem.getMotorGroup(), goal);
+        this.templateSubsystem = templateSubsystem;
+        for (MotorGroup motorGroup : templateSubsystem.getMotorGroups()) {
+            goals.put(motorGroup, goal);
+        }
+
+        addRequirements(templateSubsystem);
     }
 
-    /** Moves a specific motor group of the subsystem. */
+    /** Moves one motor group of the subsystem. */
     public PositionCommand(TemplateSubsystem templateSubsystem, MotorGroup motorGroup, double goal) {
         this.templateSubsystem = templateSubsystem;
-        this.motorGroup = motorGroup;
         goals.put(motorGroup, goal);
-        updateGoalPosition = false;
-        changeConstraints = false;
-        uniqueConstraints = false;
 
         addRequirements(templateSubsystem);
     }
@@ -57,7 +57,7 @@ public class PositionCommand extends Command {
         uniqueConstraints = true;
     }
 
-    /** Also moves another motor group of the same subsystem. */
+    /** Sets the goal of one motor group of the same subsystem, adding it to this command if needed. */
     public PositionCommand withGoal(MotorGroup motorGroup, double goal) {
         goals.put(motorGroup, goal);
         return this;
@@ -101,9 +101,10 @@ public class PositionCommand extends Command {
         if (uniqueConstraints) changeConstraints = true;
     }
 
-    /** Changes the goal of the motor group given to the constructor. */
+    /** Changes the goal of every motor group in this command. */
     public void setGoal(double goal) {
-        setGoal(motorGroup, goal);
+        goals.replaceAll((motorGroup, oldGoal) -> goal);
+        this.updateGoalPosition = true;
     }
 
     public void setGoal(MotorGroup motorGroup, double goal) {

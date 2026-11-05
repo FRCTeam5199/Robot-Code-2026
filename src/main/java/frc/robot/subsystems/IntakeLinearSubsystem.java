@@ -7,7 +7,7 @@ import frc.robot.utility.Type;
 
 /**
  * The left and right sides are separate motor groups, because each side runs its own closed loop
- * and backs off on its own when it stalls.
+ * and RobotCommands.intakeOut() backs each one off separately.
  */
 public class IntakeLinearSubsystem extends TemplateSubsystem {
     private static IntakeLinearSubsystem intakeLinearSubsystem;

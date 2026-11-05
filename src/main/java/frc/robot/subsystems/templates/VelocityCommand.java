@@ -6,33 +6,34 @@ import java.util.Map;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
- * Runs motor groups at set velocities. A command requires its whole subsystem, so to run several
- * groups of one subsystem together, use {@link #withGoal} instead of two separate commands:
+ * Runs motor groups at set velocities. A command requires its whole subsystem, so to give groups of
+ * one subsystem different goals, use {@link #withGoal} instead of two separate commands:
  *
  * <pre>{@code
  * new VelocityCommand(indexer, indexer.getUpper(), 20).withGoal(indexer.getLower(), 60);
  * }</pre>
  */
 public class VelocityCommand extends Command {
-    private final MotorGroup motorGroup;
     private final Map<MotorGroup, Double> goals = new LinkedHashMap<>();
     private boolean updateVelocity;
 
-    /** Runs the subsystem's first motor group. */
+    /** Runs every motor group of the subsystem at the same velocity. */
     public VelocityCommand(TemplateSubsystem templateSubsystem, double goal) {
-        this(templateSubsystem, templateSubsystem.getMotorGroup(), goal);
-    }
-
-    /** Runs a specific motor group of the subsystem. */
-    public VelocityCommand(TemplateSubsystem templateSubsystem, MotorGroup motorGroup, double goal) {
-        this.motorGroup = motorGroup;
-        goals.put(motorGroup, goal);
-        updateVelocity = false;
+        for (MotorGroup motorGroup : templateSubsystem.getMotorGroups()) {
+            goals.put(motorGroup, goal);
+        }
 
         addRequirements(templateSubsystem);
     }
 
-    /** Also runs another motor group of the same subsystem. */
+    /** Runs one motor group of the subsystem. */
+    public VelocityCommand(TemplateSubsystem templateSubsystem, MotorGroup motorGroup, double goal) {
+        goals.put(motorGroup, goal);
+
+        addRequirements(templateSubsystem);
+    }
+
+    /** Sets the goal of one motor group of the same subsystem, adding it to this command if needed. */
     public VelocityCommand withGoal(MotorGroup motorGroup, double goal) {
         goals.put(motorGroup, goal);
         return this;
@@ -60,9 +61,10 @@ public class VelocityCommand extends Command {
     public void end(boolean interrupted) {
     }
 
-    /** Changes the goal of the motor group given to the constructor. */
+    /** Changes the goal of every motor group in this command. */
     public void setGoal(double goal) {
-        setGoal(motorGroup, goal);
+        goals.replaceAll((motorGroup, oldGoal) -> goal);
+        updateVelocity = true;
     }
 
     public void setGoal(MotorGroup motorGroup, double goal) {
