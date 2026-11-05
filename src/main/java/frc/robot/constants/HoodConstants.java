@@ -8,8 +8,8 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 public class HoodConstants {
     public static final int MOTOR_ID = 21;
 
-    public static final double STATOR_CURRENT_LIMIT = 45;
-    public static final double SUPPLY_CURRENT_LIMIT = 45;
+    public static final double STATOR_CURRENT_LIMIT = 35;
+    public static final double SUPPLY_CURRENT_LIMIT = 35;
     public static final boolean INVERTED = true;
     public static final boolean BRAKE = true;
 
@@ -29,14 +29,14 @@ public class HoodConstants {
     public static final double ACCELERATION = 200;
     public static final double JERK = 4000;
 
-    public static final double LOWER_TOLERANCE = 1.25;
-    public static final double UPPER_TOLERANCE = 7.25;
+    public static final double LOWER_TOLERANCE = 2;
+    public static final double UPPER_TOLERANCE = 2;
 
     public static final double MAGNET_OFFSET = -0.14111328125;
     public static final boolean IS_CCW_POS = false;
 
     public static final double MIN = 0;
-    public static final double MAX = 36.5;
+    public static final double MAX = 37.5;
 
     public static final double MOTOR_TO_SENSOR_GEAR_RATIO = 8d;
     public static final double[][] GEAR_RATIO = {{120, 1}}; //.01255707762557077625570776255708

@@ -5,27 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "startRight"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Red Top First Sweep"
+            "pathName": "Tower Run"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "ShooterStop"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Red Double Score",
+  "folder": null,
   "choreoAuto": false
 }

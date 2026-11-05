@@ -4,58 +4,60 @@
     {
       "anchor": {
         "x": 13.0,
-        "y": 7.5
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.8,
-        "y": 7.500000000000001
+        "x": 14.060314046221523,
+        "y": 4.018688495124277
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 16.09788873038516,
-        "y": 7.004422253922967
+        "x": 15.0,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 15.981417281496446,
-        "y": 8.596166706275092
+        "x": 13.924527107348789,
+        "y": 4.006821230773095
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.2345415778251608,
-      "rotationDegrees": 180.0
-    },
-    {
-      "waypointRelativePos": 0.7356076759061843,
-      "rotationDegrees": -90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "stable",
+      "name": "ReverseKicker",
       "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.8233970753655807,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ReverseKicker"
+        }
+      }
+    },
+    {
+      "name": "ShootTower",
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "stable"
+          "name": "ShootTower"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 5.5,
+    "maxVelocity": 0.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -63,10 +65,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Red Score Top",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

@@ -1,3 +1,4 @@
+
 package frc.robot.constants;
 
 import com.ctre.phoenix6.CANBus;
@@ -6,8 +7,8 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class IntakeLinearConstants {
-    public static final int MOTOR_ID = 14;
-    public static final int FOLLOWER_MOTOR_ID = 15;
+    public static final int RIGHT_MOTOR_ID = 14;
+    public static final int LEFT_MOTOR_ID = 15;
 
     public static final double STATOR_CURRENT_LIMIT = 25;
     public static final double SUPPLY_CURRENT_LIMIT = 25;
@@ -15,7 +16,7 @@ public class IntakeLinearConstants {
     public static final boolean FOLLOWER_INVERTED = true;
     public static final boolean BRAKE = true;
 
-    public static final double DEPLOY = 23.9;
+    public static final double DEPLOY = 22.4;
     public static final double STOW = 7;
 
     public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs()
@@ -36,7 +37,7 @@ public class IntakeLinearConstants {
     public static final double UPPER_TOLERANCE = 1;
 
     public static final double MIN = -0.2;
-    public static final double MAX = 24.05; //24.05
+    public static final double MAX = 23.45; //24.05
 
     public static final double[][] GEAR_RATIOA = {{5, 1}};
 

@@ -26,53 +26,21 @@ public final class Autos {
     private static PathPlannerAuto redBottomScore;
     private static PathPlannerAuto redTopScore;
     private static PathPlannerAuto redBottomDelayedBump;
-    private static PathPlannerAuto redTopDelayedBump;
-    private static PathPlannerAuto redBottomDoubleTrench;
-    private static PathPlannerAuto redTopDoubleTrench;
-    private static PathPlannerAuto redBottomDelayedTrench;
-    private static PathPlannerAuto redTopDelayedTrench;
-    private static PathPlannerAuto redBottomSelfShuttle;
-    private static PathPlannerAuto redTopSelfShuttle;
-    private static PathPlannerAuto blueBottomScore;
-    private static PathPlannerAuto blueTopScore;
-    private static SequentialCommandGroup blueBottomSelfShuttle;
-    private static SequentialCommandGroup blueTopSelfShuttle;
-    private static PathPlannerAuto blueBottomDoubleScore;
-    private static PathPlannerAuto blueTopDoubleScore;
-    private static Timer pidAlignmentTimer = new Timer();
     private SendableChooser<Command> autoChooser;
 
     public static void initializeAutos() {
 
-        redBottomDoubleTrench = new PathPlannerAuto("Red Bottom Double Trench");
-        redTopDoubleTrench = new PathPlannerAuto("Red Top Double Trench");
+        PathPlannerAuto FunnyAuto = new PathPlannerAuto("Red Hub to Tower shoot");
 
-        redBottomDelayedBump = new PathPlannerAuto("Red Bottom Delayed Bump");
-        redTopDelayedBump = new PathPlannerAuto("Red Top Delayed Bump");
+        // Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
+        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
+        //         .withSize(2, 1);
+        // Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
+        //         .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
+        //         .withSize(2, 1);
 
-        redBottomDelayedTrench = new PathPlannerAuto("Red Bottom Delayed Trench");
-        redTopDelayedTrench = new PathPlannerAuto("Red Top Delayed Trench");
-
-        Shuffleboard.getTab("Autons").add("Red Autons", autonChooserRed)
-                .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(0, 0)
-                .withSize(2, 1);
-        Shuffleboard.getTab("Autons").add("Blue Autons", autonChooserBlue)
-                .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(2, 0)
-                .withSize(2, 1);
-
-        autonChooserRed.addOption("Red Left Double Trench", redBottomDoubleTrench);
-        autonChooserRed.addOption("Red Right Double Trench", redTopDoubleTrench);
-        autonChooserRed.addOption("Red Left Delayed Bump", redBottomDelayedBump);
-        autonChooserRed.addOption("Red Right Delayed Bump", redTopDelayedBump);
-        autonChooserRed.addOption("Red Left Delayed Trench", redBottomDelayedTrench);
-        autonChooserRed.addOption("Red Right Delayed Trench", redTopDelayedTrench);
-
-        autonChooserBlue.addOption("Blue Left Double Trench", redBottomDoubleTrench);
-        autonChooserBlue.addOption("Blue Right Double Trench", redTopDoubleTrench);
-        autonChooserBlue.addOption("Blue Left Delayed Bump", redBottomDelayedBump);
-        autonChooserBlue.addOption("Blue Right Delayed Bump", redTopDelayedBump);
-        autonChooserBlue.addOption("Blue Left Delayed Trench", redBottomDelayedTrench);
-        autonChooserBlue.addOption("Blue Right Delayed Trench", redTopDelayedTrench);
+        autonChooserRed.addOption("Red Hub to Tower shoot", FunnyAuto);
+        autonChooserBlue.addOption("Blue Hub to Tower shoot", FunnyAuto);
     }
 
     public static Autos getInstance() {

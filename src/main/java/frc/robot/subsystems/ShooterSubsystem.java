@@ -65,6 +65,7 @@ public class ShooterSubsystem extends TemplateSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        // System.out.println(getGoal()+ "    "+getMotorVelocity());
     }
 
     public Command sysIdQuasistaticForward() {
