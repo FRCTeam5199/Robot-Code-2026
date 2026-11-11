@@ -20,7 +20,9 @@ import org.wpilib.math.geometry.Rotation2d;
 
 import frc.robot.constants.MiscellaneousConstants;
 import frc.robot.constants.SetPoints;
+import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.Aiming;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IndexerBottomBeltSubsystem;
@@ -61,7 +63,7 @@ public class RobotContainer {
 	public final ShooterSubsystem shooterSubsystem;
 	public final TurretSubsystem turretSubsystem;
 
-	private final CommandSwerveDrivetrain commandSwerveDrivetrain;
+	private final CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
 
 	private final Set<Class<Warning>> suppressedWarnings = new HashSet<>();
 

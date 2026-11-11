@@ -13,6 +13,9 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+
 // import frc.robot.subsystems.CommandSwerveDrivetrain;
 import org.wpilib.math.linalg.Matrix;
 import org.wpilib.math.numbers.N1;
@@ -191,11 +194,11 @@ public class TunerConstants {
      * Creates a CommandSwerveDrivetrain instance.
      * This should only be called once in your robot program,.
      */
-//     public static CommandSwerveDrivetrain createDrivetrain() {
-//         return new CommandSwerveDrivetrain(
-//                 DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
-//         );
-//     }
+    public static CommandSwerveDrivetrain createDrivetrain() {
+        return new CommandSwerveDrivetrain(
+                DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
+        );
+    }
 
 
     /**
