@@ -198,41 +198,41 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
     public void resetPose(Pose2d pose) {
         super.resetPose(pose);
-        Robot.gyroOffsetDegrees = pose.getRotation().getDegrees() - (Robot.gyro.getYaw() * 360d);
-        Robot.gyroOffsetValid = true;
+        // Robot.gyroOffsetDegrees = pose.getRotation().getDegrees() - (Robot.gyro.getYaw() * 360d);
+        // Robot.gyroOffsetValid = true;
     }
     public void configureAutoBuilder() {
-        try {
-            RobotConfig config = RobotConfig.fromGUISettings();
+        // try {
+        //     RobotConfig config = RobotConfig.fromGUISettings();
 
-            // Configure AutoBuilder last
-            AutoBuilder.configure(
-                    RobotContainer::getPose, // Robot pose supplier
-                    this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                    RobotContainer::getVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                    (velocity, feedforwards) -> setControl(
-                            m_pathApplyRobotVelocity.withVelocity(velocity)
-                                    .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                                    .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                            new PIDConstants(5.5, 0.0, 0.0), // 7, Translation PID constants
-                            new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
-                    ),
-                    config, // The robot configuration
-                    () -> {
-                        // Boolean supplier that controls when the path will be mirrored for the red alliance
-                        // This will flip the path being followed to the red side of the field.
-                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-                        var alliance = MatchState.getAlliance();
-                        if (alliance.isPresent()) {
-                            return alliance.get() == Alliance.BLUE;
-                        }
-                        return false;
-                    },
-                    this // Reference to this subsystem to set requirements
-            );
-        } catch (Exception ignored) {
-        }
+        //     // Configure AutoBuilder last
+        //     AutoBuilder.configure(
+        //             RobotContainer::getPose, // Robot pose supplier
+        //             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+        //             RobotContainer::getVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        //             (velocity, feedforwards) -> setControl(
+        //                     m_pathApplyRobotVelocity.withVelocity(velocity)
+        //                             .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+        //                             .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+        //             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+        //                     new PIDConstants(5.5, 0.0, 0.0), // 7, Translation PID constants
+        //                     new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
+        //             ),
+        //             config, // The robot configuration
+        //             () -> {
+        //                 // Boolean supplier that controls when the path will be mirrored for the red alliance
+        //                 // This will flip the path being followed to the red side of the field.
+        //                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        //                 var alliance = MatchState.getAlliance();
+        //                 if (alliance.isPresent()) {
+        //                     return alliance.get() == Alliance.BLUE;
+        //                 }
+        //                 return false;
+        //             },
+        //             this // Reference to this subsystem to set requirements
+        //     );
+        // } catch (Exception ignored) {
+        // }
     }
 
     /**

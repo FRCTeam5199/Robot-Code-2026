@@ -129,7 +129,7 @@ public abstract class TemplateSubsystem extends SubsystemBase {
 	}
 
 	public void setVelocity(MotorRotations velocity) {
-		if (velocity == 0) motor.set(0);
+		if (velocity.magnitude == 0) motor.setVoltage(0);
 		else motor.setControl(velocityRequest.withVelocity(velocity.magnitude));
 		goalVelocity = velocity;
 	}

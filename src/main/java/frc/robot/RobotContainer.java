@@ -29,11 +29,14 @@ import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.controls.EndlessPositionCommand;
 import frc.robot.subsystems.controls.EndlessVelocityCommand;
 import frc.robot.subsystems.controls.MovementCommand;
 import frc.robot.subsystems.controls.TemplatePositionCommand;
 import frc.robot.subsystems.controls.TemplateVelocityCommand;
+import frc.robot.subsystems.templates.RollerSubsystem;
+import frc.robot.subsystems.templates.TemplateSubsystem;
 import frc.robot.subsystems.warnings.UnimplementedWarning;
 import frc.robot.subsystems.warnings.Warning;
 import frc.robot.units.MechDegrees;
@@ -58,6 +61,8 @@ public class RobotContainer {
 	public final ShooterSubsystem shooterSubsystem;
 	public final TurretSubsystem turretSubsystem;
 
+	private final CommandSwerveDrivetrain commandSwerveDrivetrain;
+
 	private final Set<Class<Warning>> suppressedWarnings = new HashSet<>();
 
 	TemplatePositionCommand turretPositionCommand;
@@ -65,6 +70,9 @@ public class RobotContainer {
 	TemplateVelocityCommand shooterVelocityCommand;	
 
 	private final Aiming aiming;
+	private TemplateSubsystem[] subsystems;
+
+	private final Vision vision;
 
 	public RobotContainer() {
 		commandXboxController = new CommandXboxController(MiscellaneousConstants.XBOX_PORT);
@@ -80,6 +88,9 @@ public class RobotContainer {
 		shooterSubsystem = ShooterSubsystem.getInstance();
 		turretSubsystem = TurretSubsystem.getInstance();
 
+		vision = Vision.getInstance();
+		vision.setController(this);
+
 		turretPositionCommand = new EndlessPositionCommand(turretSubsystem, new MechDegrees(0));
 		hoodPositionCommand = new EndlessPositionCommand(hoodSubsystem, new MechDegrees(0));
 		shooterVelocityCommand = new EndlessVelocityCommand(shooterSubsystem, new MotorRotations(0));
@@ -88,11 +99,10 @@ public class RobotContainer {
 		aiming = new Aiming(this);
 
 
-		subsystems = {intakePivotSubsystem, turretSubsystem, hoodSubsystem, indexerBottomBeltSubsystem, indexerTopBeltSubsystem, hopperSubsystem, intakeRollerSubsystem, shooterSubsystem};
+		subsystems = new TemplateSubsystem[]{intakePivotSubsystem, turretSubsystem, hoodSubsystem, indexerBottomBeltSubsystem, indexerTopBeltSubsystem, hopperSubsystem, intakeRollerSubsystem, shooterSubsystem};
 	}
 
 	private int subsystemID;
-	private TemplateSubsystem[] subsystems;
 
 	private void configureBindings() {
 		commandXboxController.dpadUp().onTrue(new InstantCommand(() -> {subsystemID++; if(subsystemID >= subsystems.length) subsystemID = subsystems.length-1;}));
@@ -196,5 +206,13 @@ public class RobotContainer {
 	public Pose2d getPose() {
 		emitWarning(new UnimplementedWarning("RobotContainer.getPose is unimplemented; please use the motor odometers from the drive tracks"));
 		return new Pose2d(0, 0, new Rotation2d(0));
+	}
+
+	public CommandSwerveDrivetrain getCommandSwerveDrivetrain(){
+		return this.commandSwerveDrivetrain;
+	}
+
+	public boolean getState(){
+		return true;
 	}
 }

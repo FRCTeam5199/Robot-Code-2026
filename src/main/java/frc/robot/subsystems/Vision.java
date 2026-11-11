@@ -4,8 +4,10 @@ import com.limelightvision.Limelight;
 import com.limelightvision.PoseEstimate;
 import com.limelightvision.PoseEstimateConfig;
 import com.limelightvision.PoseEstimateType;
+
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -19,8 +21,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Vision {
+    public static RobotContainer controllerInstance;
     public static final ConcurrentLinkedQueue<VisionMeasurement> pendingMeasurements = new ConcurrentLinkedQueue<>();
-    public static CommandSwerveDrivetrain commandSwerveDrivetrain = RobotContainer.commandSwerveDrivetrain;
+    public static CommandSwerveDrivetrain commandSwerveDrivetrain;
     private static Vision vision;
     private static Timer rightTimer;
     private static Timer leftTimer;
@@ -33,6 +36,11 @@ public class Vision {
     private static double maxSingleTagDistance = 1.5;
     private static double maxDoubleTagDistance = 4.15;
     private static double stdDev = .35;
+
+    public static void setController(RobotContainer controller){
+        Vision.controllerInstance = controller;
+        Vision.commandSwerveDrivetrain = controller.getCommandSwerveDrivetrain();
+    }
 
     private Vision() {
         //all numbers: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
@@ -93,9 +101,9 @@ public class Vision {
     }
 
     public void updatePoses() {
-        if (RobotContainer.getState() == null) return;
+        if (controllerInstance.getState()) return;
 
-        Limelight.setSharedRobotOrientation(RobotContainer.getPose().getRotation().getDegrees());
+        Limelight.setSharedRobotOrientation(controllerInstance.getPose().getRotation().getDegrees());
 
         updateCameraPose(leftLimelight, leftTimer);
         updateCameraPose(rightLimelight, rightTimer);
@@ -112,7 +120,7 @@ public class Vision {
         for (PoseEstimate data : allPoses) {
             boolean shouldAddPose = true;
 
-            Pose2d currentPose = RobotContainer.getPose();
+            Pose2d currentPose = controllerInstance.getPose();
             if (currentPose != null && data.pose.getTranslation()
                     .getDistance(currentPose.getTranslation()) > maxWrongDistance) {
                 if (!wrongPoseTimer.isRunning()) wrongPoseTimer.start();
